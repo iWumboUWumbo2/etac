@@ -1,0 +1,10 @@
+// Booleans
+x : bool = true
+x : bool = false
+x = true & false
+x = true | true
+x = ! false
+x = true == true
+x = true != false
+'bool' : bool = true
+bool : bool = true

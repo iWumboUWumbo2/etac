@@ -1,0 +1,12 @@
+// Variable Declarations
+x:int = 2;
+z:int
+b: bool, i:int = f(x)
+s: int[] = "Hello";
+x = x + 1
+s = {1, 2, 3}
+b = !b
+len: int = 100
+n’: int = -1
+debug: bool = false
+points: int[]

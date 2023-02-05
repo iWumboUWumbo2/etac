@@ -1,0 +1,8 @@
+// Edge cases
+a = '\x{FFFFFF}'
+a = "\x{FFFFFF}"
+a: int[] = "hello😂"
+a = "hello\x{1F602}"
+a =  "\""
+a = """
+elsex=0 : int = 1
