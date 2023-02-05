@@ -1,0 +1,90 @@
+buildscript {
+    repositories {
+        flatDir {
+            dirs 'deps/libs/plugins'
+        }
+    }
+    dependencies {
+        classpath fileTree(dir: 'deps/libs/plugins', include: '*.jar')
+    }
+}
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "org.xbib.gradle.plugin.jflex" version "1.7.0"
+}
+
+sourceCompatibility = '1.11'
+targetCompatibility = '1.11'
+
+group 'aar226_akc55_ayc62_ahl88'
+version '1.0-SNAPSHOT'
+
+shadowJar {
+    archiveBaseName.set(rootProject.name)
+    archiveClassifier.set('')
+    archiveVersion.set('')
+
+    manifest {
+        attributes 'Main-Class' : 'aar226_akc55_ayc62_ahl88.Main'
+    }
+}
+
+build {
+    dependsOn 'shadowJar'
+}
+
+repositories {
+//    mavenCentral() // used to download dependencies, comment this when building offline
+    flatDir (dir: 'deps/libs/plugins')
+    flatDir (dir: 'deps/libs/test')
+    flatDir (dir: 'deps/libs/main')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation fileTree(dir: 'deps/libs/main', include: '*.jar')
+    implementation fileTree(dir: 'deps/libs/test', include: '*.jar')
+    implementation fileTree(dir: 'deps/libs/plugins', include: '*.jar')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    implementation 'commons-cli:commons-cli:1.4'
+    implementation 'org.apache.commons:commons-text:1.10.0'
+    implementation 'de.jflex:jflex:1.8.2'
+}
+
+task copyMainDependenciesToLib(type: Copy) {
+    includeEmptyDirs = true
+    into "deps/libs/main"
+    from configurations.runtimeClasspath
+}
+
+task copyTestDependenciesToLib(type: Copy) {
+    includeEmptyDirs = true
+    into "deps/libs/test"
+    from configurations.testRuntimeClasspath - configurations.runtimeClasspath
+}
+
+task copyCompileOnlyDependenciesToLib(type: Copy) {
+    includeEmptyDirs = true
+    into "deps/libs/compile-only"
+    from configurations.compileClasspath - configurations.runtimeClasspath
+}
+
+task copyPluginJarsToLib(type: Copy) {
+    includeEmptyDirs = true
+    into "deps/libs/plugins"
+    from buildscript.configurations.classpath
+}
+
+task copyDependenciesToLib {
+    dependsOn 'copyMainDependenciesToLib'
+    dependsOn 'copyTestDependenciesToLib'
+    dependsOn 'copyCompileOnlyDependenciesToLib'
+    dependsOn 'copyPluginJarsToLib'
+}
