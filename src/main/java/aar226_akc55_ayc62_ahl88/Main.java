@@ -135,13 +135,13 @@ class Main {
                 return;
             }
 
-            if (cmd.hasOption("lex")) {
-                outputDirectory = cmd.getOptionValue("lex");
+            if (cmd.hasOption("D")) {
+                outputDirectory = cmd.getOptionValue("D");
                 isDirSpecified = true;
             }
 
-            if (cmd.hasOption("D")) {
-                String[] filenames = cmd.getOptionValues("D");
+            if (cmd.hasOption("lex")) {
+                String[] filenames = cmd.getOptionValues("lex");
                 for (String filename : filenames) {
                     lexFile(filename, new StringBuilder());
                 }
