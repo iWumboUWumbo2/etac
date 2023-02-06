@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73ddc173-8043-47fd-816b-84efacfb0193" name="Changes" comment="Added build scripts">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/etac_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/deps/libs/main/hamcrest-core-1.3.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/deps/libs/main/junit-4.12.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/etac_jar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etac" beforeDir="false" afterPath="$PROJECT_DIR$/etac" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/etac-build" beforeDir="false" afterPath="$PROJECT_DIR$/etac-build" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -163,17 +164,6 @@
     <MESSAGE value="Added build scripts" />
     <MESSAGE value="Added tests" />
     <option name="LAST_COMMIT_MESSAGE" value="Added tests" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/build.gradle</url>
-          <line>38</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
