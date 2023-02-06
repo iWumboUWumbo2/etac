@@ -68,6 +68,17 @@ import org.apache.commons.text.*;
     StringBuilder sb = new StringBuilder();
     int globalLineNum = 0;
     int globalColNum = 0;
+    // stack overflow example
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
 
     class Token {
         TokenType type;
@@ -211,7 +222,16 @@ Comment = "//"{InputCharacter}*{LineTerminator}
 <CHARACTER> {
     [^\n\r\'\\]\' {
           yybegin(YYINITIAL);
-          return new Token("character", TokenType.CHAR_LITERAL, yytext().substring(0,yytext().length()-1));
+          byte[] bytearr = yytext().substring(0,yytext().length()-1).getBytes("UTF-32");
+          int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
+          if (ch > 0x10FFFF || ch < 0x0){
+              return new Token("Invalid Unicode Character", "outside of Unicode Range Char");
+          } else if (ch >= 0x0 && ch <= 0x7F){
+              return new Token("character", TokenType.CHAR_LITERAL,
+                              StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
+          }else{
+              return new Token("character", TokenType.CHAR_LITERAL,"\\x{"+Integer.toHexString(ch)+ "}");
+          }
 //          return new Token("character", TokenType.CHAR_LITERAL, Character.toString(yytext().charAt(0)));
       }
     \\n\' {
@@ -235,10 +255,14 @@ Comment = "//"{InputCharacter}*{LineTerminator}
     \\x\{{Hex}\}\'     {
                 yybegin(YYINITIAL);
                 int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 2), 16);
-                if (ch > 0x10FFFF || ch < 0x0)
+                if (ch > 0x10FFFF || ch < 0x0){
                     return new Token("Invalid Unicode Character", "outside of Unicode Range Char");
-                return new Token("character", TokenType.CHAR_LITERAL,
-                StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
+                } else if (ch >= 0x0 && ch <= 0x7F){
+                    return new Token("character", TokenType.CHAR_LITERAL,
+                                    StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
+                }else{
+                    return new Token("character", TokenType.CHAR_LITERAL,"\\x{"+Integer.toHexString(ch)+ "}");
+                }
           }
     [^] {
           yybegin(YYINITIAL);
@@ -262,10 +286,24 @@ Comment = "//"{InputCharacter}*{LineTerminator}
 
     \\x\{{Hex}\} {
                                  int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 1), 16);
-                                 if (ch > 0x10FFFF || ch < 0x0)
+                                 if (ch > 0x10FFFF || ch < 0x0){
                                      return new Token("Invalid Unicode Character","outside of Unicode Range String");
-                                 sb.append(Character.toChars(ch));
+                                 }else if (ch >= 0x0 && ch <= 0x7F){
+                                    sb.append(Character.toChars(ch));
+                                 }else{
+                                    sb.append("\\x{"+Integer.toHexString(ch)+ "}");
+                                 }
                            }
 
-    [^\"] { sb.append(yytext()); }
+    [^\"] {
+        byte[] bytearr = yytext().getBytes("UTF-32");
+        int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
+        if (ch > 0x10FFFF || ch < 0x0){
+            return new Token("Invalid Unicode Character","outside of Unicode Range String");
+        }else if (ch >= 0x0 && ch <= 0x7F){
+           sb.append(Character.toChars(ch));
+        }else{
+           sb.append("\\x{"+Integer.toHexString(ch)+ "}");
+        }
+    }
 }
