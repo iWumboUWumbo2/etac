@@ -79,6 +79,12 @@ import org.apache.commons.text.*;
         }
         return new String(hexChars);
     }
+    public static boolean isEscape( int ch){
+        if (ch == 92 || ch == 10 || ch == 39 || ch == 34 || ch == 9 || ch == 8 || ch == 82 || ch == 102){
+            return true;
+        }
+        return false;
+    }
 
     class Token {
         TokenType type;
@@ -226,7 +232,9 @@ Comment = "//"{InputCharacter}*{LineTerminator}
           int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
           if (ch > 0x10FFFF || ch < 0x0){
               return new Token("Invalid Unicode Character", "outside of Unicode Range Char");
-          } else if (ch >= 0x0 && ch <= 0x7F){
+          } else if (isEscape(ch)){
+                return new Token("character", TokenType.CHAR_LITERAL,"\\x{"+Integer.toHexString(ch)+ "}");
+          }else if (ch >= 0x20 && ch <= 0x7E){
               return new Token("character", TokenType.CHAR_LITERAL,
                               StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
           }else{
@@ -257,9 +265,11 @@ Comment = "//"{InputCharacter}*{LineTerminator}
                 int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 2), 16);
                 if (ch > 0x10FFFF || ch < 0x0){
                     return new Token("Invalid Unicode Character", "outside of Unicode Range Char");
-                } else if (ch >= 0x0 && ch <= 0x7F){
+                } else if (isEscape(ch)){
                     return new Token("character", TokenType.CHAR_LITERAL,
-                                    StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
+                    StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
+                }else if (ch >= 0x20 && ch <= 0x7E){
+                    return new Token("character", TokenType.CHAR_LITERAL, Character.toChars(ch));
                 }else{
                     return new Token("character", TokenType.CHAR_LITERAL,"\\x{"+Integer.toHexString(ch)+ "}");
                 }
@@ -281,14 +291,18 @@ Comment = "//"{InputCharacter}*{LineTerminator}
           String s = sb.toString();
           return new Token("string", TokenType.STRING_LITERAL, s);
       }
-
+    \\\\ { sb.append(StringEscapeUtils.escapeJava("\\")); }
+    \\n  { sb.append(StringEscapeUtils.escapeJava("\n"));}
+    \\t  { sb.append(StringEscapeUtils.escapeJava("\t"));}
     \\\"  { sb.append("\""); }
 
     \\x\{{Hex}\} {
                                  int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 1), 16);
                                  if (ch > 0x10FFFF || ch < 0x0){
                                      return new Token("Invalid Unicode Character","outside of Unicode Range String");
-                                 }else if (ch >= 0x0 && ch <= 0x7F){
+                                 }else if (isEscape(ch)){
+                                    sb.append(StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
+                                 }else if (ch >= 0x20 && ch <= 0x7E){
                                     sb.append(Character.toChars(ch));
                                  }else{
                                     sb.append("\\x{"+Integer.toHexString(ch)+ "}");
@@ -300,7 +314,9 @@ Comment = "//"{InputCharacter}*{LineTerminator}
         int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
         if (ch > 0x10FFFF || ch < 0x0){
             return new Token("Invalid Unicode Character","outside of Unicode Range String");
-        }else if (ch >= 0x0 && ch <= 0x7F){
+        }else if (isEscape(ch)){
+            sb.append("\\x{"+Integer.toHexString(ch)+ "}");
+        }else if (ch >= 0x20 && ch <= 0x7E){
            sb.append(Character.toChars(ch));
         }else{
            sb.append("\\x{"+Integer.toHexString(ch)+ "}");
