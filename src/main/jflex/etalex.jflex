@@ -211,7 +211,8 @@ Comment = "//"{InputCharacter}*{LineTerminator}
 <CHARACTER> {
     [^\n\r\'\\]\' {
           yybegin(YYINITIAL);
-          return new Token("character", TokenType.CHAR_LITERAL, Character.toString(yytext().charAt(0)));
+          return new Token("character", TokenType.CHAR_LITERAL, yytext().substring(0,yytext().length()-1));
+//          return new Token("character", TokenType.CHAR_LITERAL, Character.toString(yytext().charAt(0)));
       }
     \\n\' {
           yybegin(YYINITIAL);
