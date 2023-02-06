@@ -76,8 +76,8 @@ class Main {
                         }
                     }
                     catch (Error e) {
-                        String lexed = "lexical error at line " + etaLexer.lineNumber() +
-                                ", column " + etaLexer.column();
+                        String lexed = String.format("%d:%d lexical error \n", etaLexer.lineNumber(),
+                                etaLexer.column());
                         lexedOutput.append(lexed);
                     }
                 }
@@ -126,7 +126,7 @@ class Main {
         isDirSpecified = false;
         outputDirectory = Paths.get("").toAbsolutePath().toString();
 
-        System.out.println(outputDirectory);
+//        System.out.println(outputDirectory);
 
         try {
             CommandLine cmd = parser.parse(options, args);

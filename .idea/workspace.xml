@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73ddc173-8043-47fd-816b-84efacfb0193" name="Changes" comment="Added build scripts">
-      <change afterPath="$PROJECT_DIR$/deps/libs/main/hamcrest-core-1.3.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/main/junit-4.12.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/etac_jar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etac-build" beforeDir="false" afterPath="$PROJECT_DIR$/etac-build" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etac" beforeDir="false" afterPath="$PROJECT_DIR$/etac" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/jflex/etalex.jflex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/jflex/etalex.jflex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test8.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test8.eta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +53,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/extests" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88" />
       <recent name="$PROJECT_DIR$/src/main/jflex" />

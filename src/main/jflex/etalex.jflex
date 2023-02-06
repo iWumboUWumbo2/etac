@@ -149,7 +149,10 @@ Comment = "//"{InputCharacter}*{LineTerminator}
 
     {Integer}     {
                 try {
-                    return new Token("integer", TokenType.INT_LITERAL, Long.parseLong(yytext()));
+
+                    String temp = "-" + yytext();
+                    //System.out.println(Long.parseLong(temp)); // MUST REMEMBER INTEGERS ARE NEGATIVE
+                    return new Token("integer", TokenType.INT_LITERAL, Long.parseLong(temp));
                 } catch (Exception e) {
                     return new Token("Integer parse error");
                 }
@@ -201,6 +204,8 @@ Comment = "//"{InputCharacter}*{LineTerminator}
 
     {Identifier}  { globalLineNum = lineNumber(); globalColNum = column();
           return new Token("id", TokenType.ID, yytext()); }
+
+    // might need catch all case for extra failures
 }
 
 <CHARACTER> {
