@@ -13,15 +13,14 @@ terminal Integer CHAR_LITERAL;
 terminal String STRING_LITERAL;
 terminal String ID;
 
-STRING_LITERAL??????!!!!??!?!? HOW MAKE ARRAY?!
-
-
+non terminal ArrAssType arr_ass_type;
 non terminal Expr expr;
 non terminal VarDecl varDecl;
 non terminal TypeNode type;
 non terminal Separator sep;
 non terminal BasicType basic_type;
 non terminal Keyword keyword;
+non terminal Array array;
 
 precedence left PLUS;
 precedence left TIMES;
@@ -46,22 +45,26 @@ expr ::= expr:e1 MINUS expr:e2  {: RESULT = new Minus(e1, e2); :}
       |  LPAREN expr:e RPAREN   {: RESULT = e; :};
 
 basic_type ::= INT_LITERAL:n               {: RESULT = new Int_Literal(n); :}
-      |  BOOL_LITERAL:b               {: RESULT = new Bool_Literal(b); :}
-      |  CHAR_LITERAL:c               {: RESULT = new Char_Literal(c); :}
-      |  STRING_LITERAL:s               {: RESULT = new String_Literal(s); :}
-      |  ID:id               {: RESULT = new Id_Literal(id); :};
+      |  BOOL_LITERAL:b               {: RESULT = new Bool_Literal(b); :};
 
-varDecl ::= type:t COLON ID:i     {: RESULT = new VarDeclNode(t,i); :};
+varDeclAss ::= ID:i COLON arr_ass_type:t EQUAL expr:e   {: RESULT = new VarDeclNode(t,i); :};
+      | ID:i COLON basic_type:t EQUAL expr:e   {: RESULT = new VarDeclNode(t,i); :};
+
+arr_ass_type ::= LBRACKET RBRACKET   {:  RESULT = new :}
+       | arr_ass_type                {:  RESULT = new :};
+
+varDecl ::=
+
+arr_type ::= LBRACKET expr:e RBRACKET {: RESULT = new :}
+       | arr_type LBRACKET RBRACKET {: RESULT = new :};
 
 keyword ::= USE ID:id {: RESULT = new  :}
-      | LENGTH LPARA expr:e RPARA {: RESULT = new :}
-      |
+      | LENGTH LPARA expr:e RPARA {: RESULT = new :};
 
 type ::= INT_TYPE {: RESULT = new IntNode(); :}
       | BOOL_TYPE {: RESULT = new BoolNode() :};
-//poop scoop doop moop goop loop zoop woop yoop joop hoop boop soop roop xoop coop koop coopatroopa
 //TODO: FIX ALL CONSTRUCTORS
-list_type ::= basic_type:t LBRACKET RBRACKET  {: RESULT = new List_Type(t); :}
+list_type ::= LBRACKET RBRACKET  {: RESULT = new List_Type(t); :}
   | list_type:t LBRACKET INT_LITERAL:n RBRACKET {: RESULT = new List_Type(t); :}
   | list_type:t LBRACKET ID:id RBRACKET {: RESULT = new List_Type(t); :}
   | list_type:t LBRACKET RBRACKET {: RESULT = new List_Type(t); :};
