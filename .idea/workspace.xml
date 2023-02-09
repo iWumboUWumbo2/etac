@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73ddc173-8043-47fd-816b-84efacfb0193" name="Changes" comment="Added build scripts">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/cuppers/cuppers.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/cuppers/cuppers.cup" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

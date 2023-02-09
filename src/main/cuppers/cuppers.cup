@@ -13,9 +13,11 @@ terminal Integer CHAR_LITERAL;
 terminal String STRING_LITERAL;
 terminal String ID;
 
-non terminal ArrAssType arr_ass_type;
+non terminal ArrIndType arr_ind_type;
 non terminal Expr expr;
 non terminal VarDecl varDecl;
+non terminal VarDeclAss varDeclAss;
+non terminal ArrType arr_type;
 non terminal TypeNode type;
 non terminal Separator sep;
 non terminal BasicType basic_type;
@@ -44,19 +46,24 @@ expr ::= expr:e1 MINUS expr:e2  {: RESULT = new Minus(e1, e2); :}
       |  expr:e1 LOR expr:e2  {: RESULT = new Lor(e1, e2); :}
       |  LPAREN expr:e RPAREN   {: RESULT = e; :};
 
-basic_type ::= INT_LITERAL:n               {: RESULT = new Int_Literal(n); :}
-      |  BOOL_LITERAL:b               {: RESULT = new Bool_Literal(b); :};
+// VARIABLE
 
-varDeclAss ::= ID:i COLON arr_ass_type:t EQUAL expr:e   {: RESULT = new VarDeclNode(t,i); :};
+basic_type ::= INT_TYPE:n               {: RESULT = new Int_Literal(n); :}
+      |  BOOL_TYPE:b               {: RESULT = new Bool_Literal(b); :};
+
+varDeclAss ::= ID:i COLON arr_type:t EQUAL expr:e   {: RESULT = new VarDeclNode(t,i); :};
       | ID:i COLON basic_type:t EQUAL expr:e   {: RESULT = new VarDeclNode(t,i); :};
 
-arr_ass_type ::= LBRACKET RBRACKET   {:  RESULT = new :}
-       | arr_ass_type                {:  RESULT = new :};
+arr_type ::= LBRACKET RBRACKET   {:  RESULT = new :}
+       | arr_ind_type                {:  RESULT = new :};
 
-varDecl ::=
+varDecl ::= ID:id COLON basic_type {: RESULT = new :}
+       | ID:id COLON arr_ind_type {: RESULT = new :};
 
-arr_type ::= LBRACKET expr:e RBRACKET {: RESULT = new :}
-       | arr_type LBRACKET RBRACKET {: RESULT = new :};
+arr_ind_type ::= LBRACKET expr:e RBRACKET {: RESULT = new :}
+       | arr_ind_type LBRACKET RBRACKET {: RESULT = new :};
+
+// END VARIABLE
 
 keyword ::= USE ID:id {: RESULT = new  :}
       | LENGTH LPARA expr:e RPARA {: RESULT = new :};
@@ -69,5 +76,3 @@ list_type ::= LBRACKET RBRACKET  {: RESULT = new List_Type(t); :}
   | list_type:t LBRACKET ID:id RBRACKET {: RESULT = new List_Type(t); :}
   | list_type:t LBRACKET RBRACKET {: RESULT = new List_Type(t); :};
 
-      |  error                  {: RESULT = null; :}
-      ;
