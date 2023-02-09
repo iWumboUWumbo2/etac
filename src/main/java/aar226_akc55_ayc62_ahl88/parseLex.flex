@@ -1,10 +1,11 @@
+
 package aar226_akc55_ayc62_ahl88;
+
+
 import java_cup.runtime.*;
-import java_cup.runtime.Symbol;
 
 %%
 
-%public
 %class Lexer
 
 %line

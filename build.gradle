@@ -33,6 +33,7 @@ dependencies {
     implementation fileTree(dir: 'deps/libs/main', include: '*.jar')
     implementation fileTree(dir: 'deps/libs/test', include: '*.jar')
     implementation fileTree(dir: 'deps/libs/plugins', include: '*.jar')
+    implementation fileTree(dir: 'lib', include: '*.jar')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     // add more dependencies here

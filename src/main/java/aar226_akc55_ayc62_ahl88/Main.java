@@ -54,29 +54,30 @@ class Main {
         }
     }
 
-//    private static void parseFile(String filename, StringBuilder parsedOutput) throws IOException {
-//        try {
-//            if (filename.endsWith(".eta")) {
-//                try {
-//                    parser p = new parser(new Lexer(new FileReader(filename)));
-//                    Object result = p.parse().value;
-//                }
-//                catch (Exception e){
-//                    System.out.println("Parsing Error or file issue");
-//                }
-//            }
-//            else {
-//                throw new FileNotFoundException(
-//                        "Invalid filename "
-//                                + filename
-//                                + " provided: All files passed to etac must have a .eta extension");
-//            }
-//        }
-//        catch (FileNotFoundException invalidFilename) {
-//            System.out.println(invalidFilename.getMessage());
-//            return;
-//        }
-//    }
+    private static void parseFile(String filename, StringBuilder parsedOutput) throws IOException {
+        try {
+            if (filename.endsWith(".eta")) {
+                try {
+                    parser p = new parser(new Lexer(new FileReader(filename)));
+                    Object result = p.parse().value;
+                    System.out.println(result);
+                }
+                catch (Exception e){
+                    System.out.println("Parsing Error or file issue");
+                }
+            }
+            else {
+                throw new FileNotFoundException(
+                        "Invalid filename "
+                                + filename
+                                + " provided: All files passed to etac must have a .eta extension");
+            }
+        }
+        catch (FileNotFoundException invalidFilename) {
+            System.out.println(invalidFilename.getMessage());
+            return;
+        }
+    }
 
     private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
         try {
@@ -136,6 +137,8 @@ class Main {
                 "Print a synopsis of options.");
         Option lexOpt = new Option(null, "lex", true,
                 "Generate output from lexical analysis.");
+        Option parseOpt = new Option(null, "parse", true,
+                "Generate output from lexical analysis.");
         Option dirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
 
@@ -143,6 +146,7 @@ class Main {
 
         options.addOption(helpOpt);
         options.addOption(dirOpt);
+        options.addOption(parseOpt);
         options.addOption(lexOpt);
 
         HelpFormatter formatter = new HelpFormatter();
@@ -168,6 +172,13 @@ class Main {
                 String[] filenames = cmd.getOptionValues("lex");
                 for (String filename : filenames) {
                     lexFile(filename, new StringBuilder());
+                }
+            }
+
+            if (cmd.hasOption("parse")){
+                String[] filenames = cmd.getOptionValues("parse");
+                for (String filename : filenames) {
+                    parseFile(filename, new StringBuilder());
                 }
             }
         }
