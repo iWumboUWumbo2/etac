@@ -54,6 +54,30 @@ class Main {
         }
     }
 
+//    private static void parseFile(String filename, StringBuilder parsedOutput) throws IOException {
+//        try {
+//            if (filename.endsWith(".eta")) {
+//                try {
+//                    parser p = new parser(new Lexer(new FileReader(filename)));
+//                    Object result = p.parse().value;
+//                }
+//                catch (Exception e){
+//                    System.out.println("Parsing Error or file issue");
+//                }
+//            }
+//            else {
+//                throw new FileNotFoundException(
+//                        "Invalid filename "
+//                                + filename
+//                                + " provided: All files passed to etac must have a .eta extension");
+//            }
+//        }
+//        catch (FileNotFoundException invalidFilename) {
+//            System.out.println(invalidFilename.getMessage());
+//            return;
+//        }
+//    }
+
     private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
         try {
             if (filename.endsWith(".eta")) {
