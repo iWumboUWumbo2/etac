@@ -5,7 +5,7 @@ parser ExampleParser {: :}
 terminal USE,
          MINUS,NOT,MULT,HI_MULT,DIV,MOD,PLUS,LT,LEQ,GEQ,
          GT,EQ,NEQ,LAND,LOR,
-         ID, BOOL_TYPE, INT_TYPE
+         BOOL_TYPE, INT_TYPE
          COLON, LPARA, RPARA, LBRACKET, RBRACKET, LCURLY, RCURLY;
 terminal Integer INT_LITERAL;
 terminal Bool BOOL_LITERAL;
@@ -23,9 +23,6 @@ non terminal Separator sep;
 non terminal BasicType basic_type;
 non terminal Keyword keyword;
 non terminal Array array;
-
-precedence left PLUS;
-precedence left TIMES;
 
 start with expr;
 
