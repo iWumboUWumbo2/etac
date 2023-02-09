@@ -1,0 +1,70 @@
+import ast.*;
+
+parser ExampleParser {: :}
+
+terminal USE,
+         MINUS,NOT,MULT,HI_MULT,DIV,MOD,PLUS,LT,LEQ,GEQ,
+         GT,EQ,NEQ,LAND,LOR,
+         ID, BOOL_TYPE, INT_TYPE
+         COLON, LPARA, RPARA, LBRACKET, RBRACKET, LCURLY, RCURLY;
+terminal Integer INT_LITERAL;
+terminal Bool BOOL_LITERAL;
+terminal Integer CHAR_LITERAL;
+terminal String STRING_LITERAL;
+terminal String ID;
+
+STRING_LITERAL??????!!!!??!?!? HOW MAKE ARRAY?!
+
+
+non terminal Expr expr;
+non terminal VarDecl varDecl;
+non terminal TypeNode type;
+non terminal Separator sep;
+non terminal BasicType basic_type;
+non terminal Keyword keyword;
+
+precedence left PLUS;
+precedence left TIMES;
+
+start with expr;
+
+expr ::= expr:e1 MINUS expr:e2  {: RESULT = new Minus(e1, e2); :}
+      |  NOT expr:e1            {: RESULT = new Not(e1); :}
+      |  expr:e1 MULT expr:e2  {: RESULT = new Mult(e1, e2); :}
+      |  expr:e1 HI_MULT expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
+      |  expr:e1 DIV expr:e2  {: RESULT = new Div(e1, e2); :}
+      |  expr:e1 MOD expr:e2  {: RESULT = new Mod(e1, e2); :}
+      |  expr:e1 PLUS expr:e2   {: RESULT = new Plus(e1, e2); :}
+      |  expr:e1 LT expr:e2  {: RESULT = new Lt(e1, e2); :}
+      |  expr:e1 LEQ expr:e2  {: RESULT = new Leq(e1, e2); :}
+      |  expr:e1 GEQ expr:e2  {: RESULT = new Geq(e1, e2); :}
+      |  expr:e1 GT expr:e2  {: RESULT = new Gt(e1, e2); :}
+      |  expr:e1 EQ expr:e2  {: RESULT = new Eq(e1, e2); :}
+      |  expr:e1 NEQ expr:e2  {: RESULT = new Neq(e1, e2); :}
+      |  expr:e1 LAND expr:e2  {: RESULT = new Land(e1, e2); :}
+      |  expr:e1 LOR expr:e2  {: RESULT = new Lor(e1, e2); :}
+      |  LPAREN expr:e RPAREN   {: RESULT = e; :};
+
+basic_type ::= INT_LITERAL:n               {: RESULT = new Int_Literal(n); :}
+      |  BOOL_LITERAL:b               {: RESULT = new Bool_Literal(b); :}
+      |  CHAR_LITERAL:c               {: RESULT = new Char_Literal(c); :}
+      |  STRING_LITERAL:s               {: RESULT = new String_Literal(s); :}
+      |  ID:id               {: RESULT = new Id_Literal(id); :};
+
+varDecl ::= type:t COLON ID:i     {: RESULT = new VarDeclNode(t,i); :};
+
+keyword ::= USE ID:id {: RESULT = new  :}
+      | LENGTH LPARA expr:e RPARA {: RESULT = new :}
+      |
+
+type ::= INT_TYPE {: RESULT = new IntNode(); :}
+      | BOOL_TYPE {: RESULT = new BoolNode() :};
+//poop scoop doop moop goop loop zoop woop yoop joop hoop boop soop roop xoop coop koop coopatroopa
+//TODO: FIX ALL CONSTRUCTORS
+list_type ::= basic_type:t LBRACKET RBRACKET  {: RESULT = new List_Type(t); :}
+  | list_type:t LBRACKET INT_LITERAL:n RBRACKET {: RESULT = new List_Type(t); :}
+  | list_type:t LBRACKET ID:id RBRACKET {: RESULT = new List_Type(t); :}
+  | list_type:t LBRACKET RBRACKET {: RESULT = new List_Type(t); :};
+
+      |  error                  {: RESULT = null; :}
+      ;
