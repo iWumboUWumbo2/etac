@@ -5,16 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73ddc173-8043-47fd-816b-84efacfb0193" name="Changes" comment="Added build scripts">
-      <change afterPath="$PROJECT_DIR$/deps/libs/main/java_cup.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/java_cup.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test2.lexed" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test11.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/etac-build" beforeDir="false" afterPath="$PROJECT_DIR$/etac-build" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/sym.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/sym.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test1.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test1.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test10.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test10.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test2.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test2.eta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

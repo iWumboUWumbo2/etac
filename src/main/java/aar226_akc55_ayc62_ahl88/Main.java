@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88;
 
+import java_cup.runtime.Symbol;
 import org.apache.commons.cli.*;
 import java.io.*;
 import java.nio.file.Path;
@@ -60,10 +61,11 @@ class Main {
                 try {
                     parser p = new parser(new Lexer(new FileReader(filename)));
                     Object result = p.parse().value;
-                    System.out.println(result);
+                    System.out.println("FINISHED");
                 }
                 catch (Exception e){
                     System.out.println("Parsing Error or file issue");
+                    e.printStackTrace();
                 }
             }
             else {
@@ -78,37 +80,58 @@ class Main {
             return;
         }
     }
-
+    private static String prettyOut(Symbol s){
+        String out = s.value().toString();
+        switch (s.sym){
+            case (sym.INTEGER_LITERAL):
+                if (out.length() > 1){
+                    out = out.substring(1);
+                }
+                out = "integer " + out;
+                break;
+            case (sym.FALSE):
+            case (sym.TRUE): {
+                out = "boolean " + out;
+                break;
+            }
+            case (sym.IDENTIFIER):
+                out = "id " +  out;
+                break;
+            case (sym.CHARACTER_LITERAL):
+                out = "character " +  out;
+                break;
+            case (sym.STRING_LITERAL):
+                out = "string " + out;
+                break;
+            default:
+                break;
+        }
+        return String.format("%d:%d %s\n", s.left, s.right, out);
+    }
     private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
         try {
             if (filename.endsWith(".eta")) {
+                FileReader f;
                 try {
-                    EtaLexer etaLexer = new EtaLexer(new FileReader(filename));
-                    try {
-                        while (true) {
-                            EtaLexer.Token t = etaLexer.nextToken();
-                            if (t == null) break;
-
-                            if (t.type == EtaLexer.TokenType.ERROR) {
-                                String lexed = String.format("%d:%d error: %s\n", t.line,
-                                        t.col, t.text);
-                                lexedOutput.append(lexed);
-                                break;
-                            }
-
-                            String lexed = String.format("%d:%d %s\n", t.line, t.col, t.text);
-                            lexedOutput.append(lexed);
-                        }
-                    }
-                    catch (Error e) {
-                        String lexed = String.format("%d:%d lexical error \n", etaLexer.lineNumber(),
-                                etaLexer.column());
+                    f = new FileReader(filename);
+                }
+                catch(Exception e){
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                Lexer etaLexer = new Lexer(f);
+                try {
+                    while (true) {
+                        Symbol t = etaLexer.next_token();
+                        if (t.sym == sym.EOF) break;
+                        String lexed =  prettyOut(t);
                         lexedOutput.append(lexed);
                     }
                 }
-                catch (FileNotFoundException fileNotFoundException) {
-                    System.out.println(fileNotFoundException.getMessage());
-                    return;
+                catch (Error e) {
+                    System.out.println(e.getMessage());
+                    String lexed = e.getMessage();
+                    lexedOutput.append(lexed);
                 }
             }
             else {
@@ -125,6 +148,53 @@ class Main {
 
         writeLexedOutput(filename, lexedOutput.toString());
     }
+
+//    private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
+//        try {
+//            if (filename.endsWith(".eta")) {
+//                try {
+//                    EtaLexer etaLexer = new EtaLexer(new FileReader(filename));
+//                    try {
+//                        while (true) {
+//                            EtaLexer.Token t = etaLexer.nextToken();
+//                            if (t == null) break;
+//
+//                            if (t.type == EtaLexer.TokenType.ERROR) {
+//                                String lexed = String.format("%d:%d error: %s\n", t.line,
+//                                        t.col, t.text);
+//                                lexedOutput.append(lexed);
+//                                break;
+//                            }
+//
+//                            String lexed = String.format("%d:%d %s\n", t.line, t.col, t.text);
+//                            lexedOutput.append(lexed);
+//                        }
+//                    }
+//                    catch (Error e) {
+//                        String lexed = String.format("%d:%d lexical error \n", etaLexer.lineNumber(),
+//                                etaLexer.column());
+//                        lexedOutput.append(lexed);
+//                    }
+//                }
+//                catch (FileNotFoundException fileNotFoundException) {
+//                    System.out.println(fileNotFoundException.getMessage());
+//                    return;
+//                }
+//            }
+//            else {
+//                throw new FileNotFoundException(
+//                        "Invalid filename "
+//                                + filename
+//                                + " provided: All files passed to etac must have a .eta extension");
+//            }
+//        }
+//        catch (FileNotFoundException invalidFilename) {
+//            System.out.println(invalidFilename.getMessage());
+//            return;
+//        }
+//
+//        writeLexedOutput(filename, lexedOutput.toString());
+//    }
 
     public static void main(String[] args) throws java.io.IOException {
         // Create the command line parser

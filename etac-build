@@ -6,13 +6,6 @@ gradle7 clean
 #rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
 jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/etalex.flex
 jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex
-#java -jar $DEPS/java_cup.jar $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java -d $DIR/src/main/java/aar226_akc55_ayc62_ahl88
+java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Eta.cup
 gradle7 --no-daemon -b build.gradle shadowJar
 
-
-
-#testing purposes
-
-#jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex
-#java -jar java_cup eta.cup
-# now we have a java_runtime can't find cup issue ://
