@@ -1,6 +1,6 @@
 package aar226_akc55_ayc62_ahl88;
 
-import aar226_akc55_ayc62_ahl88.ast.Expr;
+import aar226_akc55_ayc62_ahl88.ast.*;
 import java_cup.runtime.Symbol;
 import org.apache.commons.cli.*;
 import java.io.*;
@@ -61,7 +61,7 @@ class Main {
             if (filename.endsWith(".eta")) {
                 try {
                     parser p = new parser(new Lexer(new FileReader(filename)));
-                    Expr result = (Expr) p.parse().value;
+                    Program result = (Program) p.parse().value;
                     System.out.println("Result = " + result );
                 }
                 catch (Exception e){

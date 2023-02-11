@@ -3,42 +3,6 @@ package aar226_akc55_ayc62_ahl88.ast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-class Program {
-    private ArrayList<Use> uses;
-    private ArrayList<Definition> definitions;
-
-    public Program(ArrayList<Use> uses, ArrayList<Definition> definitions) {
-        this.uses = uses;
-        this.definitions = definitions;
-    }
-}
-
-class Id {
-    private String id;
-
-    public Id(String id) {
-        this.id = id;
-    }
-}
-
-class Use {
-    private Id id;
-
-    public Use(Id id) {
-        this.id = id;
-    }
-
-    public Use(String id) {
-        this.id = new Id(id);
-    }
-}
-
-class Definition {
-    private Method method;
-    private Globdecl globdecl;
-
-}
-
 class Method {
     private Id id;
     private ArrayList<Decl> decls;

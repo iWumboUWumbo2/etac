@@ -40,13 +40,13 @@ class Lexer implements java_cup.runtime.Scanner {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\3\1\2\1\0\1\3\1\1\22\0\1\3\1\33\1\55"+
+    "\11\0\1\3\1\2\1\60\1\61\1\1\22\0\1\3\1\33\1\55"+
     "\2\0\1\36\1\42\1\7\1\47\1\50\1\34\1\37\1\46\1\32"+
     "\1\0\1\22\1\10\11\5\1\44\1\45\1\40\1\41\1\35\2\0"+
     "\6\11\24\4\1\51\1\56\1\52\1\0\1\6\1\0\1\17\1\25"+
     "\2\11\1\15\1\16\1\31\1\30\1\23\2\4\1\20\1\4\1\24"+
     "\1\26\2\4\1\13\1\21\1\12\1\14\1\4\1\27\1\57\2\4"+
-    "\1\53\1\43\1\54\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
+    "\1\53\1\43\1\54\7\0\1\60\u1fa2\0\1\60\1\60\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -62,17 +62,17 @@ class Lexer implements java_cup.runtime.Scanner {
     "\3\0\1\1\2\2\1\3\1\4\1\5\1\6\1\4"+
     "\6\3\1\7\3\3\1\10\1\11\1\12\1\13\1\14"+
     "\1\15\1\16\1\17\1\20\1\21\1\22\1\23\1\24"+
-    "\1\25\1\26\1\27\1\30\1\31\1\32\1\33\3\34"+
-    "\1\35\2\36\1\37\1\35\6\3\1\0\1\40\3\3"+
-    "\1\41\1\0\1\42\1\43\1\44\1\45\5\0\1\46"+
-    "\1\47\1\50\1\51\1\0\2\3\1\52\3\3\2\53"+
-    "\1\54\2\3\1\55\1\56\1\57\1\60\1\61\2\0"+
-    "\1\62\1\3\1\63\2\3\1\64\1\3\2\0\1\3"+
-    "\1\65\1\3\1\66\3\0\1\67\1\70\1\71\1\0"+
-    "\1\72\7\0";
+    "\1\25\1\26\1\27\1\30\1\31\1\32\1\33\4\34"+
+    "\1\35\2\36\1\37\1\40\1\35\6\3\1\41\1\42"+
+    "\3\3\1\43\1\0\1\44\1\45\1\46\1\47\1\50"+
+    "\7\0\1\51\1\52\1\53\1\54\1\55\1\51\2\3"+
+    "\1\56\3\3\2\41\1\57\2\3\1\60\1\61\1\62"+
+    "\1\63\1\64\1\65\2\0\1\66\1\3\1\67\2\3"+
+    "\1\70\1\3\2\0\1\3\1\71\1\3\1\72\3\0"+
+    "\1\73\1\74\1\75\1\0\1\76\7\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[122];
+    int [] result = new int[129];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -97,25 +97,26 @@ class Lexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\60\0\140\0\220\0\300\0\220\0\360\0\u0120"+
-    "\0\220\0\220\0\220\0\u0150\0\u0180\0\u01b0\0\u01e0\0\u0210"+
-    "\0\u0240\0\u0270\0\u02a0\0\u02d0\0\u0300\0\220\0\u0330\0\u0360"+
-    "\0\u0390\0\220\0\220\0\u03c0\0\u03f0\0\220\0\220\0\220"+
-    "\0\220\0\220\0\220\0\220\0\220\0\220\0\220\0\220"+
-    "\0\220\0\u0420\0\220\0\u0450\0\220\0\u0480\0\220\0\220"+
-    "\0\u04b0\0\u04e0\0\u0510\0\u0540\0\u0570\0\u05a0\0\u05d0\0\u0600"+
-    "\0\360\0\u0630\0\u0660\0\u0690\0\220\0\u06c0\0\220\0\220"+
-    "\0\220\0\220\0\u06f0\0\u0720\0\u0750\0\u0780\0\u07b0\0\220"+
-    "\0\220\0\220\0\220\0\u07e0\0\u0810\0\u0840\0\360\0\u0870"+
-    "\0\u08a0\0\u08d0\0\u0900\0\220\0\360\0\u0930\0\u0960\0\220"+
-    "\0\220\0\220\0\220\0\220\0\u0990\0\u09c0\0\360\0\u09f0"+
-    "\0\360\0\u0a20\0\u0a50\0\360\0\u0a80\0\u0ab0\0\u0ae0\0\u0b10"+
-    "\0\360\0\u0b40\0\360\0\u0b70\0\u0ba0\0\u0bd0\0\220\0\360"+
-    "\0\360\0\u0c00\0\220\0\u0c30\0\u0c60\0\u0c90\0\u0cc0\0\u0cf0"+
-    "\0\u0d20\0\u0d50";
+    "\0\0\0\62\0\144\0\226\0\310\0\226\0\372\0\u012c"+
+    "\0\226\0\226\0\226\0\u015e\0\u0190\0\u01c2\0\u01f4\0\u0226"+
+    "\0\u0258\0\u028a\0\u02bc\0\u02ee\0\u0320\0\226\0\u0352\0\u0384"+
+    "\0\u03b6\0\226\0\226\0\u03e8\0\u041a\0\226\0\226\0\226"+
+    "\0\226\0\226\0\226\0\226\0\226\0\226\0\226\0\226"+
+    "\0\226\0\u044c\0\226\0\u047e\0\u04b0\0\226\0\u04e2\0\226"+
+    "\0\226\0\226\0\u0514\0\u0546\0\u0578\0\u05aa\0\u05dc\0\u060e"+
+    "\0\u0640\0\u0672\0\372\0\u06a4\0\u06d6\0\u0708\0\226\0\u073a"+
+    "\0\226\0\226\0\226\0\226\0\226\0\u076c\0\u079e\0\u07d0"+
+    "\0\u0802\0\u047e\0\u0834\0\u0866\0\226\0\226\0\226\0\226"+
+    "\0\226\0\u0898\0\u08ca\0\u08fc\0\372\0\u092e\0\u0960\0\u0992"+
+    "\0\u09c4\0\226\0\372\0\u09f6\0\u0a28\0\226\0\226\0\226"+
+    "\0\226\0\226\0\226\0\u0a5a\0\u0a8c\0\372\0\u0abe\0\372"+
+    "\0\u0af0\0\u0b22\0\372\0\u0b54\0\u0b86\0\u0bb8\0\u0bea\0\372"+
+    "\0\u0c1c\0\372\0\u0c4e\0\u0c80\0\u0cb2\0\226\0\372\0\372"+
+    "\0\u0ce4\0\226\0\u0d16\0\u0d48\0\u0d7a\0\u0dac\0\u0dde\0\u0e10"+
+    "\0\u0e42";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[122];
+    int [] result = new int[129];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -143,66 +144,69 @@ class Lexer implements java_cup.runtime.Scanner {
     "\1\7\1\22\1\23\1\7\1\24\1\7\1\25\2\7"+
     "\1\26\1\27\1\30\1\31\1\32\1\33\1\34\1\35"+
     "\1\36\1\37\1\40\1\41\1\42\1\43\1\44\1\45"+
-    "\1\46\1\47\1\50\1\51\1\4\1\7\1\52\2\53"+
-    "\4\52\1\53\46\52\1\54\1\52\1\55\1\56\1\57"+
-    "\52\55\1\60\1\61\1\55\62\0\1\6\61\0\16\7"+
-    "\1\0\7\7\25\0\1\7\5\0\1\10\2\0\1\10"+
-    "\53\0\7\7\1\62\6\7\1\0\7\7\25\0\1\7"+
-    "\4\0\11\7\1\63\4\7\1\0\7\7\25\0\1\7"+
-    "\4\0\15\7\1\64\1\0\7\7\25\0\1\7\4\0"+
-    "\14\7\1\65\1\7\1\0\7\7\25\0\1\7\4\0"+
-    "\13\7\1\66\2\7\1\0\7\7\25\0\1\7\4\0"+
-    "\11\7\1\67\4\7\1\0\7\7\25\0\1\7\22\0"+
-    "\1\70\41\0\12\7\1\71\3\7\1\0\1\7\1\72"+
-    "\5\7\25\0\1\7\4\0\16\7\1\0\3\7\1\73"+
-    "\3\7\25\0\1\7\4\0\16\7\1\0\5\7\1\74"+
-    "\1\7\25\0\1\7\41\0\1\75\53\0\1\76\63\0"+
-    "\1\77\57\0\1\100\57\0\1\101\25\0\1\102\57\0"+
-    "\1\103\2\0\1\104\11\0\1\105\31\0\1\106\1\107"+
-    "\2\0\1\57\67\0\1\110\11\0\1\111\30\0\1\112"+
-    "\1\113\1\114\4\0\10\7\1\115\5\7\1\0\7\7"+
-    "\25\0\1\7\4\0\6\7\1\116\7\7\1\0\7\7"+
-    "\25\0\1\7\4\0\11\7\1\117\4\7\1\0\7\7"+
-    "\25\0\1\7\4\0\15\7\1\120\1\0\7\7\25\0"+
-    "\1\7\4\0\14\7\1\121\1\7\1\0\7\7\25\0"+
-    "\1\7\4\0\16\7\1\0\1\7\1\122\5\7\25\0"+
-    "\1\7\1\70\1\123\1\124\55\70\4\0\6\7\1\125"+
-    "\7\7\1\0\7\7\25\0\1\7\4\0\16\7\1\0"+
-    "\3\7\1\126\3\7\25\0\1\7\4\0\16\7\1\0"+
-    "\1\127\6\7\25\0\1\7\35\0\1\130\31\0\1\131"+
-    "\57\0\1\132\57\0\1\133\57\0\1\134\123\0\1\135"+
-    "\57\0\1\136\10\0\11\7\1\137\4\7\1\0\7\7"+
-    "\25\0\1\7\4\0\10\7\1\140\5\7\1\0\7\7"+
-    "\25\0\1\7\4\0\11\7\1\141\4\7\1\0\7\7"+
-    "\25\0\1\7\4\0\15\7\1\142\1\0\7\7\25\0"+
-    "\1\7\4\0\16\7\1\0\6\7\1\143\25\0\1\7"+
-    "\2\0\1\124\61\0\14\7\1\144\1\7\1\0\7\7"+
-    "\25\0\1\7\4\0\14\7\1\145\1\7\1\0\7\7"+
-    "\25\0\1\7\5\0\1\146\2\0\2\146\3\0\3\146"+
-    "\5\0\1\146\37\0\1\147\2\0\2\147\3\0\3\147"+
-    "\5\0\1\147\36\0\7\7\1\150\6\7\1\0\7\7"+
-    "\25\0\1\7\4\0\11\7\1\151\4\7\1\0\7\7"+
-    "\25\0\1\7\4\0\6\7\1\152\7\7\1\0\7\7"+
-    "\25\0\1\7\4\0\11\7\1\153\4\7\1\0\7\7"+
-    "\25\0\1\7\5\0\1\154\2\0\2\154\3\0\3\154"+
-    "\5\0\1\154\26\0\1\155\10\0\1\156\2\0\2\156"+
-    "\3\0\3\156\5\0\1\156\26\0\1\157\7\0\16\7"+
-    "\1\0\1\7\1\160\5\7\25\0\1\7\4\0\16\7"+
-    "\1\0\5\7\1\161\1\7\25\0\1\7\5\0\1\162"+
-    "\2\0\2\162\3\0\3\162\5\0\1\162\26\0\1\155"+
-    "\12\0\1\163\55\0\1\164\2\0\2\164\3\0\3\164"+
-    "\5\0\1\164\26\0\1\157\10\0\1\165\2\0\2\165"+
-    "\3\0\3\165\5\0\1\165\26\0\1\155\10\0\1\166"+
-    "\2\0\2\166\3\0\3\166\5\0\1\166\26\0\1\157"+
-    "\10\0\1\167\2\0\2\167\3\0\3\167\5\0\1\167"+
-    "\26\0\1\155\10\0\1\170\2\0\2\170\3\0\3\170"+
-    "\5\0\1\170\26\0\1\157\10\0\1\171\2\0\2\171"+
-    "\3\0\3\171\5\0\1\171\26\0\1\155\10\0\1\172"+
-    "\2\0\2\172\3\0\3\172\5\0\1\172\26\0\1\157"+
-    "\57\0\1\155\57\0\1\157\3\0";
+    "\1\46\1\47\1\50\1\51\1\4\1\7\1\4\1\6"+
+    "\1\52\2\53\4\52\1\53\45\52\1\54\1\55\3\52"+
+    "\1\56\1\57\1\60\4\56\1\61\45\56\1\62\1\63"+
+    "\3\56\64\0\1\6\63\0\16\7\1\0\7\7\25\0"+
+    "\1\7\7\0\1\10\2\0\1\10\55\0\7\7\1\64"+
+    "\6\7\1\0\7\7\25\0\1\7\6\0\11\7\1\65"+
+    "\4\7\1\0\7\7\25\0\1\7\6\0\15\7\1\66"+
+    "\1\0\7\7\25\0\1\7\6\0\14\7\1\67\1\7"+
+    "\1\0\7\7\25\0\1\7\6\0\13\7\1\70\2\7"+
+    "\1\0\7\7\25\0\1\7\6\0\11\7\1\71\4\7"+
+    "\1\0\7\7\25\0\1\7\24\0\1\72\43\0\12\7"+
+    "\1\73\3\7\1\0\1\7\1\74\5\7\25\0\1\7"+
+    "\6\0\16\7\1\0\3\7\1\75\3\7\25\0\1\7"+
+    "\6\0\16\7\1\0\5\7\1\76\1\7\25\0\1\7"+
+    "\43\0\1\77\55\0\1\100\65\0\1\101\61\0\1\102"+
+    "\61\0\1\103\27\0\1\104\61\0\1\105\52\0\1\106"+
+    "\2\0\4\106\1\107\2\106\1\110\11\106\1\111\30\106"+
+    "\1\112\1\113\1\114\4\0\1\60\57\0\1\115\2\0"+
+    "\4\115\1\61\2\115\1\116\11\115\1\117\30\115\1\120"+
+    "\1\121\1\122\6\0\10\7\1\123\5\7\1\0\7\7"+
+    "\25\0\1\7\6\0\6\7\1\124\7\7\1\0\7\7"+
+    "\25\0\1\7\6\0\11\7\1\125\4\7\1\0\7\7"+
+    "\25\0\1\7\6\0\15\7\1\126\1\0\7\7\25\0"+
+    "\1\7\6\0\14\7\1\127\1\7\1\0\7\7\25\0"+
+    "\1\7\6\0\16\7\1\0\1\7\1\130\5\7\25\0"+
+    "\1\7\2\0\1\72\1\131\1\132\57\72\4\0\6\7"+
+    "\1\133\7\7\1\0\7\7\25\0\1\7\6\0\16\7"+
+    "\1\0\3\7\1\134\3\7\25\0\1\7\6\0\16\7"+
+    "\1\0\1\135\6\7\25\0\1\7\37\0\1\136\33\0"+
+    "\1\137\61\0\1\140\61\0\1\141\61\0\1\142\61\0"+
+    "\1\143\61\0\1\137\43\0\1\144\61\0\1\145\12\0"+
+    "\11\7\1\146\4\7\1\0\7\7\25\0\1\7\6\0"+
+    "\10\7\1\147\5\7\1\0\7\7\25\0\1\7\6\0"+
+    "\11\7\1\150\4\7\1\0\7\7\25\0\1\7\6\0"+
+    "\15\7\1\151\1\0\7\7\25\0\1\7\6\0\16\7"+
+    "\1\0\6\7\1\152\25\0\1\7\4\0\1\132\63\0"+
+    "\14\7\1\153\1\7\1\0\7\7\25\0\1\7\6\0"+
+    "\14\7\1\154\1\7\1\0\7\7\25\0\1\7\7\0"+
+    "\1\155\2\0\2\155\3\0\3\155\5\0\1\155\41\0"+
+    "\1\156\2\0\2\156\3\0\3\156\5\0\1\156\40\0"+
+    "\7\7\1\157\6\7\1\0\7\7\25\0\1\7\6\0"+
+    "\11\7\1\160\4\7\1\0\7\7\25\0\1\7\6\0"+
+    "\6\7\1\161\7\7\1\0\7\7\25\0\1\7\6\0"+
+    "\11\7\1\162\4\7\1\0\7\7\25\0\1\7\7\0"+
+    "\1\163\2\0\2\163\3\0\3\163\5\0\1\163\26\0"+
+    "\1\164\12\0\1\165\2\0\2\165\3\0\3\165\5\0"+
+    "\1\165\26\0\1\166\11\0\16\7\1\0\1\7\1\167"+
+    "\5\7\25\0\1\7\6\0\16\7\1\0\5\7\1\170"+
+    "\1\7\25\0\1\7\7\0\1\171\2\0\2\171\3\0"+
+    "\3\171\5\0\1\171\26\0\1\164\14\0\1\172\57\0"+
+    "\1\173\2\0\2\173\3\0\3\173\5\0\1\173\26\0"+
+    "\1\166\12\0\1\174\2\0\2\174\3\0\3\174\5\0"+
+    "\1\174\26\0\1\164\12\0\1\175\2\0\2\175\3\0"+
+    "\3\175\5\0\1\175\26\0\1\166\12\0\1\176\2\0"+
+    "\2\176\3\0\3\176\5\0\1\176\26\0\1\164\12\0"+
+    "\1\177\2\0\2\177\3\0\3\177\5\0\1\177\26\0"+
+    "\1\166\12\0\1\200\2\0\2\200\3\0\3\200\5\0"+
+    "\1\200\26\0\1\164\12\0\1\201\2\0\2\201\3\0"+
+    "\3\201\5\0\1\201\26\0\1\166\61\0\1\164\61\0"+
+    "\1\166\5\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[3456];
+    int [] result = new int[3700];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -241,14 +245,13 @@ class Lexer implements java_cup.runtime.Scanner {
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\3\0\1\11\1\1\1\11\2\1\3\11\12\1\1\11"+
-    "\3\1\2\11\2\1\14\11\1\1\1\11\1\1\1\11"+
-    "\1\1\2\11\7\1\1\0\4\1\1\11\1\0\4\11"+
-    "\5\0\4\11\1\0\7\1\1\11\3\1\5\11\2\0"+
-    "\7\1\2\0\4\1\3\0\1\11\2\1\1\0\1\11"+
-    "\7\0";
+    "\3\1\2\11\2\1\14\11\1\1\1\11\2\1\1\11"+
+    "\1\1\3\11\14\1\1\11\1\0\5\11\7\0\5\11"+
+    "\10\1\1\11\3\1\6\11\2\0\7\1\2\0\4\1"+
+    "\3\0\1\11\2\1\1\0\1\11\7\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[122];
+    int [] result = new int[129];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -327,6 +330,7 @@ class Lexer implements java_cup.runtime.Scanner {
     StringBuilder sb = new StringBuilder();
     int globalLineNum = 0;
     int globalColNum = 0;
+    boolean inString = false;
 
     private Symbol symbol(int type) {
         return new Symbol(type, lineNumber(), column(),yytext());
@@ -350,9 +354,15 @@ class Lexer implements java_cup.runtime.Scanner {
         return new String(hexChars);
     }
 
-    public static boolean isEscape( int ch){
-        if (ch == 92 || ch == 10 || ch == 39 || ch == 34 ||
-        ch == 9 || ch == 8 || ch == 82 || ch == 102){
+    public static boolean isEscape( int ch, boolean isChar){
+        if (ch == 34){
+            if (isChar){
+                return false;
+            }
+            return true;
+        }
+        if (ch == 92 || ch == 10 || ch == 39 ||
+        ch == 9 || ch == 8 || ch == 82 || ch == 12){
             return true;
         }
         return false;
@@ -365,7 +375,7 @@ class Lexer implements java_cup.runtime.Scanner {
         if (ch > 0x10FFFF || ch < 0x0){
             throw new Error(lineNumber()
                   + ":" + column() +" error: Invalid Unicode Character ");
-        } else if (isEscape(ch)){
+        } else if (isEscape(ch,true)){
             return symbol(sym.CHARACTER_LITERAL,globalLineNum,globalColNum,
             StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
         }else if (ch >= 0x20 && ch <= 0x7E){
@@ -397,7 +407,7 @@ class Lexer implements java_cup.runtime.Scanner {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 160) {
+    while (i < 170) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
@@ -757,7 +767,10 @@ class Lexer implements java_cup.runtime.Scanner {
         zzAtEOF = true;
             zzDoEOF();
               {
-                return symbol(sym.EOF);
+                if (inString){
+            throw new Error(globalLineNum +":" + globalColNum +" error: Unterminated string");
+            }
+            return symbol(sym.EOF);
               }
       }
       else {
@@ -766,17 +779,17 @@ class Lexer implements java_cup.runtime.Scanner {
             { throw new Error(lineNumber() + ":" + column() +
       " error: Illegal character <"+yytext()+">");
             }
-          case 59: break;
+          case 63: break;
           case 2: 
             { /* ignoring whitespace */
             }
-          case 60: break;
+          case 64: break;
           case 3: 
             { globalLineNum = lineNumber();
                     globalColNum = column();
                     return symbol(sym.IDENTIFIER,globalLineNum, globalColNum,yytext());
             }
-          case 61: break;
+          case 65: break;
           case 4: 
             { try{
               return symbol(sym.INTEGER_LITERAL, Long.parseLong("-" + yytext()));
@@ -785,117 +798,118 @@ class Lexer implements java_cup.runtime.Scanner {
               + ":" + column() + " error: invalid Integer");
           }
             }
-          case 62: break;
+          case 66: break;
           case 5: 
             { return symbol(sym.UNDERSCORE);
             }
-          case 63: break;
+          case 67: break;
           case 6: 
             { globalLineNum = lineNumber();
                 globalColNum = column();
                 yybegin(CHARACTER);
             }
-          case 64: break;
+          case 68: break;
           case 7: 
             { return symbol(sym.DIVIDE);
             }
-          case 65: break;
+          case 69: break;
           case 8: 
             { return symbol(sym.MINUS);
             }
-          case 66: break;
+          case 70: break;
           case 9: 
             { return symbol(sym.NOT);
             }
-          case 67: break;
+          case 71: break;
           case 10: 
             { return symbol(sym.TIMES);
             }
-          case 68: break;
+          case 72: break;
           case 11: 
             { return symbol(sym.GT);
             }
-          case 69: break;
+          case 73: break;
           case 12: 
             { return symbol(sym.MODULO);
             }
-          case 70: break;
+          case 74: break;
           case 13: 
             { return symbol(sym.PLUS);
             }
-          case 71: break;
+          case 75: break;
           case 14: 
             { return symbol(sym.LT);
             }
-          case 72: break;
+          case 76: break;
           case 15: 
             { return symbol(sym.GETS);
             }
-          case 73: break;
+          case 77: break;
           case 16: 
             { return symbol(sym.AND);
             }
-          case 74: break;
+          case 78: break;
           case 17: 
             { return symbol(sym.OR);
             }
-          case 75: break;
+          case 79: break;
           case 18: 
             { return symbol(sym.COLON);
             }
-          case 76: break;
+          case 80: break;
           case 19: 
             { return symbol(sym.SEMICOLON);
             }
-          case 77: break;
+          case 81: break;
           case 20: 
             { return symbol(sym.COMMA);
             }
-          case 78: break;
+          case 82: break;
           case 21: 
             { return symbol(sym.OPEN_PAREN);
             }
-          case 79: break;
+          case 83: break;
           case 22: 
             { return symbol(sym.CLOSE_PAREN);
             }
-          case 80: break;
+          case 84: break;
           case 23: 
             { return symbol(sym.OPEN_BRACKET);
             }
-          case 81: break;
+          case 85: break;
           case 24: 
             { return symbol(sym.CLOSE_BRACKET);
             }
-          case 82: break;
+          case 86: break;
           case 25: 
             { return symbol(sym.OPEN_BRACE);
             }
-          case 83: break;
+          case 87: break;
           case 26: 
             { return symbol(sym.CLOSE_BRACE);
             }
-          case 84: break;
+          case 88: break;
           case 27: 
             { globalLineNum = lineNumber();
                 globalColNum = column();
+                inString = true;
                 sb.setLength(0);
                 yybegin(STRING);
             }
-          case 85: break;
+          case 89: break;
           case 28: 
             { yybegin(YYINITIAL);
           throw new Error(globalLineNum +
            ":" + globalColNum + " error: Invalid character constant " + yytext());
             }
-          case 86: break;
+          case 90: break;
           case 29: 
             { byte[] bytearr = yytext().getBytes("UTF-32");
         int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
         if (ch > 0x10FFFF || ch < 0x0){
             throw new Error(lineNumber()
               + ":" + column() +" error: Invalid Unicode Character ");
-        }else if (isEscape(ch)){
+        }else if (isEscape(ch,false)){
             sb.append("\\x{"+Integer.toHexString(ch)+ "}");
         }else if (ch >= 0x20 && ch <= 0x7E){
            sb.append(new String(Character.toChars(ch)));
@@ -903,124 +917,146 @@ class Lexer implements java_cup.runtime.Scanner {
            sb.append("\\x{"+Integer.toHexString(ch)+ "}");
         }
             }
-          case 87: break;
+          case 91: break;
           case 30: 
             { yybegin(YYINITIAL);
           throw new Error(globalLineNum +
            ":" + globalColNum +" error: Unterminated string");
             }
-          case 88: break;
-          case 31: 
-            { yybegin(YYINITIAL);
-          String s = sb.toString();
-          return symbol(sym.STRING_LITERAL,globalLineNum, globalColNum, s);
-            }
-          case 89: break;
-          case 32: 
-            { return symbol(sym.IF);
-            }
-          case 90: break;
-          case 33: 
-            { return symbol(sym.NOT_EQUAL);
-            }
-          case 91: break;
-          case 34: 
-            { return symbol(sym.GEQ);
-            }
           case 92: break;
-          case 35: 
-            { return symbol(sym.LEQ);
+          case 31: 
+            { sb.append("\\" + StringEscapeUtils.escapeJava("'"));
             }
           case 93: break;
-          case 36: 
-            { return symbol(sym.EQUAL);
+          case 32: 
+            { yybegin(YYINITIAL);
+          String s = sb.toString();
+          inString = false;
+          return symbol(sym.STRING_LITERAL,globalLineNum, globalColNum, s);
             }
           case 94: break;
+          case 33: 
+            { /* ignoring comment */
+            }
+          case 95: break;
+          case 34: 
+            { return symbol(sym.IF);
+            }
+          case 96: break;
+          case 35: 
+            { return symbol(sym.NOT_EQUAL);
+            }
+          case 97: break;
+          case 36: 
+            { return symbol(sym.GEQ);
+            }
+          case 98: break;
           case 37: 
+            { return symbol(sym.LEQ);
+            }
+          case 99: break;
+          case 38: 
+            { return symbol(sym.EQUAL);
+            }
+          case 100: break;
+          case 39: 
             { yybegin(YYINITIAL);
         byte[] bytearr = yytext().substring(0,yytext().length()-1).getBytes("UTF-32");
         int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
         return outputChar(ch);
             }
-          case 95: break;
-          case 38: 
-            { sb.append(StringEscapeUtils.escapeJava("\t"));
-            }
-          case 96: break;
-          case 39: 
-            { sb.append(StringEscapeUtils.escapeJava("\n"));
-            }
-          case 97: break;
-          case 40: 
-            { sb.append("\"");
-            }
-          case 98: break;
-          case 41: 
-            { sb.append(StringEscapeUtils.escapeJava("\\"));
-            }
-          case 99: break;
-          case 42: 
-            { return symbol(sym.USE);
-            }
-          case 100: break;
-          case 43: 
-            { /* ignoring comment */
-            }
           case 101: break;
-          case 44: 
-            { return symbol(sym.INT);
+          case 40: 
+            { yybegin(YYINITIAL);
+          return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\""));
             }
           case 102: break;
-          case 45: 
-            { return symbol(sym.HI_MULT);
+          case 41: 
+            { yybegin(YYINITIAL);
+                        throw new Error(globalLineNum +
+                        ":" + globalColNum + " error: invalid escape character " + yytext());
             }
           case 103: break;
+          case 42: 
+            { sb.append(StringEscapeUtils.escapeJava("\t"));
+            }
+          case 104: break;
+          case 43: 
+            { sb.append(StringEscapeUtils.escapeJava("\n"));
+            }
+          case 105: break;
+          case 44: 
+            { sb.append("\"");
+            }
+          case 106: break;
+          case 45: 
+            { sb.append(StringEscapeUtils.escapeJava("\\"));
+            }
+          case 107: break;
           case 46: 
+            { return symbol(sym.USE);
+            }
+          case 108: break;
+          case 47: 
+            { return symbol(sym.INT);
+            }
+          case 109: break;
+          case 48: 
+            { return symbol(sym.HI_MULT);
+            }
+          case 110: break;
+          case 49: 
+            { yybegin(YYINITIAL);
+                        throw new Error(globalLineNum +
+                                         ":" + globalColNum + " error: invalid escape character " + yytext());
+            }
+          case 111: break;
+          case 50: 
             { yybegin(YYINITIAL);
              return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("'"));
             }
-          case 104: break;
-          case 47: 
+          case 112: break;
+          case 51: 
             { yybegin(YYINITIAL);
               return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\t"));
             }
-          case 105: break;
-          case 48: 
+          case 113: break;
+          case 52: 
             { yybegin(YYINITIAL);
           return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\n"));
             }
-          case 106: break;
-          case 49: 
+          case 114: break;
+          case 53: 
             { yybegin(YYINITIAL);
               return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\\"));
             }
-          case 107: break;
-          case 50: 
+          case 115: break;
+          case 54: 
             { return symbol(sym.TRUE);
             }
-          case 108: break;
-          case 51: 
+          case 116: break;
+          case 55: 
             { return symbol(sym.ELSE);
             }
-          case 109: break;
-          case 52: 
+          case 117: break;
+          case 56: 
             { return symbol(sym.BOOL);
             }
-          case 110: break;
-          case 53: 
+          case 118: break;
+          case 57: 
             { return symbol(sym.FALSE);
             }
-          case 111: break;
-          case 54: 
+          case 119: break;
+          case 58: 
             { return symbol(sym.WHILE);
             }
-          case 112: break;
-          case 55: 
+          case 120: break;
+          case 59: 
             { int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 1), 16);
                                  if (ch > 0x10FFFF || ch < 0x0){
                                      throw new Error(lineNumber()
                                           + ":" + column() +" error: Invalid Unicode Character ");
-                                 }else if (isEscape(ch)){
+                                 }else if (isEscape(ch,false)){
                                     sb.append(StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
                                  }else if (ch >= 0x20 && ch <= 0x7E){
                                     sb.append(Character.toChars(ch));
@@ -1028,21 +1064,21 @@ class Lexer implements java_cup.runtime.Scanner {
                                     sb.append("\\x{"+Integer.toHexString(ch)+ "}");
                                  }
             }
-          case 113: break;
-          case 56: 
+          case 121: break;
+          case 60: 
             { return symbol(sym.RETURN);
             }
-          case 114: break;
-          case 57: 
+          case 122: break;
+          case 61: 
             { return symbol(sym.LENGTH);
             }
-          case 115: break;
-          case 58: 
+          case 123: break;
+          case 62: 
             { yybegin(YYINITIAL);
                 int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 2), 16);
                 return outputChar(ch);
             }
-          case 116: break;
+          case 124: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

@@ -38,6 +38,7 @@ public class sym {
   public static final int TRUE = 6;
   public static final int COLON = 39;
   public static final int GT = 26;
+  public static final int UMINUS = 43;
   public static final int NOT = 23;
   public static final int GEQ = 27;
   public static final int OPEN_PAREN = 35;
@@ -94,7 +95,8 @@ public class sym {
   "COLON",
   "COMMA",
   "SEMICOLON",
-  "UNDERSCORE"
+  "UNDERSCORE",
+  "UMINUS"
   };
 }
 
