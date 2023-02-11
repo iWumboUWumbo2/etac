@@ -7,6 +7,6 @@ public class Minus extends Binary { //binary + unary???
     }
 
     public Minus(Expr e1) {
-        super("-", new Num(0), e1);
+        super("-", new Num(0L), e1);
     }
 }

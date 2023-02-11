@@ -1,14 +1,14 @@
 // A stub for an Eta CUP specification.
-
 package aar226_akc55_ayc62_ahl88;
 
 import java_cup.runtime.*;
-
+import aar226_akc55_ayc62_ahl88.ast.*;
 // You might want to add types to these declarations.
+//parser ExampleParser {: :}
 terminal IDENTIFIER;
 terminal STRING_LITERAL;
 terminal CHARACTER_LITERAL;
-terminal INTEGER_LITERAL;
+terminal Long INTEGER_LITERAL;
 terminal TRUE, FALSE;
 terminal INT, BOOL;
 
@@ -17,13 +17,57 @@ terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MUL
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
   COLON, COMMA, SEMICOLON, UNDERSCORE;
 
-// You might want to add types to these declarations.
-nonterminal program;
-// Add more nonterminals here...
+non terminal ArrIndType arr_ind_type;
+non terminal Expr expr;
+non terminal VarDecl varDecl;
+non terminal VarDeclAss varDeclAss;
+non terminal ArrType arr_type;
+non terminal TypeNode type;
+non terminal Separator sep;
+non terminal BasicType basic_type;
+non terminal Keyword keyword;
+non terminal Array array;
 
-start with program;
+// function call
+precedence left OR;
+precedence left AND;
+precedence left EQUAL;
+precedence left NOT_EQUAL;
+precedence left LT;
+precedence left LEQ;
+precedence left GEQ;
+precedence left GT;
+precedence left PLUS;
+precedence left MINUS; // ??? negation?
+precedence left TIMES;
+precedence left HI_MULT;
+precedence left DIVIDE;
+precedence left MODULO;
+precedence nonassoc NOT;
+// UNARY MINUS MAYBE
+precedence left OPEN_BRACKET;
+precedence left CLOSE_BRACKET;
+precedence left OPEN_PAREN;
+precedence left CLOSE_PAREN;
 
-// Recognizes "Hello World!", but not much else.
-program ::= USE IDENTIFIER IDENTIFIER OPEN_PAREN IDENTIFIER COLON
-  INT OPEN_BRACKET CLOSE_BRACKET OPEN_BRACKET CLOSE_BRACKET CLOSE_PAREN
-  OPEN_BRACE IDENTIFIER OPEN_PAREN STRING_LITERAL CLOSE_PAREN CLOSE_BRACE;
+start with expr;
+
+expr ::= expr:e1 MINUS       expr:e2  {: RESULT = new Minus(e1, e2); :}
+        |  NOT               expr:e1  {: RESULT = new Not(e1); :}
+        |  expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
+        |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
+        |  expr:e1 DIVIDE    expr:e2  {: RESULT = new Divide(e1, e2); :}
+        |  expr:e1 MODULO    expr:e2  {: RESULT = new Modulo(e1, e2); :}
+        |  expr:e1 PLUS      expr:e2  {: RESULT = new Plus(e1, e2); :}
+        |  expr:e1 LT        expr:e2  {: RESULT = new Lt(e1, e2); :}
+        |  expr:e1 LEQ       expr:e2  {: RESULT = new Leq(e1, e2); :}
+        |  expr:e1 GT        expr:e2  {: RESULT = new Gt(e1, e2); :}
+        |  expr:e1 GEQ       expr:e2  {: RESULT = new Geq(e1, e2); :}
+        |  expr:e1 EQUAL     expr:e2  {: RESULT = new Equal(e1, e2); :}
+        |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_Equal(e1, e2); :}
+        |  expr:e1 AND       expr:e2  {: RESULT = new And(e1, e2); :}
+        |  expr:e1 OR        expr:e2  {: RESULT = new Or(e1, e2); :}
+        |  INTEGER_LITERAL:n          {: RESULT = new Num(n); :}
+        |  OPEN_PAREN expr:e CLOSE_PAREN       {: RESULT = e; :}
+        |  error                      {: RESULT = null; :}
+        ;

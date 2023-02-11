@@ -1,7 +1,7 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
-public class LAND extends Binary{
-    public LAND(Expr e1, Expr e2) {
+public class And extends Binary{
+    public And(Expr e1, Expr e2) {
         super("&", e1, e2);
     }
 }

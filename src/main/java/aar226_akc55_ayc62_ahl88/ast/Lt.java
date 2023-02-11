@@ -1,7 +1,7 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
-public class LT extends Binary{
-    public LT(Expr e1, Expr e2) {
+public class Lt extends Binary{
+    public Lt(Expr e1, Expr e2) {
         super("<", e1, e2);
     }
 }
