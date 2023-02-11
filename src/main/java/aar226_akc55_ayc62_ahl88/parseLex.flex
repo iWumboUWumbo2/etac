@@ -18,6 +18,7 @@ import org.apache.commons.text.*;
     StringBuilder sb = new StringBuilder();
     int globalLineNum = 0;
     int globalColNum = 0;
+    boolean inString = false;
 
     private Symbol symbol(int type) {
         return new Symbol(type, lineNumber(), column(),yytext());
@@ -41,9 +42,15 @@ import org.apache.commons.text.*;
         return new String(hexChars);
     }
 
-    public static boolean isEscape( int ch){
-        if (ch == 92 || ch == 10 || ch == 39 || ch == 34 ||
-        ch == 9 || ch == 8 || ch == 82 || ch == 102){
+    public static boolean isEscape( int ch, boolean isChar){
+        if (ch == 34){
+            if (isChar){
+                return false;
+            }
+            return true;
+        }
+        if (ch == 92 || ch == 10 || ch == 39 ||
+        ch == 9 || ch == 8 || ch == 82 || ch == 12){
             return true;
         }
         return false;
@@ -56,7 +63,7 @@ import org.apache.commons.text.*;
         if (ch > 0x10FFFF || ch < 0x0){
             throw new Error(lineNumber()
                   + ":" + column() +" error: Invalid Unicode Character ");
-        } else if (isEscape(ch)){
+        } else if (isEscape(ch,true)){
             return symbol(sym.CHARACTER_LITERAL,globalLineNum,globalColNum,
             StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
         }else if (ch >= 0x20 && ch <= 0x7E){
@@ -79,7 +86,7 @@ Integer = "0"|[1-9]{Digit}*
 Hex = [0-9a-fA-F]{1,6}
 Boolean = "true"|"false"
 
-Comment = "//"{InputCharacter}*{LineTerminator}
+Comment = "//"{InputCharacter}*({LineTerminator}?)
 
 %state CHARACTER
 %state STRING
@@ -151,6 +158,7 @@ Comment = "//"{InputCharacter}*{LineTerminator}
                 yybegin(CHARACTER); }
     \"      {   globalLineNum = lineNumber();
                 globalColNum = column();
+                inString = true;
                 sb.setLength(0);
                 yybegin(STRING); }
 
@@ -159,6 +167,12 @@ Comment = "//"{InputCharacter}*{LineTerminator}
                     return symbol(sym.IDENTIFIER,globalLineNum, globalColNum,yytext()); }
 }
 <CHARACTER> {
+    \"\'   { yybegin(YYINITIAL);
+          return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\""));
+      }
+    \\\"\'   { yybegin(YYINITIAL);
+          return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\""));
+      }
     [^\n\r\'\\]\' {
         yybegin(YYINITIAL);
         byte[] bytearr = yytext().substring(0,yytext().length()-1).getBytes("UTF-32");
@@ -188,6 +202,9 @@ Comment = "//"{InputCharacter}*{LineTerminator}
                 int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 2), 16);
                 return outputChar(ch);
           }
+    \\.\'           { yybegin(YYINITIAL);
+                        throw new Error(globalLineNum +
+                                         ":" + globalColNum + " error: invalid escape character " + yytext());}
     [^] {
           yybegin(YYINITIAL);
           throw new Error(globalLineNum +
@@ -204,8 +221,11 @@ Comment = "//"{InputCharacter}*{LineTerminator}
     \"  {
           yybegin(YYINITIAL);
           String s = sb.toString();
+          inString = false;
           return symbol(sym.STRING_LITERAL,globalLineNum, globalColNum, s);
       }
+    \'   { sb.append("\\" + StringEscapeUtils.escapeJava("'"));}
+    \\\' { sb.append("\\" + StringEscapeUtils.escapeJava("'")); }
     \\\\ { sb.append(StringEscapeUtils.escapeJava("\\")); }
     \\n  { sb.append(StringEscapeUtils.escapeJava("\n"));}
     \\t  { sb.append(StringEscapeUtils.escapeJava("\t"));}
@@ -216,7 +236,7 @@ Comment = "//"{InputCharacter}*{LineTerminator}
                                  if (ch > 0x10FFFF || ch < 0x0){
                                      throw new Error(lineNumber()
                                           + ":" + column() +" error: Invalid Unicode Character ");
-                                 }else if (isEscape(ch)){
+                                 }else if (isEscape(ch,false)){
                                     sb.append(StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
                                  }else if (ch >= 0x20 && ch <= 0x7E){
                                     sb.append(Character.toChars(ch));
@@ -224,14 +244,16 @@ Comment = "//"{InputCharacter}*{LineTerminator}
                                     sb.append("\\x{"+Integer.toHexString(ch)+ "}");
                                  }
                            }
-
+    \\.           { yybegin(YYINITIAL);
+                        throw new Error(globalLineNum +
+                        ":" + globalColNum + " error: invalid escape character " + yytext());}
     [^\"] {
         byte[] bytearr = yytext().getBytes("UTF-32");
         int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
         if (ch > 0x10FFFF || ch < 0x0){
             throw new Error(lineNumber()
               + ":" + column() +" error: Invalid Unicode Character ");
-        }else if (isEscape(ch)){
+        }else if (isEscape(ch,false)){
             sb.append("\\x{"+Integer.toHexString(ch)+ "}");
         }else if (ch >= 0x20 && ch <= 0x7E){
            sb.append(new String(Character.toChars(ch)));
@@ -240,7 +262,10 @@ Comment = "//"{InputCharacter}*{LineTerminator}
         }
     }
 }
-<<EOF>> { return symbol(sym.EOF); }
+<<EOF>> {   if (inString){
+            throw new Error(globalLineNum +":" + globalColNum +" error: Unterminated string");
+            }
+            return symbol(sym.EOF); }
 /* error */
 [^]     { throw new Error(lineNumber() + ":" + column() +
       " error: Illegal character <"+yytext()+">"); }
