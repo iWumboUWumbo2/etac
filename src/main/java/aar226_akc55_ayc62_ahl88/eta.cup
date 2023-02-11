@@ -12,6 +12,7 @@ terminal String CHARACTER_LITERAL;
 terminal Long INTEGER_LITERAL;
 terminal Boolean TRUE;
 terminal Boolean FALSE;
+terminal Boolean BOOL_LITERAL;
 terminal INT, BOOL;
 
 terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
@@ -20,9 +21,16 @@ terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MUL
   COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS;
 
 nonterminal Program program;
-nonterminal ArrayList<Use> importUseList;
+nonterminal ArrayList<Use> importUseStar;
 nonterminal Use use_component;
-nonterminal ArrayList<Definition> methodDefList;
+nonterminal ArrayList<Definition> definitionStar;
+nonterminal Definition definition;
+nonterminal Method method;
+nonterminal ArrayList<Decl> decl_star;
+nonterminal Decl decl;
+nonterminal ArrayList<Type> type_star;
+nonterminal Type type;
+nonterminal Dimension dimension_star;
 
 // function call
 precedence left OR;
@@ -36,30 +44,74 @@ precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 
 start with program;
 
-program ::=
-    | importUseList:iul methodDefList:mdl {:RESULT = new Program(iul,mdl);:}
-//    | methodDefList:mdl                   {:RESULT = new Program (new ArrayList<Use>(),mdl);:}
+program ::= importUseStar:ius definitionStar:dl {:RESULT = new Program(ius,dl);:}
     ;
 
-importUseList::=
-    use_component:u {:
-        ArrayList<Use> newList = new ArrayList<Use>();
-        newList.add(u);
-        RESULT = newList;
-        :}
-    | importUseList:iul use_component:u {:
-        iul.add(u);
-        RESULT = iul; :}
-        ;
+importUseStar ::=
+    importUseStar:ius use_component:u {: ius.add(u); RESULT = ius;:}
+    | {: RESULT = new ArrayList<Use>();:}
+    ;
 
 use_component::=
       USE IDENTIFIER:i {:           RESULT = new Use(i); :}
     | USE IDENTIFIER:i SEMICOLON {: RESULT = new Use(i); :}
     ;
 
-methodDefList::=
-        {:RESULT = new ArrayList<Definition>(); :}
+definitionStar ::=
+    definitionStar:ds definition:d {:ds.add(d); RESULT = ds; :}
+    | {:RESULT = new ArrayList<Definition>(); :}
     ;
+
+definition ::=
+    method:m {: RESULT = new Definition(m);:}
+//    | globaldecl:gd {::}
+    ;
+
+method ::= // Block b
+    IDENTIFIER:i OPEN_PAREN decl_star:ds CLOSE_PAREN COLON type_star:ts{:
+    RESULT = new Method(i,ds,ts);
+    :}
+    | IDENTIFIER:i OPEN_PAREN decl_star:ds CLOSE_PAREN {: // Block b
+        RESULT = new Method(i,ds,new ArrayList<Type>() ); // NONE
+    :}
+    ;
+
+decl_star ::=
+    decl_star:declstar COMMA decl:d {:declstar.add(d); RESULT = declstar; :}
+    |decl:d {:ArrayList<Decl> temp = new ArrayList<Decl>();
+      temp.add(d);
+      RESULT = temp;
+      :}
+//    | decl:d {: ArrayList<Decl> tempDecl = new ArrayList<Decl>();
+//                      tempDecl.add(d);
+//                      RESULT = tempDecl;
+//                      :}
+    | {: RESULT = new ArrayList<Decl>();:}
+    ;
+
+decl ::= IDENTIFIER:i COLON type:t {: RESULT = new Decl(i,t); :}
+    ;
+
+
+type_star ::=
+    type_star:ts COMMA type:t {: ts.add(t); RESULT = ts; :}
+    | type:t {: ArrayList<Type> typeList = new ArrayList<Type>();
+                      typeList.add(t);
+                      RESULT = typeList;
+                      :}
+    | {:RESULT = new ArrayList<Type>(); :}
+    ;
+
+type ::=
+   INT  dimension_star:d {:RESULT = new Type(true,d); :}
+ | BOOL dimension_star:d {:RESULT = new Type(false,d); :}
+ ;
+
+dimension_star ::=
+    dimension_star:ds OPEN_BRACKET CLOSE_BRACKET {: ds.increment(); RESULT = ds;:}
+    | {:RESULT = new Dimension(0); :}
+    ;
+
 
 //start with expr;
 //
@@ -71,7 +123,7 @@ methodDefList::=
 ////        |  OPEN_BRACE exprlist:e CLOSE_BRACE  // ARRY LIT
 ////        |  OPEN_BRACE exprlist:e COMMA CLOSE_BRACE // ARRY LIT
 ////        |  OPEN_BRACE CLOSE_BRACE     {: RESULT = new ArrayLiteral(new ArrayList<Expr>()); :} // create this class
-//           MINUS:o           expr:e   {: RESULT = new Unary(o,e); :} // Change to UMINUS later
+//           MINUS:o           expr:e   {: RESULT = new Unary(o,e); :} // Change to UMINUS later%prec UMINUS
 //        |  NOT               expr:e1  {: RESULT = new Not(e1); :}
 //        |  expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
 //        |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}

@@ -3,24 +3,6 @@ package aar226_akc55_ayc62_ahl88.ast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-class Method {
-    private Id id;
-    private ArrayList<Decl> decls;
-    private ArrayList<Type> types;
-    private Block block;
-}
-
-class Globdecl {
-    private Id id;
-    private Type type;
-    private Value value;
-}
-
-class Decl {
-    private Id id;
-    private Type type;
-}
-
 class Block {
     private ArrayList<Stmt> stmts;
 }
@@ -28,10 +10,6 @@ class Block {
 class Op {
     private ArrayList<Arg> args;
     private OpExpr op;
-}
-
-class Type {
-
 }
 
 class Value {
@@ -48,23 +26,6 @@ class Arg {
 
 interface Expr {
 
-}
-
-class IntLiteral implements Expr {
-   private int i;
-   private String raw;
-
-   public IntLiteral(int i) {
-       this.i = i;
-   }
-
-   public IntLiteral(String s) {
-
-   }
-
-   public IntLiteral(char c) {
-       this.i = Character.getNumericValue(c);
-   }
 }
 
 class BoolLiteral {

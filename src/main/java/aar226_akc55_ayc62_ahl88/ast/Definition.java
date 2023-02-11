@@ -4,4 +4,11 @@ public class Definition {
     private Method method;
     private Globdecl globdecl;
 
+    public Definition( Method m){
+        method = m;
+    }
+
+    public String toString(){
+        return "( " + method.toString() + " )";
+    }
 }

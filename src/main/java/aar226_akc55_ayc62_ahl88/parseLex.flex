@@ -112,6 +112,7 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
 
     "false"       { return symbol(sym.FALSE); }
     "true"        { return symbol(sym.TRUE); }
+//      {Boolean}     { return symbol(sym.BOOL_LITERAL, Boolean.parseBoolean(yytext())); }
 
     // keywords
     "use"     { return symbol(sym.USE); }

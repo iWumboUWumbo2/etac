@@ -12,6 +12,9 @@ public class Program {
     }
 
     public String toString() {
-        return useList.toString();
+        String build = "";
+        build += useList.toString() + "\n";
+        build += definitions.toString();
+        return build;
     }
 }

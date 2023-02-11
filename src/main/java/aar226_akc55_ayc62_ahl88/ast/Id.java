@@ -5,4 +5,7 @@ public class Id {
     public Id(String id) {
         this.id = id;
     }
+    public String toString(){
+        return id;
+    }
 }
