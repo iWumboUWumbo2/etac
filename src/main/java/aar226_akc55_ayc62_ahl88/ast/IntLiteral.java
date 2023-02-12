@@ -7,8 +7,14 @@ public class IntLiteral extends Expr implements Value{
     private String raw = null;
 
     private ValueType vt;
-    public IntLiteral(long i) {
+    public IntLiteral(long i,boolean pos) {
+        if (i == Long.MIN_VALUE && pos){
+            throw new Error("error: INTEGER OUT OF RANGE PARSING");
+        }
         this.i = i;
+        if (pos){
+            this.i = -i;
+        }
         this.type = Exprs.IntLit;
     }
 
