@@ -6,7 +6,7 @@ import org.apache.commons.cli.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 class Main {
     private static String outputDirectory;
 
@@ -62,7 +62,11 @@ class Main {
                 try {
                     parser p = new parser(new Lexer(new FileReader(filename)));
                     Program result = (Program) p.debug_parse().value;
-                    System.out.println("Result = " + result );
+                    PrintWriter cw = new PrintWriter(System.out);
+                    CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
+                    result.prettyPrint(printer);
+                    printer.close();
+//                    System.out.println("Result = " + result );
                 }
                 catch (Exception e){
                     System.out.println("Parsing Error or file issue");
