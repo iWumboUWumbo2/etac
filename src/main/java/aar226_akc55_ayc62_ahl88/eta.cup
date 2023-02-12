@@ -32,7 +32,8 @@ nonterminal ArrayList<Type> emptyBracketType_plus;
 nonterminal Type emptyBracketType;
 nonterminal Dimension emptyDimension_star;
 nonterminal Globdecl globalDecl;
-//nonterminal Value value;
+nonterminal Value value;
+nonterminal ArrayList<Value> arrayValueLiteral;
 
 // function call
 precedence left OR;
@@ -65,8 +66,8 @@ definitionStar ::=
     ;
 
 definition ::=
-    method:m {: RESULT = new Definition(m);:}
-//    | globaldecl:gd {::}
+    method:m {: RESULT = m;:}
+    | globalDecl:gd {:RESULT = gd; :}
     ;
 
 method ::= // Block b
@@ -89,12 +90,32 @@ emptyBracketDecl_star ::=
 
 emptyBracketDecl ::=
     IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new Decl(i,t); :}
+    | IDENTIFIER:i COLON emptyBracketType:t SEMICOLON {: RESULT = new Decl(i,t); :}
     ;
 
 globalDecl ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null);:}
-//    | emptyBracketDecl:ed EQUAL value:v {: RESULT  = new Globdecl(ed, v); :}
+    | emptyBracketDecl:ed GETS value:v {: RESULT  = new Globdecl(ed, v); :}
+    | emptyBracketDecl:ed GETS value:v SEMICOLON {: RESULT  = new Globdecl(ed, v); :}
     ;
+
+value ::=
+    INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true); :}
+    |MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false); :} %prec UMINUS
+    | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b); :}
+    | OPEN_BRACE arrayValueLiteral:avl  CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
+    | OPEN_BRACE arrayValueLiteral:avl COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
+    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Value>()); :}
+    ;
+
+arrayValueLiteral ::=
+    value:v {:
+    ArrayList<Value> temp = new ArrayList<Value>();
+    temp.add(v);
+    RESULT = temp;
+    :}
+    | arrayValueLiteral:avl COMMA value:v {:avl.add(v); RESULT = avl; :}
+;
 
 emptyBracketType_plus ::=
     emptyBracketType_plus:ts COMMA emptyBracketType:t {: ts.add(t); RESULT = ts; :}

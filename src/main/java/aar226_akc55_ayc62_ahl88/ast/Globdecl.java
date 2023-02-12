@@ -2,7 +2,7 @@ package aar226_akc55_ayc62_ahl88.ast;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
-public class Globdecl {
+public class Globdecl implements Definition{
     private Decl decl;
     private Value value;
 
@@ -11,9 +11,20 @@ public class Globdecl {
         value = v;
     }
 
+    public String toString(){
+        String build = "";
+        if (value != null){
+//            System.out.println("IM HERE");
+            build +=  "( " + decl.toString() + " " +value.toString() +  " )";
+        }else{
+            build +=  "( " + decl.toString() +  " )";
+        }
+        return build;
+    }
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         decl.prettyPrint(p);
         p.endList();
     }
+
 }

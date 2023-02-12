@@ -17,7 +17,7 @@ public class Definition implements Printer {
     }
 
     public String toString(){
-       return (method == null) ? globdecl.toString() : method.toString();
+        return (method == null) ? globdecl.toString() : method.toString();
     }
 
     @Override

@@ -4,13 +4,20 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 import java.util.ArrayList;
 
-public class Method implements Printer {
+public class Method implements Definition, Printer {
     private Id id;
     private ArrayList<Decl> decls;
     private ArrayList<Type> types;
     private Block block;
 
 //    , Block b
+//    public Method(String s, ArrayList<Decl> d, ArrayList<Type> t, Block b){
+//        id = new Id(s);
+//        decls = d;
+//        types = t;
+//        block = b;
+//    }
+
     public Method(String s, ArrayList<Decl> d, ArrayList<Type> t){
         id = new Id(s);
         decls = d;
@@ -20,11 +27,10 @@ public class Method implements Printer {
 
     public String toString(){
         String build = "";
-        build +=  "( " + id.toString() + " " + decls.toString() + " " + types.toString()+ " )";
+        build +=  "( " + id.toString() + " " + decls.toString() + " " + types.toString() +  " )";
         return build;
     }
 
-    @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         id.prettyPrint(p);
