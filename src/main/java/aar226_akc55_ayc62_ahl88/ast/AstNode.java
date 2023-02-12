@@ -26,20 +26,10 @@ class Id extends Printer {
 
 }
 
-class Globdecl {
-    private Id id;
-    private Type type;
-    private Value value;
-}
-
 class Block {
     private ArrayList<Stmt> stmts;
 }
 
-
-class Value {
-
-}
 
 class Stmt {
 
@@ -57,53 +47,6 @@ abstract class Expr {
     }
 
     public void prettyPrint(SExpPrinter p) {
-    }
-}
-
-class IntLiteral extends Expr {
-   private long i;
-   private String raw = null;
-
-   public IntLiteral(long i) {
-       this.i = i;
-       this.type = Exprs.IntLit;
-   }
-
-   public IntLiteral(String c) {
-       this.i = Character.getNumericValue(c.charAt(0));
-       this.type = Exprs.IntLit;
-       this.raw = c;
-   }
-
-   public String toString () {
-       return (raw == null) ? Long.toString(i) : raw;
-   }
-
-   public void prettyPrint(SExpPrinter p) {
-       if (raw == null) {
-           p.printAtom(this.toString());
-       } else {
-           p.printAtom("'");
-           p.printAtom(this.toString());
-           p.printAtom("'");
-       }
-   }
-}
-
-class BoolLiteral extends Expr {
-    private boolean b;
-
-    public BoolLiteral(boolean b) {
-        this.b = b;
-        this.type = Exprs.BoolLit;
-    }
-
-    public String toString() {
-        return Boolean.toString(b);
-    }
-
-    public void prettyPrint(SExpPrinter p) {
-        p.printAtom(this.toString());
     }
 }
 
