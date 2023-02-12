@@ -33,13 +33,17 @@ public class parser
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\026\000\002\002\004\000\002\002\004\000\002\003" +
+    "\000\042\000\002\002\004\000\002\002\004\000\002\003" +
     "\004\000\002\003\002\000\002\004\004\000\002\004\005" +
     "\000\002\005\004\000\002\005\002\000\002\006\003\000" +
-    "\002\007\010\000\002\007\006\000\002\010\005\000\002" +
-    "\010\003\000\002\010\002\000\002\011\005\000\002\012" +
-    "\005\000\002\012\003\000\002\012\002\000\002\013\004" +
-    "\000\002\013\004\000\002\014\005\000\002\014\002" });
+    "\002\006\003\000\002\007\010\000\002\007\006\000\002" +
+    "\010\005\000\002\010\003\000\002\010\002\000\002\011" +
+    "\005\000\002\011\006\000\002\015\003\000\002\015\005" +
+    "\000\002\015\006\000\002\016\003\000\002\016\004\000" +
+    "\002\016\003\000\002\016\005\000\002\016\006\000\002" +
+    "\016\004\000\002\017\003\000\002\017\005\000\002\012" +
+    "\005\000\002\012\003\000\002\013\004\000\002\013\004" +
+    "\000\002\014\005\000\002\014\002" });
 
   /** Access to production table. */
   @Override
@@ -48,30 +52,47 @@ public class parser
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\040\000\010\002\ufffe\004\ufffe\022\ufffe\001\002\000" +
+    "\000\062\000\010\002\ufffe\004\ufffe\022\ufffe\001\002\000" +
     "\010\002\ufffa\004\ufffa\022\007\001\002\000\004\002\006" +
-    "\001\002\000\004\002\001\001\002\000\004\004\041\001" +
-    "\002\000\006\002\000\004\014\001\002\000\010\002\uffff" +
+    "\001\002\000\004\002\001\001\002\000\004\004\063\001" +
+    "\002\000\006\002\000\004\015\001\002\000\010\002\uffff" +
     "\004\uffff\022\uffff\001\002\000\006\002\ufff9\004\ufff9\001" +
-    "\002\000\006\002\ufffb\004\ufffb\001\002\000\004\046\015" +
-    "\001\002\000\010\004\020\047\ufff4\053\ufff4\001\002\000" +
-    "\006\047\032\053\031\001\002\000\006\047\ufff5\053\ufff5" +
-    "\001\002\000\004\052\021\001\002\000\006\013\024\014" +
-    "\022\001\002\000\014\002\uffec\004\uffec\044\uffec\047\uffec" +
-    "\053\uffec\001\002\000\006\047\ufff3\053\ufff3\001\002\000" +
-    "\014\002\uffec\004\uffec\044\uffec\047\uffec\053\uffec\001\002" +
-    "\000\014\002\uffef\004\uffef\044\026\047\uffef\053\uffef\001" +
-    "\002\000\004\045\027\001\002\000\014\002\uffed\004\uffed" +
-    "\044\uffed\047\uffed\053\uffed\001\002\000\014\002\uffee\004" +
-    "\uffee\044\026\047\uffee\053\uffee\001\002\000\004\004\020" +
-    "\001\002\000\010\002\ufff7\004\ufff7\052\033\001\002\000" +
-    "\014\002\ufff0\004\ufff0\013\024\014\022\053\ufff0\001\002" +
-    "\000\010\002\ufff8\004\ufff8\053\036\001\002\000\010\002" +
-    "\ufff1\004\ufff1\053\ufff1\001\002\000\006\013\024\014\022" +
-    "\001\002\000\010\002\ufff2\004\ufff2\053\ufff2\001\002\000" +
-    "\006\047\ufff6\053\ufff6\001\002\000\012\002\ufffd\004\ufffd" +
-    "\022\ufffd\054\042\001\002\000\010\002\ufffc\004\ufffc\022" +
-    "\ufffc\001\002" });
+    "\002\000\006\002\ufff8\004\ufff8\001\002\000\006\002\ufffb" +
+    "\004\ufffb\001\002\000\006\046\036\052\037\001\002\000" +
+    "\010\002\ufff0\004\ufff0\043\017\001\002\000\012\007\021" +
+    "\012\023\025\024\050\020\001\002\000\014\007\021\012" +
+    "\023\025\024\050\020\051\030\001\002\000\014\002\uffed" +
+    "\004\uffed\051\uffed\053\uffed\054\uffed\001\002\000\010\002" +
+    "\uffef\004\uffef\054\026\001\002\000\014\002\uffeb\004\uffeb" +
+    "\051\uffeb\053\uffeb\054\uffeb\001\002\000\004\007\025\001" +
+    "\002\000\014\002\uffec\004\uffec\051\uffec\053\uffec\054\uffec" +
+    "\001\002\000\006\002\uffee\004\uffee\001\002\000\006\051" +
+    "\033\053\032\001\002\000\014\002\uffe8\004\uffe8\051\uffe8" +
+    "\053\uffe8\054\uffe8\001\002\000\006\051\uffe7\053\uffe7\001" +
+    "\002\000\014\007\021\012\023\025\024\050\020\051\034" +
+    "\001\002\000\014\002\uffea\004\uffea\051\uffea\053\uffea\054" +
+    "\uffea\001\002\000\014\002\uffe9\004\uffe9\051\uffe9\053\uffe9" +
+    "\054\uffe9\001\002\000\006\051\uffe6\053\uffe6\001\002\000" +
+    "\010\004\050\047\ufff3\053\ufff3\001\002\000\006\013\042" +
+    "\014\040\001\002\000\020\002\uffe0\004\uffe0\043\uffe0\044" +
+    "\uffe0\047\uffe0\053\uffe0\054\uffe0\001\002\000\016\002\ufff2" +
+    "\004\ufff2\043\ufff2\047\ufff2\053\ufff2\054\046\001\002\000" +
+    "\020\002\uffe0\004\uffe0\043\uffe0\044\uffe0\047\uffe0\053\uffe0" +
+    "\054\uffe0\001\002\000\020\002\uffe3\004\uffe3\043\uffe3\044" +
+    "\044\047\uffe3\053\uffe3\054\uffe3\001\002\000\004\045\045" +
+    "\001\002\000\020\002\uffe1\004\uffe1\043\uffe1\044\uffe1\047" +
+    "\uffe1\053\uffe1\054\uffe1\001\002\000\014\002\ufff1\004\ufff1" +
+    "\043\ufff1\047\ufff1\053\ufff1\001\002\000\020\002\uffe2\004" +
+    "\uffe2\043\uffe2\044\044\047\uffe2\053\uffe2\054\uffe2\001\002" +
+    "\000\004\052\037\001\002\000\006\047\054\053\053\001" +
+    "\002\000\006\047\ufff4\053\ufff4\001\002\000\004\004\050" +
+    "\001\002\000\010\002\ufff6\004\ufff6\052\055\001\002\000" +
+    "\006\013\042\014\040\001\002\000\010\002\uffe4\004\uffe4" +
+    "\053\uffe4\001\002\000\010\002\ufff7\004\ufff7\053\060\001" +
+    "\002\000\006\013\042\014\040\001\002\000\010\002\uffe5" +
+    "\004\uffe5\053\uffe5\001\002\000\006\047\ufff5\053\ufff5\001" +
+    "\002\000\012\002\ufffd\004\ufffd\022\ufffd\054\064\001\002" +
+    "\000\010\002\ufffc\004\ufffc\022\ufffc\001\002" });
 
   /** Access to parse-action table. */
   @Override
@@ -80,19 +101,25 @@ public class parser
   /** {@code reduce_goto} table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\040\000\006\002\004\003\003\001\001\000\006\004" +
+    "\000\062\000\006\002\004\003\003\001\001\000\006\004" +
     "\010\005\007\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001\000\006\006\012\007\011\001\001\000" +
-    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
-    "\001\001\000\006\010\015\011\016\001\001\000\002\001" +
-    "\001\000\002\001\001\000\002\001\001\000\004\013\022" +
-    "\001\001\000\004\014\027\001\001\000\002\001\001\000" +
-    "\004\014\024\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001\000\002\001\001\000\004\011\037\001" +
-    "\001\000\002\001\001\000\006\012\033\013\034\001\001" +
-    "\000\002\001\001\000\002\001\001\000\004\013\036\001" +
+    "\000\002\001\001\000\012\006\013\007\011\011\015\015" +
+    "\012\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
+    "\001\000\004\016\021\001\001\000\006\016\030\017\026" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001" });
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\004\016\034\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001\000\006\010\050\011\051\001\001\000" +
+    "\004\013\040\001\001\000\004\014\046\001\001\000\002" +
+    "\001\001\000\004\014\042\001\001\000\002\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
+    "\001\000\004\011\061\001\001\000\002\001\001\000\006" +
+    "\012\056\013\055\001\001\000\002\001\001\000\002\001" +
+    "\001\000\004\013\060\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001" });
 
   /** Access to {@code reduce_goto} table. */
   @Override
@@ -146,7 +173,7 @@ class CUP$parser$actions {
         this.parser = parser;
     }
 
-    /** Method with the actual generated action code for actions 0 to 21. */
+    /** Method with the actual generated action code for actions 0 to 33. */
     public final java_cup.runtime.Symbol CUP$parser$do_action_part00000000(
             int                        CUP$parser$act_num,
             java_cup.runtime.lr_parser CUP$parser$parser,
@@ -266,13 +293,25 @@ class CUP$parser$actions {
                 int mleft = CUP$parser$stack.peek().left;
                 int mright = CUP$parser$stack.peek().right;
                 Method m = CUP$parser$stack.peek().<Method> value();
-                 RESULT = new Definition(m);
+                 RESULT = m;
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("definition",4, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 9: // method ::= IDENTIFIER OPEN_PAREN decl_star CLOSE_PAREN COLON type_star 
+        case 9: // definition ::= globalDecl 
+            {
+                Definition RESULT = null;
+                int gdleft = CUP$parser$stack.peek().left;
+                int gdright = CUP$parser$stack.peek().right;
+                Globdecl gd = CUP$parser$stack.peek().<Globdecl> value();
+                RESULT = gd; 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("definition",4, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 10: // method ::= IDENTIFIER OPEN_PAREN emptyBracketDecl_star CLOSE_PAREN COLON emptyBracketType_plus 
             {
                 Method RESULT = null;
                 int ileft = CUP$parser$stack.elementAt(CUP$parser$top-5).left;
@@ -292,7 +331,7 @@ class CUP$parser$actions {
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 10: // method ::= IDENTIFIER OPEN_PAREN decl_star CLOSE_PAREN 
+        case 11: // method ::= IDENTIFIER OPEN_PAREN emptyBracketDecl_star CLOSE_PAREN 
             {
                 Method RESULT = null;
                 int ileft = CUP$parser$stack.elementAt(CUP$parser$top-3).left;
@@ -309,7 +348,7 @@ class CUP$parser$actions {
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 11: // decl_star ::= decl_star COMMA decl 
+        case 12: // emptyBracketDecl_star ::= emptyBracketDecl_star COMMA emptyBracketDecl 
             {
                 ArrayList<Decl> RESULT = null;
                 int declstarleft = CUP$parser$stack.elementAt(CUP$parser$top-2).left;
@@ -319,12 +358,12 @@ class CUP$parser$actions {
                 int dright = CUP$parser$stack.peek().right;
                 Decl d = CUP$parser$stack.peek().<Decl> value();
                 declstar.add(d); RESULT = declstar; 
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("decl_star",6, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketDecl_star",6, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 12: // decl_star ::= decl 
+        case 13: // emptyBracketDecl_star ::= emptyBracketDecl 
             {
                 ArrayList<Decl> RESULT = null;
                 int dleft = CUP$parser$stack.peek().left;
@@ -334,21 +373,21 @@ class CUP$parser$actions {
       temp.add(d);
       RESULT = temp;
       
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("decl_star",6, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketDecl_star",6, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 13: // decl_star ::= 
+        case 14: // emptyBracketDecl_star ::= 
             {
                 ArrayList<Decl> RESULT = null;
                  RESULT = new ArrayList<Decl>();
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("decl_star",6, CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketDecl_star",6, CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 14: // decl ::= IDENTIFIER COLON type 
+        case 15: // emptyBracketDecl ::= IDENTIFIER COLON emptyBracketType 
             {
                 Decl RESULT = null;
                 int ileft = CUP$parser$stack.elementAt(CUP$parser$top-2).left;
@@ -358,12 +397,169 @@ class CUP$parser$actions {
                 int tright = CUP$parser$stack.peek().right;
                 Type t = CUP$parser$stack.peek().<Type> value();
                  RESULT = new Decl(i,t); 
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("decl",7, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketDecl",7, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 15: // type_star ::= type_star COMMA type 
+        case 16: // emptyBracketDecl ::= IDENTIFIER COLON emptyBracketType SEMICOLON 
+            {
+                Decl RESULT = null;
+                int ileft = CUP$parser$stack.elementAt(CUP$parser$top-3).left;
+                int iright = CUP$parser$stack.elementAt(CUP$parser$top-3).right;
+                String i = CUP$parser$stack.elementAt(CUP$parser$top-3).<String> value();
+                int tleft = CUP$parser$stack.elementAt(CUP$parser$top-1).left;
+                int tright = CUP$parser$stack.elementAt(CUP$parser$top-1).right;
+                Type t = CUP$parser$stack.elementAt(CUP$parser$top-1).<Type> value();
+                 RESULT = new Decl(i,t); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketDecl",7, CUP$parser$stack.elementAt(CUP$parser$top-3), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 17: // globalDecl ::= emptyBracketDecl 
+            {
+                Globdecl RESULT = null;
+                int edleft = CUP$parser$stack.peek().left;
+                int edright = CUP$parser$stack.peek().right;
+                Decl ed = CUP$parser$stack.peek().<Decl> value();
+                RESULT = new Globdecl(ed, null);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("globalDecl",11, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 18: // globalDecl ::= emptyBracketDecl GETS value 
+            {
+                Globdecl RESULT = null;
+                int edleft = CUP$parser$stack.elementAt(CUP$parser$top-2).left;
+                int edright = CUP$parser$stack.elementAt(CUP$parser$top-2).right;
+                Decl ed = CUP$parser$stack.elementAt(CUP$parser$top-2).<Decl> value();
+                int vleft = CUP$parser$stack.peek().left;
+                int vright = CUP$parser$stack.peek().right;
+                Value v = CUP$parser$stack.peek().<Value> value();
+                 RESULT  = new Globdecl(ed, v); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("globalDecl",11, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 19: // globalDecl ::= emptyBracketDecl GETS value SEMICOLON 
+            {
+                Globdecl RESULT = null;
+                int edleft = CUP$parser$stack.elementAt(CUP$parser$top-3).left;
+                int edright = CUP$parser$stack.elementAt(CUP$parser$top-3).right;
+                Decl ed = CUP$parser$stack.elementAt(CUP$parser$top-3).<Decl> value();
+                int vleft = CUP$parser$stack.elementAt(CUP$parser$top-1).left;
+                int vright = CUP$parser$stack.elementAt(CUP$parser$top-1).right;
+                Value v = CUP$parser$stack.elementAt(CUP$parser$top-1).<Value> value();
+                 RESULT  = new Globdecl(ed, v); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("globalDecl",11, CUP$parser$stack.elementAt(CUP$parser$top-3), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 20: // value ::= INTEGER_LITERAL 
+            {
+                Value RESULT = null;
+                int ileft = CUP$parser$stack.peek().left;
+                int iright = CUP$parser$stack.peek().right;
+                Long i = CUP$parser$stack.peek().<Long> value();
+                 RESULT = new IntLiteral(i,true); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("value",12, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 21: // value ::= MINUS INTEGER_LITERAL 
+            {
+                Value RESULT = null;
+                int ileft = CUP$parser$stack.peek().left;
+                int iright = CUP$parser$stack.peek().right;
+                Long i = CUP$parser$stack.peek().<Long> value();
+                 RESULT = new IntLiteral(i,false); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("value",12, CUP$parser$stack.elementAt(CUP$parser$top-1), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 22: // value ::= BOOL_LITERAL 
+            {
+                Value RESULT = null;
+                int bleft = CUP$parser$stack.peek().left;
+                int bright = CUP$parser$stack.peek().right;
+                Boolean b = CUP$parser$stack.peek().<Boolean> value();
+                 RESULT = new BoolLiteral(b); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("value",12, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 23: // value ::= OPEN_BRACE arrayValueLiteral CLOSE_BRACE 
+            {
+                Value RESULT = null;
+                int avlleft = CUP$parser$stack.elementAt(CUP$parser$top-1).left;
+                int avlright = CUP$parser$stack.elementAt(CUP$parser$top-1).right;
+                ArrayList<Value> avl = CUP$parser$stack.elementAt(CUP$parser$top-1).<ArrayList<Value>> value();
+                RESULT = new ArrayValueLiteral(avl); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("value",12, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 24: // value ::= OPEN_BRACE arrayValueLiteral COMMA CLOSE_BRACE 
+            {
+                Value RESULT = null;
+                int avlleft = CUP$parser$stack.elementAt(CUP$parser$top-2).left;
+                int avlright = CUP$parser$stack.elementAt(CUP$parser$top-2).right;
+                ArrayList<Value> avl = CUP$parser$stack.elementAt(CUP$parser$top-2).<ArrayList<Value>> value();
+                RESULT = new ArrayValueLiteral(avl); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("value",12, CUP$parser$stack.elementAt(CUP$parser$top-3), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 25: // value ::= OPEN_BRACE CLOSE_BRACE 
+            {
+                Value RESULT = null;
+                RESULT = new ArrayValueLiteral(new ArrayList<Value>()); 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("value",12, CUP$parser$stack.elementAt(CUP$parser$top-1), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 26: // arrayValueLiteral ::= value 
+            {
+                ArrayList<Value> RESULT = null;
+                int vleft = CUP$parser$stack.peek().left;
+                int vright = CUP$parser$stack.peek().right;
+                Value v = CUP$parser$stack.peek().<Value> value();
+                
+    ArrayList<Value> temp = new ArrayList<Value>();
+    temp.add(v);
+    RESULT = temp;
+    
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("arrayValueLiteral",13, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 27: // arrayValueLiteral ::= arrayValueLiteral COMMA value 
+            {
+                ArrayList<Value> RESULT = null;
+                int avlleft = CUP$parser$stack.elementAt(CUP$parser$top-2).left;
+                int avlright = CUP$parser$stack.elementAt(CUP$parser$top-2).right;
+                ArrayList<Value> avl = CUP$parser$stack.elementAt(CUP$parser$top-2).<ArrayList<Value>> value();
+                int vleft = CUP$parser$stack.peek().left;
+                int vright = CUP$parser$stack.peek().right;
+                Value v = CUP$parser$stack.peek().<Value> value();
+                avl.add(v); RESULT = avl; 
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("arrayValueLiteral",13, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
+            }
+            return CUP$parser$result;
+
+        /*. . . . . . . . . . . . . . . . . . . .*/
+        case 28: // emptyBracketType_plus ::= emptyBracketType_plus COMMA emptyBracketType 
             {
                 ArrayList<Type> RESULT = null;
                 int tsleft = CUP$parser$stack.elementAt(CUP$parser$top-2).left;
@@ -373,12 +569,12 @@ class CUP$parser$actions {
                 int tright = CUP$parser$stack.peek().right;
                 Type t = CUP$parser$stack.peek().<Type> value();
                  ts.add(t); RESULT = ts; 
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("type_star",8, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketType_plus",8, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 16: // type_star ::= type 
+        case 29: // emptyBracketType_plus ::= emptyBracketType 
             {
                 ArrayList<Type> RESULT = null;
                 int tleft = CUP$parser$stack.peek().left;
@@ -388,61 +584,52 @@ class CUP$parser$actions {
                       typeList.add(t);
                       RESULT = typeList;
                       
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("type_star",8, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketType_plus",8, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 17: // type_star ::= 
-            {
-                ArrayList<Type> RESULT = null;
-                RESULT = new ArrayList<Type>(); 
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("type_star",8, CUP$parser$stack.peek(), RESULT);
-            }
-            return CUP$parser$result;
-
-        /*. . . . . . . . . . . . . . . . . . . .*/
-        case 18: // type ::= INT dimension_star 
+        case 30: // emptyBracketType ::= INT emptyDimension_star 
             {
                 Type RESULT = null;
                 int dleft = CUP$parser$stack.peek().left;
                 int dright = CUP$parser$stack.peek().right;
                 Dimension d = CUP$parser$stack.peek().<Dimension> value();
                 RESULT = new Type(true,d); 
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("type",9, CUP$parser$stack.elementAt(CUP$parser$top-1), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketType",9, CUP$parser$stack.elementAt(CUP$parser$top-1), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 19: // type ::= BOOL dimension_star 
+        case 31: // emptyBracketType ::= BOOL emptyDimension_star 
             {
                 Type RESULT = null;
                 int dleft = CUP$parser$stack.peek().left;
                 int dright = CUP$parser$stack.peek().right;
                 Dimension d = CUP$parser$stack.peek().<Dimension> value();
                 RESULT = new Type(false,d); 
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("type",9, CUP$parser$stack.elementAt(CUP$parser$top-1), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyBracketType",9, CUP$parser$stack.elementAt(CUP$parser$top-1), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 20: // dimension_star ::= dimension_star OPEN_BRACKET CLOSE_BRACKET 
+        case 32: // emptyDimension_star ::= emptyDimension_star OPEN_BRACKET CLOSE_BRACKET 
             {
                 Dimension RESULT = null;
                 int dsleft = CUP$parser$stack.elementAt(CUP$parser$top-2).left;
                 int dsright = CUP$parser$stack.elementAt(CUP$parser$top-2).right;
                 Dimension ds = CUP$parser$stack.elementAt(CUP$parser$top-2).<Dimension> value();
                  ds.increment(); RESULT = ds;
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("dimension_star",10, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyDimension_star",10, CUP$parser$stack.elementAt(CUP$parser$top-2), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 
         /*. . . . . . . . . . . . . . . . . . . .*/
-        case 21: // dimension_star ::= 
+        case 33: // emptyDimension_star ::= 
             {
                 Dimension RESULT = null;
                 RESULT = new Dimension(0); 
-                CUP$parser$result = parser.getSymbolFactory().newSymbol("dimension_star",10, CUP$parser$stack.peek(), RESULT);
+                CUP$parser$result = parser.getSymbolFactory().newSymbol("emptyDimension_star",10, CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
 

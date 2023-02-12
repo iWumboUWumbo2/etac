@@ -19,7 +19,7 @@ class ListExpr extends Expr {
         this.raw = s;
         this.type = Exprs.ListExpr;
         for (char c : s.toCharArray()) {
-            exprs.add(new IntLiteral(c));
+            exprs.add(new IntLiteral(Character.toString(c)));
         }
     }
 

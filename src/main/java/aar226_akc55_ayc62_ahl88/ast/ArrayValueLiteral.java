@@ -11,11 +11,18 @@ public class ArrayValueLiteral implements Value{
         values = new ArrayList<>();
         this.raw = s;
         for (char c : s.toCharArray()) {
-            values.add(new IntLiteral(c));
+            values.add(new IntLiteral(Character.toString(c)));
         }
         vt = ValueType.ARRAYVALUELITERAL;
     }
+    public ArrayValueLiteral(ArrayList<Value> v) {
+        values = v;
+    }
     public ValueType getValueType(){
         return vt;
+    }
+
+    public String toString(){
+        return values.toString();
     }
 }
