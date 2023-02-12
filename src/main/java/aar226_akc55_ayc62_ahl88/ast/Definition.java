@@ -7,15 +7,24 @@ public class Definition implements Printer {
     private Globdecl globdecl;
 
     public Definition( Method m){
+        this.method = m;
+        this.globdecl = null;
+    }
 
+    public Definition(Globdecl globdecl) {
+        this.globdecl = globdecl;
+        this.method = null;
     }
 
     public String toString(){
-        return "( " + method.toString() + " )";
+       return (method == null) ? globdecl.toString() : method.toString();
     }
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-
+        p.startList();
+        if (method == null) globdecl.prettyPrint(p);
+        else method.prettyPrint(p);
+        p.endList();
     }
 }
