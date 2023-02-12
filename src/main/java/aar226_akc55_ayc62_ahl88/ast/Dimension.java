@@ -11,6 +11,10 @@ public class Dimension {
         dim++;
     }
 
+    public long getDim() {
+        return dim;
+    }
+
     public String toString() {
         String s = "";
         for (long i = 0; i < dim; i++) {

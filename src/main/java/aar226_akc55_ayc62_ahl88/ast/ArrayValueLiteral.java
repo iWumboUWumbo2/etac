@@ -3,7 +3,6 @@ package aar226_akc55_ayc62_ahl88.ast;
 import java.util.ArrayList;
 
 public class ArrayValueLiteral implements Value{
-
     private String raw;
     private ArrayList<Value> values;
 

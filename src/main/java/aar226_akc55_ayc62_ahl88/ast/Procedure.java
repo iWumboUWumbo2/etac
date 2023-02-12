@@ -2,22 +2,17 @@ package aar226_akc55_ayc62_ahl88.ast;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
-public class Use implements Printer {
-    private Id id;
+import java.util.ArrayList;
 
-    public Use(Id id) {
-        this.id = id;
-    }
-    public Use(String s) {
-        this.id = new Id(s);
-    }
-    public String toString(){
-        return "(" + "use " + id.toString() + ")";
-    }
+public class Procedure extends Stmt {
+    private Id id;
+    private ArrayList<Param> params;
+
+    @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
-        p.printAtom("use");
         id.prettyPrint(p);
+        params.forEach(e -> e.prettyPrint(p));
         p.endList();
     }
 }

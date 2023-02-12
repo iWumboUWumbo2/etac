@@ -1,6 +1,8 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
-public interface Definition {
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+
+public interface Definition  {
 //    private Method method;
 //    private Globdecl globdecl;
 //
@@ -11,4 +13,6 @@ public interface Definition {
 //    public String toString(){
 //        return "( " + method.toString() + " )";
 //    }
+//@Override
+    void prettyPrint(CodeWriterSExpPrinter p);
 }
