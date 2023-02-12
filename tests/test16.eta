@@ -1,0 +1,21 @@
+// test program
+use a
+foo() {
+    x : int = 5 + 3;
+}
+
+
+use a
+use b
+foo() {
+    x : int = 5 + 3;
+}
+
+use a
+use b
+foo() {
+    x : int = 5 + 3;
+}
+foo2() {
+    x : int = 5 + 3;
+}

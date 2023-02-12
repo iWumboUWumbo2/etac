@@ -1,0 +1,6 @@
+// Test use statements
+use io
+use int
+use 5
+use "io"
+use \int

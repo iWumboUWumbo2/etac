@@ -1,0 +1,14 @@
+// test definition
+foo(x: int, y : bool, z :int[][]): bool, int {
+    //blah blah blah
+}
+foo() bool, int {
+    //blah blah blah
+}
+foo(): {
+    //blah blah blah
+}
+
+foo(): //{
+    //blah blah blah
+}
