@@ -32,7 +32,7 @@ public class Decl implements Printer {
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         id.prettyPrint(p);
-
+        type.prettyPrint(p);
         p.endList();
     }
 }
