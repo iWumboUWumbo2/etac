@@ -27,4 +27,5 @@ public interface Definition {
 //        else method.prettyPrint(p);
 //        p.endList();
 //    }
+    void prettyPrint(CodeWriterSExpPrinter p);
 }
