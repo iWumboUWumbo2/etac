@@ -1,17 +1,16 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 
-public class Definition implements Printer {
-    private Method method;
-    private Globdecl globdecl;
+abstract class Expr implements Printer {
+    Exprs type;
 
-    public Definition( Method m){
-
+    public Expr() {
     }
 
-    public String toString(){
-        return "( " + method.toString() + " )";
+    public Exprs getType() {
+        return type;
     }
 
     @Override

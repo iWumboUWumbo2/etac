@@ -21,6 +21,6 @@ public class BoolLiteral extends Expr implements Value {
     }
 
     public void prettyPrint(SExpPrinter p) {
-        p.printAtom(this.toString());
+        p.printAtom(toString());
     }
 }

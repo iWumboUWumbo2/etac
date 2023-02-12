@@ -2,7 +2,7 @@ package aar226_akc55_ayc62_ahl88.ast;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 
-public class IntLiteral extends Expr implements Value{
+public class IntLiteral extends Expr implements Value {
     private long i;
     private String raw = null;
 
@@ -29,7 +29,8 @@ public class IntLiteral extends Expr implements Value{
     public void prettyPrint(SExpPrinter p) {
         if (raw == null) {
             p.printAtom(this.toString());
-        } else {
+        }
+        else {
             p.printAtom("'");
             p.printAtom(this.toString());
             p.printAtom("'");

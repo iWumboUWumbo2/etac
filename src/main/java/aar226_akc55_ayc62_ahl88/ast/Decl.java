@@ -1,8 +1,9 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 
-public class Decl {
+public class Decl implements Printer {
     private Id id;
     private Type type;
 
@@ -27,7 +28,8 @@ public class Decl {
         }
     }
 
-    public void prettyPrint(SExpPrinter p) {
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         id.prettyPrint(p);
 
