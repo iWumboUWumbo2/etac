@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR=`dirname $0`
 DEPS=$DIR/deps/libs/main
-gradle7 clean
+gradle clean
 #rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java
 #rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
 jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/etalex.flex

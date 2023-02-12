@@ -26,11 +26,13 @@ nonterminal Use use_component;
 nonterminal ArrayList<Definition> definitionStar;
 nonterminal Definition definition;
 nonterminal Method method;
-nonterminal ArrayList<Decl> decl_star;
-nonterminal Decl decl;
-nonterminal ArrayList<Type> type_star;
-nonterminal Type type;
-nonterminal Dimension dimension_star;
+nonterminal ArrayList<Decl> emptyBracketDecl_star;
+nonterminal Decl emptyBracketDecl;
+nonterminal ArrayList<Type> emptyBracketType_plus;
+nonterminal Type emptyBracketType;
+nonterminal Dimension emptyDimension_star;
+nonterminal Globdecl globalDecl;
+//nonterminal Value value;
 
 // function call
 precedence left OR;
@@ -68,49 +70,51 @@ definition ::=
     ;
 
 method ::= // Block b
-    IDENTIFIER:i OPEN_PAREN decl_star:ds CLOSE_PAREN COLON type_star:ts{:
+    IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts{:
     RESULT = new Method(i,ds,ts);
     :}
-    | IDENTIFIER:i OPEN_PAREN decl_star:ds CLOSE_PAREN {: // Block b
+    | IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {: // Block b
         RESULT = new Method(i,ds,new ArrayList<Type>() ); // NONE
     :}
     ;
 
-decl_star ::=
-    decl_star:declstar COMMA decl:d {:declstar.add(d); RESULT = declstar; :}
-    |decl:d {:ArrayList<Decl> temp = new ArrayList<Decl>();
+emptyBracketDecl_star ::=
+    emptyBracketDecl_star:declstar COMMA emptyBracketDecl:d {:declstar.add(d); RESULT = declstar; :}
+    |emptyBracketDecl:d {:ArrayList<Decl> temp = new ArrayList<Decl>();
       temp.add(d);
       RESULT = temp;
       :}
-//    | decl:d {: ArrayList<Decl> tempDecl = new ArrayList<Decl>();
-//                      tempDecl.add(d);
-//                      RESULT = tempDecl;
-//                      :}
     | {: RESULT = new ArrayList<Decl>();:}
     ;
 
-decl ::= IDENTIFIER:i COLON type:t {: RESULT = new Decl(i,t); :}
+emptyBracketDecl ::=
+    IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new Decl(i,t); :}
     ;
 
+globalDecl ::=
+    emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null);:}
+//    | emptyBracketDecl:ed EQUAL value:v {: RESULT  = new Globdecl(ed, v); :}
+    ;
 
-type_star ::=
-    type_star:ts COMMA type:t {: ts.add(t); RESULT = ts; :}
-    | type:t {: ArrayList<Type> typeList = new ArrayList<Type>();
+emptyBracketType_plus ::=
+    emptyBracketType_plus:ts COMMA emptyBracketType:t {: ts.add(t); RESULT = ts; :}
+    | emptyBracketType:t {: ArrayList<Type> typeList = new ArrayList<Type>();
                       typeList.add(t);
                       RESULT = typeList;
                       :}
-    | {:RESULT = new ArrayList<Type>(); :}
     ;
 
-type ::=
-   INT  dimension_star:d {:RESULT = new Type(true,d); :}
- | BOOL dimension_star:d {:RESULT = new Type(false,d); :}
+emptyBracketType ::=
+   INT  emptyDimension_star:d {:RESULT = new Type(true,d); :}
+ | BOOL emptyDimension_star:d {:RESULT = new Type(false,d); :}
  ;
 
-dimension_star ::=
-    dimension_star:ds OPEN_BRACKET CLOSE_BRACKET {: ds.increment(); RESULT = ds;:}
+emptyDimension_star ::=
+    emptyDimension_star:ds OPEN_BRACKET CLOSE_BRACKET {: ds.increment(); RESULT = ds;:}
     | {:RESULT = new Dimension(0); :}
     ;
+
+
 
 
 //start with expr;
