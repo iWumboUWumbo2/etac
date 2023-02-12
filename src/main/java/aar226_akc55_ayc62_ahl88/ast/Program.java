@@ -8,6 +8,9 @@ public class Program implements Printer {
     private ArrayList<Use> useList;
     private ArrayList<Definition> definitions;
 
+    public Program() {
+    }
+
     public Program(ArrayList<Use> uses, ArrayList<Definition> definitions) {
         useList = uses;
         this.definitions = definitions;
@@ -22,13 +25,13 @@ public class Program implements Printer {
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startList();
+        p.startUnifiedList();
 
-        p.startList();
+        p.startUnifiedList();
         useList.forEach(e -> e.prettyPrint(p));
         p.endList();
 
-        p.startList();
+        p.startUnifiedList();
         definitions.forEach(d -> d.prettyPrint(p));
         p.endList();
 
