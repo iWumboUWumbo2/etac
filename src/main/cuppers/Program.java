@@ -2,7 +2,7 @@ package aar226_akc55_ayc62_ahl88.ast;
 
 import java.util.ArrayList;
 
-public class Program extends Printer {
+public class Program {
     private ArrayList<Use> useList;
     private ArrayList<Definition> definitions;
 
@@ -10,7 +10,7 @@ public class Program extends Printer {
         useList = uses;
         this.definitions = definitions;
     }
-    // need pretty
+
     public String toString() {
         String build = "";
         build += useList.toString() + "\n";
