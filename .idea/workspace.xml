@@ -5,10 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73ddc173-8043-47fd-816b-84efacfb0193" name="Changes" comment="Added build scripts">
+      <change afterPath="$PROJECT_DIR$/src/main/cuppers/Decl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/cuppers/Definition.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/cuppers/Dimension.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/cuppers/Method.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/cuppers/Program.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/cuppers/Type.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/cuppers/Use.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Printer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test16.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test16.eta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test17.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test17.eta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test19.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test19.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/AstNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/AstNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Dimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Dimension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Globdecl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/cuppers/Globdecl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Id.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/cuppers/Id.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntLiteral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/cuppers/IntLiteral.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Program.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Use.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Use.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,11 +53,24 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/cuppers/cuppers.cup" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="2LKVu5fNWpe4FnIEo3BLubVIfeI" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -67,10 +93,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/cuppers" />
+      <recent name="$PROJECT_DIR$/src/main/oldAst" />
       <recent name="$PROJECT_DIR$/extests" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88" />
-      <recent name="$PROJECT_DIR$/src/main/jflex" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -124,8 +151,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.etac [clean]" />
         <item itemvalue="Gradle.etac [buildDependents]" />
+        <item itemvalue="Gradle.etac [clean]" />
       </list>
     </recent_temporary>
   </component>
@@ -178,6 +205,17 @@
     <MESSAGE value="Added build scripts" />
     <MESSAGE value="Added tests" />
     <option name="LAST_COMMIT_MESSAGE" value="Added tests" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Type.java</url>
+          <line>7</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

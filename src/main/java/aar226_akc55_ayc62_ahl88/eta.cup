@@ -3,71 +3,152 @@ package aar226_akc55_ayc62_ahl88;
 
 import java_cup.runtime.*;
 import aar226_akc55_ayc62_ahl88.ast.*;
+import java.util.ArrayList;
 // You might want to add types to these declarations.
 //parser ExampleParser {: :}
-terminal IDENTIFIER;
-terminal STRING_LITERAL;
-terminal CHARACTER_LITERAL;
+terminal String IDENTIFIER;
+terminal String STRING_LITERAL;
+terminal String CHARACTER_LITERAL;
 terminal Long INTEGER_LITERAL;
-terminal TRUE, FALSE;
+terminal Boolean TRUE;
+terminal Boolean FALSE;
+terminal Boolean BOOL_LITERAL;
 terminal INT, BOOL;
 
 terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
   DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, AND, OR, EQUAL, NOT_EQUAL, GETS,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
-  COLON, COMMA, SEMICOLON, UNDERSCORE;
+  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS;
 
-non terminal ArrIndType arr_ind_type;
-non terminal Expr expr;
-non terminal VarDecl varDecl;
-non terminal VarDeclAss varDeclAss;
-non terminal ArrType arr_type;
-non terminal TypeNode type;
-non terminal Separator sep;
-non terminal BasicType basic_type;
-non terminal Keyword keyword;
-non terminal Array array;
+nonterminal Program program;
+nonterminal ArrayList<Use> importUseStar;
+nonterminal Use use_component;
+nonterminal ArrayList<Definition> definitionStar;
+nonterminal Definition definition;
+nonterminal Method method;
+nonterminal ArrayList<Decl> emptyBracketDecl_star;
+nonterminal Decl emptyBracketDecl;
+nonterminal ArrayList<Type> emptyBracketType_plus;
+nonterminal Type emptyBracketType;
+nonterminal Dimension emptyDimension_star;
+nonterminal Globdecl globalDecl;
+//nonterminal Value value;
 
 // function call
 precedence left OR;
 precedence left AND;
-precedence left EQUAL;
-precedence left NOT_EQUAL;
-precedence left LT;
-precedence left LEQ;
-precedence left GEQ;
-precedence left GT;
-precedence left PLUS;
-precedence left MINUS; // ??? negation?
-precedence left TIMES;
-precedence left HI_MULT;
-precedence left DIVIDE;
-precedence left MODULO;
-precedence nonassoc NOT;
-// UNARY MINUS MAYBE
-precedence left OPEN_BRACKET;
-precedence left CLOSE_BRACKET;
-precedence left OPEN_PAREN;
-precedence left CLOSE_PAREN;
+precedence left EQUAL,NOT_EQUAL;
+precedence left LT,LEQ,GEQ,GT;
+precedence left PLUS,MINUS;
+precedence left TIMES,HI_MULT,DIVIDE,MODULO;
+precedence nonassoc NOT, UMINUS;// ??? negation?
+precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 
-start with expr;
+start with program;
 
-expr ::= expr:e1 MINUS       expr:e2  {: RESULT = new Minus(e1, e2); :}
-        |  NOT               expr:e1  {: RESULT = new Not(e1); :}
-        |  expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
-        |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
-        |  expr:e1 DIVIDE    expr:e2  {: RESULT = new Divide(e1, e2); :}
-        |  expr:e1 MODULO    expr:e2  {: RESULT = new Modulo(e1, e2); :}
-        |  expr:e1 PLUS      expr:e2  {: RESULT = new Plus(e1, e2); :}
-        |  expr:e1 LT        expr:e2  {: RESULT = new Lt(e1, e2); :}
-        |  expr:e1 LEQ       expr:e2  {: RESULT = new Leq(e1, e2); :}
-        |  expr:e1 GT        expr:e2  {: RESULT = new Gt(e1, e2); :}
-        |  expr:e1 GEQ       expr:e2  {: RESULT = new Geq(e1, e2); :}
-        |  expr:e1 EQUAL     expr:e2  {: RESULT = new Equal(e1, e2); :}
-        |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_Equal(e1, e2); :}
-        |  expr:e1 AND       expr:e2  {: RESULT = new And(e1, e2); :}
-        |  expr:e1 OR        expr:e2  {: RESULT = new Or(e1, e2); :}
-        |  INTEGER_LITERAL:n          {: RESULT = new Num(n); :}
-        |  OPEN_PAREN expr:e CLOSE_PAREN       {: RESULT = e; :}
-        |  error                      {: RESULT = null; :}
-        ;
+program ::= importUseStar:ius definitionStar:dl {:RESULT = new Program(ius,dl);:}
+    ;
+
+importUseStar ::=
+    importUseStar:ius use_component:u {: ius.add(u); RESULT = ius;:}
+    | {: RESULT = new ArrayList<Use>();:}
+    ;
+
+use_component::=
+      USE IDENTIFIER:i {:           RESULT = new Use(i); :}
+    | USE IDENTIFIER:i SEMICOLON {: RESULT = new Use(i); :}
+    ;
+
+definitionStar ::=
+    definitionStar:ds definition:d {:ds.add(d); RESULT = ds; :}
+    | {:RESULT = new ArrayList<Definition>(); :}
+    ;
+
+definition ::=
+    method:m {: RESULT = new Definition(m);:}
+//    | globaldecl:gd {::}
+    ;
+
+method ::= // Block b
+    IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts{:
+    RESULT = new Method(i,ds,ts);
+    :}
+    | IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {: // Block b
+        RESULT = new Method(i,ds,new ArrayList<Type>() ); // NONE
+    :}
+    ;
+
+emptyBracketDecl_star ::=
+    emptyBracketDecl_star:declstar COMMA emptyBracketDecl:d {:declstar.add(d); RESULT = declstar; :}
+    |emptyBracketDecl:d {:ArrayList<Decl> temp = new ArrayList<Decl>();
+      temp.add(d);
+      RESULT = temp;
+      :}
+    | {: RESULT = new ArrayList<Decl>();:}
+    ;
+
+emptyBracketDecl ::=
+    IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new Decl(i,t); :}
+    ;
+
+globalDecl ::=
+    emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null);:}
+//    | emptyBracketDecl:ed EQUAL value:v {: RESULT  = new Globdecl(ed, v); :}
+    ;
+
+emptyBracketType_plus ::=
+    emptyBracketType_plus:ts COMMA emptyBracketType:t {: ts.add(t); RESULT = ts; :}
+    | emptyBracketType:t {: ArrayList<Type> typeList = new ArrayList<Type>();
+                      typeList.add(t);
+                      RESULT = typeList;
+                      :}
+    ;
+
+emptyBracketType ::=
+   INT  emptyDimension_star:d {:RESULT = new Type(true,d); :}
+ | BOOL emptyDimension_star:d {:RESULT = new Type(false,d); :}
+ ;
+
+emptyDimension_star ::=
+    emptyDimension_star:ds OPEN_BRACKET CLOSE_BRACKET {: ds.increment(); RESULT = ds;:}
+    | {:RESULT = new Dimension(0); :}
+    ;
+
+
+
+
+//start with expr;
+//
+//expr ::=
+////        |  IDENTIFIER:i OPEN_PAREN exprlist:el CLOSE_PAREN // Function Call with Param
+////        |  IDENTIFIER:i OPEN_PAREN CLOSE_PAREN            // Function Call no param
+////        |  expr:e1 OPEN_BRACKET:l expr:e2 CLOSE_BRACKET // INDEXING
+////        |  LENGTH OPEN_PAREN expr:e CLOSE_PAREN // EXPR LENGTH
+////        |  OPEN_BRACE exprlist:e CLOSE_BRACE  // ARRY LIT
+////        |  OPEN_BRACE exprlist:e COMMA CLOSE_BRACE // ARRY LIT
+////        |  OPEN_BRACE CLOSE_BRACE     {: RESULT = new ArrayLiteral(new ArrayList<Expr>()); :} // create this class
+//           MINUS:o           expr:e   {: RESULT = new Unary(o,e); :} // Change to UMINUS later%prec UMINUS
+//        |  NOT               expr:e1  {: RESULT = new Not(e1); :}
+//        |  expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
+//        |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
+//        |  expr:e1 DIVIDE    expr:e2  {: RESULT = new Divide(e1, e2); :}
+//        |  expr:e1 MODULO    expr:e2  {: RESULT = new Modulo(e1, e2); :}
+//        |  expr:e1 PLUS      expr:e2  {: RESULT = new Plus(e1, e2); :}
+//        |  expr:e1 MINUS     expr:e2  {: RESULT = new Minus(e1, e2); :}
+//        |  expr:e1 LT        expr:e2  {: RESULT = new Lt(e1, e2); :}
+//        |  expr:e1 LEQ       expr:e2  {: RESULT = new Leq(e1, e2); :}
+//        |  expr:e1 GT        expr:e2  {: RESULT = new Gt(e1, e2); :}
+//        |  expr:e1 GEQ       expr:e2  {: RESULT = new Geq(e1, e2); :}
+//        |  expr:e1 EQUAL     expr:e2  {: RESULT = new Equal(e1, e2); :}
+//        |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_Equal(e1, e2); :}
+//        |  expr:e1 AND       expr:e2  {: RESULT = new And(e1, e2); :}
+//        |  expr:e1 OR        expr:e2  {: RESULT = new Or(e1, e2); :}
+//        |  INTEGER_LITERAL:n          {: RESULT = new Num(n); :}
+//        |  TRUE:t                     {: RESULT = new Bool(t); :}
+//        |  FALSE:f                    {: RESULT = new Bool(f); :}
+////        |  CHARACTER_LITERAL:c // Create as INT cause Chars are ints
+////        |  STRING_LITERAL:s // Create as INT cause Strings are array of Ints
+//        // Chaaracter and String needed
+//        |  OPEN_PAREN expr:e CLOSE_PAREN       {: RESULT = e; :}
+//        |  error                      {: RESULT = null; :}
+//        ;
