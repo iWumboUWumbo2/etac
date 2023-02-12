@@ -26,12 +26,6 @@ class Id extends Printer {
 
 }
 
-class Globdecl {
-    private Id id;
-    private Type type;
-    private Value value;
-}
-
 class Block {
     private ArrayList<Stmt> stmts;
 }

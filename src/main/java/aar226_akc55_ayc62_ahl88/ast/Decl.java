@@ -6,13 +6,25 @@ public class Decl {
     private Id id;
     private Type type;
 
+    private Value value;
     public Decl( String s, Type t){
         id = new Id(s);
         type = t;
     }
 
+    public Decl (String s, Type t, Value v) {
+        id = new Id(s);
+        type = t;
+        value = v;
+    }
+
+
     public String toString(){
-        return "(" + id.toString() + ":" + type.toString() + ")";
+        if (this.value != null) {
+            return "(" + id.toString() + ":" + type.toString() + " = " + value.toString() +  ")";
+        } else {
+            return "(" + id.toString() + ":" + type.toString() + ")";
+        }
     }
 
     public void prettyPrint(SExpPrinter p) {
