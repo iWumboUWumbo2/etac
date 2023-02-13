@@ -5,38 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DeclStmt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/AndExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/AndExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Block.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/BoolLiteral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/BoolLiteral.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DivideExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DivideExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/EqualExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/EqualExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Expr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Expr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/FunctionCallExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/FunctionCallExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/GeqExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/GeqExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Globdecl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Globdecl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/GtExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/GtExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Hi_MultExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Hi_MultExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Id.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Id.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntLiteral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntLiteral.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntegerNegExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntegerNegExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/LeqExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/LeqExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ListExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ListExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/LtExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/LtExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Method.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/MinusExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/MinusExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ModuloExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ModuloExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/NotExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/NotExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Not_EqualExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Not_EqualExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/OrExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/OrExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/PlusExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/PlusExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Stmt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Stmt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/TimesExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/TimesExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Use.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Use.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/While.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/While.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DeclStmt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DeclStmt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test1.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test1.eta" afterDir="false" />

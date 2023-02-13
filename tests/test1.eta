@@ -7,6 +7,7 @@ main(args: int[][]){
     d:int = 143;
     d:int = -1;
     d:int = 51298;
-    d:int = (1029382837409);
-
+    e:int;
+    e:int[][];
+    e:int[];
 }

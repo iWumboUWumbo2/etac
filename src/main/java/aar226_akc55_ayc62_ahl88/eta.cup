@@ -235,6 +235,7 @@ matched_stmt ::= declartion_assign_stmt:das {:RESULT = das; :}
 
 declartion_assign_stmt ::=
     emptyBracketDecl:d GETS expr:e {:RESULT = new DeclStmt(d,e);:}
+    | emptyBracketDecl:d {:RESULT = new DeclStmt(d,null);:}
     | declartion_assign_stmt:das SEMICOLON {:RESULT = das;:}
 //    | UNDERSCORE:u GETS expr:e {::}
 //    |

@@ -25,11 +25,15 @@ public class DeclStmt extends Stmt{
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
-        p.printAtom("=");
+        if (expression != null) {
+            p.printAtom("=");
+        }
         p.startList();
         decl.prettyPrint(p);
         p.endList();
-        expression.prettyPrint(p);
+        if (expression != null) {
+            expression.prettyPrint(p);
+        }
         p.endList();
     }
 
