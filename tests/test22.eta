@@ -1,0 +1,32 @@
+// If
+use io
+
+main (){
+    x : int = 2
+    y : int = 5;
+    if (x == 2) {
+        return 1;
+    }
+    if (x != 2) {
+        if (x < 2) {
+            return 2
+        } else {
+            return 3;
+        }
+    } else {
+        if (y = 5) {
+            return "a"
+        } else {
+            if (y > 5) {
+                return "b"
+            } else {
+                if (x - 1 < 5) {
+                    return "c"
+                } else {
+                    return "d";
+                }
+            }
+        }
+    }
+    return "";
+}
