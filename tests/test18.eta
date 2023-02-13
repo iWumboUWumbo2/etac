@@ -1,1 +1,25 @@
 //test method
+use io;
+
+main(args: int[][]){
+    e:bool[] = {}
+    a:int[] = {-7};
+    a:int[] = {5,}
+    e:bool[] = {true};
+    e:bool[] = {false}
+    a:int[] = {1,2}
+    b:int[] = {1+2, 2+3, 3+432413, 4}
+    c:int[] = "suck dick"
+    d:int = 'c';
+    d:int = 1;
+
+    e:bool[] = {true}
+    e:bool[] = {false}
+    e:bool[] = {}
+    f:int[][] = {{1}, {2},{3},{4}}
+    g:int[] = {1, 2, 3,}
+
+
+    a:int = (1+(2-(3*(5/4))));
+    b:int = 1+2+3+4*5*4;
+}

@@ -12,7 +12,8 @@ class UnaryExpr extends Expr {
         this.type = Exprs.Uop;
     }
 
-    public void prettyPrinter(CodeWriterSExpPrinter p) {
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         p.printAtom(uop);
         e.prettyPrint(p);

@@ -10,8 +10,6 @@ terminal String IDENTIFIER;
 terminal String STRING_LITERAL;
 terminal String CHARACTER_LITERAL;
 terminal Long INTEGER_LITERAL;
-terminal Boolean TRUE;
-terminal Boolean FALSE;
 terminal Boolean BOOL_LITERAL;
 terminal INT, BOOL;
 
@@ -44,6 +42,8 @@ nonterminal Stmt matched_stmt;
 nonterminal Stmt unmatched_stmt;
 nonterminal ArrayList<Stmt> statement_star;
 nonterminal DeclStmt declartion_assign_stmt;
+
+
 precedence nonassoc IF;
 precedence nonassoc ELSE;
 // function call
@@ -176,7 +176,12 @@ emptyDimension_star ::=
     ;
 
 expr ::=
-       expr:e1 TIMES     expr:e2  {: RESULT = new TimesExpr(e1, e2); :}
+    // ignore Paren
+    OPEN_PAREN expr:e1 CLOSE_PAREN {:RESULT = e1;:}
+//    |expr:e1 SEMICOLON               {:RESULT = e1;:}
+
+    //BINOP
+    |  expr:e1 TIMES     expr:e2  {: RESULT = new TimesExpr(e1, e2); :}
     |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_MultExpr(e1, e2); :}
     |  expr:e1 DIVIDE    expr:e2  {: RESULT = new DivideExpr(e1, e2); :}
     |  expr:e1 MODULO    expr:e2  {: RESULT = new ModuloExpr(e1, e2); :}
@@ -190,17 +195,30 @@ expr ::=
     |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_EqualExpr(e1, e2); :}
     |  expr:e1 AND       expr:e2  {: RESULT = new AndExpr(e1, e2); :}
     |  expr:e1 OR        expr:e2  {: RESULT = new OrExpr(e1, e2); :}
+
+    // UNOP
     |  NOT               expr:e1  {: RESULT = new NotExpr(e1); :}
-    |  value:v                    {: RESULT = (Expr) v;:}
-    | OPEN_BRACE arrayExpr:ave  CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
-    | OPEN_BRACE arrayExpr:ave COMMA CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
-    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayExpr(new ArrayList<Expr>()); :}
+    |  MINUS expr:e1              {: RESULT = new IntegerNegExpr (e1);:} %prec UMINUS
+
+    // LITS
+    | INTEGER_LITERAL:i           {: RESULT = new IntLiteral(i,true); :}
+    | CHARACTER_LITERAL:c         {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
+    | BOOL_LITERAL:b              {: RESULT = new BoolLiteral(b); :}
+    | STRING_LITERAL:s            {: RESULT = new ArrayExpr(s); :}
+
+    // IDS
     | IDENTIFIER:id {: RESULT = new Id(id); :}
-//    | LENGTH OPEN_PAREN IDENTIFIER:id CLOSE_PAREN {: RESULT = new Length(id); :}
-//    |  LENGTH OPEN_PAREN arrayExpr:a CLOSE_PAREN {: RESULT = new Length(a); :}
-//    |  LENGTH OPEN_PAREN arrayValueLiteral:a CLOSE_PAREN {: RESULT = new Length(a); :}
-//    | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new Procedure(id); :}
-//    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
+
+    // ARRAY LITERALS
+    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayExpr(new ArrayList<Expr>());:}
+    | OPEN_BRACE exprList:x CLOSE_BRACE {:RESULT = new ArrayExpr(x);:}
+    | OPEN_BRACE exprList:x COMMA CLOSE_BRACE {:RESULT = new ArrayExpr(x); :}
+
+
+    // Functions
+    |  LENGTH OPEN_PAREN expr:e CLOSE_PAREN {: RESULT = new Length(e); :}
+    | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new FunctionCallExpr(id,new ArrayList<Expr>() ); :}
+    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
     ;
 
 
@@ -210,17 +228,17 @@ exprList ::=
             temp.add(x);
             RESULT = temp;
         :}
-    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+    |  exprList:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
 ;
 
-arrayExpr ::=
-    expr:x {:
-            ArrayList<Expr> temp = new ArrayList<Expr>();
-            temp.add(x);
-            RESULT = temp;
-        :}
-    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
-;
+//arrayExpr ::=
+//    expr:x {:
+//            ArrayList<Expr> temp = new ArrayList<Expr>();
+//            temp.add(x);
+//            RESULT = temp;
+//        :}
+//    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+//;
 
 stmt ::=
   matched_stmt:m {: RESULT = m; :}

@@ -14,6 +14,12 @@ public class FunctionCallExpr extends Expr {
         this.type = Exprs.FuncCall;
     }
 
+    public FunctionCallExpr(String s, ArrayList<Expr> param) {
+        this.id = new Id(s);
+        this.param = param;
+        this.type = Exprs.FuncCall;
+    }
+
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();

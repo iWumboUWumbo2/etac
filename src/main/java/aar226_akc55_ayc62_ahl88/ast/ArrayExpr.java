@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+
 import java.util.ArrayList;
 
 public class ArrayExpr extends Expr {
@@ -19,5 +21,12 @@ public class ArrayExpr extends Expr {
             expr.add(new IntLiteral(Character.toString(c)));
         }
         this.type = Exprs.ListExpr;
+    }
+
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+        p.startList();
+        expr.forEach(e -> e.prettyPrint(p));
+        p.endList();
     }
 }

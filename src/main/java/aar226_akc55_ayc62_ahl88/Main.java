@@ -95,11 +95,9 @@ class Main {
                 }
                 out = "integer " + out;
                 break;
-            case (sym.FALSE):
-            case (sym.TRUE): {
+            case (sym.BOOL_LITERAL):
                 out = "boolean " + out;
                 break;
-            }
             case (sym.IDENTIFIER):
                 out = "id " +  out;
                 break;

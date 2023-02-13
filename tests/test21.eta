@@ -1,0 +1,11 @@
+//test functions and length
+use io;
+
+main(args: int[][]){
+    a:int[] = length({});
+    a:int[] = length({1})
+    a:int[] = length({5,});
+    a:int[] = length({65,53})
+    a:int[] = length(doom);
+
+}
