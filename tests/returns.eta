@@ -1,0 +1,43 @@
+// Returns
+use io
+main () : int {
+    x : int = 5;
+    return x;
+}
+
+main () : int, bool {
+    x : int = 5;
+    y : bool = true;
+    return x, y;
+}
+
+main () : int, int {
+    x : int = 5;
+    y : int = 5;
+    return x, 3+5;
+}
+
+main () : int[], bool {
+    x : int = 5
+    y : int = 5;
+    return x,y!=5;
+}
+
+main () : int[], bool {
+    x : int = 5;
+    y : int = 5;
+    x:int[y] = {1,2,3,4,5}
+    return x,true;
+}
+
+main () : int[], bool[][] {
+    x : int = 5;
+    y : int = 5
+    return x : int[] = {},y;
+}
+
+main () : int[][], bool[][] {
+    x : int = 5;
+    y : int = 5;
+    return {1,2,3},y, 5;
+}
