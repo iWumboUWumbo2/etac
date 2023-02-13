@@ -17,4 +17,7 @@ main (){
     while (x) {
     }
     while x a:int = 4
+    a:int = 4;
+    a = 4;
+    _ = 5;
 }

@@ -7,6 +7,10 @@ import java.util.ArrayList;
 public class Return extends Stmt {
     private ArrayList<Expr> exprs;
 
+
+    public Return(ArrayList<Expr> e){
+        exprs = e;
+    }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();

@@ -1,11 +1,11 @@
 // Function calls
-use asdlkjdkjfa.asdfadf.asdfdf.d.dfdfd.d
+use asdlkjdkjfaasdfadfasdfdfddfdfd
 
-boolean () bool {
+boolean():bool {
     return true;
 }
 
-boolean2 () bool {
+boolean2 ():bool {
     return boolean() == True;
 }
 

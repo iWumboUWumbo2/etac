@@ -41,8 +41,8 @@ nonterminal Stmt stmt;
 nonterminal Stmt matched_stmt;
 nonterminal Stmt unmatched_stmt;
 nonterminal ArrayList<Stmt> statement_star;
-nonterminal DeclStmt declaration_assign_stmt;
-
+nonterminal Stmt declaration_assign_stmt;
+nonterminal Return return;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -55,6 +55,7 @@ precedence left PLUS,MINUS;
 precedence left TIMES,HI_MULT,DIVIDE,MODULO;
 precedence nonassoc NOT, UMINUS;// ??? negation?
 precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
+//precedence left SEMICOLON; // MAYBE???
 
 start with program;
 
@@ -244,32 +245,44 @@ stmt ::=
 
     // single or multiple TODO a = 4
     declaration_assign_stmt:das {:RESULT = das; :}
-
-    // WHILE
     | WHILE expr:e stmt:s {:RESULT = new While(e,s);:}
     | IF expr:e stmt:s {:RESULT = new IfOnly(e,s);:}
     | IF expr:e stmt:s1 ELSE stmt:s2 {:RESULT = new IfElse(e,s1,s2);:}
     | block:b {: RESULT = b; :}
-//    | RETURN expr:e {:RESULT = new Return(e);:}
-//    | RETURN {:RESULT = new Return();:}
 //  matched_stmt:m {: RESULT = m; :}
 //| unmatched_stmt:u {: RESULT = u; :}
 ;
 
 declaration_assign_stmt ::=
-    emptyBracketDecl:d GETS expr:e {:RESULT = new DeclStmt(d,e);:}
+    emptyBracketDecl:d GETS expr:e {:
+    if (!d.type.dimensions.allEmpty) {
+        throw new Error("array with init len no Val");
+    }
+    RESULT = new DeclStmt(d,e);
+    :}
     | emptyBracketDecl:d {:RESULT = new DeclStmt(d,null);:}
-//    | declaration_assign_stmt:das SEMICOLON {:RESULT = das;:}
-//    | UNDERSCORE:u GETS expr:e {::}
-//    |
+    | IDENTIFIER:id GETS expr:e {: RESULT = new Reassignment(id,e);:}
+    | UNDERSCORE GETS expr:e {:RESULT = new DeclStmt(new UnderScore(),e);:}
 ;
-block ::= OPEN_BRACE statement_star:ss CLOSE_BRACE {:System.out.println("IN BLOCK");RESULT = new Block(ss);:}
-
+block ::=
+OPEN_BRACE statement_star:ss CLOSE_BRACE {:System.out.println("IN BLOCK");RESULT = new Block(ss);:}
+|OPEN_BRACE statement_star:ss SEMICOLON CLOSE_BRACE {:System.out.println("IN BLOCK");RESULT = new Block(ss);:}
+|OPEN_BRACE statement_star:ss SEMICOLON return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss);:}
+|OPEN_BRACE statement_star:ss return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss);:}
+|OPEN_BRACE statement_star:ss return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss);:}
+|OPEN_BRACE statement_star:ss SEMICOLON return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss);:}
 ;
 
+return ::=
+      RETURN exprList:el {:RESULT = new Return(el);:}
+      | RETURN {:RESULT = new Return(new ArrayList<Expr>());:}
+;
 statement_star ::=
-    statement_star:ss SEMICOLON stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
-    |statement_star:ss  stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+    statement_star:ss stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+//    |statement_star:ss stmt:s SEMICOLON {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+    |statement_star:ss SEMICOLON stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+//    |statement_star:ss stmt:s SEMICOLON {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+//    |statement_star:ss  stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
     | {:RESULT = new ArrayList<Stmt>();:}
 ;
 

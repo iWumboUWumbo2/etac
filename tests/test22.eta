@@ -14,7 +14,7 @@ main (){
             return 3;
         }
     } else {
-        if (y = 5) {
+        if (y == 5) {
             return "a"
         } else {
             if (y > 5) {

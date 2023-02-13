@@ -26,14 +26,14 @@ main () : int[], bool {
 main () : int[], bool {
     x : int = 5;
     y : int = 5;
-    x:int[y] = {1,2,3,4,5}
+    x:int[] = {1,2,3,4,5}
     return x,true;
 }
 
 main () : int[], bool[][] {
     x : int = 5;
     y : int = 5
-    return x : int[] = {},y;
+    return {},y;
 }
 
 main () : int[][], bool[][] {

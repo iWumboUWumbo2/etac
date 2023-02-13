@@ -7,7 +7,7 @@ foo(): bool, int {
     return pred, expr;
 }
 _, i: int = foo()
-
+a:int,b:bool,c:bool[4][] = 1,true, {bool};
 a: int = 5
 b: int[]
 c : int[3]

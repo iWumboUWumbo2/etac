@@ -5,13 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IfOnly.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/ifTests.eta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Reassignment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/UnderScore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/If.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IfElse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Return.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Return.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/FuncCalls.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/FuncCalls.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/declarations.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/declarations.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/returns.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/returns.eta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test21.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test21.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test22.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test22.eta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test23.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test23.eta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
