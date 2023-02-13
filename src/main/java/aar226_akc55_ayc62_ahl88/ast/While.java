@@ -4,11 +4,11 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 public class While extends Stmt {
     private Expr expr;
-    private Block block;
+    private Stmt stmt;
 
-    public While(Expr expr, Block block) {
+    public While(Expr expr, Stmt s) {
         this.expr = expr;
-        this.block = block;
+        stmt = s;
     }
 
     @Override
@@ -16,7 +16,7 @@ public class While extends Stmt {
         p.startList();
         p.printAtom("while");
         expr.prettyPrint(p);
-        block.prettyPrint(p);
+        stmt.prettyPrint(p);
         p.endList();
     }
 }

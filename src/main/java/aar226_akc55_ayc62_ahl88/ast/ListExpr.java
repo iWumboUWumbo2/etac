@@ -4,7 +4,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 import java.util.ArrayList;
 
-class ListExpr extends Expr {
+public class ListExpr extends Expr {
     private ArrayList<Expr> exprs;
     private String raw;
 

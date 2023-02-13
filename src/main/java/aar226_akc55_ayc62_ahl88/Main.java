@@ -70,6 +70,7 @@ class Main {
                 }
                 catch (Exception e){
                     System.out.println("Parsing Error or file issue");
+                    e.getMessage();
                     e.printStackTrace();
                 }
             }

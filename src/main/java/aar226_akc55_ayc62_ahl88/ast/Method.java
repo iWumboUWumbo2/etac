@@ -11,17 +11,18 @@ public class Method implements Definition, Printer {
     private Block block;
 
 //    , Block b
-//    public Method(String s, ArrayList<Decl> d, ArrayList<Type> t, Block b){
-//        id = new Id(s);
-//        decls = d;
-//        types = t;
-//        block = b;
-//    }
+    public Method(String s, ArrayList<Decl> d, ArrayList<Type> t, Block b){
+        id = new Id(s);
+        decls = d;
+        types = t;
+        block = b;
+    }
 
     public Method(String s, ArrayList<Decl> d, ArrayList<Type> t){
         id = new Id(s);
         decls = d;
         types = t;
+        block = null;
 //        block = b;
     }
 
@@ -31,6 +32,7 @@ public class Method implements Definition, Printer {
         return build;
     }
 
+    @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startUnifiedList();
         id.prettyPrint(p);
@@ -43,6 +45,9 @@ public class Method implements Definition, Printer {
         for (Type t : types) t.prettyPrint(p);
         p.endList();
 
+        if (block != null) {
+            block.prettyPrint(p);
+        }
         p.endList();
     }
 }

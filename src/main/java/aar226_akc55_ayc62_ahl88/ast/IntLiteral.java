@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 
 public class IntLiteral extends Expr implements Value {
@@ -34,14 +35,17 @@ public class IntLiteral extends Expr implements Value {
         return (raw == null) ? Long.toString(i) : raw;
     }
 
-    public void prettyPrint(SExpPrinter p) {
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+//        System.out.println("CALLING PRETTY PRINT");
         if (raw == null) {
-            p.printAtom(this.toString());
+            p.printAtom(toString());
         }
         else {
             p.printAtom("'");
-            p.printAtom(this.toString());
+            p.printAtom(toString());
             p.printAtom("'");
         }
+//        System.out.println("FINISHED CALLING");
     }
 }

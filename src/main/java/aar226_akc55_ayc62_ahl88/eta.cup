@@ -22,7 +22,6 @@ terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MUL
 
 nonterminal Program program;
 nonterminal ArrayList<Use> importUseStar;
-nonterminal Stmt stmt;
 nonterminal Use use_component;
 nonterminal ArrayList<Definition> definitionStar;
 nonterminal Definition definition;
@@ -40,7 +39,13 @@ nonterminal Block block;
 nonterminal ArrayList<Expr> arrayExpr;
 nonterminal LengthArg lengthArg;
 nonterminal ArrayList<Expr> exprList;
-
+nonterminal Stmt stmt;
+nonterminal Stmt matched_stmt;
+nonterminal Stmt unmatched_stmt;
+nonterminal ArrayList<Stmt> statement_star;
+nonterminal DeclStmt declartion_assign_stmt;
+precedence nonassoc IF;
+precedence nonassoc ELSE;
 // function call
 precedence left OR;
 precedence left AND;
@@ -53,7 +58,9 @@ precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 
 start with program;
 
-program ::= importUseStar:ius definitionStar:dl {:RESULT = new Program(ius,dl);:}
+program ::= importUseStar:ius definitionStar:dl {:
+    System.out.println("IN PRGO");
+    RESULT = new Program(ius,dl);:}
     ;
 
 importUseStar ::=
@@ -72,17 +79,24 @@ definitionStar ::=
     ;
 
 definition ::=
-    method:m {: RESULT = m;:}
+    method:m {: System.out.println("IN DEF"); RESULT = m;:}
     | globalDecl:gd {:RESULT = gd; :}
     ;
 
-method ::= // Block b
-    IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts{:
-    RESULT = new Method(i,ds,ts);
+method ::= // Id b
+    IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts block:b{:
+    RESULT = new Method(i,ds,ts,b);
     :}
-    | IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {: // Block b
-        RESULT = new Method(i,ds,new ArrayList<Type>() ); // NONE
+    | IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN block:b {: // Block b
+        System.out.println("IN MEETH");
+        RESULT = new Method(i,ds,new ArrayList<Type>(),b); // NONE
     :}
+//    |IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts {:
+//     RESULT = new Method(i,ds,ts);
+//     :}
+//     |IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {:
+//      RESULT = new Method(i,ds,new ArrayList<Type>());
+//      :}
     ;
 
 emptyBracketDecl_star ::=
@@ -114,23 +128,23 @@ globalDecl ::=
 
 value ::=
     INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true); :}
-    |  CHARACTER_LITERAL:c {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
-    |MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false); :} %prec UMINUS
+    | CHARACTER_LITERAL:c {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
+    | MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false); :} %prec UMINUS
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b); :}
-    | OPEN_BRACE arrayValueLiteral:avl  CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
-    | OPEN_BRACE arrayValueLiteral:avl COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
-    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Value>()); :}
+//    | OPEN_BRACE arrayValueLiteral:avl  CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
+//    | OPEN_BRACE arrayValueLiteral:avl COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
+//    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Value>()); :}
     | STRING_LITERAL:s {: new ArrayValueLiteral(s); :}
     ;
 
-arrayValueLiteral ::=
-    value:v {:
-    ArrayList<Value> temp = new ArrayList<Value>();
-    temp.add(v);
-    RESULT = temp;
-    :}
-    | arrayValueLiteral:avl COMMA value:v {:avl.add(v); RESULT = avl; :}
-;
+//arrayValueLiteral ::=
+//    value:v {:
+//    ArrayList<Value> temp = new ArrayList<Value>();
+//    temp.add(v);
+//    RESULT = temp;
+//    :}
+//    | arrayValueLiteral:avl COMMA value:v {:avl.add(v); RESULT = avl; :}
+//;
 
 emptyBracketType_plus ::=
     emptyBracketType_plus:ts COMMA emptyBracketType:t {: ts.add(t); RESULT = ts; :}
@@ -161,60 +175,80 @@ emptyDimension_star ::=
     | {:RESULT = new Dimension(0); :}
     ;
 
-//expr ::=
-//       expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
-//    |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
-//    |  expr:e1 DIVIDE    expr:e2  {: RESULT = new Divide(e1, e2); :}
-//    |  expr:e1 MODULO    expr:e2  {: RESULT = new Modulo(e1, e2); :}
-//    |  expr:e1 PLUS      expr:e2  {: RESULT = new Plus(e1, e2); :}
-//    |  expr:e1 MINUS     expr:e2  {: RESULT = new Minus(e1, e2); :}
-//    |  expr:e1 LT        expr:e2  {: RESULT = new Lt(e1, e2); :}
-//    |  expr:e1 LEQ       expr:e2  {: RESULT = new Leq(e1, e2); :}
-//    |  expr:e1 GT        expr:e2  {: RESULT = new Gt(e1, e2); :}
-//    |  expr:e1 GEQ       expr:e2  {: RESULT = new Geq(e1, e2); :}
-//    |  expr:e1 EQUAL     expr:e2  {: RESULT = new Equal(e1, e2); :}
-//    |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_Equal(e1, e2); :}
-//    |  expr:e1 AND       expr:e2  {: RESULT = new And(e1, e2); :}
-//    |  expr:e1 OR        expr:e2  {: RESULT = new Or(e1, e2); :}
-//    |  NOT               expr:e1  {: RESULT = new Not(e1); :}
-//    | OPEN_BRACE arrayExpr:ave  CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
-//    | OPEN_BRACE arrayExpr:ave COMMA CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
-//    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayExpr(new ArrayList<Expr>()); :}
-//    | IDENTIFIER:id {: RESULT = new Id(id); :}
-//    | LENGTH OPEN_PAREN Id:id CLOSE_PAREN {: RESULT = new Length(id); :}
+expr ::=
+       expr:e1 TIMES     expr:e2  {: RESULT = new TimesExpr(e1, e2); :}
+    |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_MultExpr(e1, e2); :}
+    |  expr:e1 DIVIDE    expr:e2  {: RESULT = new DivideExpr(e1, e2); :}
+    |  expr:e1 MODULO    expr:e2  {: RESULT = new ModuloExpr(e1, e2); :}
+    |  expr:e1 PLUS      expr:e2  {: RESULT = new PlusExpr(e1, e2); :}
+    |  expr:e1 MINUS     expr:e2  {: RESULT = new MinusExpr(e1, e2); :}
+    |  expr:e1 LT        expr:e2  {: RESULT = new LtExpr(e1, e2); :}
+    |  expr:e1 LEQ       expr:e2  {: RESULT = new LeqExpr(e1, e2); :}
+    |  expr:e1 GT        expr:e2  {: RESULT = new GtExpr(e1, e2); :}
+    |  expr:e1 GEQ       expr:e2  {: RESULT = new GeqExpr(e1, e2); :}
+    |  expr:e1 EQUAL     expr:e2  {: RESULT = new EqualExpr(e1, e2); :}
+    |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_EqualExpr(e1, e2); :}
+    |  expr:e1 AND       expr:e2  {: RESULT = new AndExpr(e1, e2); :}
+    |  expr:e1 OR        expr:e2  {: RESULT = new OrExpr(e1, e2); :}
+    |  NOT               expr:e1  {: RESULT = new NotExpr(e1); :}
+    |  value:v                    {: RESULT = (Expr) v;:}
+    | OPEN_BRACE arrayExpr:ave  CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
+    | OPEN_BRACE arrayExpr:ave COMMA CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
+    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayExpr(new ArrayList<Expr>()); :}
+    | IDENTIFIER:id {: RESULT = new Id(id); :}
+//    | LENGTH OPEN_PAREN IDENTIFIER:id CLOSE_PAREN {: RESULT = new Length(id); :}
 //    |  LENGTH OPEN_PAREN arrayExpr:a CLOSE_PAREN {: RESULT = new Length(a); :}
 //    |  LENGTH OPEN_PAREN arrayValueLiteral:a CLOSE_PAREN {: RESULT = new Length(a); :}
 //    | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new Procedure(id); :}
-//    | Id:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
-//    ;
-//
-//
-//exprList ::=
-//    expr:x {:
-//            ArrayList<Expr> temp = new ArrayList<Expr>();
-//            temp.add(x);
-//            RESULT = temp;
-//        :}
-//    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
-//;
-//
-//arrayExpr ::=
-//    expr:x {:
-//            ArrayList<Expr> temp = new ArrayList<Expr>();
-//            temp.add(x);
-//            RESULT = temp;
-//        :}
-//    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
-//;
-//
-//stmt ::=
-//    while:w
-//    ;
-//
-//block ::= ;
-//
-//
-//while ::= WHILE OPEN_PAREN expr:e CLOSE_PAREN block:b  {: RESULT = new While(e, b); :};
+//    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
+    ;
+
+
+exprList ::=
+    expr:x {:
+            ArrayList<Expr> temp = new ArrayList<Expr>();
+            temp.add(x);
+            RESULT = temp;
+        :}
+    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+;
+
+arrayExpr ::=
+    expr:x {:
+            ArrayList<Expr> temp = new ArrayList<Expr>();
+            temp.add(x);
+            RESULT = temp;
+        :}
+    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+;
+
+stmt ::=
+  matched_stmt:m {: RESULT = m; :}
+//| unmatched_stmt:u {: RESULT = u; :}
+;
+
+matched_stmt ::= declartion_assign_stmt:das {:RESULT = das; :}
+//    WHILE expr:e matched_stmt:ms {:RESULT = new While(e,ms);:}
+//    | block:b {: RESULT = b; :}
+//    | declartion_assign_stmt:das {:RESULT = das; :}
+    ;
+
+declartion_assign_stmt ::=
+    emptyBracketDecl:d GETS expr:e {:RESULT = new DeclStmt(d,e);:}
+    | declartion_assign_stmt:das SEMICOLON {:RESULT = das;:}
+//    | UNDERSCORE:u GETS expr:e {::}
+//    |
+;
+block ::= OPEN_BRACE statement_star:ss CLOSE_BRACE {:System.out.println("IN BLOCK");RESULT = new Block(ss);:}
+
+;
+
+statement_star ::=
+    statement_star:ss stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+    | {:RESULT = new ArrayList<Stmt>();:}
+;
+
+
 
 
 //start with expr;
