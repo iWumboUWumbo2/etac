@@ -14,9 +14,7 @@ main (){
         }
     }
 
-    //fail?
-    while (x : int[][]) {
-        return 5;
+    while (x) {
     }
-    return "";
+    while x a:int = 4
 }

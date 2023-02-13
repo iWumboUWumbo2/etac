@@ -5,21 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/test21.eta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IfOnly.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/ifTests.eta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etac-build" beforeDir="false" afterPath="$PROJECT_DIR$/etac-build" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ArrayExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ArrayExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/FunctionCallExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/FunctionCallExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Length.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Length.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/UnaryExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/UnaryExpr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/If.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IfElse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/sym.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/sym.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test1.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test1.eta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test18.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test18.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test21.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test21.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test23.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test23.eta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
