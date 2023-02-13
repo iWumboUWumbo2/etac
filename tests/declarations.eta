@@ -1,0 +1,42 @@
+use io
+
+foo(): bool, int {
+    expr: int = 1 - 2 * 3 * -4
+    pred: bool = true & true | false;
+    if (pred) { expr = 59 }
+    return pred, expr;
+}
+_, i: int = foo()
+
+a: int = 5
+b: int[]
+c : int[3]
+d : int[][]
+e: int[3][4]
+f : int[3][]
+e = f
+
+a: bool = true
+b: bool[]
+c : bool[3]
+d : bool[][]
+e: bool[3][4]
+f : bool[3][]
+e = f
+
+
+main () {
+    a : int[] = {1,2}
+    b: int[][] = {{0, 1,}, {2, 3}}
+    c : bool[] = {1,2}
+    d: bool[][] = {{0, 1,}, {2, 3}}
+}
+
+//invalid
+a: bool = 1 == 1
+a : bool = true != false
+x:int = 1 + 1
+y : int[2][2] = {{1,2,}{3,4}}
+z : int[][3]
+g : bool[] = {1,2}
+h: bool[][] = {{0, 1,}, {2, 3}}
