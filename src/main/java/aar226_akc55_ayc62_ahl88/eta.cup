@@ -41,7 +41,7 @@ nonterminal Stmt stmt;
 nonterminal Stmt matched_stmt;
 nonterminal Stmt unmatched_stmt;
 nonterminal ArrayList<Stmt> statement_star;
-nonterminal DeclStmt declartion_assign_stmt;
+nonterminal DeclStmt declaration_assign_stmt;
 
 
 precedence nonassoc IF;
@@ -241,20 +241,25 @@ exprList ::=
 //;
 
 stmt ::=
-  matched_stmt:m {: RESULT = m; :}
+
+    // single or multiple TODO a = 4
+    declaration_assign_stmt:das {:RESULT = das; :}
+
+    // WHILE
+    | WHILE expr:e stmt:s {:RESULT = new While(e,s);:}
+    | IF expr:e stmt:s {:RESULT = new IfOnly(e,s);:}
+    | IF expr:e stmt:s1 ELSE stmt:s2 {:RESULT = new IfElse(e,s1,s2);:}
+    | block:b {: RESULT = b; :}
+//    | RETURN expr:e {:RESULT = new Return(e);:}
+//    | RETURN {:RESULT = new Return();:}
+//  matched_stmt:m {: RESULT = m; :}
 //| unmatched_stmt:u {: RESULT = u; :}
 ;
 
-matched_stmt ::= declartion_assign_stmt:das {:RESULT = das; :}
-//    WHILE expr:e matched_stmt:ms {:RESULT = new While(e,ms);:}
-//    | block:b {: RESULT = b; :}
-//    | declartion_assign_stmt:das {:RESULT = das; :}
-    ;
-
-declartion_assign_stmt ::=
+declaration_assign_stmt ::=
     emptyBracketDecl:d GETS expr:e {:RESULT = new DeclStmt(d,e);:}
     | emptyBracketDecl:d {:RESULT = new DeclStmt(d,null);:}
-    | declartion_assign_stmt:das SEMICOLON {:RESULT = das;:}
+//    | declaration_assign_stmt:das SEMICOLON {:RESULT = das;:}
 //    | UNDERSCORE:u GETS expr:e {::}
 //    |
 ;
@@ -263,7 +268,8 @@ block ::= OPEN_BRACE statement_star:ss CLOSE_BRACE {:System.out.println("IN BLOC
 ;
 
 statement_star ::=
-    statement_star:ss stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+    statement_star:ss SEMICOLON stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
+    |statement_star:ss  stmt:s {:System.out.println("IN SS"); ss.add(s); RESULT = ss;:}
     | {:RESULT = new ArrayList<Stmt>();:}
 ;
 

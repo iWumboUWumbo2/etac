@@ -8,4 +8,12 @@ main(args: int[][]){
     a:int[] = length({65,53})
     a:int[] = length(doom);
 
+    b:bool =  func1()
+    b:bool[] = fun2();
+    b:bool[] = fun5(a,d);
+    b:bool   = fun4(e,r,g);
+    b:bool[][] = fun3(1+35123+5918278,5182-83+-1871203970); // last line can't have semi :((
+    b:bool[][] = fun3(1+35123+5918278,5182-83+-1871203970) // last line can't have semi :((
+
+
 }
