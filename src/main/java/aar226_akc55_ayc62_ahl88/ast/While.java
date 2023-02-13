@@ -6,6 +6,11 @@ public class While extends Stmt {
     private Expr expr;
     private Block block;
 
+    public While(Expr expr, Block block) {
+        this.expr = expr;
+        this.block = block;
+    }
+
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
