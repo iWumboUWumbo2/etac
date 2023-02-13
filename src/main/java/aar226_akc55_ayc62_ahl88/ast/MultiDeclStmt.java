@@ -11,7 +11,7 @@ public class MultiDeclStmt extends Stmt {
     public MultiDeclStmt(ArrayList<Decl> d, ArrayList<Expr> e) {
         decls = d;
         for (Decl de: decls){
-            if (!de.type.dimensions.allEmpty) {
+            if (de.type != null && !de.type.dimensions.allEmpty) {
                 throw new Error("array with init len no Val");
             }
         }

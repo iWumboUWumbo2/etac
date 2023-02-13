@@ -1,0 +1,5 @@
+use io
+
+foo() {
+    _, i:int = doop()
+}

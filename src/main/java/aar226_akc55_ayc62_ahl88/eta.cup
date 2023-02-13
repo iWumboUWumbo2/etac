@@ -45,6 +45,8 @@ nonterminal Stmt declaration_assign_stmt;
 nonterminal Stmt multi_declaration_assign_stmt;
 nonterminal Return return;
 nonterminal ArrayList<Decl> type_list;
+nonterminal ArrayList<Expr> fullBracketPlus;
+nonterminal Expr fullBracket;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -113,6 +115,18 @@ emptyBracketDecl_star ::=
 
 emptyBracketDecl ::=
     IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new Decl(i,t); :}
+    ;
+
+fullBracketPlus ::=
+    fullBracketPlus:ts fullBracket:t {: ts.add(t); RESULT = ts; :}
+   | fullBracket:t {: ArrayList<Expr> exprList = new ArrayList<Expr>();
+                         exprList.add(t);
+                         RESULT = exprList;
+                         :} ;
+
+
+fullBracket ::=
+    OPEN_BRACKET expr:e CLOSE_BRACKET {: RESULT = e; :}
     ;
 
 globalDecl ::=
@@ -222,6 +236,7 @@ expr ::=
     |  LENGTH OPEN_PAREN expr:e CLOSE_PAREN {: RESULT = new Length(e); :}
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new FunctionCallExpr(id,new ArrayList<Expr>() ); :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
+    | expr:e fullBracketPlus:i {: new ArrayAccess(e, i); :}
     ;
 
 

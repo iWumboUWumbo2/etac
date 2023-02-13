@@ -7,6 +7,7 @@ enum Exprs {
     IntLit,
     BoolLit,
     ListExpr,
-    Id
+    Id,
+    ArrayAccess
 
 }
