@@ -1,0 +1,28 @@
+// Function calls
+use asdlkjdkjfa.asdfadf.asdfdf.d.dfdfd.d
+
+boolean () bool {
+    return true;
+}
+
+boolean2 () bool {
+    return boolean() == True;
+}
+
+main () {
+    return boolean2()
+}
+
+fib (x : int) {
+    if (x <= 1) {
+        return x
+    } else {
+        return fib(x-1) + fib(x-2)
+    }
+}
+
+test () {
+    return fib(3)
+}
+
+

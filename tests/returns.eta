@@ -39,5 +39,5 @@ main () : int[], bool[][] {
 main () : int[][], bool[][] {
     x : int = 5;
     y : int = 5;
-    return {1,2,3},y;
+    return {1,2,3},y, 5;
 }
