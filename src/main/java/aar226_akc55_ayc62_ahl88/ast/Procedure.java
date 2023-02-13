@@ -6,13 +6,15 @@ import java.util.ArrayList;
 
 public class Procedure extends Stmt {
     private Id id;
-    private ArrayList<Param> params;
+
+    public Procedure(Id id) {
+        this.id = id;
+    }
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         id.prettyPrint(p);
-        params.forEach(e -> e.prettyPrint(p));
         p.endList();
     }
 }
