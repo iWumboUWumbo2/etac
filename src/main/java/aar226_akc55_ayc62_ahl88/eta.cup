@@ -22,6 +22,7 @@ terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MUL
 
 nonterminal Program program;
 nonterminal ArrayList<Use> importUseStar;
+nonterminal Stmt stmt;
 nonterminal Use use_component;
 nonterminal ArrayList<Definition> definitionStar;
 nonterminal Definition definition;
@@ -34,6 +35,11 @@ nonterminal Dimension emptyDimension_star;
 nonterminal Globdecl globalDecl;
 nonterminal Value value;
 nonterminal ArrayList<Value> arrayValueLiteral;
+nonterminal Expr expr;
+nonterminal Block block;
+nonterminal ArrayList<Expr> arrayExpr;
+nonterminal LengthArg lengthArg;
+nonterminal ArrayList<Expr> exprList;
 
 // function call
 precedence left OR;
@@ -101,11 +107,13 @@ globalDecl ::=
 
 value ::=
     INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true); :}
+    |  CHARACTER_LITERAL:c {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
     |MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false); :} %prec UMINUS
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b); :}
     | OPEN_BRACE arrayValueLiteral:avl  CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
     | OPEN_BRACE arrayValueLiteral:avl COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
     | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Value>()); :}
+    | STRING_LITERAL:s {: new ArrayValueLiteral(s); :}
     ;
 
 arrayValueLiteral ::=
@@ -135,7 +143,60 @@ emptyDimension_star ::=
     | {:RESULT = new Dimension(0); :}
     ;
 
+expr ::=
+       expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
+    |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
+    |  expr:e1 DIVIDE    expr:e2  {: RESULT = new Divide(e1, e2); :}
+    |  expr:e1 MODULO    expr:e2  {: RESULT = new Modulo(e1, e2); :}
+    |  expr:e1 PLUS      expr:e2  {: RESULT = new Plus(e1, e2); :}
+    |  expr:e1 MINUS     expr:e2  {: RESULT = new Minus(e1, e2); :}
+    |  expr:e1 LT        expr:e2  {: RESULT = new Lt(e1, e2); :}
+    |  expr:e1 LEQ       expr:e2  {: RESULT = new Leq(e1, e2); :}
+    |  expr:e1 GT        expr:e2  {: RESULT = new Gt(e1, e2); :}
+    |  expr:e1 GEQ       expr:e2  {: RESULT = new Geq(e1, e2); :}
+    |  expr:e1 EQUAL     expr:e2  {: RESULT = new Equal(e1, e2); :}
+    |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_Equal(e1, e2); :}
+    |  expr:e1 AND       expr:e2  {: RESULT = new And(e1, e2); :}
+    |  expr:e1 OR        expr:e2  {: RESULT = new Or(e1, e2); :}
+    |  NOT               expr:e1  {: RESULT = new Not(e1); :}
+    | OPEN_BRACE arrayExpr:ave  CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
+    | OPEN_BRACE arrayExpr:ave COMMA CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
+    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayExpr(new ArrayList<Expr>()); :}
+    | Id:id {: RESULT = new Id(id); :}
+    | LENGTH OPEN_PAREN Id:id CLOSE_PAREN {: RESULT = new Length(id); :}
+    |  LENGTH OPEN_PAREN arrayExpr:a CLOSE_PAREN {: RESULT = new Length(a); :}
+    |  LENGTH OPEN_PAREN arrayValueLiteral:a CLOSE_PAREN {: RESULT = new Length(a); :}
+    | Id:id OPEN_PAREN CLOSE_PAREN {: RESULT = new Procedure(id); :}
+    | Id:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
+    ;
 
+
+exprList ::=
+    expr:x {:
+            ArrayList<Expr> temp = new ArrayList<Expr>();
+            temp.add(x);
+            RESULT = temp;
+        :}
+    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+;
+
+arrayExpr ::=
+    expr:x {:
+            ArrayList<Expr> temp = new ArrayList<Expr>();
+            temp.add(x);
+            RESULT = temp;
+        :}
+    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+;
+
+stmt ::=
+    while:w
+    ;
+
+block ::= ;
+
+
+while ::= WHILE OPEN_PAREN expr:e CLOSE_PAREN block:b  {: RESULT = new While(e, b); :};
 
 
 //start with expr;
