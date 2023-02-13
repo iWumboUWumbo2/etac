@@ -1,0 +1,22 @@
+// While
+use io
+
+main (){
+    x : int = 2
+    y : int = 5;
+    while (true) {
+        x : int = 5;
+        while (false) {
+            y : int = 6;
+            while (x == 5) {
+                z : int = 7;
+            }
+        }
+    }
+
+    //fail?
+    while (x : int[][]) {
+        return 5;
+    }
+    return "";
+}
