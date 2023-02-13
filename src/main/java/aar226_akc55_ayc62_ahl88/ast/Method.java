@@ -32,7 +32,7 @@ public class Method implements Definition, Printer {
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startList();
+        p.startUnifiedList();
         id.prettyPrint(p);
 
         p.startList();
