@@ -24,7 +24,9 @@ public class IntLiteral extends Expr implements Value {
         this.raw = c;
         vt = ValueType.INTLITERAL;
     }
-
+    public long getLong(){
+        return i;
+    }
     public ValueType getValueType(){
         return vt;
     }

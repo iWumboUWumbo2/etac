@@ -2,8 +2,11 @@ package aar226_akc55_ayc62_ahl88.ast;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Type implements Printer {
-    private Dimension dimensions;
+    public Dimension dimensions;
     private boolean isInt;
 
     public Type (boolean t,Dimension d) {
@@ -21,12 +24,18 @@ public class Type implements Printer {
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        for (long i = 0; i < dimensions.getDim(); i++) {
+        ArrayList<Long> rev = new ArrayList<>(dimensions.indices);
+        Collections.reverse(rev);
+        for (int i = 0; i < dimensions.getDim(); i++) {
             p.startList();
-            p.printAtom("[]");
+            if (rev.get(i) != null){
+                p.printAtom("[" + rev.get(i) +"]");
+            }else {
+                p.printAtom("[]");
+            }
         }
         p.printAtom(getTypeAsString());
-        for (long i = 0; i < dimensions.getDim(); i++) {
+        for (int i = 0; i < dimensions.getDim(); i++) {
             p.endList();
         }
     }

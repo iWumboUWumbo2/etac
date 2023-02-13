@@ -5,7 +5,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 
 public class Decl extends Stmt implements Printer {
     private Id id;
-    private Type type;
+    public Type type;
 
     private Value value;
     public Decl( String s, Type t){

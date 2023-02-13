@@ -96,13 +96,20 @@ emptyBracketDecl_star ::=
 
 emptyBracketDecl ::=
     IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new Decl(i,t); :}
-    | IDENTIFIER:i COLON emptyBracketType:t SEMICOLON {: RESULT = new Decl(i,t); :}
     ;
 
 globalDecl ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null);:}
-    | emptyBracketDecl:ed GETS value:v {: RESULT  = new Globdecl(ed, v); :}
-    | emptyBracketDecl:ed GETS value:v SEMICOLON {: RESULT  = new Globdecl(ed, v); :}
+    | emptyBracketDecl:ed GETS value:v {:
+        if (!ed.type.dimensions.allEmpty) {
+            throw new Error("array with init len no Val");
+        }
+        if (ed.type.dimensions.getDim() != 0){
+            throw new Error("global arr not init allowed");
+        }
+        RESULT  = new Globdecl(ed, v);
+    :}
+    | globalDecl:gd SEMICOLON {:RESULT = gd;:}
     ;
 
 value ::=
@@ -139,64 +146,75 @@ emptyBracketType ::=
  ;
 
 emptyDimension_star ::=
-    emptyDimension_star:ds OPEN_BRACKET CLOSE_BRACKET {: ds.increment(); RESULT = ds;:}
+    emptyDimension_star:ds OPEN_BRACKET CLOSE_BRACKET {:
+    ds.increment();
+    ds.foundEmpty = true;
+    ds.indices.add(null);
+    RESULT = ds;:}
+    |emptyDimension_star:ds OPEN_BRACKET INTEGER_LITERAL:i CLOSE_BRACKET {:
+        if (ds.foundEmpty) throw new Error("Filled index after empty");
+        ds.allEmpty = false;
+        IntLiteral iL = new IntLiteral(i,true);
+        ds.indices.add(iL.getLong());
+        ds.increment(); // [][2]
+        RESULT = ds;:}
     | {:RESULT = new Dimension(0); :}
     ;
 
-expr ::=
-       expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
-    |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
-    |  expr:e1 DIVIDE    expr:e2  {: RESULT = new Divide(e1, e2); :}
-    |  expr:e1 MODULO    expr:e2  {: RESULT = new Modulo(e1, e2); :}
-    |  expr:e1 PLUS      expr:e2  {: RESULT = new Plus(e1, e2); :}
-    |  expr:e1 MINUS     expr:e2  {: RESULT = new Minus(e1, e2); :}
-    |  expr:e1 LT        expr:e2  {: RESULT = new Lt(e1, e2); :}
-    |  expr:e1 LEQ       expr:e2  {: RESULT = new Leq(e1, e2); :}
-    |  expr:e1 GT        expr:e2  {: RESULT = new Gt(e1, e2); :}
-    |  expr:e1 GEQ       expr:e2  {: RESULT = new Geq(e1, e2); :}
-    |  expr:e1 EQUAL     expr:e2  {: RESULT = new Equal(e1, e2); :}
-    |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_Equal(e1, e2); :}
-    |  expr:e1 AND       expr:e2  {: RESULT = new And(e1, e2); :}
-    |  expr:e1 OR        expr:e2  {: RESULT = new Or(e1, e2); :}
-    |  NOT               expr:e1  {: RESULT = new Not(e1); :}
-    | OPEN_BRACE arrayExpr:ave  CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
-    | OPEN_BRACE arrayExpr:ave COMMA CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
-    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayExpr(new ArrayList<Expr>()); :}
-    | Id:id {: RESULT = new Id(id); :}
-    | LENGTH OPEN_PAREN Id:id CLOSE_PAREN {: RESULT = new Length(id); :}
-    |  LENGTH OPEN_PAREN arrayExpr:a CLOSE_PAREN {: RESULT = new Length(a); :}
-    |  LENGTH OPEN_PAREN arrayValueLiteral:a CLOSE_PAREN {: RESULT = new Length(a); :}
-    | Id:id OPEN_PAREN CLOSE_PAREN {: RESULT = new Procedure(id); :}
-    | Id:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
-    ;
-
-
-exprList ::=
-    expr:x {:
-            ArrayList<Expr> temp = new ArrayList<Expr>();
-            temp.add(x);
-            RESULT = temp;
-        :}
-    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
-;
-
-arrayExpr ::=
-    expr:x {:
-            ArrayList<Expr> temp = new ArrayList<Expr>();
-            temp.add(x);
-            RESULT = temp;
-        :}
-    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
-;
-
-stmt ::=
-    while:w
-    ;
-
-block ::= ;
-
-
-while ::= WHILE OPEN_PAREN expr:e CLOSE_PAREN block:b  {: RESULT = new While(e, b); :};
+//expr ::=
+//       expr:e1 TIMES     expr:e2  {: RESULT = new Times(e1, e2); :}
+//    |  expr:e1 HI_MULT   expr:e2  {: RESULT = new Hi_Mult(e1, e2); :}
+//    |  expr:e1 DIVIDE    expr:e2  {: RESULT = new Divide(e1, e2); :}
+//    |  expr:e1 MODULO    expr:e2  {: RESULT = new Modulo(e1, e2); :}
+//    |  expr:e1 PLUS      expr:e2  {: RESULT = new Plus(e1, e2); :}
+//    |  expr:e1 MINUS     expr:e2  {: RESULT = new Minus(e1, e2); :}
+//    |  expr:e1 LT        expr:e2  {: RESULT = new Lt(e1, e2); :}
+//    |  expr:e1 LEQ       expr:e2  {: RESULT = new Leq(e1, e2); :}
+//    |  expr:e1 GT        expr:e2  {: RESULT = new Gt(e1, e2); :}
+//    |  expr:e1 GEQ       expr:e2  {: RESULT = new Geq(e1, e2); :}
+//    |  expr:e1 EQUAL     expr:e2  {: RESULT = new Equal(e1, e2); :}
+//    |  expr:e1 NOT_EQUAL expr:e2  {: RESULT = new Not_Equal(e1, e2); :}
+//    |  expr:e1 AND       expr:e2  {: RESULT = new And(e1, e2); :}
+//    |  expr:e1 OR        expr:e2  {: RESULT = new Or(e1, e2); :}
+//    |  NOT               expr:e1  {: RESULT = new Not(e1); :}
+//    | OPEN_BRACE arrayExpr:ave  CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
+//    | OPEN_BRACE arrayExpr:ave COMMA CLOSE_BRACE {:RESULT = new ArrayExpr(ave); :}
+//    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayExpr(new ArrayList<Expr>()); :}
+//    | IDENTIFIER:id {: RESULT = new Id(id); :}
+//    | LENGTH OPEN_PAREN Id:id CLOSE_PAREN {: RESULT = new Length(id); :}
+//    |  LENGTH OPEN_PAREN arrayExpr:a CLOSE_PAREN {: RESULT = new Length(a); :}
+//    |  LENGTH OPEN_PAREN arrayValueLiteral:a CLOSE_PAREN {: RESULT = new Length(a); :}
+//    | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new Procedure(id); :}
+//    | Id:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
+//    ;
+//
+//
+//exprList ::=
+//    expr:x {:
+//            ArrayList<Expr> temp = new ArrayList<Expr>();
+//            temp.add(x);
+//            RESULT = temp;
+//        :}
+//    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+//;
+//
+//arrayExpr ::=
+//    expr:x {:
+//            ArrayList<Expr> temp = new ArrayList<Expr>();
+//            temp.add(x);
+//            RESULT = temp;
+//        :}
+//    |  arrayExpr:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
+//;
+//
+//stmt ::=
+//    while:w
+//    ;
+//
+//block ::= ;
+//
+//
+//while ::= WHILE OPEN_PAREN expr:e CLOSE_PAREN block:b  {: RESULT = new While(e, b); :};
 
 
 //start with expr;
