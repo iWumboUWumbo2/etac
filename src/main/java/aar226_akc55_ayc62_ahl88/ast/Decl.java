@@ -12,6 +12,10 @@ public class Decl implements Printer {
         id = new Id(s);
         type = t;
     }
+    public Decl( String s){
+        id = new Id(s);
+        type = null;
+    }
 
     public Decl (String s, Type t, Value v) {
         id = new Id(s);
@@ -31,6 +35,8 @@ public class Decl implements Printer {
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         id.prettyPrint(p);
-        type.prettyPrint(p);
+        if (type != null) {
+            type.prettyPrint(p);
+        }
     }
 }
