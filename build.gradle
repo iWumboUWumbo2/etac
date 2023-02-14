@@ -34,11 +34,11 @@ dependencies {
     implementation fileTree(dir: 'deps/libs/test', include: '*.jar')
     implementation fileTree(dir: 'deps/libs/plugins', include: '*.jar')
     implementation fileTree(dir: 'lib', include: '*.jar')
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     // add more dependencies here
-    testImplementation 'junit:junit:4.12'
-    implementation 'junit:junit:4.12'
+//    testImplementation 'junit:junit:4.12'
+//    implementation 'junit:junit:4.12'
     implementation 'commons-cli:commons-cli:1.4'
     implementation 'org.apache.commons:commons-text:1.10.0'
 }

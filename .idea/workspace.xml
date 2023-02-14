@@ -5,16 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/io.eti" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ArrayAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ArrayAccess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DeclStmt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DeclStmt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/EtiInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/EtiInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntLiteral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntLiteral.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Length.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Length.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Reassignment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Reassignment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Type.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Type.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/main/hamcrest-core-1.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/main/junit-4.12.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/ant-1.10.11.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/ant-launcher-1.10.11.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/asm-9.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/asm-analysis-9.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/asm-commons-9.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/asm-tree-9.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/jdependency-2.7.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/jdom2-2.0.6.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/log4j-api-2.17.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/log4j-core-2.17.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/plugins/plexus-utils-3.4.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/test/junit-jupiter-api-5.8.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/test/junit-jupiter-engine-5.8.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/test/junit-platform-commons-1.8.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/test/junit-platform-engine-1.8.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deps/libs/test/opentest4j-1.2.0.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,17 +81,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "/Users/AndrewCheng/Desktop/etac",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
