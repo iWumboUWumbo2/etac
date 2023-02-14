@@ -5,12 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/etacClean" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/testlex.eta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/EtaParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/EtiParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/etacClean" beforeDir="false" afterPath="$PROJECT_DIR$/etacClean" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Decl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Definition.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Dimension.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Globdecl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Id.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/IntLiteral.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Method.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Program.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Type.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Use.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cuppers/cuppers.cup" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,9 +60,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/main/cuppers/cuppers.cup" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
