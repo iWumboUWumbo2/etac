@@ -9,16 +9,13 @@ import java.nio.file.Paths;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 class Main {
     private static String outputDirectory;
-
-    private static boolean isDirSpecified;
+    private static String inputDirectory;
+    private static boolean isOutputDirSpecified;
+    private static boolean isInputDirSpecified;
 
     // Write the lexed string into the corresponding file name
     private static void writeOutput(String filename, String output, String extension) {
-        if (!isDirSpecified) {
-            filename = Paths.get(filename).getFileName().toString();
-        }
-
-        Path path = Paths.get(outputDirectory, filename);
+        Path path = (isOutputDirSpecified) ? Paths.get(outputDirectory, filename) : Paths.get(filename);
 
         String pathname = path.toString();
         pathname = pathname.substring(0, pathname.length() - 3) + extension;
@@ -58,9 +55,12 @@ class Main {
 
     private static void parseFile(String filename, StringBuilder parsedOutput) throws IOException {
         try {
+            String zhenFilename =
+                    (isInputDirSpecified) ? Paths.get(inputDirectory, filename).toString() : filename;
+
             if (filename.endsWith(".eta")) {
                 try {
-                    EtaParser p = new EtaParser(new Lexer(new FileReader(filename)));
+                    EtaParser p = new EtaParser(new Lexer(new FileReader(zhenFilename)));
                     try {
                         Program result = (Program) p.parse().value;
                         StringWriter out = new StringWriter();
@@ -81,7 +81,7 @@ class Main {
             }
             else if (filename.endsWith(".eti")) {
                 try {
-                    EtiParser p = new EtiParser(new Lexer(new FileReader(filename)));
+                    EtiParser p = new EtiParser(new Lexer(new FileReader(zhenFilename)));
                     try {
                         EtiInterface result = (EtiInterface) p.parse().value;
                         StringWriter out = new StringWriter();
@@ -94,7 +94,8 @@ class Main {
                     } catch (Error e) {
                         writeOutput(filename, e.getMessage(), "parsed");
                     }
-                }catch (Exception e){
+                }
+                catch (Exception e){
                     System.out.println("File without that name found");
                 }
             }
@@ -139,11 +140,15 @@ class Main {
     private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
         try {
             if (filename.endsWith(".eta") || filename.endsWith(".eti")) {
+
+                String zhenFilename =
+                        (isInputDirSpecified) ? Paths.get(inputDirectory, filename).toString() : filename;
+
                 FileReader f;
                 try {
-                    f = new FileReader(filename);
+                    f = new FileReader(zhenFilename);
                 }
-                catch(Exception e){
+                catch(Exception e) {
                     System.out.println(e.getMessage());
                     return;
                 }
@@ -152,7 +157,7 @@ class Main {
                     while (true) {
                         Symbol t = etaLexer.next_token();
                         if (t.sym == sym.EOF) break;
-                        String lexed =  prettyOut(t);
+                        String lexed = prettyOut(t);
                         lexedOutput.append(lexed);
                     }
                 }
@@ -237,6 +242,8 @@ class Main {
                 "Generate output from lexical analysis.");
         Option parseOpt = new Option(null, "parse", true,
                 "Generate output from lexical analysis.");
+        Option sourcepathOpt   = new Option ("sourcepath", true,
+                "Specify where to place generated diagnostic files.");
         Option dirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
 
@@ -245,12 +252,13 @@ class Main {
         options.addOption(helpOpt);
         options.addOption(dirOpt);
         options.addOption(parseOpt);
+        options.addOption(sourcepathOpt);
         options.addOption(lexOpt);
 
         HelpFormatter formatter = new HelpFormatter();
 
-        isDirSpecified = false;
-        outputDirectory = Paths.get("").toAbsolutePath().toString();
+        isOutputDirSpecified = isInputDirSpecified = false;
+        outputDirectory = inputDirectory = Paths.get("").toAbsolutePath().toString();
 
 //        System.out.println(outputDirectory);
 
@@ -263,7 +271,12 @@ class Main {
 
             if (cmd.hasOption("D")) {
                 outputDirectory = cmd.getOptionValue("D");
-                isDirSpecified = true;
+                isOutputDirSpecified = true;
+            }
+
+            if (cmd.hasOption("sourcepath")) {
+                inputDirectory = cmd.getOptionValue("sourcepath");
+                isInputDirSpecified = true;
             }
 
             if (cmd.hasOption("lex")) {
