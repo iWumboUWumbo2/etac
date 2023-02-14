@@ -58,18 +58,30 @@ class Main {
 
     private static void parseFile(String filename, StringBuilder parsedOutput) throws IOException {
         try {
-            if (filename.endsWith(".eta")) {
+            if (filename.endsWith(".eta") || filename.endsWith(".eti")) {
                 try {
-                    parser p = new parser(new Lexer(new FileReader(filename)));
+                    EtaParser p = new EtaParser(new Lexer(new FileReader(filename)));
+                    EtiParser pi = new EtiParser(new Lexer(new FileReader(filename)));
                     try {
-                        Program result = (Program) p.parse().value;
-                        StringWriter out = new StringWriter();
-                        //                    PrintWriter cw = new PrintWriter(System.out);
-                        PrintWriter cw = new PrintWriter(out);
-                        CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
-                        result.prettyPrint(printer);
-                        printer.close();
-                        writeOutput(filename, out.toString(), "parsed");
+                        if (filename.endsWith(".eta")) {
+                            Program result = (Program) p.parse().value;
+                            StringWriter out = new StringWriter();
+                            //                    PrintWriter cw = new PrintWriter(System.out);
+                            PrintWriter cw = new PrintWriter(out);
+                            CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
+                            result.prettyPrint(printer);
+                            printer.close();
+                            writeOutput(filename, out.toString(), "parsed");
+                        }else if (filename.endsWith(".eti")){
+                            EtiInterface result = (EtiInterface) pi.parse().value;
+                            StringWriter out = new StringWriter();
+                            //                    PrintWriter cw = new PrintWriter(System.out);
+                            PrintWriter cw = new PrintWriter(out);
+                            CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
+                            result.prettyPrint(printer);
+                            printer.close();
+                            writeOutput(filename, out.toString(), "parsed");
+                        }
                         //                    System.out.println("Result = " + result );
                     } catch (Error e) {
                         writeOutput(filename, e.getMessage(), "parsed");
@@ -118,7 +130,7 @@ class Main {
     }
     private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
         try {
-            if (filename.endsWith(".eta")) {
+            if (filename.endsWith(".eta") || filename.endsWith(".eti")) {
                 FileReader f;
                 try {
                     f = new FileReader(filename);

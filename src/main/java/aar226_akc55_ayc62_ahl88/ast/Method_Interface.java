@@ -4,13 +4,12 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 import java.util.ArrayList;
 
-public class Method implements Definition, Printer {
+public class Method_Interface implements Printer {
     private Id id;
     private ArrayList<Decl> decls;
     private ArrayList<Type> types;
-    private Block block;
 
-    public Method(String s, ArrayList<Decl> d, ArrayList<Type> t, Block b){
+    public Method_Interface(String s, ArrayList<Decl> d, ArrayList<Type> t){
         for (Decl cur: d){
             if (!cur.type.dimensions.allEmpty) {
                 throw new Error("array in param list has init value");
@@ -24,7 +23,6 @@ public class Method implements Definition, Printer {
         id = new Id(s);
         decls = d;
         types = t;
-        block = b;
     }
 
 //    public Method(String s, ArrayList<Decl> d, ArrayList<Type> t){
@@ -59,9 +57,7 @@ public class Method implements Definition, Printer {
         for (Type t : types) t.prettyPrint(p);
         p.endList();
 
-        if (block != null) {
-            block.prettyPrint(p);
-        }
         p.endList();
     }
 }
+

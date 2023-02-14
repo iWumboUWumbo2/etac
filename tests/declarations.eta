@@ -4,9 +4,9 @@ foo(): bool, int {
     expr: int = 1 - 2 * 3 * -4
     pred: bool = true & true | false;
     if (pred) { expr = 59 }
+    _, i: int = foo()
     return pred, expr;
 }
-_, i: int = foo()
 a:int,b:bool,c:bool[4][] = 1,true, {bool};
 a: int = 5
 b: int[]

@@ -5,12 +5,12 @@ import java_cup.runtime.*;
 import aar226_akc55_ayc62_ahl88.ast.*;
 import java.util.ArrayList;
 // You might want to add types to these declarations.
-parser EtaParser {: :}
-parser code{:
-    public void syntax_error(Symbol cur_token){
-        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error" + cur_token.value());
-    }
-:};
+//parser EtiParser {: :}
+//parser code{:
+//    public void syntax_error(Symbol cur_token){
+//        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error" + cur_token.value());
+//    }
+//:};
 terminal String IDENTIFIER;
 terminal String STRING_LITERAL;
 terminal String CHARACTER_LITERAL;
@@ -22,8 +22,7 @@ terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MUL
   DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, AND, OR, EQUAL, NOT_EQUAL, GETS,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
   COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS;
-
-nonterminal Program program;
+nonterminal EtiInterface topLevelInter;
 nonterminal ArrayList<Use> importUseStar;
 nonterminal Use use_component;
 nonterminal ArrayList<Definition> definitionStar;
@@ -66,10 +65,11 @@ precedence nonassoc NOT, UMINUS;// ??? negation?
 precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 //precedence left SEMICOLON; // MAYBE???
 
-start with program;
+start with topLevelInter;
 
-program ::= importUseStar:ius definitionStar:dl {:
-    RESULT = new Program(ius,dl);:}
+topLevelInter ::= interfaceStar:is{:
+    RESULT = new EtiInterface(is);
+    :}
     ;
 
 importUseStar ::=
@@ -81,6 +81,19 @@ use_component::=
       USE IDENTIFIER:i {:           RESULT = new Use(i); :}
     | USE IDENTIFIER:i SEMICOLON {: RESULT = new Use(i); :}
     ;
+interfaceStar ::=
+    interfaceStar:is method_interface:mi {: is.add(mi); RESULT = is;:}
+    | {:RESULT = new ArrayList<Method_Interface>();:}
+;
+
+method_interface ::=
+     IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts {:
+     RESULT = new Method_Interface(i,ds,ts);
+     :}
+     |IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {:
+      RESULT = new Method_Interface(i,ds,new ArrayList<Type>());
+      :}
+;
 
 definitionStar ::=
     definitionStar:ds definition:d {:ds.add(d); RESULT = ds; :}
