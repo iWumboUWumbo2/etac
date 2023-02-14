@@ -13,7 +13,7 @@ class Main {
     private static boolean isDirSpecified;
 
     // Write the lexed string into the corresponding file name
-    private static void writeLexedOutput(String filename, String lexed) {
+    private static void writeOutput(String filename, String output, String extension) {
         if (!isDirSpecified) {
             filename = Paths.get(filename).getFileName().toString();
         }
@@ -21,7 +21,7 @@ class Main {
         Path path = Paths.get(outputDirectory, filename);
 
         String pathname = path.toString();
-        pathname = pathname.substring(0, pathname.length() - 3) + "lexed";
+        pathname = pathname.substring(0, pathname.length() - 3) + extension;
 
         Path parentPath = path.getParent();
         String dirname = (parentPath == null) ? "" : parentPath.toString();
@@ -45,7 +45,7 @@ class Main {
         try {
             FileWriter myWriter = new FileWriter(pathname);
 
-            myWriter.write(lexed);
+            myWriter.write(output);
             myWriter.close();
 
             System.out.println("Successfully wrote to the file.");
@@ -62,10 +62,13 @@ class Main {
                 try {
                     parser p = new parser(new Lexer(new FileReader(filename)));
                     Program result = (Program) p.parse().value;
-                    PrintWriter cw = new PrintWriter(System.out);
+                    StringWriter out = new StringWriter();
+//                    PrintWriter cw = new PrintWriter(System.out);
+                    PrintWriter cw = new PrintWriter(out);
                     CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
                     result.prettyPrint(printer);
                     printer.close();
+                    writeOutput(filename, out.toString(), "parsed");
 //                    System.out.println("Result = " + result );
                 }
                 catch (Exception e){
@@ -150,7 +153,7 @@ class Main {
             return;
         }
 
-        writeLexedOutput(filename, lexedOutput.toString());
+        writeOutput(filename, lexedOutput.toString(), "lexed");
     }
 
 //    private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
@@ -249,7 +252,7 @@ class Main {
                 }
             }
 
-            if (cmd.hasOption("parse")){
+            if (cmd.hasOption("parse")) {
                 String[] filenames = cmd.getOptionValues("parse");
                 for (String filename : filenames) {
                     parseFile(filename, new StringBuilder());
