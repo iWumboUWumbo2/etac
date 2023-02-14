@@ -161,7 +161,11 @@ public class EtiParser
   public int error_sym() {return 1;}
 
 
- 
+
+    public void syntax_error(Symbol cur_token){
+        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error" + cur_token.value());
+    }
+
 
 /** Cup generated class to encapsulate user supplied action code.*/
 class CUP$EtiParser$actions {

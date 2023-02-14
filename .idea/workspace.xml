@@ -5,26 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/EtiInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Method_Interface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/ack.eta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/binsearch.eta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/enigma.eta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/fibonacci.eta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/kmp.eta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/kmp.eti" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/kmp_test.eta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/mkmatrix.eti" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/primes.eta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etac-build" beforeDir="false" afterPath="$PROJECT_DIR$/etac-build" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etacLocalBuild" beforeDir="false" afterPath="$PROJECT_DIR$/etacLocalBuild" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Method.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/declarations.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/declarations.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

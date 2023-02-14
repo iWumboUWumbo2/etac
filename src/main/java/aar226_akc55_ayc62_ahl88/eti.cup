@@ -5,12 +5,11 @@ import java_cup.runtime.*;
 import aar226_akc55_ayc62_ahl88.ast.*;
 import java.util.ArrayList;
 // You might want to add types to these declarations.
-//parser EtiParser {: :}
-//parser code{:
-//    public void syntax_error(Symbol cur_token){
-//        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error" + cur_token.value());
-//    }
-//:};
+parser EtiParser{:
+    public void syntax_error(Symbol cur_token){
+        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error" + cur_token.value());
+    }
+:};
 terminal String IDENTIFIER;
 terminal String STRING_LITERAL;
 terminal String CHARACTER_LITERAL;
