@@ -46,6 +46,8 @@ nonterminal Stmt multi_declaration_assign_stmt;
 nonterminal Return return;
 nonterminal ArrayList<Decl> type_list;
 nonterminal ArrayList<Expr> fullBracketPlus;
+nonterminal ArrayAccess fullBracketType;
+
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -115,6 +117,12 @@ emptyBracketDecl_star ::=
 emptyBracketDecl ::=
     IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new Decl(i,t); :}
     ;
+
+
+
+fullBracketType::=
+    IDENTIFIER: i fullBracketPlus:e {:Id a = new Id(i); RESULT = new ArrayAccess(a,e);:}
+ ;
 
 fullBracketPlus ::=
     fullBracketPlus:ts OPEN_BRACKET expr:e CLOSE_BRACKET {: ts.add(e); RESULT = ts; :}
@@ -247,6 +255,7 @@ stmt ::=
 
     // single or multiple TODO a = 4
     declaration_assign_stmt:das {:RESULT = das; :}
+
     | multi_declaration_assign_stmt:mdas {:RESULT = mdas;:}
     | WHILE expr:e stmt:s {:RESULT = new While(e,s);:}
     | IF expr:e stmt:s {:RESULT = new IfOnly(e,s);:}
@@ -338,6 +347,8 @@ declaration_assign_stmt ::=
     | emptyBracketDecl:d {:RESULT = new DeclStmt(d,null);:}
     | IDENTIFIER:id GETS expr:e {: RESULT = new Reassignment(id,e);:}
     | UNDERSCORE GETS expr:e {:RESULT = new DeclStmt(new UnderScore(),e);:}
+    | fullBracketType:d GETS OPEN_BRACE exprList:e CLOSE_BRACE {: ArrayExpr a = new ArrayExpr(e);
+                                                                  RESULT = new Reassignment(d,a);:}
 ;
 block ::=
 OPEN_BRACE statement_star:ss CLOSE_BRACE {:System.out.println("IN BLOCK");RESULT = new Block(ss);:}

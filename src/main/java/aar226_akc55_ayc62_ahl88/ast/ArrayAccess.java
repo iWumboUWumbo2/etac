@@ -8,6 +8,7 @@ public class ArrayAccess extends Expr implements Printer {
 
 
     private Expr e;
+    private Id id;
     private ArrayList<Expr> indexes;
 
 
@@ -16,6 +17,20 @@ public class ArrayAccess extends Expr implements Printer {
         this.e = e;
         this.indexes = index;
         this.type = Exprs.ArrayAccess;
+    }
+
+    public ArrayAccess(Id id, ArrayList<Expr> index) {
+        this.id = id;
+        this.indexes = index;
+        this.type = Exprs.ArrayAccess;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public ArrayList<Expr> getIndexes() {
+        return indexes;
     }
 
     @Override
