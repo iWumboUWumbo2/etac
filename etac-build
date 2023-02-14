@@ -1,5 +1,5 @@
 #!/bin/bash
-gradle=gradle7
+gradle=gradle
 DIR=`dirname $0`
 DEPS=$DIR/deps/libs/main
 $gradle clean
