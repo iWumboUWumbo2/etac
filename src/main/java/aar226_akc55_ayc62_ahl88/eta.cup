@@ -46,7 +46,6 @@ nonterminal Stmt multi_declaration_assign_stmt;
 nonterminal Return return;
 nonterminal ArrayList<Decl> type_list;
 nonterminal ArrayList<Expr> fullBracketPlus;
-nonterminal Expr fullBracket;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -118,16 +117,11 @@ emptyBracketDecl ::=
     ;
 
 fullBracketPlus ::=
-    fullBracketPlus:ts fullBracket:t {: ts.add(t); RESULT = ts; :}
-   | fullBracket:t {: ArrayList<Expr> exprList = new ArrayList<Expr>();
-                         exprList.add(t);
+    fullBracketPlus:ts OPEN_BRACKET expr:e CLOSE_BRACKET {: ts.add(e); RESULT = ts; :}
+   | OPEN_BRACKET expr:e CLOSE_BRACKET {: System.out.println("FULL BRACKET PLSU"); ArrayList<Expr> exprList = new ArrayList<Expr>();
+                         exprList.add(e);
                          RESULT = exprList;
                          :} ;
-
-
-fullBracket ::=
-    OPEN_BRACKET expr:e CLOSE_BRACKET {: RESULT = e; :}
-    ;
 
 globalDecl ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null);:}
@@ -236,7 +230,7 @@ expr ::=
     |  LENGTH OPEN_PAREN expr:e CLOSE_PAREN {: RESULT = new Length(e); :}
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new FunctionCallExpr(id,new ArrayList<Expr>() ); :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
-    | expr:e fullBracketPlus:i {: new ArrayAccess(e, i); :}
+    | expr:e fullBracketPlus:i {: RESULT = new ArrayAccess(e, i); :}
     ;
 
 

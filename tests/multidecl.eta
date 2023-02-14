@@ -2,4 +2,8 @@ use io
 
 foo() {
     _, i:int = doop()
+    _, _, _, _ = 1,true, 2+3, false;
+    _, i:int = doop()
+    _, _, b, b:bool = 1,true, 2+3, false;
+
 }

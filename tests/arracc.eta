@@ -1,4 +1,7 @@
 
 foo() {
     x = s[1];
+    x:int[] = s[1]
+    foq:int[] = doom()[1]
+    ds:int[] = doom(1+45+34)[1]
 }
