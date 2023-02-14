@@ -35,10 +35,11 @@ public class ArrayAccess extends Expr implements Printer {
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-//        System.out.println("aRRACCCC");
+        System.out.println("aRRACCCC");
         p.startList();
         e.prettyPrint(p);
         indexes.forEach(i -> {
+            System.out.println("INSIDE");
             p.printAtom("[");
             i.prettyPrint(p);
             p.printAtom("]");

@@ -13,9 +13,10 @@ public class Reassignment extends Stmt{
     public Reassignment(String s, Expr e) {
         id = new Id(s);
         expression = e;
+        indexes = new ArrayList<Expr>();
     }
 
-    public Reassignment(ArrayAccess a, ArrayExpr e) {
+    public Reassignment(ArrayAccess a, Expr e) {
         expression = e;
         id = a.getId();
         indexes = a.getIndexes();
@@ -37,6 +38,11 @@ public class Reassignment extends Stmt{
         p.startList();
         if (expression != null) {
             p.printAtom("=");
+        }
+        for (Expr index : indexes) {
+            p.printAtom("[");
+            index.prettyPrint(p);
+            p.printAtom("]");
         }
         p.startList();
         id.prettyPrint(p);

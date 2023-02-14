@@ -61,7 +61,7 @@ class Main {
             if (filename.endsWith(".eta")) {
                 try {
                     parser p = new parser(new Lexer(new FileReader(filename)));
-                    Program result = (Program) p.debug_parse().value;
+                    Program result = (Program) p.parse().value;
                     PrintWriter cw = new PrintWriter(System.out);
                     CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
                     result.prettyPrint(printer);
