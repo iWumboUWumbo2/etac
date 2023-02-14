@@ -24,21 +24,37 @@ public class Type implements Printer {
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
+//        ArrayList<Expr> rev = new ArrayList<>(dimensions.indices);
+//        Collections.reverse(rev);
+//        for (int i = 0; i < dimensions.getDim(); i++) {
+//            p.startList();
+//            if (rev.get(i) != null){
+//                p.printAtom("[");
+//                rev.get(i).prettyPrint(p);
+//                p.printAtom("]");
+//            }else {
+//                p.printAtom("[]");
+//            }
+//        }
+//
+//        p.printAtom(getTypeAsString());
+//        for (int i = 0; i < dimensions.getDim(); i++) {
+//            p.endList();
+//        }
+//
         ArrayList<Expr> rev = new ArrayList<>(dimensions.indices);
         Collections.reverse(rev);
         for (int i = 0; i < dimensions.getDim(); i++) {
             p.startList();
-            if (rev.get(i) != null){
-                p.printAtom("[");
-                rev.get(i).prettyPrint(p);
-                p.printAtom("]");
-            }else {
-                p.printAtom("[]");
-            }
+            p.printAtom("[]");
         }
         p.printAtom(getTypeAsString());
         for (int i = 0; i < dimensions.getDim(); i++) {
+            if (rev.get(i) != null){
+                rev.get(i).prettyPrint(p);
+            }
             p.endList();
         }
+
     }
 }

@@ -34,11 +34,13 @@ public class Decl implements Printer {
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startList();
-        id.prettyPrint(p);
-        if (type != null) {
+        if (type != null){
+            p.startList();
+            id.prettyPrint(p);
             type.prettyPrint(p);
+            p.endList();
+        }else{
+            id.prettyPrint(p);
         }
-        p.endList();
     }
 }

@@ -5,21 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/testlex.eta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/io.eti" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etacClean" beforeDir="false" afterPath="$PROJECT_DIR$/etacClean" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Decl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Definition.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Dimension.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Globdecl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Id.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/IntLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Method.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Program.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Type.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/Use.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/cuppers/cuppers.cup" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ArrayAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/ArrayAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Decl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DeclStmt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/DeclStmt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/EtiInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/EtiInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntLiteral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/IntLiteral.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Length.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Length.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Reassignment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Reassignment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Type.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/ast/Type.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

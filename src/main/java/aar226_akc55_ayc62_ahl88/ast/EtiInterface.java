@@ -20,7 +20,9 @@ public class EtiInterface implements Printer {
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startUnifiedList();
+        p.startUnifiedList();
         methods_inter.forEach(d -> d.prettyPrint(p));
+        p.endList();
         p.endList();
     }
 }

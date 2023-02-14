@@ -40,13 +40,14 @@ public class Reassignment extends Stmt{
             p.printAtom("=");
         }
         for (Expr index : indexes) {
-            p.printAtom("[");
-            index.prettyPrint(p);
-            p.printAtom("]");
+            p.startList();
+            p.printAtom("[]");
         }
-        p.startList();
         id.prettyPrint(p);
-        p.endList();
+        for (int i = indexes.size()-1; i>=0;i--){
+            indexes.get(i).prettyPrint(p);
+            p.endList();
+        }
         if (expression != null) {
             expression.prettyPrint(p);
         }

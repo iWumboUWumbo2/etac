@@ -43,9 +43,7 @@ public class IntLiteral extends Expr implements Value {
             p.printAtom(toString());
         }
         else {
-            p.printAtom("'");
-            p.printAtom(toString());
-            p.printAtom("'");
+            p.printAtom("'"+ toString()+ "'");
         }
 //        System.out.println("FINISHED CALLING");
     }
