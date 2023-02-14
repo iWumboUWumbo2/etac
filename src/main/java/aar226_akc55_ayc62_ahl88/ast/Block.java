@@ -15,18 +15,16 @@ public class Block extends Stmt {
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startUnifiedList();
 
         p.startUnifiedList();
         stmts.forEach(e -> e.prettyPrint(p));
         p.endList();
 
-        p.startUnifiedList();
-        if (exprs != null) {
-            exprs.forEach(d -> d.prettyPrint(p));
-        }
-        p.endList();
+//        p.startUnifiedList();
+//        if (exprs != null) {
+//            exprs.forEach(d -> d.prettyPrint(p));
+//        }
+//        p.endList();
 
-        p.endList();
     }
 }

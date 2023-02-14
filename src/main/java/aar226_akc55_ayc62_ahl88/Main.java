@@ -61,20 +61,21 @@ class Main {
             if (filename.endsWith(".eta")) {
                 try {
                     parser p = new parser(new Lexer(new FileReader(filename)));
-                    Program result = (Program) p.parse().value;
-                    StringWriter out = new StringWriter();
-//                    PrintWriter cw = new PrintWriter(System.out);
-                    PrintWriter cw = new PrintWriter(out);
-                    CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
-                    result.prettyPrint(printer);
-                    printer.close();
-                    writeOutput(filename, out.toString(), "parsed");
-//                    System.out.println("Result = " + result );
-                }
-                catch (Exception e){
-                    System.out.println("Parsing Error or file issue");
-                    e.getMessage();
-                    e.printStackTrace();
+                    try {
+                        Program result = (Program) p.parse().value;
+                        StringWriter out = new StringWriter();
+                        //                    PrintWriter cw = new PrintWriter(System.out);
+                        PrintWriter cw = new PrintWriter(out);
+                        CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
+                        result.prettyPrint(printer);
+                        printer.close();
+                        writeOutput(filename, out.toString(), "parsed");
+                        //                    System.out.println("Result = " + result );
+                    } catch (Error e) {
+                        writeOutput(filename, e.getMessage(), "parsed");
+                    }
+                }catch (Exception e){
+                    System.out.println("File without that name found");
                 }
             }
             else {

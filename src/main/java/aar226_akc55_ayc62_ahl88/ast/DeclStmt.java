@@ -28,9 +28,8 @@ public class DeclStmt extends Stmt{
         if (expression != null) {
             p.printAtom("=");
         }
-        p.startList();
+
         decl.prettyPrint(p);
-        p.endList();
         if (expression != null) {
             expression.prettyPrint(p);
         }

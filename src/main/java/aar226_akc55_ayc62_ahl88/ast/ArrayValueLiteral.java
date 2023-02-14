@@ -30,7 +30,6 @@ public class ArrayValueLiteral extends Expr implements Value{
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startList();
         if (raw == null){
             for (Value v: values){
                 ((Expr) v).prettyPrint(p);
@@ -38,6 +37,5 @@ public class ArrayValueLiteral extends Expr implements Value{
         }else{
             p.printAtom("\"" +raw+ "\"");
         }
-        p.endList();
     }
 }
