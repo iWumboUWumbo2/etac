@@ -1,0 +1,10 @@
+#!/bin/bash
+DIR=`dirname $0`
+rm  -r $DIR/*.lexed
+rm  -r $DIR/*.parsed
+rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java
+rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
+rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java~
+rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java~
+rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaParser.java
+rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtiParser.java
