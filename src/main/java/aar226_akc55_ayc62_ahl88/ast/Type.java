@@ -24,12 +24,14 @@ public class Type implements Printer {
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        ArrayList<Long> rev = new ArrayList<>(dimensions.indices);
+        ArrayList<Expr> rev = new ArrayList<>(dimensions.indices);
         Collections.reverse(rev);
         for (int i = 0; i < dimensions.getDim(); i++) {
             p.startList();
             if (rev.get(i) != null){
-                p.printAtom("[" + rev.get(i) +"]");
+                p.printAtom("[");
+                rev.get(i).prettyPrint(p);
+                p.printAtom("]");
             }else {
                 p.printAtom("[]");
             }

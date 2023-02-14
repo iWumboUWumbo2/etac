@@ -1,14 +1,16 @@
 package aar226_akc55_ayc62_ahl88.ast;
 
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Dimension {
+public class Dimension implements Printer{
     private long dim;
 
     public boolean allEmpty;
     public boolean foundEmpty;
-    public ArrayList<Long> indices;
+    public ArrayList<Expr> indices;
     public Dimension(long d) {
         dim = d;
         allEmpty = true;
@@ -26,7 +28,7 @@ public class Dimension {
 
     public String toString() {
         String s = "";
-        ArrayList<Long> rev = new ArrayList<>(indices);
+        ArrayList<Expr> rev = new ArrayList<>(indices);
         Collections.reverse(rev);
         for (int i = 0; i< rev.size();i++) {
             if (rev.get(i) != null){
@@ -36,5 +38,19 @@ public class Dimension {
             }
         }
         return s;
+    }
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+
+        ArrayList<Expr> rev = new ArrayList<>(indices);
+        Collections.reverse(rev);
+        p.startList();
+
+        for (Expr expr : rev) {
+            p.printAtom("[");
+            expr.prettyPrint(p);
+            p.printAtom("]");
+        }
+        p.endList();
     }
 }

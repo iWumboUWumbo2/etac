@@ -186,7 +186,13 @@ emptyDimension_star ::=
         if (ds.foundEmpty) throw new Error("Filled index after empty");
         ds.allEmpty = false;
         IntLiteral iL = new IntLiteral(i,true);
-        ds.indices.add(iL.getLong());
+        ds.indices.add(iL);
+        ds.increment(); // [][2]
+        RESULT = ds;:}
+    |emptyDimension_star:ds OPEN_BRACKET IDENTIFIER:i CLOSE_BRACKET {:
+        if (ds.foundEmpty) throw new Error("Filled index after empty");
+        ds.allEmpty = false;
+        ds.indices.add(new Id(i));
         ds.increment(); // [][2]
         RESULT = ds;:}
     | {:RESULT = new Dimension(0); :}
