@@ -11,3 +11,4 @@ rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtiParser.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parser.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/sym.java
 rm  -r $DIR/build
+rm  -r $DIR/.gradle
