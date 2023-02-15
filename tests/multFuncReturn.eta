@@ -1,0 +1,6 @@
+// should return error
+
+fun() {
+return 3
+return 4
+}
