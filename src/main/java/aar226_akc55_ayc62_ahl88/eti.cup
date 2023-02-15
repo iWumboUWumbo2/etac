@@ -7,7 +7,7 @@ import java.util.ArrayList;
 // You might want to add types to these declarations.
 parser EtiParser{:
     public void syntax_error(Symbol cur_token){
-        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error" + cur_token.value());
+        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error " + cur_token.value());
     }
 :};
 terminal String IDENTIFIER;
@@ -141,12 +141,12 @@ fullBracketPlus ::=
 
 globalDecl ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null);:}
-    | emptyBracketDecl:ed GETS value:v {:
+    | emptyBracketDecl:ed GETS:g value:v {:
         if (!ed.type.dimensions.allEmpty) {
-            throw new Error("array with init len no Val");
+            throw new Error(gleft +":" + gright +" "  + "array with init len no Val");
         }
         if (ed.type.dimensions.getDim() != 0){
-            throw new Error("global arr not init allowed");
+            throw new Error(gleft +":" + gright +" " + "global arr not init allowed");
         }
         RESULT  = new Globdecl(ed, v);
     :}
@@ -154,9 +154,10 @@ globalDecl ::=
     ;
 
 value ::=
-    INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true); :}
+    INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true,ileft,iright); :}
+    | MINUS MAX_NUM:m {:RESULT = new IntLiteral(Long.MIN_VALUE,false,mleft,mright);:}
     | CHARACTER_LITERAL:c {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
-    | MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false); :} %prec UMINUS
+    | MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false,ileft,iright); :} %prec UMINUS
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b); :}
 //    | OPEN_BRACE arrayValueLiteral:avl  CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
 //    | OPEN_BRACE arrayValueLiteral:avl COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
@@ -193,14 +194,14 @@ emptyDimension_star ::=
     ds.indices.add(null);
     RESULT = ds;:}
     |emptyDimension_star:ds OPEN_BRACKET INTEGER_LITERAL:i CLOSE_BRACKET {:
-        if (ds.foundEmpty) throw new Error("Filled index after empty");
+        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " Filled index after empty");
         ds.allEmpty = false;
-        IntLiteral iL = new IntLiteral(i,true);
+        IntLiteral iL = new IntLiteral(i,true,ileft,iright);
         ds.indices.add(iL);
         ds.increment(); // [][2]
         RESULT = ds;:}
     |emptyDimension_star:ds OPEN_BRACKET IDENTIFIER:i CLOSE_BRACKET {:
-        if (ds.foundEmpty) throw new Error("Filled index after empty");
+        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " Filled index after empty");
         ds.allEmpty = false;
         ds.indices.add(new Id(i));
         ds.increment(); // [][2]
@@ -234,7 +235,8 @@ expr ::=
     |  MINUS expr:e1              {: RESULT = new IntegerNegExpr (e1);:} %prec UMINUS
 
     // LITS
-    | INTEGER_LITERAL:i           {: RESULT = new IntLiteral(i,true); :}
+    | INTEGER_LITERAL:i           {: RESULT = new IntLiteral(i,true,ileft,iright); :}
+    | MINUS MAX_NUM:m             {: RESULT = new IntLiteral(Long.MIN_VALUE,false,mleft,mright);:}
     | CHARACTER_LITERAL:c         {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
     | BOOL_LITERAL:b              {: RESULT = new BoolLiteral(b); :}
     | STRING_LITERAL:s            {: RESULT = new ArrayValueLiteral(s); :}
@@ -354,9 +356,9 @@ type_list ::=
         :}
 ;
 declaration_assign_stmt ::=
-    emptyBracketDecl:d GETS expr:e {:
+    emptyBracketDecl:d GETS:g expr:e {:
     if (!d.type.dimensions.allEmpty) {
-        throw new Error("array with init len no Val");
+        throw new Error(gleft + ":" + gright + " array with init len no Val");
     }
     RESULT = new DeclStmt(d,e);
     :}

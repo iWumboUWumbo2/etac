@@ -8,9 +8,9 @@ public class IntLiteral extends Expr implements Value {
     private String raw = null;
 
     private ValueType vt;
-    public IntLiteral(long i,boolean pos) {
+    public IntLiteral(long i,boolean pos,int left, int right) {
         if (i == Long.MIN_VALUE && pos){
-            throw new Error("error: INTEGER OUT OF RANGE PARSING");
+            throw new Error(left + ":" + right + " error: INTEGER OUT OF RANGE PARSING");
         }
         this.i = i;
         if (pos){

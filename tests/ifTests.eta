@@ -1,8 +1,6 @@
 use io
 
+a:int[] = {l,s,dl}
 main (){
-    x : int = 2
-    y : int = 5;
-    if (x == 2) {
-    }
+
 }
