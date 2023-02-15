@@ -1,7 +1,18 @@
 use io
-
+a:bool =4 ;
+a:bool , b:int = 1,3
+a:bool , b:int, c:bool[4][3]
+a:bool , b:int, c:bool[5][1]
+a:bool , b:int, c:bool[][]
+a:bool , b:int, c:bool[3][2]
+a:bool , b:int, c:bool = 4,5,2
+a:bool , b:int, c:bool[3][]
+a:int = 4
+a:int = 4;
 foo() {
     _, i:int = doop()
+    a[2][3] = 4;
+    a,b = x,y;
     _, _, _, _ = 1,true, 2+3, false;
     _, i:int = doop()
     _, _, b, b:bool = 1,true, 2+3, false;

@@ -4,22 +4,25 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 import java.util.ArrayList;
 
-public class MultiDeclStmt extends Stmt {
+public class MultiGlobalDecl implements Definition{
     private ArrayList<Decl> decls;
-    private ArrayList<Expr> expressions;
+    private ArrayList<Value> expressions;
 
-    public MultiDeclStmt(ArrayList<Decl> d, ArrayList<Expr> e) {
+    public MultiGlobalDecl (ArrayList<Decl> d, ArrayList<Value> e, int left, int right) {
         decls = d;
         for (Decl de: decls){
             if (de.type != null && !de.type.dimensions.allEmpty) {
-                throw new Error("array with init len no Val");
+                throw new Error(left + ":" + right +" array with init len no Val");
+            }
+            if (de.type != null && (de.type.dimensions.getDim() != 0)){
+                throw new Error(left + ":" + right + " array can't have gets");
             }
         }
         expressions = e;
     }
-    public MultiDeclStmt(ArrayList<Decl> d) {
+    public MultiGlobalDecl(ArrayList<Decl> d) {
         decls = d;
-        expressions = new ArrayList<Expr>();
+        expressions = null ;
     }
 
     public String toString(){
@@ -35,6 +38,7 @@ public class MultiDeclStmt extends Stmt {
     }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
+
         if (expressions == null){
             p.startList();
             decls.forEach(e-> e.prettyPrint(p));
@@ -48,7 +52,7 @@ public class MultiDeclStmt extends Stmt {
             decls.forEach(e -> e.prettyPrint(p));
             p.endList();
             if (expressions != null) {
-                expressions.forEach(e -> e.prettyPrint(p));
+                expressions.forEach(e -> ((Expr) e).prettyPrint(p));
             }
             p.endList();
         }

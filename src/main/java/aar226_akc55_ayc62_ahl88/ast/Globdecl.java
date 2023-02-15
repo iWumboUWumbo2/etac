@@ -25,6 +25,9 @@ public class Globdecl implements Definition{
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         decl.prettyPrint(p);
+        if (value != null){
+            ((Expr) value).prettyPrint(p);
+        }
         p.endList();
     }
 

@@ -33,7 +33,7 @@ nonterminal Decl emptyBracketDecl;
 nonterminal ArrayList<Type> emptyBracketType_plus;
 nonterminal Type emptyBracketType;
 nonterminal Dimension emptyDimension_star;
-nonterminal Globdecl globalDecl;
+nonterminal Definition globalDecl;
 nonterminal Value value;
 //nonterminal ArrayList<Value> arrayValueLiteral;
 nonterminal Expr expr;
@@ -51,6 +51,9 @@ nonterminal ArrayList<Expr> fullBracketPlus;
 nonterminal ArrayAccess fullBracketType;
 //nonterminal Method_Interface method_interface;
 //nonterminal ArrayList<Method_Interface> interfaceStar;
+nonterminal ArrayList<Value> valueList;
+nonterminal MultiGlobalDecl glob_multi_declaration_assign_stmt;
+nonterminal ArrayList<Decl> glob_type_list;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -138,7 +141,26 @@ globalDecl ::=
         RESULT  = new Globdecl(ed, v);
     :}
     | globalDecl:gd SEMICOLON {:RESULT = gd;:}
+    | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
+    | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
     ;
+
+//glob_multi_declaration_assign_stmt ::=
+//    glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
+//    | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
+//;
+glob_type_list ::=
+     emptyBracketDecl:ed1 COMMA emptyBracketDecl:ed2 {:
+     ArrayList<Decl> temp = new ArrayList<>();
+     temp.add(ed1);
+     temp.add(ed2);
+     RESULT = temp;
+     :}
+     |glob_type_list:tl COMMA emptyBracketDecl:ed {:
+         tl.add(ed);
+         RESULT = tl;
+     :}
+ ;
 
 value ::=
     INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true,ileft,iright); :}
@@ -146,12 +168,17 @@ value ::=
     | CHARACTER_LITERAL:c {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
     | MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false,ileft,iright); :} %prec UMINUS
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b); :}
-//    | OPEN_BRACE arrayValueLiteral:avl  CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
-//    | OPEN_BRACE arrayValueLiteral:avl COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(avl); :}
-//    | OPEN_BRACE CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Value>()); :}
     | STRING_LITERAL:s {: new ArrayValueLiteral(s); :}
     ;
 
+valueList ::=
+     value:x {:
+             ArrayList<Value> temp = new ArrayList<Value>();
+             temp.add(x);
+             RESULT = temp;
+         :}
+     |  valueList:ave COMMA value:x {: ave.add(x); RESULT = ave; :}
+ ;
 //arrayValueLiteral ::=
 //    value:v {:
 //    ArrayList<Value> temp = new ArrayList<Value>();
