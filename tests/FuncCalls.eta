@@ -24,5 +24,8 @@ fib (x : int) {
 test () {
     return fib(3)
 }
+test () {
+    a:int = func(func(func(func(func(func(func(func())))))))
+}
 
 
