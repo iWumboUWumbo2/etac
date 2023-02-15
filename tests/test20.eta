@@ -1,4 +1,6 @@
 // fails
+main(){
 c:int[][] =4;
 e:int[][][4]
 f:bool[][1]
+}

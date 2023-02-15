@@ -2,13 +2,13 @@
 foo(x: int, y : bool, z :int[][]): bool, int {
     //blah blah blah
 }
-foo() bool, int {
+foo(): bool, int {
     //blah blah blah
 }
-foo(): {
+foo(){
     //blah blah blah
 }
 
-foo(): //{
+foo(){
     //blah blah blah
 }

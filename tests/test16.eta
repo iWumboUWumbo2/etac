@@ -1,18 +1,18 @@
 // test program
 use a
-foo() {
-    x : int = 5 + 3;
-}
-
-
+use a
+use b
 use a
 use b
 foo() {
     x : int = 5 + 3;
 }
 
-use a
-use b
+
+foo() {
+    x : int = 5 + 3;
+}
+
 foo() {
     x : int = 5 + 3;
 }

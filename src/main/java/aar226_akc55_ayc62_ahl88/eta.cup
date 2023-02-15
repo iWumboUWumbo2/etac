@@ -20,7 +20,7 @@ terminal INT, BOOL;
 terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
   DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, AND, OR, EQUAL, NOT_EQUAL, GETS,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
-  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS;
+  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM;
 
 nonterminal Program program;
 nonterminal ArrayList<Use> importUseStar;
@@ -142,6 +142,7 @@ globalDecl ::=
 
 value ::=
     INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true); :}
+    | MINUS MAX_NUM {:RESULT = new IntLiteral(Long.MIN_VALUE,false);:}
     | CHARACTER_LITERAL:c {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
     | MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,false); :} %prec UMINUS
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b); :}
@@ -222,6 +223,7 @@ expr ::=
 
     // LITS
     | INTEGER_LITERAL:i           {: RESULT = new IntLiteral(i,true); :}
+    | MINUS MAX_NUM               {: RESULT = new IntLiteral(Long.MIN_VALUE,false);:}
     | CHARACTER_LITERAL:c         {: RESULT = new IntLiteral(c); :}// Create as INT cause Chars are ints
     | BOOL_LITERAL:b              {: RESULT = new BoolLiteral(b); :}
     | STRING_LITERAL:s            {: RESULT = new ArrayValueLiteral(s); :}

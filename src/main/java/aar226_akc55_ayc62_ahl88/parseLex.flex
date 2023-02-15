@@ -100,6 +100,8 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
     "int"     { return symbol(sym.INT); }
     "bool"    { return symbol(sym.BOOL); }
 
+    "9223372036854775808" {return symbol(sym.MAX_NUM);}
+
     // need error checking changed to no try catch
     {Integer}     {
           try{

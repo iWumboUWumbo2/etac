@@ -5,7 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/etac-build" beforeDir="false" afterPath="$PROJECT_DIR$/etac-build" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etacClean" beforeDir="false" afterPath="$PROJECT_DIR$/etacClean" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test10.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test10.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test11.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test11.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test14.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test14.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test15.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test15.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test16.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test16.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test17.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test17.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test19.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test19.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test20.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test20.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test8.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test8.eta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test9.eta" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test9.eta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,18 +76,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/Users/AndrewCheng/Desktop/etac",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/AndrewCheng/Desktop/etac&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
