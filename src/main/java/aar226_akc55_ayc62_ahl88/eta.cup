@@ -116,7 +116,7 @@ emptyBracketDecl ::=
 
 
 fullBracketType::=
-    IDENTIFIER: i fullBracketPlus:e {:Id a = new Id(i); RESULT = new ArrayAccess(a,e);:}
+    IDENTIFIER: i fullBracketPlus:e {:Id a = new Id(i); RESULT = new ArrayAccess(a,e, true);:}
  ;
 
 fullBracketPlus ::=
@@ -241,7 +241,7 @@ expr ::=
     |  LENGTH OPEN_PAREN expr:e CLOSE_PAREN {: RESULT = new Length(e); :}
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new FunctionCallExpr(id,new ArrayList<Expr>() ); :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(id, e); :}
-    | expr:e fullBracketPlus:i {: RESULT = new ArrayAccess(e, i); :}
+    | expr:e fullBracketPlus:i {: RESULT = new ArrayAccess(e, i, false); :}
     ;
 
 

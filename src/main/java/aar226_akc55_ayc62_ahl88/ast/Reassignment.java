@@ -44,7 +44,7 @@ public class Reassignment extends Stmt{
             p.printAtom("[]");
         }
         id.prettyPrint(p);
-        for (int i = indexes.size()-1; i>=0;i--){
+        for (int i = 0; i<indexes.size();i++){
             indexes.get(i).prettyPrint(p);
             p.endList();
         }

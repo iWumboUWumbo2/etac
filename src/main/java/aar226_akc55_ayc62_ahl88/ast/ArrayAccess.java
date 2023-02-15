@@ -11,17 +11,22 @@ public class ArrayAccess extends Expr implements Printer {
     private Id id;
     private ArrayList<Expr> indexes;
 
-    public ArrayAccess(Expr e, ArrayList<Expr> index) {
+    private boolean is_stmt;
+
+    public ArrayAccess(Expr e, ArrayList<Expr> index, boolean is_stmt) {
         this.e = e;
         this.indexes = index;
         this.type = Exprs.ArrayAccess;
+        this.is_stmt = is_stmt;
     }
 
-    public ArrayAccess(Id id, ArrayList<Expr> index) {
+    public ArrayAccess(Id id, ArrayList<Expr> index, boolean is_stmt) {
         this.e = id;
         this.id = id;
         this.indexes = index;
         this.type = Exprs.ArrayAccess;
+        this.is_stmt = is_stmt;
+
     }
 
     public Id getId() {
@@ -52,8 +57,10 @@ public class ArrayAccess extends Expr implements Printer {
 //        if (id != null) {
 //            id.prettyPrint(p);
 //        }
-        for (int i = indexes.size()-1; i>=0;i--){
-            indexes.get(i).prettyPrint(p);
+        ArrayList<Expr> rev = new ArrayList<>(indexes);
+        if (is_stmt) Collections.reverse(rev);
+        for (int i = 0; i<rev.size();i++){
+            rev.get(i).prettyPrint(p);
             p.endList();
         }
     }
