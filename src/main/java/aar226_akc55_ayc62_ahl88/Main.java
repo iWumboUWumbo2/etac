@@ -73,6 +73,7 @@ class Main {
 
                         //                    System.out.println("Result = " + result );
                     } catch (Error e) {
+                        System.out.println(e.getMessage());
                         writeOutput(filename, e.getMessage(), "parsed");
                     }
                 }catch (Exception e){
@@ -92,6 +93,7 @@ class Main {
                         printer.close();
                         writeOutput(filename, out.toString(), "parsed");
                     } catch (Error e) {
+                        System.out.println(e.getMessage());
                         writeOutput(filename, e.getMessage(), "parsed");
                     }
                 }
