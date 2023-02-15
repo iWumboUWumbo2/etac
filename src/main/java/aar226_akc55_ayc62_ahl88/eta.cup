@@ -54,6 +54,7 @@ nonterminal ArrayAccess fullBracketType;
 nonterminal ArrayList<Value> valueList;
 nonterminal MultiGlobalDecl glob_multi_declaration_assign_stmt;
 nonterminal ArrayList<Decl> glob_type_list;
+nonterminal ArrayAccess fullBracketAss;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -301,6 +302,8 @@ multi_declaration_assign_stmt ::=
 
 ;
 
+fullBracketAss ::= IDENTIFIER:id fullBracketPlus:fbp {: RESULT = new ArrayAccess(new Id(id), fbp, false); :};
+
 type_list ::=
     UNDERSCORE COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
@@ -368,6 +371,52 @@ type_list ::=
             tl.add(new UnderScore());
             RESULT = tl;
         :}
+
+    |fullBracketAss:fb  COMMA UNDERSCORE {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+                        temp.add(new Decl(fb));
+                        temp.add(new UnderScore());
+                        RESULT = temp; :}
+    | UNDERSCORE COMMA fullBracketAss:fb{:
+    ArrayList<Decl> temp = new ArrayList<Decl>();
+    temp.add(new UnderScore());
+    temp.add(new Decl(fb));
+    RESULT = temp;
+    :}
+    |fullBracketAss:fb COMMA IDENTIFIER:i1 COLON emptyBracketType:t1 {:
+    ArrayList<Decl> temp = new ArrayList<Decl>();
+    temp.add(new Decl(fb));
+    temp.add(new Decl(i1,t1));
+    RESULT = temp;
+    :}
+    | IDENTIFIER:i1 COLON emptyBracketType:t1 COMMA fullBracketAss:fb{:
+    ArrayList<Decl> temp = new ArrayList<Decl>();
+    temp.add(new Decl(i1,t1));
+    temp.add(new Decl(fb));
+    RESULT = temp;
+    :}
+    |fullBracketAss:fb COMMA IDENTIFIER:i1 {:
+    ArrayList<Decl> temp = new ArrayList<Decl>();
+    temp.add(new Decl(fb));
+    temp.add(new Decl(i1));
+    RESULT = temp;
+    :}
+    | IDENTIFIER:i1 COMMA fullBracketAss:fb{:
+    ArrayList<Decl> temp = new ArrayList<Decl>();
+    temp.add(new Decl(i1));
+    temp.add(new Decl(fb));
+    RESULT = temp;
+    :}
+    | fullBracketAss:fb1 COMMA fullBracketAss:fb2{:
+    ArrayList<Decl> temp = new ArrayList<Decl>();
+    temp.add(new Decl(fb1));
+    temp.add(new Decl(fb2));
+    RESULT = temp;
+    :}
+    | type_list:tl COMMA fullBracketAss:fb {:
+    tl.add(new Decl(fb));
+    RESULT = tl;
+    :}
 ;
 declaration_assign_stmt ::=
     emptyBracketDecl:d GETS:g expr:e {:

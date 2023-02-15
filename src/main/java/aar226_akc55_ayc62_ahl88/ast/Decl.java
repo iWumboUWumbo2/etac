@@ -8,6 +8,8 @@ public class Decl implements Printer {
     public Type type;
 
     private Value value;
+
+    private ArrayAccess acc;
     public Decl( String s, Type t){
         id = new Id(s);
         type = t;
@@ -23,6 +25,10 @@ public class Decl implements Printer {
         value = v;
     }
 
+    public Decl (ArrayAccess acc) {
+        this.acc = acc;
+    }
+
 
     public String toString(){
         if (this.value != null) {
@@ -34,13 +40,14 @@ public class Decl implements Printer {
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        if (type != null){
+    if (type != null && id != null){
             p.startList();
             id.prettyPrint(p);
             type.prettyPrint(p);
             p.endList();
-        }else{
+        } else if (id != null){
             id.prettyPrint(p);
         }
+        else acc.prettyPrint(p);
     }
 }

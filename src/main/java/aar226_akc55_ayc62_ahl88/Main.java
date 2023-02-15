@@ -77,6 +77,7 @@ class Main {
                         writeOutput(filename, e.getMessage(), "parsed");
                     }
                 }catch (Exception e){
+                    e.printStackTrace();
                     System.out.println("File without that name found");
                 }
             }
@@ -98,6 +99,7 @@ class Main {
                     }
                 }
                 catch (Exception e){
+                    e.printStackTrace();
                     System.out.println("File without that name found");
                 }
             }
