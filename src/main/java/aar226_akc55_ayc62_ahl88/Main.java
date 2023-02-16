@@ -245,9 +245,9 @@ class Main {
         Option lexOpt = new Option(null, "lex", true,
                 "Generate output from lexical analysis.");
         Option parseOpt = new Option(null, "parse", true,
-                "Generate output from lexical analysis.");
+                "Generate output from syntactic analysis.");
         Option sourcepathOpt   = new Option ("sourcepath", true,
-                "Specify where to place generated diagnostic files.");
+                "Specify where to find input source files.");
         Option dirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
 
