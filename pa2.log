@@ -1,3 +1,127 @@
+commit 2cd173fc15c2ef29fd197304c4e0989a34ff16c9
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 13:23:52 2023 -0500
+
+    it works ?
+
+commit 62780c6650997b20a3764f197e89085ca393e0ab
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 12:51:56 2023 -0500
+
+    acc multi decl test
+
+commit 12059006866ac82d64ae298bbc249ba9fe731b6e
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 15 10:45:42 2023 -0500
+
+    added Multi Global Decl
+
+commit 9222ed6c33e3668cc700925731ac1c1b7d1eb85e
+Merge: f9675cc 8215c4a
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 00:46:49 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit f9675ccbe97b2d371b804f21087475753b70d6bd
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 00:46:44 2023 -0500
+
+    pretty printing for arr type vs arr expr
+
+commit 8215c4a3d8a42e807f5b013f3de33ce55af0a547
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 23:42:22 2023 -0500
+
+    back to gradle
+
+commit 1c5c9d86b8f3699e51e02dc7a680631c2d228166
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 22:47:16 2023 -0500
+
+    back to gradle7
+
+commit 59af3fe0a8fe845c732d2451af1ce61e67dc681b
+Merge: 7da4e6d daf3474
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 22:43:40 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 7da4e6da7fa5d52edc0b3131be832f19e0f97845
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 22:43:26 2023 -0500
+
+    removed gradle alias
+
+commit daf3474f19f906856a370679448f0246bd277266
+Merge: 382ea05 5a0e690
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 14 22:18:13 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 382ea053d71cbdca0ea3e911ebc55f9473966e61
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 14 22:18:08 2023 -0500
+
+    more test cases and system.out print error
+
+commit 5a0e690ca3d6103085bad4ae6f6321afcc0cdeac
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 21:46:16 2023 -0500
+
+    updated test 22
+
+commit 8468e5b86fcb1078e61903fefbd106f77be85736
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 21:36:27 2023 -0500
+
+    updated so error lines show
+
+commit 26a89d1518e190e159cc1f979f94bee99bcae5bb
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 21:11:19 2023 -0500
+
+    down to 1 warning
+
+commit 3a2a9323be2d2bd431b956c13b8e5e0c9efb6189
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 20:51:55 2023 -0500
+
+    changed MIN VAL to a special LEX
+
+commit 7cca11f08138e6071aa60df765432d9d78b3a509
+Merge: f65d7fb 18eed4c
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 14 17:26:26 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+
+commit f65d7fb4aff23cb4e55972cf9051d95f89eed52f
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 14 17:26:13 2023 -0500
+
+    Added tests
+
+commit 18eed4c5082af77cee012b8dd510c793122ec23e
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 17:16:45 2023 -0500
+
+    back to gradle 7
+
+commit d83709c6f204e0f4e65e7f47e371228650071c8d
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 17:13:30 2023 -0500
+
+    updated build files
+
+commit 6fa7e04fca2126dd87f13425f7e009759103eed1
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 17:06:52 2023 -0500
+
+    added gradle7
+
 commit 0042f010dc9ac1dc9404324beab207645469c435
 Author: Andrew <akc55@cornell.edu>
 Date:   Tue Feb 14 16:57:52 2023 -0500
