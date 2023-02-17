@@ -223,7 +223,6 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
       }
 
     \"  {
-          System.out.println(column());
           yybegin(YYINITIAL);
           String s = sb.toString();
           inString = false;
@@ -253,8 +252,6 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
                         throw new Error(globalLineNum +
                         ":" + globalColNum + " error: invalid escape character " + yytext());}
     [^\"] {
-          System.out.println(column());
-          System.out.println(yytext().length());
         byte[] bytearr = yytext().getBytes("UTF-32");
         int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
         if (ch > 0x10FFFF || ch < 0x0){
