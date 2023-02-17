@@ -7,22 +7,19 @@ foo(): bool, int {
     _, i: int = foo()
     return pred, expr;
 }
-a:int,b:bool,c:bool[4][] = 1,true, {bool};
-a: int = 5
-b: int[]
-c : int[3]
-d : int[][]
-e: int[3][4]
-f : int[3][]
-e = f
+:global a: int = 5
+:global b: int[]
+:global c : int[3]
+:global d : int[][]
+:global e: int[3][4]
+:global f : int[3][]
 
-g: bool = true
-h: bool[]
-i : bool[3]
-j : bool[][]
-k: bool[3][4]
-l : bool[3][]
-j = k
+:global g: bool = true
+:global h: bool[]
+:global i : bool[3]
+:global j : bool[][]
+:global k: bool[3][4]
+:global l : bool[3][]
 
 
 main () {

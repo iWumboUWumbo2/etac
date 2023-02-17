@@ -20,7 +20,7 @@ terminal INT, BOOL;
 terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
   DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, AND, OR, EQUAL, NOT_EQUAL, GETS,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
-  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM;
+  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM, GLOBAL;
 
 nonterminal Program program;
 nonterminal ArrayList<Use> importUseStar;
@@ -34,6 +34,7 @@ nonterminal ArrayList<Type> emptyBracketType_plus;
 nonterminal Type emptyBracketType;
 nonterminal Dimension emptyDimension_star;
 nonterminal Definition globalDecl;
+nonterminal Definition newGlob;
 nonterminal Value value;
 //nonterminal ArrayList<Value> arrayValueLiteral;
 nonterminal Expr expr;
@@ -130,7 +131,10 @@ fullBracketPlus ::=
                          RESULT = exprList;
                          :} ;
 
-globalDecl ::=
+globalDecl ::= COLON GLOBAL newGlob:ng {:RESULT = ng;:}
+    ;
+
+newGlob ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null);:}
     | emptyBracketDecl:ed GETS:g value:v {:
         if (!ed.type.dimensions.allEmpty) {
@@ -144,8 +148,7 @@ globalDecl ::=
     | globalDecl:gd SEMICOLON {:RESULT = gd;:}
     | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
     | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
-    ;
-
+;
 //glob_multi_declaration_assign_stmt ::=
 //    glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
 //    | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
