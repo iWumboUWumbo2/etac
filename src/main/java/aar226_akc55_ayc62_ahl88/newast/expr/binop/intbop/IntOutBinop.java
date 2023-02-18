@@ -4,16 +4,17 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
 
+/**
+ * Abstract class for all binary expressions
+ */
 public abstract class IntOutBinop extends BinopExpr {
 
     /**
-     * Abstract class for all binary expressions
-     *
-     * @param b   B
-     * @param in1
-     * @param in2
-     * @param l
-     * @param c
+     * @param b binary operation type
+     * @param in1 first expression input
+     * @param in2 second expressioin input
+     * @param l line number
+     * @param c column number
      */
     public IntOutBinop(BinopEnum b, Expr in1, Expr in2, int l, int c) {
         super(b, in1, in2, l, c);

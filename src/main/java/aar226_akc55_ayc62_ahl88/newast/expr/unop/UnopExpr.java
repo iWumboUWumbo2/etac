@@ -5,12 +5,14 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.UnopEnum;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
+/**
+ * Abstract class for all Unary Expressions
+ */
 public abstract class UnopExpr extends Expr {
     Expr e;
     UnopEnum unopType;
 
     /**
-     * Abstract class for all Unary Expressions
      * @param u  Unary Enum
      * @param in Expression
      * @param l line number

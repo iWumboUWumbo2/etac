@@ -4,11 +4,12 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
 
+/**
+ * Abstract class for all binary expressions with boolean output
+ */
 public abstract class BoolOutBinop extends BinopExpr {
     /**
-     * Abstract class for all binary expressions with boolean output
-     *
-     * @param b
+     * @param b binary operation type
      * @param in1 left Expression
      * @param in2 right Expression
      * @param l line number
