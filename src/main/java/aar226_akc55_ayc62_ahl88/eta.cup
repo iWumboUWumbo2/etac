@@ -247,7 +247,7 @@ expr ::=
 
     // UNOP
     |  NOT               expr:e1  {: RESULT = new NotExpr(e1); :}
-    |  MINUS expr:e1              {: RESULT = new IntegerNegExpr (e1);:} %prec UMINUS
+    |  MINUS expr:e1              {: RESULT = new IntegerNegExpr (e1);:} %prec UMINUS // IF ITS INT CONVER TO NEG
 
     // LITS
     | INTEGER_LITERAL:i           {: RESULT = new IntLiteral(i,true,ileft,iright); :}
