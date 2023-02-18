@@ -17,4 +17,6 @@ public abstract class BoolOutBinop extends BinopExpr {
     public BoolOutBinop(BinopEnum b, Expr in1, Expr in2, int l, int c) {
         super(b, in1, in2, l, c);
     }
+
+    // Type checking output is Bool
 }
