@@ -7,4 +7,6 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
     public EquivalenceBinop (BinopEnum b, Expr in1, Expr in2, int l, int c) {
         super(b, in1, in2, l, c);
     }
+
+    // Type Checking In1,In2 Int or Bool
 }

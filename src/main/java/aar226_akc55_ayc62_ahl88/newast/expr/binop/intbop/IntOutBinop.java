@@ -18,4 +18,5 @@ public abstract class IntOutBinop extends BinopExpr {
     public IntOutBinop(BinopEnum b, Expr in1, Expr in2, int l, int c) {
         super(b, in1, in2, l, c);
     }
+    // Type Checking is In1, In2 both must be Int and output is Int
 }

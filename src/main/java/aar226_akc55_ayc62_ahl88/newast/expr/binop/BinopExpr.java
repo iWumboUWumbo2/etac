@@ -24,11 +24,6 @@ public abstract class BinopExpr extends Expr {
         e2 = in2;
         binopType = b;
     }
-    //        p.startList();
-//        p.printAtom(bop);
-//        e1.prettyPrint(p);
-//        e2.prettyPrint(p);
-//        p.endList();
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p){
         String out = "";
@@ -85,4 +80,5 @@ public abstract class BinopExpr extends Expr {
         p.endList();
     }
 
+    // Type checking
 }
