@@ -5,24 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e2ecc9ef-a66b-402e-aa70-63caf6934235" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/ant-1.10.11.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/ant-launcher-1.10.11.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/asm-9.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/asm-analysis-9.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/asm-commons-9.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/asm-tree-9.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/jdependency-2.7.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/jdom2-2.0.6.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/log4j-api-2.17.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/log4j-core-2.17.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deps/libs/plugins/plexus-utils-3.4.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/EtaParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/EtiParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/sym.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pa2.log" beforeDir="false" afterPath="$PROJECT_DIR$/pa2.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/newast/expr/unop/UnopExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/aar226_akc55_ayc62_ahl88/newast/expr/unop/UnopExpr.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
