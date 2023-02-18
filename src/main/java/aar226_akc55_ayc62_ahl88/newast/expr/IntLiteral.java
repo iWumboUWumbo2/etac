@@ -45,7 +45,6 @@ public class IntLiteral extends Expr{
         return (rawChar == null) ? Long.toString(number) : rawChar;
     }
 
-    @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         if (rawChar == null) {
             p.printAtom(toString());
