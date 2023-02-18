@@ -7,10 +7,10 @@ public abstract class BooleanUnop extends UnopExpr {
     /**
      * Abstract class for all boolean unary expressions
      *
-     * @param b   B
-     * @param in
-     * @param l
-     * @param c
+     * @param b   Boolean Unop
+     * @param in  Expressions Input 1
+     * @param l   Line Number
+     * @param c   Column Number
      */
     public BooleanUnop(UnopEnum b, Expr in, int l, int c) {
         super(b, in, l, c);

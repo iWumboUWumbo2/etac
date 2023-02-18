@@ -6,12 +6,12 @@ import aar226_akc55_ayc62_ahl88.newast.expr.unop.UnopExpr;
 
 public abstract class IntUnop extends UnopExpr {
     /**
-     * Abstract class for all integer unary expressions
+     * Abstract class for all Integer unary expressions
      *
-     * @param b   B
-     * @param in
-     * @param l
-     * @param c
+     * @param b   Integer Enum for unary Expressions
+     * @param in  input Expressions 1
+     * @param l   Line Number
+     * @param c   Column Number
      */
     public IntUnop(UnopEnum b, Expr in, int l, int c) {
         super(b, in, l, c);

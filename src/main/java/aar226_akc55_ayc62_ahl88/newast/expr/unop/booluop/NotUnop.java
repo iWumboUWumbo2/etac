@@ -8,7 +8,7 @@ public class NotUnop extends BooleanUnop {
     /**
      * Class for Boolean Negation Unary Operator
      *
-     * @param in Expression
+     * @param in input Expression
      * @param l line number
      * @param c column number
      */

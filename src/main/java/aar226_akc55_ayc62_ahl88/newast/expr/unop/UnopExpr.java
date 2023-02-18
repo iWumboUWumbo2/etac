@@ -10,7 +10,7 @@ public abstract class UnopExpr extends Expr {
 
     /**
      * Abstract class for all Unary Expressions
-     * @param b  Unary Enum
+     * @param u  Unary Enum
      * @param in Expression
      * @param l line number
      * @param c column number

@@ -8,7 +8,7 @@ public class IntegerNegExpr extends IntUnop {
     /**
      * Class for Integer Negation Unary Operator
      *
-     * @param in Expression
+     * @param in Expression input
      * @param l line number
      * @param c column number
      */

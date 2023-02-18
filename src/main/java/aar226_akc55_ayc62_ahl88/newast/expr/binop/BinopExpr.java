@@ -26,7 +26,7 @@ public abstract class BinopExpr extends Expr {
     }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p){
-        String out = "";
+        String out;
         switch (binopType){
             case AND:
                 out = "&";
