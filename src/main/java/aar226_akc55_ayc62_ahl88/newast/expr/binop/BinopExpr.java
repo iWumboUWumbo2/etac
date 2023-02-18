@@ -4,6 +4,9 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
+/**
+ * Abstract class for all Binary Expressions
+ */
 public abstract class BinopExpr extends Expr {
 
     Expr e1;
@@ -11,7 +14,6 @@ public abstract class BinopExpr extends Expr {
     BinopEnum binopType;
 
     /**
-     * Abstract class for all Binary Expressions
      * @param b  Binary Enum
      * @param in1 left Expression
      * @param in2 right Expression
