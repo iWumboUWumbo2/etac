@@ -4,10 +4,11 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.UnopEnum;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.UnopExpr;
 
+/**
+ * Abstract class for all Integer unary expressions
+ */
 public abstract class IntUnop extends UnopExpr {
     /**
-     * Abstract class for all Integer unary expressions
-     *
      * @param b   Integer Enum for unary Expressions
      * @param in  input Expressions 1
      * @param l   Line Number

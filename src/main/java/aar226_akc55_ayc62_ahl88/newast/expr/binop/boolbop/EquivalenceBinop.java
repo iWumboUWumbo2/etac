@@ -3,11 +3,12 @@ package aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 
+/**
+ * Abstract class for all equivalence binary expressions (>, <, !=, etc.)
+ */
 public abstract class EquivalenceBinop extends BoolOutBinop {
     /**
-     * Abstract class for all equivalence binary expressions (>, <, !=, etc.)
-     *
-     * @param b
+     * @param b binary operation type
      * @param in1 left Expression
      * @param in2 right Expression
      * @param l line number

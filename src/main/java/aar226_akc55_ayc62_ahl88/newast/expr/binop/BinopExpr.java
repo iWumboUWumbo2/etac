@@ -14,7 +14,7 @@ public abstract class BinopExpr extends Expr {
     BinopEnum binopType;
 
     /**
-     * @param b  Binary Enum
+     * @param b binary operation type
      * @param in1 left Expression
      * @param in2 right Expression
      * @param l line number

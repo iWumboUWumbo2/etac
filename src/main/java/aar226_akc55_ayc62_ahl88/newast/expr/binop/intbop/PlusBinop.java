@@ -3,10 +3,11 @@ package aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 
+/**
+ * Class for Plus Binary Operator
+ */
 public class PlusBinop extends IntOutBinop {
     /**
-     * Class for Plus Binary Operator
-     *
      * @param in1 left Expression
      * @param in2 right Expression
      * @param l line number

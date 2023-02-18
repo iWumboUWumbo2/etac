@@ -2,11 +2,14 @@ package aar226_akc55_ayc62_ahl88.newast.expr;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
+/**
+ * Class for length call
+ */
 public class Length extends Expr {
     Expr arg;
 
     /**
-     * @param e expression argument of length()
+     * @param e Expression argument of length()
      * @param l line number
      * @param c column number
      */
