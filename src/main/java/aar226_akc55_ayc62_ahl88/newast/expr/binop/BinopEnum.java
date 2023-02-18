@@ -1,6 +1,5 @@
-package aar226_akc55_ayc62_ahl88.newast.binop;
+package aar226_akc55_ayc62_ahl88.newast.expr.binop;
  enum BinopEnum {
-
      AND,
      OR,
      EQUALS,
@@ -14,6 +13,4 @@ package aar226_akc55_ayc62_ahl88.newast.binop;
      DIVIDE,
      TIMES,
      HIGHMULT
-
-
 }
