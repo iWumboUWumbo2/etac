@@ -5,10 +5,19 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 import java.util.ArrayList;
 
+/**
+ * Class for function call expressions
+ */
 public class FunctionCall extends Expr {
     Id id;
     ArrayList<Expr> args;
 
+    /**
+     * @param i function name
+     * @param inArgs function arguments
+     * @param l line number
+     * @param c column number
+     */
     public FunctionCall(Id i, ArrayList<Expr> inArgs, int l, int c) {
         super (l, c);
         id = i;
