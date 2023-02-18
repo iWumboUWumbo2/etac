@@ -5,7 +5,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 /**
  * Class for Identifer
  */
-public  class Id extends Expr {
+public class Id extends Expr {
     private String identifer;
 
     /**
@@ -21,7 +21,6 @@ public  class Id extends Expr {
         return identifer;
     }
 
-    @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.printAtom(identifer);
     }
