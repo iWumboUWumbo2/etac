@@ -12,5 +12,6 @@ package aar226_akc55_ayc62_ahl88.newast.expr.binop;
      MINUS,
      DIVIDE,
      TIMES,
-     HIGHMULT
+     HIGHMULT,
+     MODULO
 }
