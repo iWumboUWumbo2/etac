@@ -120,11 +120,11 @@ emptyBracketDecl ::=
 
 
 fullBracketType::=
-    IDENTIFIER: i fullBracketPlus:e {:Id a = new Id(i); RESULT = new ArrayAccess(a,e, true);:}
+    IDENTIFIER: i fullBracketPlus:e {:System.out.println("IM HERE"); Id a = new Id(i); RESULT = new ArrayAccess(a,e, true);:}
  ;
 
 fullBracketPlus ::=
-    fullBracketPlus:ts OPEN_BRACKET expr:e CLOSE_BRACKET {: ts.add(e); RESULT = ts; :}
+    fullBracketPlus:ts OPEN_BRACKET expr:e CLOSE_BRACKET {: ts.add(e); System.out.println(ts.toString()); RESULT = ts; :}
    | OPEN_BRACKET expr:e CLOSE_BRACKET {: ArrayList<Expr> exprList = new ArrayList<Expr>();
                          exprList.add(e);
                          RESULT = exprList;
@@ -428,7 +428,7 @@ declaration_assign_stmt ::=
     | emptyBracketDecl:d {:RESULT = new DeclStmt(d,null);:}
     | IDENTIFIER:id GETS expr:e {: RESULT = new Reassignment(id,e);:}
     | UNDERSCORE GETS expr:e {:RESULT = new DeclStmt(new UnderScore(),e);:}
-    | fullBracketType:d GETS expr:e {: RESULT = new Reassignment(d,e);:}
+    | fullBracketType:d GETS expr:e {: System.out.println("we in reassign"); RESULT = new Reassignment(d,e);:}
 ;
 block ::=
 OPEN_BRACE statement_star:ss CLOSE_BRACE {:RESULT = new Block(ss);:}

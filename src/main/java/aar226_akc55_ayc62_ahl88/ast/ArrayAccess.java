@@ -57,8 +57,12 @@ public class ArrayAccess extends Expr implements Printer {
 //        if (id != null) {
 //            id.prettyPrint(p);
 //        }
+        System.out.println("WHAT IS STMT");
+        System.out.println(is_stmt);
         ArrayList<Expr> rev = new ArrayList<>(indexes);
-        if (is_stmt) Collections.reverse(rev);
+        if (is_stmt) {
+            Collections.reverse(rev);
+        }
         for (int i = 0; i<rev.size();i++){
             rev.get(i).prettyPrint(p);
             p.endList();
