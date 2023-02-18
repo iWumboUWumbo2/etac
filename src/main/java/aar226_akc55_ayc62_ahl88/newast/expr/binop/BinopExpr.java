@@ -10,16 +10,19 @@ public abstract class BinopExpr extends Expr {
     BinopEnum binopType;
 
     /**
-     * Abstract class for all binary expressions
-     * @param b B
-     * @param in1
-     * @param in2
+     * Abstract class for all Binary Expressions
+     * @param b  Binary Enum
+     * @param in1 left Expression
+     * @param in2 right Expression
+     * @param l line number
+     * @param c column number
      */
-    public BinopExpr(BinopEnum b, Expr in1, Expr in2) {
+    public BinopExpr(BinopEnum b, Expr in1, Expr in2, int l, int c) {
+        super(l,c);
         e1 = in1;
         e2 = in2;
         binopType = b;
     }
-    public abstract void prettyPrint(CodeWriterSExpPrinter p);
+//    public abstract void prettyPrint(CodeWriterSExpPrinter p);
 
 }
