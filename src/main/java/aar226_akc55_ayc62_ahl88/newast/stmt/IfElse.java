@@ -8,7 +8,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
  * Class for If-Else Statements
  */
 public class IfElse extends Stmt {
-    private Expr expr;
+    private Expr guard;
     private Stmt ifState;
     private Stmt elseState;
 
@@ -21,7 +21,7 @@ public class IfElse extends Stmt {
      */
     public IfElse(Expr e, Stmt ifS, Stmt elseS, int l, int c)  {
         super(l, c);
-        expr = e;
+        guard = e;
         ifState = ifS;
         elseState = elseS;
     }
@@ -30,7 +30,7 @@ public class IfElse extends Stmt {
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         p.printAtom("if");
-        expr.prettyPrint(p);
+        guard.prettyPrint(p);
         ifState.prettyPrint(p);
         elseState.prettyPrint(p);
         p.endList();

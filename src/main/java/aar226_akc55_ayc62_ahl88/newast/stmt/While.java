@@ -1,14 +1,13 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
-import aar226_akc55_ayc62_ahl88.ast.Expr;
-import aar226_akc55_ayc62_ahl88.ast.Stmt;
+import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 /**
  * While Class for AST node
  */
 public class While extends Stmt {
-    private Expr expr;
+    private Expr guard;
     private Stmt stmt;
 
     /**
@@ -19,7 +18,7 @@ public class While extends Stmt {
      */
     public While(Expr expr, Stmt s, int l, int c) {
         super(l,c);
-        this.expr = expr;
+        guard = expr;
         stmt = s;
     }
 
@@ -27,7 +26,7 @@ public class While extends Stmt {
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         p.printAtom("while");
-        expr.prettyPrint(p);
+        guard.prettyPrint(p);
         stmt.prettyPrint(p);
         p.endList();
     }

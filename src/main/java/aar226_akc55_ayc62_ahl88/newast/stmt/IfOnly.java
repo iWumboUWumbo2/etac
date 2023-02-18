@@ -7,7 +7,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
  * Class for If-Statement without Else
  */
 public class IfOnly extends Stmt {
-    private Expr expr;
+    private Expr guard;
     private Stmt ifState;
 
     /**
@@ -18,14 +18,14 @@ public class IfOnly extends Stmt {
      */
     public IfOnly(Expr e, Stmt ifS, int l, int c) {
         super(l, c);
-        expr = e;
+        guard = e;
         ifState = ifS;
     }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
         p.printAtom("if");
-        expr.prettyPrint(p);
+        guard.prettyPrint(p);
         ifState.prettyPrint(p);
         p.endList();
     }
