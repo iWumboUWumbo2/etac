@@ -5,6 +5,11 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 public class Length extends Expr {
     Expr arg;
 
+    /**
+     * @param e expression argument of length()
+     * @param l line number
+     * @param c column number
+     */
     public Length(Expr e, int l, int c) {
         super(l,c);
         arg = e;
