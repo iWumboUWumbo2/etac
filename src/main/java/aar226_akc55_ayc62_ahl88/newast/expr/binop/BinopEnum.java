@@ -1,5 +1,5 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop;
- enum BinopEnum {
+ public enum BinopEnum {
      AND,
      OR,
      EQUALS,
