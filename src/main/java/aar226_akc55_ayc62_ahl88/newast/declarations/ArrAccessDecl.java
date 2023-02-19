@@ -6,13 +6,19 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 import java.util.ArrayList;
 
 /**
- * Class for Arra Access Reassignment
+ * Class for Array Access Reassignment
  */
 public class ArrAccessDecl extends Decl{
 
     private Id id;
     private ArrayList<Expr> indices;
 
+    /**
+     * @param id
+     * @param indices
+     * @param l
+     * @param c
+     */
     public ArrAccessDecl(Id id, ArrayList<Expr> indices, int l, int c) {
         super(l, c);
         this.id = id;
