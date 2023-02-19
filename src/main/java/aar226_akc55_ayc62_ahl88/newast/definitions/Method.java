@@ -5,13 +5,14 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 import java.util.ArrayList;
 
-public class Method implements Definition, Printer {
+public class Method extends Definition {
     private Id id;
     private ArrayList<Decl> decls;
     private ArrayList<Type> types;
     private Block block;
 
-    public Method(String s, ArrayList<Decl> d, ArrayList<Type> t, Block b){
+    public Method(String s, ArrayList<Decl> d, ArrayList<Type> t, Block b, int l, int c){
+        super (l,c);
         for (Decl cur: d){
             if (!cur.type.dimensions.allEmpty) {
                 throw new Error("array in param list has init value");

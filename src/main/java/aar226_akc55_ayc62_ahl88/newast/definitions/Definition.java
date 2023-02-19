@@ -1,8 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
-
+import aar226_akc55_ayc62_ahl88.newast.AstNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
-public interface Definition {
+public abstract class Definition extends AstNode{
 //    private Method method;
 //    private Globdecl globdecl;
 //
@@ -27,5 +27,8 @@ public interface Definition {
 //        else method.prettyPrint(p);
 //        p.endList();
 //    }
-    void prettyPrint(CodeWriterSExpPrinter p);
+
+    public Definition(int l, int c) {
+        super(l, c);
+    }
 }

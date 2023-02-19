@@ -5,11 +5,12 @@ import aar226_akc55_ayc62_ahl88.ast.Expr;
 import aar226_akc55_ayc62_ahl88.ast.Value;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
-public class Globdecl implements Definition {
+public class Globdecl extends Definition {
     private Decl decl;
     private Value value;
 
-    public Globdecl (Decl d, Value v) {
+    public Globdecl (Decl d, Value v, int l, int c) {
+        super(l, c);
         decl = d;
         value = v;
     }
