@@ -34,7 +34,6 @@ public class IntLiteral extends Expr{
             int last = inputChar.lastIndexOf("}");
             number = Long.parseLong(inputChar.substring(first+1,last),16);
         }else{ // single character
-            rawChar = inputChar;
             number  = Long.parseLong(inputChar);
         }
     }
