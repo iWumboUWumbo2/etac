@@ -31,9 +31,11 @@ public class ArrayValueLiteral extends Expr {
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         if (raw == null){
+            p.startList();
             for (Expr v: values){
                 (v).prettyPrint(p);
             }
+            p.endList();
         }else{
             p.printAtom("\"" +raw+ "\"");
         }

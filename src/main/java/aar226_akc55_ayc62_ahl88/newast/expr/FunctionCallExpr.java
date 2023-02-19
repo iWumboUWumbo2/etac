@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Class for function call expressions
  */
-public class FunctionCall extends Expr {
+public class FunctionCallExpr extends Expr {
     Id id;
     ArrayList<Expr> args;
 
@@ -17,7 +17,7 @@ public class FunctionCall extends Expr {
      * @param l line number
      * @param c column number
      */
-    public FunctionCall(Id i, ArrayList<Expr> inArgs, int l, int c) {
+    public FunctionCallExpr(Id i, ArrayList<Expr> inArgs, int l, int c) {
         super (l, c);
         id = i;
         args = inArgs;

@@ -18,7 +18,7 @@ public class AnnotatedTypeDecl extends Decl{
 
     Id identifier;
 
-    Type type;
+    public Type type;
     public AnnotatedTypeDecl(Id i, Type t, int l, int c) {
         super(l, c);
         identifier = i;

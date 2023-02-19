@@ -16,7 +16,7 @@ public class IntLiteral extends Expr{
      */
     public IntLiteral(long i, int l, int r) {
         super(l,r);
-        number = i;
+        number = -i;
     }
 
     /**
@@ -34,7 +34,7 @@ public class IntLiteral extends Expr{
             int last = inputChar.lastIndexOf("}");
             number = Long.parseLong(inputChar.substring(first+1,last),16);
         }else{ // single character
-            number  = Long.parseLong(inputChar);
+            number  = Character.getNumericValue(inputChar.charAt(0));
         }
     }
 

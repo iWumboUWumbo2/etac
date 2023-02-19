@@ -29,12 +29,6 @@ public class DeclAssignStmt extends Stmt{
 
     public String toString(){
         String build = "";
-//        if (value != null){
-////            System.out.println("IM HERE");
-//            build +=  "( " + decl.toString() + " " +value.toString() +  " )";
-//        }else{
-//            build +=  "( " + decl.toString() +  " )";
-//        }
         build +=  "( " + decl.toString() +  " )";
         return build;
     }

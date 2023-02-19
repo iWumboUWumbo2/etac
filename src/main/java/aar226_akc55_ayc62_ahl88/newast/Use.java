@@ -3,15 +3,17 @@ package aar226_akc55_ayc62_ahl88.newast;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
-public class Use {
+public class Use extends AstNode{
     private Id id;
 
-    public Use(Id id) {
+    public Use(Id id, int l, int c) {
+        super(l,c);
         this.id = id;
     }
 
-    public Use(String s, int l, int r) {
-        this.id = new Id(s, l, r);
+    public Use(String s, int l, int c) {
+        super(l,c);
+        this.id = new Id(s, l, c);
     }
 
     public String toString(){

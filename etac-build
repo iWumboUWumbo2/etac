@@ -6,7 +6,7 @@ gradle clean
 #rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
 #jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/etalex.flex
 jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex
-java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup
+java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eta2.cup
 java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup
 gradle --no-daemon -b build.gradle shadowJar
 

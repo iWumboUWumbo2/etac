@@ -38,7 +38,7 @@ public class Globdecl extends Definition {
         p.startList();
         decl.prettyPrint(p);
         if (value != null){
-            ((Expr) value).prettyPrint(p);
+            value.prettyPrint(p);
         }
         p.endList();
     }
