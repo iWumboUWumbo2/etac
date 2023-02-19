@@ -1,7 +1,6 @@
-package aar226_akc55_ayc62_ahl88.newast.stmt.declarations;
+package aar226_akc55_ayc62_ahl88.newast.declarations;
 
-import aar226_akc55_ayc62_ahl88.newast.expr.Id;
-import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
+import aar226_akc55_ayc62_ahl88.newast.AstNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 /**
@@ -12,7 +11,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
  * works for a[2][4]
  */
 
-public abstract class Decl extends Stmt {
+public abstract class Decl extends AstNode {
 
     /**
      * Constructor for Abstract Declarations
