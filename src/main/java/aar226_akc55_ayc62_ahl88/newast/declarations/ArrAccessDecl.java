@@ -14,10 +14,10 @@ public class ArrAccessDecl extends Decl{
     private ArrayList<Expr> indices;
 
     /**
-     * @param id
-     * @param indices
-     * @param l
-     * @param c
+     * @param id id
+     * @param indices indices
+     * @param l line number
+     * @param c column number
      */
     public ArrAccessDecl(Id id, ArrayList<Expr> indices, int l, int c) {
         super(l, c);
