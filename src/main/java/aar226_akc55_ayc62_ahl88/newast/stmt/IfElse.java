@@ -16,8 +16,8 @@ public class IfElse extends Stmt {
      * @param e Expression
      * @param ifS If statement
      * @param elseS Else statement
-     * @param l Line
-     * @param c Column
+     * @param l Line number
+     * @param c Column number
      */
     public IfElse(Expr e, Stmt ifS, Stmt elseS, int l, int c)  {
         super(l, c);
