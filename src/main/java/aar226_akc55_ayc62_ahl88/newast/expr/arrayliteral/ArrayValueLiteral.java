@@ -17,6 +17,13 @@ public class ArrayValueLiteral extends Expr {
             values.add(new IntLiteral(Character.toString(ch), l, c));
         }
     }
+
+    public ArrayValueLiteral(ArrayList<Expr> e, int l, int c) {
+        super(l,c);
+        values = e;
+        raw = null;
+    }
+
     public String toString(){
         return values.toString();
     }
