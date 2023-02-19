@@ -1,7 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
 
 import aar226_akc55_ayc62_ahl88.newast.declarations.*;
-import aar226_akc55_ayc62_ahl88.newast.*;
+import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 /**
@@ -9,7 +9,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
  */
 public class Globdecl extends Definition {
     private Decl decl;
-    private Value value;
+    private Expr value;
 
     /**
      * @param d Declaration
@@ -17,7 +17,7 @@ public class Globdecl extends Definition {
      * @param l Line number
      * @param c Column number
      */
-    public Globdecl (Decl d, Value v, int l, int c) {
+    public Globdecl (Decl d, Expr v, int l, int c) {
         super(l, c);
         decl = d;
         value = v;
