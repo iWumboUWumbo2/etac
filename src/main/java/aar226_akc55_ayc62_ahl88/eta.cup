@@ -142,6 +142,7 @@ globalDecl ::=
         RESULT  = new Globdecl(ed, v);
     :}
     | globalDecl:gd SEMICOLON {:RESULT = gd;:}
+    ;
 //    | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
 //    | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
 //    ;
@@ -298,7 +299,7 @@ stmt ::=
 
 multi_declaration_assign_stmt ::=
     type_list:tl GETS exprList:el {:RESULT = new MultiDeclStmt(tl,el);:}
-    | type_list:tl {: RESULT = new MultiDeclStmt(tl); :}
+//    | type_list:tl {: RESULT = new MultiDeclStmt(tl); :}
 
 ;
 
