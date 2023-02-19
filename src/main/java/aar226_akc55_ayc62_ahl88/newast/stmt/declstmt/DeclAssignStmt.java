@@ -6,11 +6,20 @@ import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
+/**
+ * Class for Declarations that deal with assignment
+ */
 public class DeclAssignStmt extends Stmt{
 
     private Decl decl;
     private Expr expression;
 
+    /**
+     * @param d Declaration
+     * @param e Expression
+     * @param l Line number
+     * @param c Column number
+     */
     public DeclAssignStmt (Decl d, Expr e, int l, int c) {
 
         super(l,c);

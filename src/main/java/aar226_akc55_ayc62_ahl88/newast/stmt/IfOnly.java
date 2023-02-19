@@ -13,8 +13,8 @@ public class IfOnly extends Stmt {
     /**
      * @param e Expression
      * @param ifS If Statement
-     * @param l Line
-     * @param c Column
+     * @param l Line number
+     * @param c Column number
      */
     public IfOnly(Expr e, Stmt ifS, int l, int c) {
         super(l, c);
