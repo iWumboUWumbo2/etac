@@ -1,8 +1,7 @@
 package aar226_akc55_ayc62_ahl88;
 
-import aar226_akc55_ayc62_ahl88.newast.*;
-import aar226_akc55_ayc62_ahl88.ast.*;
 import aar226_akc55_ayc62_ahl88.newast.Program;
+import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import java_cup.runtime.Symbol;
 import org.apache.commons.cli.*;
 import java.io.*;
