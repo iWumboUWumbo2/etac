@@ -2,7 +2,9 @@
 package aar226_akc55_ayc62_ahl88;
 
 import java_cup.runtime.*;
+
 import aar226_akc55_ayc62_ahl88.newast.*;
+
 import java.util.ArrayList;
 
 // You might want to add types to these declarations.
@@ -47,10 +49,10 @@ nonterminal Stmt                    multi_declaration_assign_stmt;
 nonterminal Return                  return;
 nonterminal ArrayList<Decl>         type_list;
 nonterminal ArrayList<Expr>         fullBracketPlus;
-nonterminal ArrayAccess             fullBracketType;
-nonterminal ArrayList<Value>        valueList;
-nonterminal MultiGlobalDecl         glob_multi_declaration_assign_stmt;
-nonterminal ArrayAccess             fullBracketAss;
+nonterminal ArrayAccessExpr         fullBracketType;
+nonterminal ArrayList<Expr>         valueList;
+nonterminal Globdecl                glob_multi_declaration_assign_stmt;
+nonterminal ArrayAccessExpr         fullBracketAss;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
