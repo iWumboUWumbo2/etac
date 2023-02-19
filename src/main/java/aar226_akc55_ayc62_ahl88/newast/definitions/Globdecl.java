@@ -1,14 +1,22 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
 
-import aar226_akc55_ayc62_ahl88.ast.Decl;
-import aar226_akc55_ayc62_ahl88.ast.Expr;
-import aar226_akc55_ayc62_ahl88.ast.Value;
+import aar226_akc55_ayc62_ahl88.newast.declarations.*;
+import aar226_akc55_ayc62_ahl88.newast.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
+/**
+ * Description for global declaration
+ */
 public class Globdecl extends Definition {
     private Decl decl;
     private Value value;
 
+    /**
+     * @param d Declaration
+     * @param v Value
+     * @param l Line number
+     * @param c Column number
+     */
     public Globdecl (Decl d, Value v, int l, int c) {
         super(l, c);
         decl = d;
