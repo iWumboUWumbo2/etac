@@ -1,6 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr;
 
-import aar226_akc55_ayc62_ahl88.ast.Expr;
+import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 import java.util.ArrayList;
@@ -19,7 +19,8 @@ public class ArrayAccessExpr extends Expr {
      * @param argArray Expression prior to array indexing
      * @param arrayOfIndexing Expressions found within indexing area.
      */
-    public ArrayAccessExpr(Expr argArray, ArrayList<Expr> arrayOfIndexing){
+    public ArrayAccessExpr(Expr argArray, ArrayList<Expr> arrayOfIndexing, int l, int c){
+        super (l, c);
         orgArray = argArray;
         indicies = arrayOfIndexing;
     }

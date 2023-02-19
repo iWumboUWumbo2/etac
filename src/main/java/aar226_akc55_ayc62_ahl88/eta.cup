@@ -53,7 +53,7 @@ nonterminal ArrayAccess fullBracketType;
 //nonterminal ArrayList<Method_Interface> interfaceStar;
 nonterminal ArrayList<Value> valueList;
 nonterminal MultiGlobalDecl glob_multi_declaration_assign_stmt;
-nonterminal ArrayList<Decl> glob_type_list;
+//nonterminal ArrayList<Decl> glob_type_list;
 nonterminal ArrayAccess fullBracketAss;
 
 precedence nonassoc IF;
@@ -142,26 +142,26 @@ globalDecl ::=
         RESULT  = new Globdecl(ed, v);
     :}
     | globalDecl:gd SEMICOLON {:RESULT = gd;:}
-    | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
-    | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
-    ;
+//    | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
+//    | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
+//    ;
 
 //glob_multi_declaration_assign_stmt ::=
 //    glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
 //    | glob_type_list:tl {: RESULT = new MultiGlobalDecl(tl); :}
 //;
-glob_type_list ::=
-     emptyBracketDecl:ed1 COMMA emptyBracketDecl:ed2 {:
-     ArrayList<Decl> temp = new ArrayList<>();
-     temp.add(ed1);
-     temp.add(ed2);
-     RESULT = temp;
-     :}
-     |glob_type_list:tl COMMA emptyBracketDecl:ed {:
-         tl.add(ed);
-         RESULT = tl;
-     :}
- ;
+//glob_type_list ::=
+//     emptyBracketDecl:ed1 COMMA emptyBracketDecl:ed2 {:
+//     ArrayList<Decl> temp = new ArrayList<>();
+//     temp.add(ed1);
+//     temp.add(ed2);
+//     RESULT = temp;
+//     :}
+//     |glob_type_list:tl COMMA emptyBracketDecl:ed {:
+//         tl.add(ed);
+//         RESULT = tl;
+//     :}
+// ;
 
 value ::=
     INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,true,ileft,iright); :}
