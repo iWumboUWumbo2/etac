@@ -1,4 +1,9 @@
-
+:global a:int = -4;
+:global a:int = -8;
+:global a:int = -8;
+:global b:int[];
+:global b:bool;
+:global b:int[5][6];
+:global a:bool,b:int,c:bool;
 main() {
- a :int = '';
 }

@@ -1,6 +1,5 @@
 use io
 
-a:int[] = {l,s,dl}
 main (){
-
+    a:int = '\x{f0}'
 }
