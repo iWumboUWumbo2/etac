@@ -123,6 +123,7 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
     "else"    { return symbol(sym.ELSE); }
     "return"  { return symbol(sym.RETURN); }
     "length"  { return symbol(sym.LENGTH); }
+    "global"  { return symbol(sym.GLOBAL); }
 
     // operators
     "-"       { return symbol(sym.MINUS); }

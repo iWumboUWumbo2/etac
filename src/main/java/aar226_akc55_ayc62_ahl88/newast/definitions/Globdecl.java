@@ -8,7 +8,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
  * Description for global declaration
  */
 public class Globdecl extends Definition {
-    private Decl decl;
+    private AnnotatedTypeDecl decl;
     private Expr value;
 
     /**
@@ -17,7 +17,7 @@ public class Globdecl extends Definition {
      * @param l Line number
      * @param c Column number
      */
-    public Globdecl (Decl d, Expr v, int l, int c) {
+    public Globdecl (AnnotatedTypeDecl d, Expr v, int l, int c) {
         super(l, c);
         decl = d;
         value = v;

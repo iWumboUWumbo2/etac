@@ -35,10 +35,10 @@ terminal Long       INTEGER_LITERAL;
 terminal Boolean    BOOL_LITERAL;
 terminal            INT, BOOL;
 
-terminal IF, ELSE, WHILE, BREAK, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
+terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
   DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, AND, OR, EQUAL, NOT_EQUAL, GETS,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
-  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM;
+  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM,GLOBAL;
 
 nonterminal Program                 program;
 nonterminal ArrayList<Use>          importUseStar;
@@ -52,6 +52,7 @@ nonterminal ArrayList<Type>         emptyBracketType_plus;
 nonterminal Type                    emptyBracketType;
 nonterminal Dimension               emptyDimension_star;
 nonterminal Definition              globalDecl;
+nonterminal Definition              newGlob;
 nonterminal Expr                    value;
 nonterminal Expr                    expr;
 nonterminal Block                   block;
@@ -64,9 +65,11 @@ nonterminal Return                  return;
 nonterminal ArrayList<Decl>         type_list;
 nonterminal ArrayList<Expr>         fullBracketPlus;
 nonterminal ArrAccessDecl           fullBracketType;
-nonterminal ArrayList<Value>        valueList;
+nonterminal ArrayList<Expr>        valueList;
 nonterminal MultiGlobalDecl         glob_multi_declaration_assign_stmt;
 nonterminal ArrAccessDecl         fullBracketAss;
+
+nonterminal ArrayList<AnnotatedTypeDecl> glob_type_list;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -144,7 +147,11 @@ fullBracketPlus ::=
                          :}
     ;
 
-globalDecl ::=
+
+globalDecl ::= COLON GLOBAL newGlob:ng {:RESULT = ng;:}
+;
+
+newGlob ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null, edleft, edright);:} // make sure to check NULL
     | emptyBracketDecl:ed GETS:g value:v {:
         if (!ed.type.dimensions.allEmpty) {
@@ -155,8 +162,22 @@ globalDecl ::=
         }
         RESULT  = new Globdecl(ed, v, edleft, edright);
     :}
-    | globalDecl:gd SEMICOLON {:RESULT = gd;:}
+    | newGlob:gd SEMICOLON {:RESULT = gd;:}
+    | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
     ;
+
+glob_type_list ::=
+     emptyBracketDecl:ed1 COMMA emptyBracketDecl:ed2 {:
+     ArrayList<AnnotatedTypeDecl> temp = new ArrayList<>();
+     temp.add(ed1);
+     temp.add(ed2);
+     RESULT = temp;
+     :}
+     |glob_type_list:tl COMMA emptyBracketDecl:ed {:
+         tl.add(ed);
+         RESULT = tl;
+     :}
+ ;
 
 value ::=
     INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,ileft,iright); :}
@@ -166,7 +187,14 @@ value ::=
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b,bleft,bright); :}
 //    | STRING_LITERAL:s {: new ArrayValueLiteral(s); :} can't assign global arrays which a string string is
     ;
-
+valueList ::=
+     value:x {:
+             ArrayList<Expr> temp = new ArrayList<Expr>();
+             temp.add(x);
+             RESULT = temp;
+         :}
+     |  valueList:ave COMMA value:x {: ave.add(x); RESULT = ave; :}
+ ;
 emptyBracketType_plus ::=
     emptyBracketType_plus:ts COMMA emptyBracketType:t {: ts.add(t); RESULT = ts; :}
     | emptyBracketType:t {: ArrayList<Type> typeList = new ArrayList<Type>();
