@@ -30,7 +30,7 @@ import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
  * Type Checking Visitor Class
  * */
 
-public class TypeCheckerVisitor implements Visitor<Void>{
+public class TypeCheckerVisitor implements Visitor<Void> {
 
     /**
      * @param node
