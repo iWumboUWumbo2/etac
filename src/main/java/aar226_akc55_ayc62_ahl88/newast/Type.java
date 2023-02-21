@@ -28,7 +28,6 @@ public class Type extends AstNode {
 
     private ArrayList<Type> inputTypes, outputTypes;
 
-
     /**
      * @param t type
      * @param d dimension
@@ -54,6 +53,10 @@ public class Type extends AstNode {
     }
     private String getTypeAsString() {
         return (isInt) ? "int" : "bool";
+    }
+
+    public TypeCheckingType getTct () {
+        return tct;
     }
 
     @Override
