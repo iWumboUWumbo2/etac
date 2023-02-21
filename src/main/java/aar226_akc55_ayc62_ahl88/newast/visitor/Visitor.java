@@ -11,6 +11,10 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntegerNegExpr;
+import aar226_akc55_ayc62_ahl88.newast.stmt.*;
+import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
+import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
+import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
 
 public interface Visitor<T> {
 
@@ -41,5 +45,24 @@ public interface Visitor<T> {
     T visit(ArrayValueLiteral node);
 
     T visit(ArrayAccessExpr node);
+
+    T visit(Block node);
+
+    T visit(IfElse node);
+
+    T visit(IfOnly node);
+
+    T visit(ProcedureCall node);
+
+    T visit(Return node);
+
+    T visit(While node);
+
+    T visit(DeclAssignStmt node);
+
+    T visit(DeclNoAssignStmt node);
+
+    T visit(MultiDeclAssignStmt node);
+
 }
 
