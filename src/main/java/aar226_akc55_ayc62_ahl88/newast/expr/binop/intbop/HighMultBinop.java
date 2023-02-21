@@ -21,8 +21,8 @@ public class HighMultBinop extends IntOutBinop {
 
     @Override
     public Type typeChecker(SymbolTable s){
-        Type t1 = Expr.typeChecker(this.getLeftExpr());
-        Type t2 = Expr.typeChecker(this.getRightExpr());
+        Type t1 = this.getLeftExpr().typeChecker(s);
+        Type t2 = this.getLeftExpr().typeChecker(s);
         if (t1.getTct() == Type.TypeCheckingType.Int && t2.getTct() == Type.TypeCheckingType.Int) {
             return new Type(Type.TypeCheckingType.Int, getLine(), getColumn());
         }
