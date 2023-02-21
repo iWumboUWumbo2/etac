@@ -21,10 +21,10 @@ public class DivideBinop extends IntOutBinop {
 
     @Override
     public Type typeChecker(SymbolTable s){
-        Type t1 = this.getLeftExpr().typeChecker(s);
-        Type t2 = this.getLeftExpr().typeChecker(s);
-        if (t1.getTct() == Type.TypeCheckingType.Int && t2.getTct() == Type.TypeCheckingType.Int) {
-            return new Type(Type.TypeCheckingType.Int, getLine(), getColumn());
+        Type t1 = this.getLeftExpr().typeCheck(s);
+        Type t2 = this.getLeftExpr().typeCheck(s);
+        if (t1.getType() == Type.TypeCheckingType.INT && t2.getType() == Type.TypeCheckingType.INT) {
+            return new Type(Type.TypeCheckingType.INT);
         }
         throw new Error("One or both are not of type int.");
     }
