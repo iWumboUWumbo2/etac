@@ -2,11 +2,12 @@ package aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop;
 
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
 
 /**
  * Class for Plus Binary Operator
  */
-public class PlusBinop extends IntOutBinop {
+public class PlusBinop extends BinopExpr {
     /**
      * @param in1 left Expression
      * @param in2 right Expression
@@ -16,4 +17,6 @@ public class PlusBinop extends IntOutBinop {
     public PlusBinop(Expr in1, Expr in2, int l, int c) {
         super(BinopEnum.PLUS, in1, in2, l, c);
     }
+
+    // can add Arrays too
 }

@@ -82,5 +82,13 @@ public abstract class BinopExpr extends Expr {
         p.endList();
     }
 
+    public Expr getLeftExpr() {
+        return e1;
+    }
+
+    public Expr getRightExpr() {
+        return e2;
+    }
+
     // Type checking
 }

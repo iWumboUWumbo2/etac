@@ -10,8 +10,24 @@ import java.util.Collections;
  * Class to represent a type
  */
 public class Type extends AstNode {
+    public enum TypeCheckingType {
+        INT,
+        BOOL,
+        EMPTYDIMENSIONALARRAY,
+        MULTITYPES,
+        UNIT,
+        VOID,
+        RETURN,
+        FUNC,
+        FILLEDARR
+    }
     public Dimension dimensions;
     private boolean isInt;
+
+    private TypeCheckingType tct;
+
+    private ArrayList<Type> inputTypes, outputTypes;
+
 
     /**
      * @param t type
@@ -25,6 +41,18 @@ public class Type extends AstNode {
         dimensions = d;
     }
 
+    public Type(TypeCheckingType tct) {
+        super(-1, -1);
+        this.tct = tct;
+    }
+
+    public TypeCheckingType getType() {return tct;}
+    public boolean isBasicInt(){
+        return isInt && (dimensions.getDim() == 0);
+    }
+    public boolean isBasicBool(){
+        return (!isInt) && (dimensions.getDim() == 0);
+    }
     private String getTypeAsString() {
         return (isInt) ? "int" : "bool";
     }
