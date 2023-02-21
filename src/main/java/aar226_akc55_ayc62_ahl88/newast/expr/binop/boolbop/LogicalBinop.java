@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 
@@ -18,4 +20,28 @@ public abstract class LogicalBinop extends BoolOutBinop {
         super(b, in1, in2, l, c);
     }
     // Type Checking In1,In2 Bool Only
+
+    @Override
+    public Type typeCheck(SymbolTable s){
+        Expr e1 = getLeftExpr();
+        Expr e2 = getRightExpr();
+        Type t1 = e1.typeCheck(s);
+        Type t2 = e2.typeCheck(s);
+
+        if (t1.getType() != Type.TypeCheckingType.BOOL) {
+            String message = Integer.toString(e1.getLine())
+                    + ":" + Integer.toString(e1.getColumn())
+                    + "  TypeError: statements block must be of type int at ";
+            throw new Error(message);
+        }
+
+        if (t2.getType() != Type.TypeCheckingType.BOOL) {
+            String message = Integer.toString(e2.getLine())
+                    + ":" + Integer.toString(e2.getColumn())
+                    + "  TypeError: statements block must be of type int at ";
+            throw new Error(message);
+        }
+
+        return new Type(Type.TypeCheckingType.BOOL);
+    }
 }

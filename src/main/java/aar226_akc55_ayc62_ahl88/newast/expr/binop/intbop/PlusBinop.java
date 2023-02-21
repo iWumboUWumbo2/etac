@@ -25,8 +25,8 @@ public class PlusBinop extends BinopExpr {
     public Type typeCheck(SymbolTable s) throws Error {
         Expr e1 = getLeftExpr();
         Expr e2 = getRightExpr();
-        Type t1 = getLeftExpr().typeCheck(s);
-        Type t2 = getRightExpr().typeCheck(s);
+        Type t1 = e1.typeCheck(s);
+        Type t2 = e2.typeCheck(s);
         String message;
 
         if (t1.getType() == Type.TypeCheckingType.INT) {
