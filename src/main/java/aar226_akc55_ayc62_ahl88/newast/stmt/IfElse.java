@@ -31,7 +31,7 @@ public class IfElse extends Stmt {
     @Override
     public Type typeCheck(SymbolTable table) {
         Type tg = guard.typeCheck(table);
-        if (!tg.isBasicBool()) {
+        if (tg.getType() != Type.TypeCheckingType.BOOL) {
             throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic Error ");
         }
 
