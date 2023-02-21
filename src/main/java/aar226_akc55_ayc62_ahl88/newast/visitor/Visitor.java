@@ -1,6 +1,16 @@
 package aar226_akc55_ayc62_ahl88.newast.visitor;
 
 
+import aar226_akc55_ayc62_ahl88.newast.Program;
+import aar226_akc55_ayc62_ahl88.newast.Type;
+import aar226_akc55_ayc62_ahl88.newast.Use;
+import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
+import aar226_akc55_ayc62_ahl88.newast.declarations.ArrAccessDecl;
+import aar226_akc55_ayc62_ahl88.newast.declarations.NoTypeDecl;
+import aar226_akc55_ayc62_ahl88.newast.declarations.UnderScore;
+import aar226_akc55_ayc62_ahl88.newast.definitions.Globdecl;
+import aar226_akc55_ayc62_ahl88.newast.definitions.Method;
+import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr.ArrayAccessExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
@@ -63,6 +73,27 @@ public interface Visitor<T> {
     T visit(DeclNoAssignStmt node);
 
     T visit(MultiDeclAssignStmt node);
+
+    T visit(Globdecl node);
+
+    T visit(Method node);
+
+    T visit(MultiGlobalDecl node);
+
+    T visit(AnnotatedTypeDecl node);
+
+    T visit(ArrAccessDecl node);
+
+    T visit(NoTypeDecl node);
+
+    T visit(UnderScore node);
+
+    T visit(Use node);
+
+    T visit(Program node);
+
+    // unsure
+    T visit(Type node);
 
 }
 
