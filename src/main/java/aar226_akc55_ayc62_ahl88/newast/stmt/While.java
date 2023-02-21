@@ -25,12 +25,15 @@ public class While extends Stmt {
     }
 
     @Override
-    public Type typeCheck(SymbolTable table) {
+    public Type typeCheck(SymbolTable<Type> table) {
         Type tg = guard.typeCheck(table);
         if (tg.getType() != Type.TypeCheckingType.BOOL) {
             throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic Error ");
         }
-        stmt.typeCheck(table);
+        Type cond1 = stmt.typeCheck(table);
+        if (!isRType(cond1)){
+            throw new Error(stmt.getLine() + ":" + stmt.getColumn() + " Semantic error: Statement in WHILE is not Unit or Void");
+        }
         return new Type(Type.TypeCheckingType.UNIT);
     }
 

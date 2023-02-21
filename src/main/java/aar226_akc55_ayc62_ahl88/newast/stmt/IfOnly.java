@@ -32,7 +32,7 @@ public class IfOnly extends Stmt {
         p.endList();
     }
     @Override
-    public Type typeCheck(SymbolTable table) {
+    public Type typeCheck(SymbolTable<Type> table) {
 
         Type guardType = guard.typeCheck(table);
         if (guardType.getType() != Type.TypeCheckingType.BOOL){

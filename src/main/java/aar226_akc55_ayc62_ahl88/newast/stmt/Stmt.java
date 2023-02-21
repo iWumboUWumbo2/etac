@@ -20,7 +20,7 @@ public abstract class Stmt extends AstNode {
     }
 
     public abstract void prettyPrint(CodeWriterSExpPrinter p);
-    public abstract Type typeCheck(SymbolTable table);
+    public abstract Type typeCheck(SymbolTable<Type> table);
 
     public boolean isRType(Type t){
         return t.getType() ==Type.TypeCheckingType.UNIT || t.getType() ==Type.TypeCheckingType.VOID;
