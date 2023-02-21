@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -24,6 +26,34 @@ public class ArrayAccessExpr extends Expr {
         orgArray = argArray;
         indicies = arrayOfIndexing;
     }
+    public Boolean typeCheckHelper(SymbolTable s){
+        for (Expr e : this.indicies) {
+            if (e.typeCheck(s).getType() != Type.TypeCheckingType.INT){
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public Type typeCheck(SymbolTable s) {
+        Type e1 = orgArray.typeCheck(s);
+        Boolean indiciesCheck = typeCheckHelper(s);
+        if (e1.getType() == Type.TypeCheckingType.INTARRAY){
+            if (indiciesCheck) {
+                return new Type(Type.TypeCheckingType.INT);
+            } else {
+                throw new Error("Index is not type int");
+            }
+        } else if (e1.getType() == Type.TypeCheckingType.BOOLARRAY) {
+            if (indiciesCheck) {
+                return new Type(Type.TypeCheckingType.BOOL);
+            } else {
+                throw new Error("Index is not type int");
+            }
+        } else {
+            throw new Error("Not an array");
+        }
+    }
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
@@ -37,5 +67,4 @@ public class ArrayAccessExpr extends Expr {
             p.endList();
         }
     }
-
 }
