@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.UnopEnum;
@@ -15,5 +17,10 @@ public class NotUnop extends BooleanUnop {
      */
     public NotUnop(Expr in, int l, int c) {
         super(UnopEnum.NOT, in, l, c);
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable s){
+        return super.typeCheck(s);
     }
 }
