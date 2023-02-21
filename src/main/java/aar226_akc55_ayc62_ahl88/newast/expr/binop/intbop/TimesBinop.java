@@ -19,7 +19,28 @@ public class TimesBinop extends IntOutBinop {
         super(BinopEnum.TIMES, in1, in2, l, c);
     }
 
-//    public Type typeChecker(SymbolTable s) throws TypeError {
-//
-//    }
+    public Type typeChecker(SymbolTable s) throws Error {
+        Expr e1 = getLeftExpr();
+        Expr e2 = getRightExpr();
+        Type t1 = getLeftExpr().typeChecker(s);
+        Type t2 = getRightExpr().typeChecker(s);
+
+        if ((t1.getType() != Type.TypeCheckingType.INT)) {
+            String message = Integer.toString(e1.getLine())
+                    + ":" + Integer.toString(e1.getColumn())
+                    + "  TypeError: statements block must be of type int at ";
+            throw new Error(message);
+        }
+
+        if ((t2.getType() != Type.TypeCheckingType.INT)) {
+            String message = Integer.toString(e2.getLine())
+                    + ":" + Integer.toString(e2.getColumn())
+                    + "  TypeError: statements block must be of type int at ";
+            throw new Error(message);
+        }
+
+        return new Type(Type.TypeCheckingType.INT, getLine(), getColumn());
+
+
+    }
 }
