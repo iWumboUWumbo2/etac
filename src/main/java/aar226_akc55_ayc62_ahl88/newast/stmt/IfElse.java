@@ -30,15 +30,20 @@ public class IfElse extends Stmt {
 
     @Override
     public Type typeCheck(SymbolTable table) {
+
         Type tg = guard.typeCheck(table);
         if (tg.getType() != Type.TypeCheckingType.BOOL) {
-            throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic Error ");
+            throw new Error(guard.getLine() + ":" + guard.getColumn() + " semantic error ");
         }
 
-        ifState.typeCheck(table);
-        elseState.typeCheck(table);
+        Type trueClause = ifState.typeCheck(table);
+        Type falseClause = elseState.typeCheck(table);
 
-        return new Type(Type.TypeCheckingType.UNIT);
+        if (!isRType(trueClause) || !isRType(falseClause)) {
+            throw new Error(ifState.getLine() + ":" + ifState.getColumn() + " Semantic error: Statement in If is not Unit or Void");
+        }
+
+        return lub(trueClause, falseClause);
     }
 
     @Override
