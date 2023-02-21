@@ -27,7 +27,7 @@ public class ArrayValueLiteral extends Expr {
     }
 
     @Override
-    public Type typeChecker(SymbolTable s) throws Error{
+    public Type typeCheck(SymbolTable s) throws Error{
 
         Type.TypeCheckingType t1 = values.get(0).typeCheck(s).getType();
         for (Expr e : values) {

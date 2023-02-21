@@ -19,7 +19,7 @@ public class TimesBinop extends IntOutBinop {
         super(BinopEnum.TIMES, in1, in2, l, c);
     }
 
-    public Type typeChecker(SymbolTable s) throws Error {
+    public Type typeCheck(SymbolTable s) throws Error {
         Expr e1 = getLeftExpr();
         Expr e2 = getRightExpr();
         Type t1 = getLeftExpr().typeCheck(s);
