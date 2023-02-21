@@ -20,25 +20,6 @@ public class TimesBinop extends IntOutBinop {
     }
     @Override
     public Type typeCheck(SymbolTable s) throws Error {
-        Expr e1 = getLeftExpr();
-        Expr e2 = getRightExpr();
-        Type t1 = getLeftExpr().typeCheck(s);
-        Type t2 = getRightExpr().typeCheck(s);
-
-        if (t1.getType() != Type.TypeCheckingType.INT) {
-            String message = Integer.toString(e1.getLine())
-                    + ":" + Integer.toString(e1.getColumn())
-                    + "  TypeError: expression must be of type int";
-            throw new Error(message);
-        }
-
-        if (t2.getType() != Type.TypeCheckingType.INT) {
-            String message = Integer.toString(e2.getLine())
-                    + ":" + Integer.toString(e2.getColumn())
-                    + "  TypeError: expression must be of type int";
-            throw new Error(message);
-        }
-
-        return new Type(Type.TypeCheckingType.INT);
+        return super.typeCheck(s);
     }
 }
