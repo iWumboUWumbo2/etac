@@ -19,7 +19,6 @@ public class OrBinop extends LogicalBinop {
         super(BinopEnum.OR, in1, in2, l, c);
     }
 
-    @Override
     public Type typeCheck(SymbolTable s){
         return super.typeCheck(s);
     }

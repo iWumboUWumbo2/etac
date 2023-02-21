@@ -19,7 +19,6 @@ public class AndBinop extends LogicalBinop {
         super(BinopEnum.AND, in1, in2, l, c);
     }
 
-    @Override
     public Type typeCheck(SymbolTable s){
         return super.typeCheck(s);
     }
