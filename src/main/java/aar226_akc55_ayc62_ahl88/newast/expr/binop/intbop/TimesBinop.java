@@ -40,7 +40,5 @@ public class TimesBinop extends IntOutBinop {
         }
 
         return new Type(Type.TypeCheckingType.INT);
-
-
     }
 }
