@@ -21,6 +21,6 @@ public class HighMultBinop extends IntOutBinop {
 
     @Override
     public Type typeCheck(SymbolTable s){
-        new super.typeCheck(s);
+        return super.typeCheck(s);
     }
 }
