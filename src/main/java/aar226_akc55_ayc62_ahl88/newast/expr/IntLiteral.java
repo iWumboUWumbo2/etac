@@ -40,8 +40,9 @@ public class IntLiteral extends Expr{
         }
     }
 
+    @Override
     public Type typeChecker(SymbolTable s) {
-        return new Type(Type.TypeCheckingType.Int, getLine(), getColumn());
+        return new Type(Type.TypeCheckingType.INT, getLine(), getColumn());
     }
 
     public long getLong(){
