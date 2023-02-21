@@ -25,6 +25,12 @@ public class Type extends AstNode {
         dimensions = d;
     }
 
+    public boolean isBasicInt(){
+        return isInt && (dimensions.getDim() == 0);
+    }
+    public boolean isBasicBool(){
+        return (!isInt) && (dimensions.getDim() == 0);
+    }
     private String getTypeAsString() {
         return (isInt) ? "int" : "bool";
     }

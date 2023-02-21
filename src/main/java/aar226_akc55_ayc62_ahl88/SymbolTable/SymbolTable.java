@@ -2,7 +2,6 @@ package aar226_akc55_ayc62_ahl88.SymbolTable;
 
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SymbolTable<T> {
