@@ -4,8 +4,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 
 /**
- * Abstract class for all equivalence binary expressions ( == , != )
- * Can be used for both integer and Boolean and array inputs
+ * Abstract class for all equivalence binary expressions (>, <, !=, etc.)
  */
 public abstract class EquivalenceBinop extends BoolOutBinop {
     /**
@@ -19,5 +18,5 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
         super(b, in1, in2, l, c);
     }
 
-    // Type Checking In1,In2 Int or Bool, or arrays
+    // Type Checking In1,In2 Int or Bool
 }
