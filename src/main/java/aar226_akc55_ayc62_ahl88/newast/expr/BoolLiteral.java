@@ -13,8 +13,8 @@ public class BoolLiteral extends Expr {
     }
 
     @Override
-    public Type typeChecker(SymbolTable s){
-        return new Type(Type.TypeCheckingType.Bool, this.getLine(), this.getLine());
+    public Type typeCheck(SymbolTable s){
+        return new Type(Type.TypeCheckingType.BOOL);
     }
     public String toString() {
         return Boolean.toString(boolVal);
