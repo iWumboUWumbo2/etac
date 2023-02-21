@@ -10,7 +10,7 @@ import java.util.Collections;
  * Class to represent a type
  */
 public class Type extends AstNode {
-    enum TypeCheckingType {
+    public enum TypeCheckingType {
         Int,
         Bool,
         EmptyDimensionalArray,

@@ -29,6 +29,4 @@ public abstract class AstNode implements Printer {
      */
     public int getColumn(){return col;}
     public abstract void prettyPrint(CodeWriterSExpPrinter p);
-
-    public abstract Type typeCheck(SymbolTable table);
 }
