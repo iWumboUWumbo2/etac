@@ -22,8 +22,8 @@ public class TimesBinop extends IntOutBinop {
     public Type typeChecker(SymbolTable s) throws Error {
         Expr e1 = getLeftExpr();
         Expr e2 = getRightExpr();
-        Type t1 = getLeftExpr().typeChecker(s);
-        Type t2 = getRightExpr().typeChecker(s);
+        Type t1 = getLeftExpr().typeCheck(s);
+        Type t2 = getRightExpr().typeCheck(s);
 
         if ((t1.getType() != Type.TypeCheckingType.INT)) {
             String message = Integer.toString(e1.getLine())
@@ -39,7 +39,7 @@ public class TimesBinop extends IntOutBinop {
             throw new Error(message);
         }
 
-        return new Type(Type.TypeCheckingType.INT, getLine(), getColumn());
+        return new Type(Type.TypeCheckingType.INT);
 
 
     }

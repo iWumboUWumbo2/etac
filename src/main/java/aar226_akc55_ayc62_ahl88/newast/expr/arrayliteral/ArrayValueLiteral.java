@@ -29,9 +29,9 @@ public class ArrayValueLiteral extends Expr {
     @Override
     public Type typeChecker(SymbolTable s) throws Error{
 
-        Type.TypeCheckingType t1 = values.get(0).typeChecker(s).getType();
+        Type.TypeCheckingType t1 = values.get(0).typeCheck(s).getType();
         for (Expr e : values) {
-            if (!(e.typeChecker(s).getType() == t1)) {
+            if (!(e.typeCheck(s).getType() == t1)) {
                 String message = Integer.toString(e.getLine())
                         + ":" + Integer.toString(e.getColumn())
                         + "  TypeError: statements block must be of type unit at ";
@@ -42,7 +42,7 @@ public class ArrayValueLiteral extends Expr {
         Type.TypeCheckingType listType = (t1 == Type.TypeCheckingType.INT) ?
                 Type.TypeCheckingType.INTARRAY : Type.TypeCheckingType.BOOLARRAY;
 
-        return new Type(listType, getLine(), getColumn());
+        return new Type(listType);
     }
 
     public String toString(){

@@ -19,7 +19,9 @@ public class Type extends AstNode {
         VOID,
         RETURN,
         FUNC,
-        FILLEDARR
+        FILLEDARR,
+        INTARRAY,
+        BOOLARRAY
     }
     public Dimension dimensions;
     private boolean isInt;
