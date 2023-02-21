@@ -19,6 +19,18 @@ public abstract class Stmt extends AstNode {
         super(l, c);
     }
 
+    public Type lub(Type R1, Type R2) {
+        if (R1.getType() == R2.getType()) {
+            return R1;
+        }
+
+        if (R1.getType() == Type.TypeCheckingType.UNIT || R2.getType() == Type.TypeCheckingType.UNIT) {
+            return new Type(Type.TypeCheckingType.UNIT);
+        }
+
+        throw new Error("Yabai");
+    }
+
     public abstract void prettyPrint(CodeWriterSExpPrinter p);
     public abstract Type typeCheck(SymbolTable<Type> table);
 

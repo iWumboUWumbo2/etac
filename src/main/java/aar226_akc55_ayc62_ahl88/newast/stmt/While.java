@@ -28,7 +28,7 @@ public class While extends Stmt {
     public Type typeCheck(SymbolTable<Type> table) {
         Type tg = guard.typeCheck(table);
         if (tg.getType() != Type.TypeCheckingType.BOOL) {
-            throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic Error ");
+            throw new Error(guard.getLine() + ":" + guard.getColumn() + " semantic error ");
         }
         Type cond1 = stmt.typeCheck(table);
         if (!isRType(cond1)){
