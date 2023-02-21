@@ -25,140 +25,306 @@ import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
 
-
 /**
+ *
  * Type Checking Visitor Class
  * */
+
 public class TypeCheckerVisitor implements Visitor<Void>{
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(IntOutBinop node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(PlusBinop node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(IntegerComparisonBinop node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(EquivalenceBinop node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(LogicalBinop node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(NotUnop node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(IntegerNegExpr node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(BoolLiteral node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(IntLiteral node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Length node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(FunctionCallExpr node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Id node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(ArrayValueLiteral node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(ArrayAccessExpr node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Block node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(IfElse node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(IfOnly node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(ProcedureCall node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Return node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(While node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(DeclAssignStmt node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(DeclNoAssignStmt node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(MultiDeclAssignStmt node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Globdecl node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Method node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(MultiGlobalDecl node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(AnnotatedTypeDecl node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(ArrAccessDecl node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(NoTypeDecl node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(UnderScore node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Use node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Program node) {
         return null;
     }
 
+    /**
+     * @param node
+     * @return
+     */
+    @Override
     public Void visit(Type node) {
         return null;
     }
