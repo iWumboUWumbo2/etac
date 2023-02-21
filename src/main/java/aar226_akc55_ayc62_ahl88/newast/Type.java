@@ -11,15 +11,15 @@ import java.util.Collections;
  */
 public class Type extends AstNode {
     public enum TypeCheckingType {
-        Int,
-        Bool,
-        EmptyDimensionalArray,
-        MutliTypes,
-        Unit,
-        Void,
-        Return,
-        Func,
-        FilledArr
+        INT,
+        BOOL,
+        EMPTYDIMENSIONALARRAY,
+        MULTITYPES,
+        UNIT,
+        VOID,
+        RETURN,
+        FUNC,
+        FILLEDARR
     }
     public Dimension dimensions;
     private boolean isInt;
@@ -46,6 +46,7 @@ public class Type extends AstNode {
         this.tct = tct;
     }
 
+    public TypeCheckingType getType() {return tct;}
     public boolean isBasicInt(){
         return isInt && (dimensions.getDim() == 0);
     }
