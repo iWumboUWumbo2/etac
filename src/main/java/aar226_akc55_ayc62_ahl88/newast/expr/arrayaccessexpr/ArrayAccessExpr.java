@@ -39,12 +39,27 @@ public class ArrayAccessExpr extends Expr {
         Type e1 = orgArray.typeCheck(s);
         Boolean indiciesCheck = typeCheckHelper(s);
         if (e1.getType() == Type.TypeCheckingType.INTARRAY){
+            if (e1.dimensions.getDim() != indicies.size()) {
+                throw new Error("Incorrect number of indices");
+            }
             if (indiciesCheck) {
                 return new Type(Type.TypeCheckingType.INT);
             } else {
                 throw new Error("Index is not type int");
             }
         } else if (e1.getType() == Type.TypeCheckingType.BOOLARRAY) {
+            if (e1.dimensions.getDim() != indicies.size()) {
+                throw new Error("Incorrect number of indices");
+            }
+            if (indiciesCheck) {
+                return new Type(Type.TypeCheckingType.BOOL);
+            } else {
+                throw new Error("Index is not type int");
+            }
+        } else if (e1.getType() == Type.TypeCheckingType.FILLEDARR || e1.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY) {
+            if (e1.dimensions.getDim() != indicies.size()) {
+                throw new Error("Incorrect number of indices");
+            }
             if (indiciesCheck) {
                 return new Type(Type.TypeCheckingType.BOOL);
             } else {
