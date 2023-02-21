@@ -16,4 +16,8 @@ public class DivideBinop extends IntOutBinop {
     public DivideBinop(Expr in1, Expr in2, int l, int c) {
         super(BinopEnum.DIVIDE, in1, in2, l, c);
     }
+
+    public Type typeChecker(symbolTable){
+
+    }
 }
