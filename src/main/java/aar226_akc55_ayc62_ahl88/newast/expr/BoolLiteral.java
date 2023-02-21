@@ -12,6 +12,7 @@ public class BoolLiteral extends Expr {
         boolVal = inputBool;
     }
 
+    @Override
     public Type typeChecker(SymbolTable s){
         return new Type(Type.TypeCheckingType.Bool, this.getLine(), this.getLine());
     }
