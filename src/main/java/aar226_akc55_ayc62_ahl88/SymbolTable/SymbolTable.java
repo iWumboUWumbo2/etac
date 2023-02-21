@@ -7,6 +7,7 @@ import java.util.*;
 public class SymbolTable<T> {
 
     private ArrayList<HashMap<String, T>> scopes;
+    Id currentParentFunction;
 
     public SymbolTable() {
         this.scopes = new ArrayList<>();
@@ -73,4 +74,7 @@ public class SymbolTable<T> {
         scopes.remove(scopes.size() - 1);
     }
 
+    public Id getCurrentFunction() {
+        return currentParentFunction;
+    }
 }

@@ -1,6 +1,9 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
+import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 import java.util.ArrayList;
@@ -27,4 +30,36 @@ public class Return extends Stmt{
         returnArgList.forEach(e -> e.prettyPrint(p));
         p.endList();
     }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+
+        Id functionName = table.getCurrentFunction();
+        Type functionType = table.lookup(functionName);
+        ArrayList<Type> functionOutputs = functionType.outputTypes;
+        ArrayList<Type> returnResult = new ArrayList<>();
+
+        for (Expr e: returnArgList){
+            Type res = e.typeCheck(table);
+            if (res.getType() == Type.TypeCheckingType.MULTITYPES ){
+                returnResult.addAll(res.outputTypes);
+            }else{
+                returnResult.add(res);
+            }
+        }
+        if (returnResult.size() != functionOutputs.size()){
+            throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Number of resulting outputs doesn't equal function");
+        }
+        for (int i = 0 ; i< returnResult.size();i++){
+            Type funcOut = functionOutputs.get(i);
+            Type resOut = returnResult.get(i);
+            if (funcOut.getType() != resOut.getType()){
+                throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Function output type doesn't match return");
+            }
+        }
+
+        return new Type(Type.TypeCheckingType.VOID);
+    }
+
+
 }

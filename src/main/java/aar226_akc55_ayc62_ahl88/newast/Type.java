@@ -26,7 +26,7 @@ public class Type extends AstNode {
 
     private TypeCheckingType tct;
 
-    private ArrayList<Type> inputTypes, outputTypes;
+    public ArrayList<Type> inputTypes, outputTypes;
 
 
     /**
