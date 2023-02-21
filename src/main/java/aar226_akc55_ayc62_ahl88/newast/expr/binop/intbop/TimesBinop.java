@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 
@@ -16,4 +18,8 @@ public class TimesBinop extends IntOutBinop {
     public TimesBinop(Expr in1, Expr in2, int l, int c) {
         super(BinopEnum.TIMES, in1, in2, l, c);
     }
+
+//    public Type typeChecker(SymbolTable s) throws TypeError {
+//
+//    }
 }
