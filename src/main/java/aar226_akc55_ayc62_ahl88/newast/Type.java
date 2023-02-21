@@ -41,8 +41,8 @@ public class Type extends AstNode {
         dimensions = d;
     }
 
-    public Type(TypeCheckingType tct, int l, int c) {
-        super(l, c);
+    public Type(TypeCheckingType tct) {
+        super(-1, -1);
         this.tct = tct;
     }
 
