@@ -18,7 +18,7 @@ public class EqualsBinop extends EquivalenceBinop {
     public EqualsBinop (Expr in1, Expr in2, int l, int c) {
         super(BinopEnum.EQUALS, in1, in2, l, c);
     }
-
+    @Override
     public Type typeCheck(SymbolTable s) throws Error {
         return super.typeCheck(s);
     }

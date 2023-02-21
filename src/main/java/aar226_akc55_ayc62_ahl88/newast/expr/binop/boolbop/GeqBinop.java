@@ -18,7 +18,7 @@ public class GeqBinop extends IntegerComparisonBinop {
     public GeqBinop (Expr in1, Expr in2, int l, int c) {
         super(BinopEnum.GEQ, in1, in2, l, c);
     }
-
+    @Override
     public Type typeCheck(SymbolTable s){
         return super.typeCheck(s);
     }

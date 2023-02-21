@@ -18,7 +18,7 @@ public class LtBinop extends IntegerComparisonBinop {
     public LtBinop (Expr in1, Expr in2, int l, int c) {
         super(BinopEnum.LT, in1, in2, l, c);
     }
-
+    @Override
     public Type typeCheck(SymbolTable s){
         return super.typeCheck(s);
     }
