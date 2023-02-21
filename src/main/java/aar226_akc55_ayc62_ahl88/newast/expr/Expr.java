@@ -18,5 +18,5 @@ public abstract class Expr extends AstNode {
     }
     public abstract void prettyPrint(CodeWriterSExpPrinter p);
 
-    public abstract Type typeCheck(SymbolTable table);
+    public abstract Type typeCheck(SymbolTable<Type> table);
 }

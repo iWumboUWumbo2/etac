@@ -24,9 +24,9 @@ public class Id extends Expr {
     }
 
     @Override
-    public Type typeCheck(SymbolTable table) {
+    public Type typeCheck(SymbolTable<Type> table) {
         try {
-            return table.lookup(this)
+            return table.lookup(this);
         }
         catch (Error e) {
             String message = Integer.toString(getLine())
