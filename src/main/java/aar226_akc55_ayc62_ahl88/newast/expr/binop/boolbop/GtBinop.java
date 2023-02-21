@@ -26,14 +26,14 @@ public class GtBinop extends IntegerComparisonBinop {
         Type t1 = getLeftExpr().typeCheck(s);
         Type t2 = getRightExpr().typeCheck(s);
 
-        if ((t1.getType() != Type.TypeCheckingType.INT)) {
+        if (t1.getType() != Type.TypeCheckingType.INT) {
             String message = Integer.toString(e1.getLine())
                     + ":" + Integer.toString(e1.getColumn())
                     + "  TypeError: statements block must be of type int at ";
             throw new Error(message);
         }
 
-        if ((t2.getType() != Type.TypeCheckingType.INT)) {
+        if (t2.getType() != Type.TypeCheckingType.INT) {
             String message = Integer.toString(e2.getLine())
                     + ":" + Integer.toString(e2.getColumn())
                     + "  TypeError: statements block must be of type int at ";
