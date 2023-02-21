@@ -34,7 +34,7 @@ public class ArrayValueLiteral extends Expr {
             if (!(e.typeCheck(s).getType() == t1)) {
                 String message = Integer.toString(e.getLine())
                         + ":" + Integer.toString(e.getColumn())
-                        + "  TypeError: statements block must be of type unit at ";
+                        + "  TypeError: array element type mismatch";
                 throw new Error(message);
             }
         }
