@@ -14,7 +14,7 @@ public class Type extends AstNode {
         INT,
         BOOL,
         EMPTYDIMENSIONALARRAY,
-        MULTITYPES,
+//        MULTITYPES,
         UNIT,
         VOID,
         RETURN,

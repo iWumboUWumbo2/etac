@@ -47,6 +47,24 @@ public class Dimension extends AstNode{
         return dim;
     }
 
+    public boolean equalsDimension(Dimension d) {
+        if (this.allEmpty != d.allEmpty) return false;
+        if (this.dim != d.dim) return false;
+        if ((this.indices != null) && (d.indices != null)) {
+            if (this.indices.size() != d.indices.size()) return false;
+            for (int i = 0; i < this.indices.size(); i++) {
+                if (this.indices.get(i) != d.indices.get(i)) {
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     /**Should not be used because we never call Dimension
      * Pretty Print

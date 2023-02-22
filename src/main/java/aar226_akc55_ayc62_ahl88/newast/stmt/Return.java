@@ -33,24 +33,26 @@ public class Return extends Stmt{
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-
         Id functionName = table.getCurrentFunction();
         Type functionType = table.lookup(functionName);
         ArrayList<Type> functionOutputs = functionType.outputTypes;
         ArrayList<Type> returnResult = new ArrayList<>();
 
-        for (Expr e: returnArgList){
+        for (Expr e: returnArgList) {
             Type res = e.typeCheck(table);
-            if (res.getType() == Type.TypeCheckingType.MULTITYPES ){
+            if (res.getType() == Type.TypeCheckingType.FUNC) {
                 returnResult.addAll(res.outputTypes);
-            }else{
+            }
+            else {
                 returnResult.add(res);
             }
         }
-        if (returnResult.size() != functionOutputs.size()){
+
+        if (returnResult.size() != functionOutputs.size()) {
             throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Number of resulting outputs doesn't equal function");
         }
-        for (int i = 0 ; i< returnResult.size();i++){
+
+        for (int i = 0; i < returnResult.size(); i++) {
             Type funcOut = functionOutputs.get(i);
             Type resOut = returnResult.get(i);
             if (funcOut.getType() != resOut.getType()){
