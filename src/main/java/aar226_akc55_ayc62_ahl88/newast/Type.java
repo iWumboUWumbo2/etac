@@ -42,6 +42,12 @@ public class Type extends AstNode {
         super(l,c);
         isInt = t;
         dimensions = d;
+        if (d.getDim() == 0) {
+            tct = (isInt) ? TypeCheckingType.INT : TypeCheckingType.BOOL;
+        }
+        else {
+            tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
+        }
     }
 
     public Type(TypeCheckingType tct) {
@@ -49,19 +55,18 @@ public class Type extends AstNode {
         this.tct = tct;
     }
 
-    public Type(TypeCheckingType tct, Dimension d, Type arrT){
+    public Type(TypeCheckingType tct, Dimension d){
         super(-1,-1);
         this.tct = tct;
         dimensions = d;
-        arrayType = arrT;
     }
 
-    private boolean isArray(Type t) {
+    public boolean isArray(Type t) {
         return t.getType() == Type.TypeCheckingType.INTARRAY ||
                 t.getType() == Type.TypeCheckingType.BOOLARRAY;
     }
     public boolean sameType(Type rhs) {
-        if (getType() == TypeCheckingType.UNDERSCORE){
+        if (getType() == TypeCheckingType.UNDERSCORE || (rhs.getType() == TypeCheckingType.UNDERSCORE)) {
             return true;
         }
         if (getType() != rhs.getType()) {

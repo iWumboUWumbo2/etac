@@ -39,6 +39,14 @@ public class Dimension extends AstNode{
         indices = new ArrayList<>();
     }
 
+    public Dimension(long dim, int l, int c) {
+        super(l,c);
+        this.dim = dim;
+        allEmpty = false;
+        foundEmpty = false;
+        indices = new ArrayList<>();
+    }
+
     public void increment() {
         dim++;
     }
