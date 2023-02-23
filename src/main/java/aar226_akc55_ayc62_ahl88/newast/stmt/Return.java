@@ -55,7 +55,7 @@ public class Return extends Stmt{
         for (int i = 0; i < returnResult.size(); i++) {
             Type funcOut = functionOutputs.get(i);
             Type resOut = returnResult.get(i);
-            if (funcOut.getType() != resOut.getType()){
+            if (!funcOut.sameType(resOut)){
                 throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Function output type doesn't match return");
             }
         }

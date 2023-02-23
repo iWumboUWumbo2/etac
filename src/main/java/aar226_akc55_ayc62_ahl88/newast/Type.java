@@ -55,13 +55,21 @@ public class Type extends AstNode {
         arrayType = arrT;
     }
 
+    private boolean isArray(Type t) {
+        return t.getType() == Type.TypeCheckingType.INTARRAY ||
+                t.getType() == Type.TypeCheckingType.BOOLARRAY;
+    }
+    public boolean sameType(Type rhs) {
+        if (getType() != rhs.getType()) {
+            return false;
+        }
+        // check if param is array and make sure procedure input is also array. Then compare dimensions
+        if (isArray(this)) {
+            return dimensions.equalsDimension(rhs.dimensions);
+        }
+        return true;
+    }
     public TypeCheckingType getType() {return tct;}
-    public boolean isBasicInt(){
-        return isInt && (dimensions.getDim() == 0);
-    }
-    public boolean isBasicBool(){
-        return (!isInt) && (dimensions.getDim() == 0);
-    }
     private String getTypeAsString() {
         return (isInt) ? "int" : "bool";
     }
