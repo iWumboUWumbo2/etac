@@ -64,7 +64,7 @@ public class ProcedureCall extends Stmt {
     private boolean compareType(Type paramType, Type procedureInputType) {
         // check if param is array and make sure procedure input is also array. Then compare dimensions
         if (paramType.getType() == Type.TypeCheckingType.FILLEDARR || paramType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY) {
-            if (!(paramType.getType() == Type.TypeCheckingType.FILLEDARR || paramType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY)){
+            if (!(procedureInputType.getType() == Type.TypeCheckingType.FILLEDARR || procedureInputType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY)){
                 return false;
             }
             return paramType.dimensions.equalsDimension(procedureInputType.dimensions);
