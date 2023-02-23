@@ -62,22 +62,19 @@ public class ProcedureCall extends Stmt {
     }
 
     private boolean isArray(Type t) {
-        return t.getType() == Type.TypeCheckingType.FILLEDARR ||
-                t.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY;
+        return t.getType() == Type.TypeCheckingType.INTARRAY ||
+                t.getType() == Type.TypeCheckingType.BOOLARRAY;
     }
 
     private boolean compareType(Type paramType, Type procedureInputType) {
-        // check if param is array and make sure procedure input is also array. Then compare dimensions
-        if (isArray(paramType)) {
-            if (!isArray(procedureInputType)) {
-                return false;
-            }
-            return paramType.dimensions.equalsDimension(procedureInputType.dimensions);
-        }
-
         if (paramType.getType() != procedureInputType.getType()) {
             return false;
         }
+        // check if param is array and make sure procedure input is also array. Then compare dimensions
+        if (isArray(paramType)) {
+            return paramType.dimensions.equalsDimension(procedureInputType.dimensions);
+        }
+
 
         return true;
     }
