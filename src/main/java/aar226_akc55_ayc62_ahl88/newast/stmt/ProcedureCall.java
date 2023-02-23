@@ -40,17 +40,17 @@ public class ProcedureCall extends Stmt {
 
         Type functionType = table.lookup(identifier);
 
-        if (functionType.getType() != Type.TypeCheckingType.FUNC){
+        if (functionType.getType() != Type.TypeCheckingType.FUNC) {
             throw new Error(identifier.getLine() + ":" + identifier.getLine() + " Semantic error: identifier isn't function");
         }
-        if (functionType.outputTypes.size() != 0){
+        if (functionType.outputTypes.size() != 0) {
             throw new Error(identifier.getLine() + ":" + identifier.getLine() + " Semantic error: function is not procedure");
         }
         ArrayList<Type> procedureInputs = functionType.inputTypes;
-        if (paramList.size() != procedureInputs.size()){
+        if (paramList.size() != procedureInputs.size()) {
             throw new Error(identifier.getLine() + ":" + identifier.getLine() + " Semantic error: number of procedure inputs doesn't match call");
         }
-        for (int i = 0; i< paramList.size();i++){
+        for (int i = 0; i < paramList.size(); i++){
             Type paramType = paramList.get(i).typeCheck(table);
             Type procedureInputType = procedureInputs.get(i);
             if (!compareType(paramType,procedureInputType)){
@@ -61,14 +61,20 @@ public class ProcedureCall extends Stmt {
         return new Type(Type.TypeCheckingType.UNIT);
     }
 
+    private boolean isArray(Type t) {
+        return t.getType() == Type.TypeCheckingType.FILLEDARR ||
+                t.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY;
+    }
+
     private boolean compareType(Type paramType, Type procedureInputType) {
         // check if param is array and make sure procedure input is also array. Then compare dimensions
-        if (paramType.getType() == Type.TypeCheckingType.FILLEDARR || paramType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY) {
-            if (!(procedureInputType.getType() == Type.TypeCheckingType.FILLEDARR || procedureInputType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY)){
+        if (isArray(paramType)) {
+            if (!isArray(procedureInputType)) {
                 return false;
             }
             return paramType.dimensions.equalsDimension(procedureInputType.dimensions);
         }
+
         if (paramType.getType() != procedureInputType.getType()) {
             return false;
         }
