@@ -13,10 +13,8 @@ public class Type extends AstNode {
     public enum TypeCheckingType {
         INT,
         BOOL,
-        INTARRAY,
-        BOOLARRAY,
-//        EMPTYDIMENSIONALARRAY,
-//        MULTITYPES,
+        INTARRAY, // Any Dimension
+        BOOLARRAY, // Any Dimension
         UNIT,
         VOID,
         RETURN,
