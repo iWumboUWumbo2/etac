@@ -30,10 +30,11 @@ public class Length extends Expr {
     // TypeCheck Arg is Array
     @Override
     public Type typeCheck(SymbolTable<Type> table) throws Error {
-        Type.TypeCheckingType t1;
+        Type t1;
         String message;
         try {
-            t1 = arg.typeCheck(table).getType();
+            // might throw error if expr is Id and lookup fails
+            t1 = arg.typeCheck(table);
         }
         catch (Error e) {
             message = Integer.toString(getLine())
@@ -41,9 +42,7 @@ public class Length extends Expr {
                     + "  TypeError: unbound variable name";
             throw new Error(message);
         }
-        if ((t1 == Type.TypeCheckingType.INTARRAY) ||
-                (t1 == Type.TypeCheckingType.BOOLARRAY))
-        {
+        if (t1.isArray()) {
             return (new Type(Type.TypeCheckingType.INT));
         } else {
             message = Integer.toString(getLine())

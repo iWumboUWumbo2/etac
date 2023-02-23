@@ -39,10 +39,8 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);
             }
-        } else if (t1.getType() == Type.TypeCheckingType.INTARRAY
-            || t1.getType() == Type.TypeCheckingType.BOOLARRAY) {
-            if (t2.getType() != t1.getType() ||
-                    !t1.dimensions.equalsDimension(t2.dimensions)) {
+        } else if (t1.isArray()) {
+            if (!t1.sameType(t2)) {
                 message = Integer.toString(e2.getLine())
                         + ":" + Integer.toString(e2.getColumn())
                         + "  TypeError: plus e2 does not match e1 ";

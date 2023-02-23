@@ -45,24 +45,24 @@ public class ArrayValueLiteral extends Expr {
 
         Type t1 = values.get(0).typeCheck(s);
         for (Expr e : values) {
-            if (!typeEquals(t1, e.typeCheck(s))) {
+            if (!t1.sameType(e.typeCheck(s))) {
                 String message = Integer.toString(e.getLine())
                         + ":" + Integer.toString(e.getColumn())
                         + "  TypeError: array element type mismatch";
                 throw new Error(message);
             }
         }
-        // literal
-        if (t1.getType() == Type.TypeCheckingType.INT) {
-            return new Type(Type.TypeCheckingType.INT);
-        } else if (t1.getType() == Type.TypeCheckingType.BOOL) {
-            return new Type(Type.TypeCheckingType.BOOL);
 
-        }
         // if not literal, then must be array
-        else {
+        if (t1.isArray()) {
             long dim_num = t1.dimensions.getDim()+1;
             Dimension dim = new Dimension(dim_num, getLine(), getColumn());
+            return new Type(t1.getType(), dim, t1);
+
+        }
+        // literal
+        else {
+            Dimension dim = new Dimension(0, getLine(), getColumn());
             return new Type(t1.getType(), dim, t1);
         }
     }
