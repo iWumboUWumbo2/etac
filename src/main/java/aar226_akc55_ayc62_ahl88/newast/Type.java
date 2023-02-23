@@ -13,22 +13,22 @@ public class Type extends AstNode {
     public enum TypeCheckingType {
         INT,
         BOOL,
-        EMPTYDIMENSIONALARRAY,
-        MULTITYPES,
+        INTARRAY, // Any Dimension
+        BOOLARRAY, // Any Dimension
         UNIT,
         VOID,
         RETURN,
         FUNC,
-        FILLEDARR,
-        INTARRAY,
-        BOOLARRAY
+//        FILLEDARR
     }
     public Dimension dimensions;
     private boolean isInt;
 
     private TypeCheckingType tct;
 
-    private ArrayList<Type> inputTypes, outputTypes;
+    public ArrayList<Type> inputTypes, outputTypes;
+
+    public Type arrayType;
 
 
     /**
@@ -46,6 +46,13 @@ public class Type extends AstNode {
     public Type(TypeCheckingType tct) {
         super(-1, -1);
         this.tct = tct;
+    }
+
+    public Type(TypeCheckingType tct, Dimension d, Type arrT){
+        super(-1,-1);
+        this.tct = tct;
+        dimensions = d;
+        arrayType = arrT;
     }
 
     public TypeCheckingType getType() {return tct;}

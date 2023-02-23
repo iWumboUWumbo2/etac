@@ -37,23 +37,17 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
                         + ":" + Integer.toString(e2.getColumn())
                         + "  TypeError: plus e2 does not match e1 ";
             } else {
-                return new Type(Type.TypeCheckingType.INT);
+                return new Type(Type.TypeCheckingType.BOOL);
             }
-        } else if (t1.getType() == Type.TypeCheckingType.INTARRAY) {
-            if (t2.getType() != Type.TypeCheckingType.INTARRAY) {
+        } else if (t1.getType() == Type.TypeCheckingType.INTARRAY
+            || t1.getType() == Type.TypeCheckingType.BOOLARRAY) {
+            if (t2.getType() != t1.getType() ||
+                    !t1.dimensions.equalsDimension(t2.dimensions)) {
                 message = Integer.toString(e2.getLine())
                         + ":" + Integer.toString(e2.getColumn())
                         + "  TypeError: plus e2 does not match e1 ";
             } else {
-                return new Type(Type.TypeCheckingType.INTARRAY);
-            }
-        } else if (t1.getType() == Type.TypeCheckingType.BOOLARRAY) {
-            if (t2.getType() != Type.TypeCheckingType.BOOLARRAY) {
-                message = Integer.toString(e2.getLine())
-                        + ":" + Integer.toString(e2.getColumn())
-                        + "  TypeError: plus e2 does not match e1 ";
-            } else {
-                return new Type(Type.TypeCheckingType.BOOLARRAY);
+                return new Type(Type.TypeCheckingType.BOOL);
             }
         }
         message = Integer.toString(e1.getLine())

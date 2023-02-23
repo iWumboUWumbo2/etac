@@ -42,9 +42,7 @@ public class Length extends Expr {
             throw new Error(message);
         }
         if ((t1 == Type.TypeCheckingType.INTARRAY) ||
-                (t1 == Type.TypeCheckingType.BOOLARRAY) ||
-                (t1 == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY) ||
-                (t1 == Type.TypeCheckingType.FILLEDARR))
+                (t1 == Type.TypeCheckingType.BOOLARRAY))
         {
             return (new Type(Type.TypeCheckingType.INT));
         } else {

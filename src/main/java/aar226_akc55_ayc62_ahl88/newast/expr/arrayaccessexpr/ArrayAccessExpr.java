@@ -56,16 +56,7 @@ public class ArrayAccessExpr extends Expr {
             } else {
                 throw new Error("Index is not type int");
             }
-        } else if (e1.getType() == Type.TypeCheckingType.FILLEDARR || e1.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY) {
-            if (e1.dimensions.getDim() != indicies.size()) {
-                throw new Error("Incorrect number of indices");
-            }
-            if (indiciesCheck) {
-                return new Type(Type.TypeCheckingType.BOOL);
-            } else {
-                throw new Error("Index is not type int");
-            }
-        } else {
+        }  else {
             throw new Error("Not an array");
         }
     }

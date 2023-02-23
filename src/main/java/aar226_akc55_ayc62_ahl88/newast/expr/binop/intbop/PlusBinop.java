@@ -20,6 +20,21 @@ public class PlusBinop extends BinopExpr {
         super(BinopEnum.PLUS, in1, in2, l, c);
     }
 
+
+    private boolean typeListEquals(Type t1, Type t2) {
+        if (t1.getType() == Type.TypeCheckingType.INT ||
+                t1.getType() == Type.TypeCheckingType.BOOL) {
+            return t2.getType() == t1.getType();
+        } else if (t1.getType() == Type.TypeCheckingType.INTARRAY ||
+                t1.getType() == Type.TypeCheckingType.BOOLARRAY) {
+            return t2.getType() == t1.getType() &&
+                    t1.dimensions.equalsDimension(t2.dimensions);
+        } else {
+            return false;
+        }
+    }
+
+
     // can add Arrays too
     @Override
     public Type typeCheck(SymbolTable s) throws Error {
@@ -37,21 +52,16 @@ public class PlusBinop extends BinopExpr {
             } else {
                 return new Type(Type.TypeCheckingType.INT);
             }
-        } else if (t1.getType() == Type.TypeCheckingType.INTARRAY) {
-            if (t2.getType() != Type.TypeCheckingType.INTARRAY) {
+        } else if (t1.getType() == Type.TypeCheckingType.INTARRAY
+            || t1.getType() == Type.TypeCheckingType.BOOLARRAY) {
+            if (t2.getType() != t1.getType() ||
+                    !t1.dimensions.equalsDimension(t2.dimensions)) {
                 message = Integer.toString(e2.getLine())
                         + ":" + Integer.toString(e2.getColumn())
                         + "  TypeError: plus e2 does not match e1 ";
             } else {
-                return new Type(Type.TypeCheckingType.INTARRAY);
-            }
-        } else if (t1.getType() == Type.TypeCheckingType.BOOLARRAY) {
-            if (t2.getType() != Type.TypeCheckingType.BOOLARRAY) {
-                message = Integer.toString(e2.getLine())
-                        + ":" + Integer.toString(e2.getColumn())
-                        + "  TypeError: plus e2 does not match e1 ";
-            } else {
-                return new Type(Type.TypeCheckingType.BOOLARRAY);
+                // is this fine?????
+                return new Type(t1.getType(), t1.dimensions, t1.arrayType);
             }
         }
         message = Integer.toString(e1.getLine())

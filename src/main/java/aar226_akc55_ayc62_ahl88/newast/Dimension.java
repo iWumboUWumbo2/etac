@@ -39,12 +39,39 @@ public class Dimension extends AstNode{
         indices = new ArrayList<>();
     }
 
+    public Dimension(long dim, int l, int c) {
+        super(l,c);
+        this.dim = dim;
+        allEmpty = false;
+        foundEmpty = false;
+        indices = new ArrayList<>();
+    }
+
     public void increment() {
         dim++;
     }
 
     public long getDim() {
         return dim;
+    }
+
+    public boolean equalsDimension(Dimension d) {
+        return this.getDim() == d.getDim();
+//        if (this.allEmpty != d.allEmpty) return false;
+//        if (this.dim != d.dim) return false;
+//        if ((this.indices != null) && (d.indices != null)) {
+//            if (this.indices.size() != d.indices.size()) return false;
+//            for (int i = 0; i < this.indices.size(); i++) {
+//                if (this.indices.get(i) != d.indices.get(i)) {
+//                    return false;
+//                }
+//            }
+//        }
+//        else {
+//            return false;
+//        }
+//
+//        return true;
     }
 
     @Override
