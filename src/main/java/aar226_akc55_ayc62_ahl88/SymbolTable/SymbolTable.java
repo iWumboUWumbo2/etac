@@ -63,14 +63,14 @@ public class SymbolTable<T> {
     /**
      * we enter a new scope
      */
-    void enterScope(){
+    public void enterScope(){
         scopes.add(new HashMap<>());
     }
 
     /**
      * We exit the current scope.
      */
-    void exitScope(){
+    public void exitScope(){
         scopes.remove(scopes.size() - 1);
     }
 
