@@ -48,7 +48,12 @@ public class DeclAssignStmt extends Stmt{
     public Type typeCheck(SymbolTable<Type> table) {
         Type declType = decl.typeCheck(table);
         Type exprType = expression.typeCheck(table);
-        if ()
+        if (!declType.sameType(exprType)){
+            throw new Error(getLine() + ":" + getLine() + " Semantic error: expression type not the same as declaration type");
+        }
+        if ((decl instanceof AnnotatedTypeDecl)){
+            table.add(decl.identifier,declType); // add the identifier and the type only if its a new type
+        }
         return new Type(Type.TypeCheckingType.UNIT);
     }
 

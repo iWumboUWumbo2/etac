@@ -11,7 +11,7 @@ public class UnderScore extends Decl{
      * @param c column number
      */
     public UnderScore(int l, int c) {
-        super(l, c);
+        super(null,l, c);
     }
 
     @Override

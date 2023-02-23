@@ -19,6 +19,7 @@ public class Type extends AstNode {
         VOID,
         RETURN,
         FUNC,
+        UNDERSCORE
 //        FILLEDARR
     }
     public Dimension dimensions;
@@ -60,6 +61,9 @@ public class Type extends AstNode {
                 t.getType() == Type.TypeCheckingType.BOOLARRAY;
     }
     public boolean sameType(Type rhs) {
+        if (getType() == TypeCheckingType.UNDERSCORE){
+            return true;
+        }
         if (getType() != rhs.getType()) {
             return false;
         }

@@ -11,15 +11,13 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
  * Not: a:int, bob:bool[]
  */
 public class NoTypeDecl extends Decl{
-    Id identifier;
     /**
      * @param i Identifier Input
      * @param l Line Number
      * @param c Column Number
      */
     public NoTypeDecl(Id i, int l, int c) {
-        super(l, c);
-        identifier = i;
+        super(i,l, c);
     }
 
     @Override

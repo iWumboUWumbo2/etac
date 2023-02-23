@@ -10,7 +10,6 @@ import java.util.ArrayList;
  */
 public class ArrAccessDecl extends Decl{
 
-    private Id id;
     private ArrayList<Expr> indices;
 
     /**
@@ -20,8 +19,7 @@ public class ArrAccessDecl extends Decl{
      * @param c column number
      */
     public ArrAccessDecl(Id id, ArrayList<Expr> indices, int l, int c) {
-        super(l, c);
-        this.id = id;
+        super(id,l, c);
         this.indices = indices;
     }
 
@@ -31,7 +29,7 @@ public class ArrAccessDecl extends Decl{
             p.startList();
             p.printAtom("[]");
         }
-        id.prettyPrint(p);
+        identifier.prettyPrint(p);
 
         for (int i = 0; i<indices.size();i++){
             indices.get(i).prettyPrint(p);
