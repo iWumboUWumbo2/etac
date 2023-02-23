@@ -25,15 +25,9 @@ public class Id extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        try {
-            return table.lookup(this);
-        }
-        catch (Error e) {
-            String message = Integer.toString(getLine())
-                    + ":" + Integer.toString(getColumn())
-                    + "  TypeError: id not in scope";
-            throw new Error(message);
-        }
+
+        return table.lookup(this);
+
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {

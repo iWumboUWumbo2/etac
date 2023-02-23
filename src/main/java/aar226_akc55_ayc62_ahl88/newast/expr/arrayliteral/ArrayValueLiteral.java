@@ -27,24 +27,16 @@ public class ArrayValueLiteral extends Expr {
         raw = null;
     }
 
-    private boolean typeEquals(Type t1, Type t2) {
-        if (t1.getType() == Type.TypeCheckingType.INT ||
-                t1.getType() == Type.TypeCheckingType.BOOL) {
-            return t2.getType() == t1.getType();
-        } else if (t1.getType() == Type.TypeCheckingType.INTARRAY ||
-                t1.getType() == Type.TypeCheckingType.BOOLARRAY) {
-            return t2.getType() == t1.getType() &&
-                    t1.dimensions.equalsDimension(t2.dimensions);
-        } else {
-            return false;
-        }
+    private Type typeCheckUnknown(SymbolTable s) throws Error {
+        return new Type(Type.TypeCheckingType.UNKNOWNARRAY,
+                new Dimension(0, getLine(), getColumn()));
     }
 
-    @Override
-    public Type typeCheck(SymbolTable s) throws Error{
 
+    // guarantess values has length > 0
+    private Type typeCheckArray(SymbolTable s) throws Error {
         Type t1 = values.get(0).typeCheck(s);
-        for (Expr e : values) {
+        for (Expr e : values) {     // check all elements same type
             if (!t1.sameType(e.typeCheck(s))) {
                 String message = Integer.toString(e.getLine())
                         + ":" + Integer.toString(e.getColumn())
@@ -53,18 +45,30 @@ public class ArrayValueLiteral extends Expr {
             }
         }
 
-        // if not literal, then must be array
+        // if t1 is array, then return multidimensional array lit
         if (t1.isArray()) {
             long dim_num = t1.dimensions.getDim()+1;
             Dimension dim = new Dimension(dim_num, getLine(), getColumn());
-            return new Type(t1.getType(), dim, t1);
+            return new Type(t1.getType(), dim);
 
         }
-        // literal
+        // if t1 not array, return dim 0 array
         else {
             Dimension dim = new Dimension(0, getLine(), getColumn());
-            return new Type(t1.getType(), dim, t1);
+            return new Type(t1.getType(), dim);
         }
+
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable s) throws Error{
+
+        if (values.size() == 0) {
+            return typeCheckUnknown(s);
+        } else {
+            return typeCheckArray(s);
+        }
+
     }
 
     public String toString(){

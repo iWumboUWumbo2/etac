@@ -15,6 +15,8 @@ public class Type extends AstNode {
         BOOL,
         INTARRAY, // Any Dimension
         BOOLARRAY, // Any Dimension
+        UNKNOWNARRAY,
+        UNKNOWN,
         UNIT,
         VOID,
         RETURN,
@@ -48,25 +50,42 @@ public class Type extends AstNode {
         this.tct = tct;
     }
 
-    public Type(TypeCheckingType tct, Dimension d, Type arrT){
+    public Type(TypeCheckingType tct, Dimension d){
         super(-1,-1);
         this.tct = tct;
         dimensions = d;
-        arrayType = arrT;
     }
 
     public boolean isArray() {
         return this.getType() == Type.TypeCheckingType.INTARRAY ||
-                this.getType() == Type.TypeCheckingType.BOOLARRAY;
+                this.getType() == Type.TypeCheckingType.BOOLARRAY ||
+                this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
     }
+
     public boolean sameType(Type rhs) {
-        if (getType() != rhs.getType()) {
-            return false;
-        }
         // check if param is array and make sure procedure input is also array. Then compare dimensions
         if (isArray()) {
-            return dimensions.equalsDimension(rhs.dimensions);
+            if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                    rhs.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
+                return this.dimensions.getDim() <= rhs.dimensions.getDim();
+            } else if (rhs.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                    this.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
+                return rhs.dimensions.getDim() <= this.dimensions.getDim();
+            } else if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                    this.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
+                return true;
+            }
+            else {
+                return dimensions.equalsDimension(rhs.dimensions);
+            }
         }
+        // if one of the types is unknown, then equality is not false
+        if (getType() != rhs.getType() &&
+                !(getType() == TypeCheckingType.UNKNOWN ||
+                rhs.getType() == TypeCheckingType.UNKNOWN)) {
+            return false;
+        }
+
         return true;
     }
     public TypeCheckingType getType() {return tct;}

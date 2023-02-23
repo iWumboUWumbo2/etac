@@ -22,7 +22,6 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
     }
 
     // Type Checking In1,In2 Int or Bool, or arrays
-
     @Override
     public Type typeCheck(SymbolTable s) throws Error {
         Expr e1 = getLeftExpr();
@@ -31,11 +30,12 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
         Type t2 = e2.typeCheck(s);
         String message;
 
-        if (t1.getType() == Type.TypeCheckingType.INT) {
-            if (t2.getType() != Type.TypeCheckingType.INT) {
+        if (t1.getType() == Type.TypeCheckingType.INT ||
+                t1.getType() == Type.TypeCheckingType.BOOL ) {
+            if (t2.getType() != t1.getType()) {
                 message = Integer.toString(e2.getLine())
                         + ":" + Integer.toString(e2.getColumn())
-                        + "  TypeError: plus e2 does not match e1 ";
+                        + "  TypeError: equivalence e2 does not match e1 ";
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);
             }
@@ -43,14 +43,14 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
             if (!t1.sameType(t2)) {
                 message = Integer.toString(e2.getLine())
                         + ":" + Integer.toString(e2.getColumn())
-                        + "  TypeError: plus e2 does not match e1 ";
+                        + "  TypeError: equivalence e2 does not match e1 ";
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);
             }
         }
         message = Integer.toString(e1.getLine())
                 + ":" + Integer.toString(e1.getColumn())
-                + "  TypeError: plus invalid e1 type ";
+                + "  TypeError: equivalence invalid e1 type ";
         throw new Error(message);
     }
 }

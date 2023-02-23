@@ -54,7 +54,7 @@ public class PlusBinop extends BinopExpr {
             }
         } else if (t1.isArray()) {
             if (t1.sameType(t2)) {
-                return new Type(t1.getType(), t1.dimensions, t1.arrayType);
+                return new Type(t1.getType(), t1.dimensions);
             } else {
                 // is this fine?????
                 message = Integer.toString(e2.getLine())

@@ -27,15 +27,28 @@ public class FunctionCallExpr extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        try {
-            return table.lookup(id);
+        Type functionType = table.lookup(id);
+
+        if (functionType.getType() != Type.TypeCheckingType.FUNC) {
+            throw new Error(id.getLine() + ":" + id.getLine() + " Semantic error: identifier isn't function");
         }
-        catch (Error e) {
-            String message = Integer.toString(getLine())
-                    + ":" + Integer.toString(getColumn())
-                    + "  TypeError: id not in scope";
-            throw new Error(message);
+        if (functionType.outputTypes.size() == 0) {
+            throw new Error(id.getLine() + ":" + id.getLine() + " Semantic error: function is not function");
         }
+
+        ArrayList<Type> procedureInputs = functionType.inputTypes;
+        if (args.size() != procedureInputs.size()) {
+            throw new Error(id.getLine() + ":" + id.getLine() + " Semantic error: number of procedure inputs doesn't match call");
+        }
+        for (int i = 0; i < args.size(); i++){
+            Type paramType = args.get(i).typeCheck(table);
+            Type procedureInputType = procedureInputs.get(i);
+            if (!paramType.sameType(procedureInputType)){
+                throw new Error(id.getLine() + ":" + id.getLine() + " Semantic error: procedure input doesn't match type");
+            }
+        }
+
+        return functionType;
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
