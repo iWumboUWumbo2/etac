@@ -53,20 +53,24 @@ public class ProcedureCall extends Stmt {
         for (int i = 0; i< paramList.size();i++){
             Type paramType = paramList.get(i).typeCheck(table);
             Type procedureInputType = procedureInputs.get(i);
-            if (compareType(paramType,procedureInputType));
+            if (!compareType(paramType,procedureInputType)){
+                throw new Error(identifier.getLine() + ":" + identifier.getLine() + " Semantic error: procedure input doesn't match type");
+            }
         }
 
         return new Type(Type.TypeCheckingType.UNIT);
     }
 
     private boolean compareType(Type paramType, Type procedureInputType) {
+        // check if param is array and make sure procedure input is also array. Then compare dimensions
+        if (paramType.getType() == Type.TypeCheckingType.FILLEDARR || paramType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY) {
+            if (!(paramType.getType() == Type.TypeCheckingType.FILLEDARR || paramType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY)){
+                return false;
+            }
+            return paramType.dimensions.equalsDimension(procedureInputType.dimensions);
+        }
         if (paramType.getType() != procedureInputType.getType()) {
             return false;
-        }
-
-        if (paramType.getType() == Type.TypeCheckingType.FILLEDARR ||
-                paramType.getType() == Type.TypeCheckingType.EMPTYDIMENSIONALARRAY) {
-            return paramType.dimensions.equalsDimension(procedureInputType.dimensions);
         }
 
         return true;
