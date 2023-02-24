@@ -51,21 +51,24 @@ public class Globdecl extends Definition {
         p.endList();
     }
 
+    @Override
     public Type firstPass(SymbolTable<Type> table) {
-        if (value != null) {
-            Type declType = decl.typeCheck(table);
-            Type valueType = value.typeCheck(table);
-
-            if (!declType.sameType(valueType)) {
-                throw new SemanticException();
-            }
-
-
+        if (table.contains(decl.identifier)){
+            throw new SemanticException(getLine(),getColumn(),"error: global decl not same type");
         }
+        Type declType = decl.type;
+        if (value != null) {
+            Type valueType = value.typeCheck(table);
+            if (!declType.sameType(valueType)) {
+                throw new SemanticException(getLine(),getColumn(),"error: global decl not same type");
+            }
+        }
+        table.add(decl.identifier,declType);
+        return new Type(Type.TypeCheckingType.UNIT);
     }
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        return null;
+        return new Type(Type.TypeCheckingType.UNIT);
     }
 }

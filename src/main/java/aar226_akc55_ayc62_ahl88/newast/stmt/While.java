@@ -30,7 +30,9 @@ public class While extends Stmt {
         if (tg.getType() != Type.TypeCheckingType.BOOL) {
             throw new Error(guard.getLine() + ":" + guard.getColumn() + " semantic error ");
         }
+        table.enterScope();
         Type cond1 = stmt.typeCheck(table);
+        table.exitScope();
         if (!isRType(cond1)){
             throw new Error(stmt.getLine() + ":" + stmt.getColumn() + " Semantic error: Statement in WHILE is not Unit or Void");
         }

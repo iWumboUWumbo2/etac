@@ -36,7 +36,7 @@ public class Use extends AstNode{
         p.endList();
     }
     public Type typeCheck(SymbolTable<Type> table,String inputDirectory, boolean specified){
-        String filename = id.toString() + ".ixi";
+        String filename = id.toString() + ".eti";
         String zhenFilename =
                 (specified) ? Paths.get(inputDirectory, filename).toString() : filename;
         try (FileReader fileReader = new FileReader(zhenFilename)) {

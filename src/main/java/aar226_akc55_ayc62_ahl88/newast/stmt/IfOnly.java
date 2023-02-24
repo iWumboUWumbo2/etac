@@ -38,7 +38,9 @@ public class IfOnly extends Stmt {
         if (guardType.getType() != Type.TypeCheckingType.BOOL){
             throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic error:  guard is not bool");
         }
+        table.enterScope();
         Type cond1 = ifState.typeCheck(table);
+        table.exitScope();
         if (!isRType(cond1)){
             throw new Error(ifState.getLine() + ":" + ifState.getColumn() + " Semantic error: Statement in If is not Unit or Void");
         }

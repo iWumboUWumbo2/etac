@@ -43,7 +43,7 @@ public class ArrAccessDecl extends Decl{
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         Type identifierType = table.lookup(identifier);
-        if (!identifierType.isArray(identifierType)) {
+        if (!identifierType.isArray()) {
             throw new Error(getLine() + ":" + getColumn() + " semantic error: variable is not an array");
         }
 

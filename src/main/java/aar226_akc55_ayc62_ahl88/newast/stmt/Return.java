@@ -42,6 +42,13 @@ public class Return extends Stmt{
         if (returnArgList.size() == functionOutputs.size()) {
             for (Expr e : returnArgList) {
                 Type res = e.typeCheck(table);
+                if (res.getType() == Type.TypeCheckingType.FUNC){
+                    if (res.outputTypes.size() != 1){
+                        throw new SemanticException(getLine(),getColumn()," function output more than one type");
+                    }else{
+                        returnResult.addAll(res.outputTypes);
+                    }
+                }
                 returnResult.add(res);
             }
         }
@@ -51,6 +58,9 @@ public class Return extends Stmt{
             }
             else {
                 Type res = returnArgList.get(0).typeCheck(table);
+                if (res.getType() != Type.TypeCheckingType.FUNC){
+                    throw new SemanticException(getLine(),getColumn(),"one arg is not func");
+                }
                 returnResult.addAll(res.outputTypes);
             }
         }

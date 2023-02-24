@@ -52,9 +52,20 @@ public class ProcedureCall extends Stmt {
         }
         for (int i = 0; i < paramList.size(); i++){
             Type paramType = paramList.get(i).typeCheck(table);
-            Type procedureInputType = procedureInputs.get(i);
-            if (!paramType.sameType(procedureInputType)){
-                throw new Error(identifier.getLine() + ":" + identifier.getLine() + " Semantic error: procedure input doesn't match type");
+            if (paramType.getType() == Type.TypeCheckingType.FUNC){
+                if (paramType.outputTypes.size() != 1){
+                    throw new Error(identifier.getLine() + ":" + identifier.getLine() + " error: function has more than one output");
+                }
+                Type oneOut = paramType.outputTypes.get(0);
+                Type procedureInputType = procedureInputs.get(i);
+                if (!oneOut.sameType(procedureInputType)){
+                    throw new Error(identifier.getLine() + ":" + identifier.getLine() + " Semantic error: procedure input doesn't match type");
+                }
+            }else{
+                Type procedureInputType = procedureInputs.get(i);
+                if (!paramType.sameType(procedureInputType)){
+                    throw new Error(identifier.getLine() + ":" + identifier.getLine() + " Semantic error: procedure input doesn't match type");
+                }
             }
         }
 

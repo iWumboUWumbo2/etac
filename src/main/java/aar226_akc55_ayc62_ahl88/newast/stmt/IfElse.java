@@ -35,9 +35,12 @@ public class IfElse extends Stmt {
         if (tg.getType() != Type.TypeCheckingType.BOOL) {
             throw new Error(guard.getLine() + ":" + guard.getColumn() + " semantic error ");
         }
-
+        table.enterScope();
         Type trueClause = ifState.typeCheck(table);
+        table.exitScope();
+        table.enterScope();
         Type falseClause = elseState.typeCheck(table);
+        table.exitScope();
 
         if (!isRType(trueClause) || !isRType(falseClause)) {
             throw new Error(ifState.getLine() + ":" + ifState.getColumn() + " Semantic error: Statement in If is not Unit or Void");

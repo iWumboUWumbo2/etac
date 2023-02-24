@@ -59,7 +59,7 @@ public class Method_Interface extends AstNode {
 
         HashSet<String> prev = new HashSet<>();
         for (AnnotatedTypeDecl atd: decls){
-            if (atd.identifier.toString() == id.toString()){ // decl name and function name
+            if (atd.identifier.toString().equals(id.toString())){ // decl name and function name
                 throw new Error("function and paramter have same name");
             }
             Type curDeclType = atd.typeCheck(methods);

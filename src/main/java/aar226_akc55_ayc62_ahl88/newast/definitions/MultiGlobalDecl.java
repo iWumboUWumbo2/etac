@@ -34,14 +34,23 @@ public class MultiGlobalDecl extends Definition{
     }
 
     @Override
-    public Type typeCheck(SymbolTable<Type> table) {
-        if (expressions != null) {
-            if (decls.size() != expressions.size()) {
-                throw new SemanticException();
-            }
-
-
+    public Type firstPass(SymbolTable<Type> table) {
+        if (decls.size() != expressions.size()) {
+            throw new SemanticException(getLine(),getColumn(),"size of declarations dont match expressions");
         }
+        for (AnnotatedTypeDecl atd: decls){
+            Type curDeclType = atd.typeCheck(table);
+            if (table.contains(atd.identifier)){
+                throw new SemanticException(getLine(),getColumn(),"error: decl is already defined");
+            }
+            table.add(atd.identifier,curDeclType);
+        }
+
+        return new Type(Type.TypeCheckingType.UNIT);
+    }
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        return new Type(Type.TypeCheckingType.UNIT);
     }
 
     @Override
