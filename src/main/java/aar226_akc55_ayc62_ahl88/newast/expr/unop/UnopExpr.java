@@ -21,6 +21,11 @@ public abstract class UnopExpr extends Expr {
         e = in;
         unopType = u;
     }
+
+    public Expr getE() {
+        return e;
+    }
+
     public void prettyPrint(CodeWriterSExpPrinter p) {
 
         String out;

@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 
@@ -15,6 +17,10 @@ public class ModuloBinop extends IntOutBinop {
      */
     public ModuloBinop(Expr in1, Expr in2, int l, int c) {
         super(BinopEnum.MODULO, in1, in2, l, c);
+    }
+    @Override
+    public Type typeCheck(SymbolTable s){
+        return super.typeCheck(s);
     }
 
 }

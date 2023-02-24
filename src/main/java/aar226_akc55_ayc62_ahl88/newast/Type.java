@@ -13,20 +13,24 @@ public class Type extends AstNode {
     public enum TypeCheckingType {
         INT,
         BOOL,
-        EMPTYDIMENSIONALARRAY,
-        MULTITYPES,
+        INTARRAY, // Any Dimension
+        BOOLARRAY, // Any Dimension
+        UNKNOWNARRAY,
+        UNKNOWN,
         UNIT,
         VOID,
         RETURN,
         FUNC,
-        FILLEDARR
+//        FILLEDARR
     }
     public Dimension dimensions;
     private boolean isInt;
 
     private TypeCheckingType tct;
 
-    private ArrayList<Type> inputTypes, outputTypes;
+    public ArrayList<Type> inputTypes, outputTypes;
+
+    public Type arrayType;
 
 
     /**
@@ -46,13 +50,45 @@ public class Type extends AstNode {
         this.tct = tct;
     }
 
+    public Type(TypeCheckingType tct, Dimension d){
+        super(-1,-1);
+        this.tct = tct;
+        dimensions = d;
+    }
+
+    public boolean isArray() {
+        return this.getType() == Type.TypeCheckingType.INTARRAY ||
+                this.getType() == Type.TypeCheckingType.BOOLARRAY ||
+                this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
+    }
+
+    public boolean sameType(Type rhs) {
+        // check if param is array and make sure procedure input is also array. Then compare dimensions
+        if (isArray()) {
+            if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                    rhs.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
+                return this.dimensions.getDim() <= rhs.dimensions.getDim();
+            } else if (rhs.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                    this.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
+                return rhs.dimensions.getDim() <= this.dimensions.getDim();
+            } else if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                    this.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
+                return true;
+            }
+            else {
+                return dimensions.equalsDimension(rhs.dimensions);
+            }
+        }
+        // if one of the types is unknown, then equality is not false
+        if (getType() != rhs.getType() &&
+                !(getType() == TypeCheckingType.UNKNOWN ||
+                rhs.getType() == TypeCheckingType.UNKNOWN)) {
+            return false;
+        }
+
+        return true;
+    }
     public TypeCheckingType getType() {return tct;}
-    public boolean isBasicInt(){
-        return isInt && (dimensions.getDim() == 0);
-    }
-    public boolean isBasicBool(){
-        return (!isInt) && (dimensions.getDim() == 0);
-    }
     private String getTypeAsString() {
         return (isInt) ? "int" : "bool";
     }

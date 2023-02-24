@@ -1,28 +1,28 @@
-package aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop;
+package aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop;
 
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
+
 
 /**
- * Abstract class for all binary expressions
+ * Abstract class for integer all equivalence binary expressions (>, <, >=, <=)
+ * Integer inputs only
  */
-public abstract class IntOutBinop extends BinopExpr {
-
+public abstract class IntegerComparisonBinop extends BoolOutBinop{
     /**
-     * @param b binary operation type
-     * @param in1 first expression input
-     * @param in2 second expressioin input
-     * @param l line number
-     * @param c column number
+     * @param b   binary operation type
+     * @param in1 left Expression
+     * @param in2 right Expression
+     * @param l   line number
+     * @param c   column number
      */
-    public IntOutBinop(BinopEnum b, Expr in1, Expr in2, int l, int c) {
+    public IntegerComparisonBinop(BinopEnum b, Expr in1, Expr in2, int l, int c) {
         super(b, in1, in2, l, c);
     }
-    // Type Checking is In1, In2 both must be Int and output is Int
 
+    // typecheck ints only -> bool
     @Override
     public Type typeCheck(SymbolTable s){
         Expr e1 = getLeftExpr();
@@ -44,6 +44,6 @@ public abstract class IntOutBinop extends BinopExpr {
             throw new Error(message);
         }
 
-        return new Type(Type.TypeCheckingType.INT);
+        return new Type(Type.TypeCheckingType.BOOL);
     }
 }
