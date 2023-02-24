@@ -47,6 +47,7 @@ nonterminal ArrayList<Definition>   definitionStar;
 nonterminal Definition              definition;
 nonterminal Method                  method;
 nonterminal ArrayList<AnnotatedTypeDecl>         emptyBracketDecl_star;
+nonterminal ArrayList<AnnotatedTypeDecl>         emptyBracketDecl_plus;
 nonterminal AnnotatedTypeDecl       emptyBracketDecl;
 nonterminal ArrayList<Type>         emptyBracketType_plus;
 nonterminal Type                    emptyBracketType;
@@ -118,12 +119,20 @@ method ::= // Id b
     ;
 
 emptyBracketDecl_star ::=
-    emptyBracketDecl_star:declstar COMMA emptyBracketDecl:d {:declstar.add(d); RESULT = declstar; :}
+    emptyBracketDecl_plus:declstar {: RESULT = declstar; :}
+//    |emptyBracketDecl:d {:ArrayList<AnnotatedTypeDecl> temp = new ArrayList<AnnotatedTypeDecl>();
+//      temp.add(d);
+//      RESULT = temp;
+//      :}
+    | {: RESULT = new ArrayList<AnnotatedTypeDecl>();:}
+    ;
+
+emptyBracketDecl_plus ::=
+    emptyBracketDecl_plus:ts COMMA emptyBracketDecl:d {: ts.add(d); RESULT = ts; :}
     |emptyBracketDecl:d {:ArrayList<AnnotatedTypeDecl> temp = new ArrayList<AnnotatedTypeDecl>();
       temp.add(d);
       RESULT = temp;
       :}
-    | {: RESULT = new ArrayList<AnnotatedTypeDecl>();:}
     ;
 
 emptyBracketDecl ::=
@@ -214,14 +223,14 @@ emptyDimension_star ::=
     ds.indices.add(null);
     RESULT = ds;:}
     |emptyDimension_star:ds OPEN_BRACKET INTEGER_LITERAL:i CLOSE_BRACKET {:
-        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " Filled index after empty");
+        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " error: Filled index after empty");
         ds.allEmpty = false;
         IntLiteral iL = new IntLiteral(i,ileft,iright);
         ds.indices.add(iL);
         ds.increment(); // [][2]
         RESULT = ds;:}
     |emptyDimension_star:ds OPEN_BRACKET IDENTIFIER:i CLOSE_BRACKET {:
-        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " Filled index after empty");
+        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " error: Filled index after empty");
         ds.allEmpty = false;
         ds.indices.add(new Id(i,ileft,iright));
         ds.increment(); // [][2]

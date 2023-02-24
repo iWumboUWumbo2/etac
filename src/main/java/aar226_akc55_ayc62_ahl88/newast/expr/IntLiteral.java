@@ -47,7 +47,14 @@ public class IntLiteral extends Expr{
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
         if (rawChar == null) {
-            p.printAtom(toString());
+            if (number == Long.MIN_VALUE){
+                p.startList();
+                p.printAtom("-");
+                p.printAtom(toString().substring(1));
+                p.endList();
+            }else{
+                p.printAtom(toString());
+            }
         }
         else {
             p.printAtom("'"+ toString()+ "'");

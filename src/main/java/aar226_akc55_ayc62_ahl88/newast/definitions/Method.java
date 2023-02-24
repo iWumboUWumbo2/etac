@@ -18,12 +18,12 @@ public class Method extends Definition {
         super (l,c);
         for (AnnotatedTypeDecl cur: d){
             if (!cur.type.dimensions.allEmpty) {
-                throw new Error("array in param list has init value");
+                throw new Error(cur.getLine() + ":" + cur.getColumn() + " error: array in param list has init value");
             }
         }
         for (Type cur: t){
             if (!cur.dimensions.allEmpty) {
-                throw new Error("array in type list has init value");
+                throw new Error(cur.getLine() + ":" + cur.getColumn() + " error: array in type list has init value");
             }
         }
         id = new Id(s, l, c);

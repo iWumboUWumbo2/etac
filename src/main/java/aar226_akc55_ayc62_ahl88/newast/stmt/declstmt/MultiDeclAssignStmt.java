@@ -19,7 +19,7 @@ public class MultiDeclAssignStmt extends Stmt {
             if (dec instanceof AnnotatedTypeDecl){
                 AnnotatedTypeDecl cast = (AnnotatedTypeDecl) dec;
                 if (!cast.type.dimensions.allEmpty) {
-                    throw new Error("array in param list has init value");
+                    throw new Error(cast.getLine() + ":" + cast.getColumn() +  " error: array in param list has init value");
                 }
             }
         }
