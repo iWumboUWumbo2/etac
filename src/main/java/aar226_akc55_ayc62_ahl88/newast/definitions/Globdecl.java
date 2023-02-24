@@ -20,6 +20,9 @@ public class Globdecl extends Definition {
     public Globdecl (AnnotatedTypeDecl d, Expr v, int l, int c) {
         super(l, c);
         decl = d;
+        if (!decl.type.dimensions.allEmpty){
+            throw new Error(l+":"+c + " error: global array can't be initalied");
+        }
         value = v;
     }
 

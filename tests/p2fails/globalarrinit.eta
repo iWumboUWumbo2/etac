@@ -1,0 +1,4 @@
+x :int[] = "whoops";
+foo(x :int) :int{
+return x;
+}

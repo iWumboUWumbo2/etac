@@ -154,10 +154,10 @@ newGlob ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null, edleft, edright);:} // make sure to check NULL
     | emptyBracketDecl:ed GETS:g value:v {:
         if (!ed.type.dimensions.allEmpty) {
-            throw new Error(gleft +":" + gright +" "  + "array with init len no Val");
+            throw new Error(gleft +":" + gright +" "  + "error: array with init len no Val");
         }
         if (ed.type.dimensions.getDim() != 0){
-            throw new Error(gleft +":" + gright +" " + "global arr not init allowed");
+            throw new Error(gleft +":" + gright +" " + "error: global arr not init allowed");
         }
         RESULT  = new Globdecl(ed, v, edleft, edright);
     :}
