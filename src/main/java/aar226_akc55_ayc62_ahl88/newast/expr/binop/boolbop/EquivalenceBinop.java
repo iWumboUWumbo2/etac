@@ -32,10 +32,11 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
 
         if (t1.getType() == Type.TypeCheckingType.INT ||
                 t1.getType() == Type.TypeCheckingType.BOOL ) {
-            if (t2.getType() != t1.getType()) {
+            if (!t1.sameType(t2)) {
                 message = Integer.toString(e2.getLine())
                         + ":" + Integer.toString(e2.getColumn())
                         + "  TypeError: equivalence e2 does not match e1 ";
+                throw new Error(message);
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);
             }
@@ -44,13 +45,15 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
                 message = Integer.toString(e2.getLine())
                         + ":" + Integer.toString(e2.getColumn())
                         + "  TypeError: equivalence e2 does not match e1 ";
+                throw new Error(message);
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);
             }
+        }else {
+            message = Integer.toString(e1.getLine())
+                    + ":" + Integer.toString(e1.getColumn())
+                    + "  TypeError: equivalence invalid e1 type ";
+            throw new Error(message);
         }
-        message = Integer.toString(e1.getLine())
-                + ":" + Integer.toString(e1.getColumn())
-                + "  TypeError: equivalence invalid e1 type ";
-        throw new Error(message);
     }
 }

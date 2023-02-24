@@ -29,19 +29,27 @@ public class ArrayValueLiteral extends Expr {
 
     private Type typeCheckUnknown(SymbolTable s) throws Error {
         return new Type(Type.TypeCheckingType.UNKNOWNARRAY,
-                new Dimension(0, getLine(), getColumn()));
+                new Dimension(1, getLine(), getColumn())); // unknown dimension
     }
 
 
     // guarantess values has length > 0
     private Type typeCheckArray(SymbolTable s) throws Error {
         Type t1 = values.get(0).typeCheck(s);
+
+        Type arrCheck = t1;
         for (Expr e : values) {     // check all elements same type
-            if (!t1.sameType(e.typeCheck(s))) {
+            Type eType = e.typeCheck(s);
+            if (!arrCheck.sameType(eType)) {
                 String message = Integer.toString(e.getLine())
                         + ":" + Integer.toString(e.getColumn())
                         + "  TypeError: array element type mismatch";
                 throw new Error(message);
+            }
+            if (t1.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                    (eType.getType() == Type.TypeCheckingType.BOOLARRAY ||
+                            eType.getType() == Type.TypeCheckingType.INTARRAY)){
+                arrCheck = eType;
             }
         }
 
@@ -54,7 +62,7 @@ public class ArrayValueLiteral extends Expr {
         }
         // if t1 not array, return dim 0 array
         else {
-            Dimension dim = new Dimension(0, getLine(), getColumn());
+            Dimension dim = new Dimension(1, getLine(), getColumn());
             return new Type(t1.getType(), dim);
         }
 

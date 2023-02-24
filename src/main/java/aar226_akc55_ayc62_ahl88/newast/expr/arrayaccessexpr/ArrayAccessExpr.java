@@ -28,7 +28,7 @@ public class ArrayAccessExpr extends Expr {
         indicies = arrayOfIndexing;
     }
     private void typeCheckIndices(SymbolTable s) throws Error {
-        for (Expr e : this.indicies) {
+        for (Expr e : indicies) {
             if (e.typeCheck(s).getType() != Type.TypeCheckingType.INT){
                 String message = Integer.toString(e.getLine())
                         + ":" + Integer.toString(e.getColumn())

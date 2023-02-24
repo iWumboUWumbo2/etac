@@ -29,15 +29,15 @@ public abstract class LogicalBinop extends BoolOutBinop {
         Type t2 = e2.typeCheck(s);
 
         if (t1.getType() != Type.TypeCheckingType.BOOL) {
-            String message = Integer.toString(e1.getLine())
-                    + ":" + Integer.toString(e1.getColumn())
+            String message = e1.getLine()
+                    + ":" + e1.getColumn()
                     + "  TypeError: statements block must be of type int at ";
             throw new Error(message);
         }
 
         if (t2.getType() != Type.TypeCheckingType.BOOL) {
-            String message = Integer.toString(e2.getLine())
-                    + ":" + Integer.toString(e2.getColumn())
+            String message = e2.getLine()
+                    + ":" + e2.getColumn()
                     + "  TypeError: statements block must be of type int at ";
             throw new Error(message);
         }

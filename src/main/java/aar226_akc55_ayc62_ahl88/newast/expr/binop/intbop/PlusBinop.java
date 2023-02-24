@@ -37,7 +37,7 @@ public class PlusBinop extends BinopExpr {
 
     // can add Arrays too
     @Override
-    public Type typeCheck(SymbolTable s) throws Error {
+    public Type typeCheck(SymbolTable s){
         Expr e1 = getLeftExpr();
         Expr e2 = getRightExpr();
         Type t1 = e1.typeCheck(s);
@@ -46,9 +46,10 @@ public class PlusBinop extends BinopExpr {
 
         if (t1.getType() == Type.TypeCheckingType.INT) {
             if (t2.getType() != Type.TypeCheckingType.INT) {
-                message = Integer.toString(e2.getLine())
-                        + ":" + Integer.toString(e2.getColumn())
+                message = e2.getLine()
+                        + ":" + e2.getColumn()
                         + "  TypeError: plus e2 does not match e1 ";
+                throw new Error(message);
             } else {
                 return new Type(Type.TypeCheckingType.INT);
             }
@@ -57,14 +58,16 @@ public class PlusBinop extends BinopExpr {
                 return new Type(t1.getType(), t1.dimensions);
             } else {
                 // is this fine?????
-                message = Integer.toString(e2.getLine())
-                        + ":" + Integer.toString(e2.getColumn())
+                message = e2.getLine()
+                        + ":" + e2.getColumn()
                         + "  TypeError: plus e2 does not match e1 ";
+                throw new Error(message);
             }
+        }else{
+            message = e1.getLine()
+                    + ":" + e1.getColumn()
+                    + "  TypeError: plus invalid e1 type ";
+            throw new Error(message);
         }
-        message = Integer.toString(e1.getLine())
-                + ":" + Integer.toString(e1.getColumn())
-                + "  TypeError: plus invalid e1 type ";
-        throw new Error(message);
     }
 }

@@ -32,16 +32,17 @@ public class Length extends Expr {
     public Type typeCheck(SymbolTable<Type> table) throws Error {
         Type t1;
         String message;
-        try {
-            // might throw error if expr is Id and lookup fails
-            t1 = arg.typeCheck(table);
-        }
-        catch (Error e) {
-            message = Integer.toString(getLine())
-                    + ":" + Integer.toString(getColumn())
-                    + "  TypeError: unbound variable name";
-            throw new Error(message);
-        }
+        t1 = arg.typeCheck(table);
+//        try {
+//            // might throw error if expr is Id and lookup fails
+//            t1 = arg.typeCheck(table);
+//        }
+//        catch (Error e) {
+//            message = Integer.toString(getLine())
+//                    + ":" + Integer.toString(getColumn())
+//                    + "  TypeError: unbound variable name";
+//            throw new Error(message);
+//        }
         if (t1.isArray()) {
             return (new Type(Type.TypeCheckingType.INT));
         } else {
