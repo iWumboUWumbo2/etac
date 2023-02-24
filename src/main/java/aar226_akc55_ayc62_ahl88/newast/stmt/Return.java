@@ -47,7 +47,7 @@ public class Return extends Stmt{
         }
         else {
             if (returnArgList.size() != 1) {
-                throw new SemanticException();
+                throw new SemanticException(getLine(),getColumn(),"return message");
             }
             else {
                 Type res = returnArgList.get(0).typeCheck(table);
