@@ -60,6 +60,13 @@ public class Type extends AstNode {
         this.tct = tct;
         dimensions = d;
     }
+    public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
+        super(-1,-1);
+        System.out.println("ONLY THE FUNC TYPE");
+        this.tct = Type.TypeCheckingType.FUNC;
+        inputTypes = inTy;
+        outputTypes = outTy;
+    }
 
     public boolean isArray(Type t) {
         return t.getType() == Type.TypeCheckingType.INTARRAY ||

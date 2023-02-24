@@ -34,7 +34,16 @@ public class EtiInterface extends AstNode {
 
     public HashMap<Id,Type> firstPass() {
         HashMap<Id,Type> res = new HashMap<>();
-
+        SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
+        for (Method_Interface mI: methods_inter){
+            Type curMethod = mI.typeCheck(res,methodSymbols);
+            Id nameOfMethod = mI.getName();
+            ArrayList<Type> inTypes = mI.getInputTypes();
+            ArrayList<Type> outTypes = mI.getOutputtypes();
+            Type funcTypeInTable = new Type(inTypes,outTypes);
+            methodSymbols.add(nameOfMethod,funcTypeInTable);
+            res.put(nameOfMethod,funcTypeInTable);
+        }
         return res;
     }
 }
