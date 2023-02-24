@@ -21,7 +21,7 @@ public class Type extends AstNode {
         VOID,
         RETURN,
         FUNC,
-//        FILLEDARR
+        UNDERSCORE
     }
     public Dimension dimensions;
     private boolean isInt;
@@ -43,13 +43,25 @@ public class Type extends AstNode {
         super(l,c);
         isInt = t;
         dimensions = d;
+        if (d.getDim() == 0) {
+            tct = (isInt) ? TypeCheckingType.INT : TypeCheckingType.BOOL;
+        }
+        else {
+            tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
+        }
     }
 
     public Type(TypeCheckingType tct) {
         super(-1, -1);
         this.tct = tct;
     }
-
+    public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
+        super(-1,-1);
+        System.out.println("ONLY THE FUNC TYPE");
+        this.tct = Type.TypeCheckingType.FUNC;
+        inputTypes = inTy;
+        outputTypes = outTy;
+    }
     public Type(TypeCheckingType tct, Dimension d){
         super(-1,-1);
         this.tct = tct;
@@ -61,9 +73,11 @@ public class Type extends AstNode {
                 this.getType() == Type.TypeCheckingType.BOOLARRAY ||
                 this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
     }
-
     public boolean sameType(Type rhs) {
         // check if param is array and make sure procedure input is also array. Then compare dimensions
+        if (getType() == TypeCheckingType.UNDERSCORE || (rhs.getType() == TypeCheckingType.UNDERSCORE)) {
+            return true;
+        }
         if (isArray()) {
             if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
                     rhs.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
@@ -89,6 +103,9 @@ public class Type extends AstNode {
         return true;
     }
     public TypeCheckingType getType() {return tct;}
+
+
+
     private String getTypeAsString() {
         return (isInt) ? "int" : "bool";
     }

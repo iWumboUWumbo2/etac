@@ -1,5 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.SemanticException;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -48,4 +51,21 @@ public class Globdecl extends Definition {
         p.endList();
     }
 
+    public Type firstPass(SymbolTable<Type> table) {
+        if (value != null) {
+            Type declType = decl.typeCheck(table);
+            Type valueType = value.typeCheck(table);
+
+            if (!declType.sameType(valueType)) {
+                throw new SemanticException();
+            }
+
+
+        }
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        return null;
+    }
 }

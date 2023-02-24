@@ -1,6 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt.declstmt;
 
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
 import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
@@ -21,7 +23,6 @@ public class DeclAssignStmt extends Stmt{
      * @param c Column number
      */
     public DeclAssignStmt (Decl d, Expr e, int l, int c) {
-
         super(l,c);
         decl = d;
         expression = e;
@@ -32,6 +33,7 @@ public class DeclAssignStmt extends Stmt{
         build +=  "( " + decl.toString() +  " )";
         return build;
     }
+
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
@@ -40,6 +42,20 @@ public class DeclAssignStmt extends Stmt{
         expression.prettyPrint(p);
         p.endList();
 
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        Type declType = decl.typeCheck(table);
+        Type exprType = expression.typeCheck(table);
+        if (!declType.sameType(exprType)) {
+            throw new Error(getLine() + ":" + getLine() +
+                    " Semantic error: expression type not the same as declaration type");
+        }
+        if (decl instanceof AnnotatedTypeDecl) {
+            table.add(decl.identifier, declType); // add the identifier and the type only if its a new type
+        }
+        return new Type(Type.TypeCheckingType.UNIT);
     }
 
 }

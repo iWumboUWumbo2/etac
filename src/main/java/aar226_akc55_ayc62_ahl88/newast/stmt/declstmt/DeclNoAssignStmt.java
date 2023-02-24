@@ -1,6 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt.declstmt;
 
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
@@ -37,6 +39,16 @@ public class DeclNoAssignStmt extends Stmt {
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         decl.prettyPrint(p);
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+
+        Type declType = decl.typeCheck(table);
+        if ((decl instanceof AnnotatedTypeDecl)){
+            table.add(decl.identifier,declType); // add the identifier and the type only if new type
+        }
+        return new Type(Type.TypeCheckingType.UNIT);
     }
 
 }

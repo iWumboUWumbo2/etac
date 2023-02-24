@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.declarations;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -11,15 +13,13 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
  * Not: a:int, bob:bool[]
  */
 public class NoTypeDecl extends Decl{
-    Id identifier;
     /**
      * @param i Identifier Input
      * @param l Line Number
      * @param c Column Number
      */
     public NoTypeDecl(Id i, int l, int c) {
-        super(l, c);
-        identifier = i;
+        super(i,l, c);
     }
 
     @Override
@@ -27,6 +27,10 @@ public class NoTypeDecl extends Decl{
         identifier.prettyPrint(p);
     }
 
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        return table.lookup(identifier);
+    }
 }
 //    @Override
 //    public void prettyPrint(CodeWriterSExpPrinter p) {

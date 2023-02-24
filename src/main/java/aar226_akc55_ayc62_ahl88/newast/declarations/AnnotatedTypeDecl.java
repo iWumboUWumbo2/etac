@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.declarations;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.SemanticException;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -16,14 +18,20 @@ public class AnnotatedTypeDecl extends Decl{
      * @param c Column Number
      */
 
-    public Id identifier;
 
     public Type type;
     public AnnotatedTypeDecl(Id i, Type t, int l, int c) {
-        super(l, c);
-        identifier = i;
+        super(i, l, c);
         type = t;
 
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        if (table.contains(identifier)) {
+            throw new SemanticException(getLine(), getColumn(), "variable has already been seen");
+        }
+        return type;
     }
 
     @Override

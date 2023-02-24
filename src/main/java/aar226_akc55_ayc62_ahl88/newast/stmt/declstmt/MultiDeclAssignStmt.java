@@ -1,7 +1,10 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt.declstmt;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.declarations.Decl;
+import aar226_akc55_ayc62_ahl88.newast.declarations.UnderScore;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -40,5 +43,43 @@ public class MultiDeclAssignStmt extends Stmt {
             p.endList();
             expressions.forEach(e -> e.prettyPrint(p));
             p.endList();
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        ArrayList<Type> declarationTypes = new ArrayList<>();
+        ArrayList<Type> exprTypes = new ArrayList<>();
+        for (Decl d: decls){
+            Type curDeclType = d.typeCheck(table);
+            declarationTypes.add(curDeclType);
+        }
+        for (Expr e: expressions){
+            Type curExprType = e.typeCheck(table);
+            if (curExprType.getType() == Type.TypeCheckingType.FUNC) {
+                exprTypes.addAll(curExprType.outputTypes);
+            }
+            else {
+                exprTypes.add(curExprType);
+            }
+        }
+
+        if ( declarationTypes.size() != exprTypes.size()) {
+            throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Number of variable decls doesn't match number of expressions");
+        }
+        for (int i = 0; i < exprTypes.size(); i++) {
+            Type decT = declarationTypes.get(i);
+            Type exprT = exprTypes.get(i);
+            if (!decT.sameType(exprT)){
+                throw new Error(getLine() + ":" + getColumn() + " Semantic error: Variable Type doesn't match Expr Type");
+            }
+        }
+        // add these multi declarations to
+        for (int i = 0; i< decls.size();i++){
+            Decl curD = decls.get(i);
+            if (curD instanceof AnnotatedTypeDecl){
+                table.add(curD.identifier,declarationTypes.get(i));
+            }
+        }
+        return null;
     }
 }

@@ -1,5 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.SemanticException;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -23,11 +26,24 @@ public class MultiGlobalDecl extends Definition{
         }
         expressions = e;
     }
+
     public String toString(){
         String build = "";
         build +=  "( " + decls.toString() +  " )";
         return build;
     }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        if (expressions != null) {
+            if (decls.size() != expressions.size()) {
+                throw new SemanticException();
+            }
+
+
+        }
+    }
+
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();

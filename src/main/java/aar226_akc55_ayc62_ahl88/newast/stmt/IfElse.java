@@ -1,7 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
 
-//import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -28,18 +28,23 @@ public class IfElse extends Stmt {
         elseState = elseS;
     }
 
-//    @Override
-//    public Type typeCheck(SymbolTable table) {
-//        Type tg = guard.typeCheck(table);
-//        if (tg.getType() != Type.TypeCheckingType.BOOL) {
-//            throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic Error ");
-//        }
-//
-//        ifState.typeCheck(table);
-//        elseState.typeCheck(table);
-//
-//        return new Type(Type.TypeCheckingType.UNIT);
-//    }
+    @Override
+    public Type typeCheck(SymbolTable table) {
+
+        Type tg = guard.typeCheck(table);
+        if (tg.getType() != Type.TypeCheckingType.BOOL) {
+            throw new Error(guard.getLine() + ":" + guard.getColumn() + " semantic error ");
+        }
+
+        Type trueClause = ifState.typeCheck(table);
+        Type falseClause = elseState.typeCheck(table);
+
+        if (!isRType(trueClause) || !isRType(falseClause)) {
+            throw new Error(ifState.getLine() + ":" + ifState.getColumn() + " Semantic error: Statement in If is not Unit or Void");
+        }
+
+        return lub(trueClause, falseClause);
+    }
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {

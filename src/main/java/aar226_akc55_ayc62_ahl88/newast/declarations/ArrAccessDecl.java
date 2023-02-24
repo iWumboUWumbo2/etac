@@ -1,5 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.declarations;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Dimension;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -10,7 +13,6 @@ import java.util.ArrayList;
  */
 public class ArrAccessDecl extends Decl{
 
-    private Id id;
     private ArrayList<Expr> indices;
 
     /**
@@ -20,8 +22,7 @@ public class ArrAccessDecl extends Decl{
      * @param c column number
      */
     public ArrAccessDecl(Id id, ArrayList<Expr> indices, int l, int c) {
-        super(l, c);
-        this.id = id;
+        super(id,l, c);
         this.indices = indices;
     }
 
@@ -31,7 +32,7 @@ public class ArrAccessDecl extends Decl{
             p.startList();
             p.printAtom("[]");
         }
-        id.prettyPrint(p);
+        identifier.prettyPrint(p);
 
         for (int i = 0; i<indices.size();i++){
             indices.get(i).prettyPrint(p);
@@ -39,6 +40,38 @@ public class ArrAccessDecl extends Decl{
         }
     }
 
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        Type identifierType = table.lookup(identifier);
+        if (!identifierType.isArray(identifierType)) {
+            throw new Error(getLine() + ":" + getColumn() + " semantic error: variable is not an array");
+        }
 
+        for (Expr e : indices) {
+            Type exprType = e.typeCheck(table);
+            if (exprType.getType() != Type.TypeCheckingType.INT) {
+                throw new Error(getLine() + ":" + getColumn() + " semantic error: array access is not an int");
+            }
+        }
 
+        if (indices.size() > identifierType.dimensions.getDim()) {
+            throw new Error(getLine() + ":" + getColumn() + " semantic error: more indixes than expected");
+        }
+
+        Dimension d = identifierType.dimensions;
+        Dimension newDim = new Dimension(d.getDim() - indices.size(), d.getLine(), d.getColumn());
+        if (newDim.getDim() == 0) {
+            if (identifierType.getType() == Type.TypeCheckingType.INTARRAY) {
+                return new Type(Type.TypeCheckingType.INT);
+            }
+            else if (identifierType.getType() == Type.TypeCheckingType.BOOLARRAY) {
+                return new Type(Type.TypeCheckingType.BOOL);
+            }
+            else {
+                throw new Error("somehow not an array");
+            }
+        }
+
+        return new Type(identifierType.getType(), newDim);
+    }
 }

@@ -1,0 +1,12 @@
+
+
+main(args: int[][]) {
+    a:int = 4;
+
+}
+
+
+intFunc():int{
+
+    return
+}
