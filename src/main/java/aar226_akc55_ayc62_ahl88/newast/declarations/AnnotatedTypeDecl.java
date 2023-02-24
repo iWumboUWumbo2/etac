@@ -16,7 +16,7 @@ public class AnnotatedTypeDecl extends Decl{
      * @param c Column Number
      */
 
-    Id identifier;
+    public Id identifier;
 
     public Type type;
     public AnnotatedTypeDecl(Id i, Type t, int l, int c) {

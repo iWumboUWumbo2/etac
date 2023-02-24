@@ -1,6 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
-import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+//import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -31,15 +31,15 @@ public class IfOnly extends Stmt {
         ifState.prettyPrint(p);
         p.endList();
     }
-    @Override
-    public Type typeCheck(SymbolTable table) {
-
-        Type guardType = guard.typeCheck(table);
-        if (guardType.getType() != Type.TypeCheckingType.BOOL){
-            throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic Error ");
-        }
-        ifState.typeCheck(table);
-        return new Type(Type.TypeCheckingType.UNIT);
-    }
+//    @Override
+//    public Type typeCheck(SymbolTable table) {
+//
+//        Type guardType = guard.typeCheck(table);
+//        if (guardType.getType() != Type.TypeCheckingType.BOOL){
+//            throw new Error(guard.getLine() + ":" + guard.getColumn() + " Semantic Error ");
+//        }
+//        ifState.typeCheck(table);
+//        return new Type(Type.TypeCheckingType.UNIT);
+//    }
 
 }

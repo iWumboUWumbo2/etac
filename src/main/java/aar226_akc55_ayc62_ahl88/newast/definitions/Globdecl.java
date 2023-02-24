@@ -36,7 +36,9 @@ public class Globdecl extends Definition {
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
-        decl.prettyPrint(p);
+        p.printAtom(":global");
+        decl.identifier.prettyPrint(p);
+        decl.type.prettyPrint(p);
         if (value != null){
             value.prettyPrint(p);
         }

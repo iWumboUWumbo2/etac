@@ -38,7 +38,7 @@ terminal            INT, BOOL;
 terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
   DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, AND, OR, EQUAL, NOT_EQUAL, GETS,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
-  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM,GLOBAL;
+  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM;
 
 nonterminal Program                 program;
 nonterminal ArrayList<Use>          importUseStar;
@@ -147,7 +147,7 @@ fullBracketPlus ::=
     ;
 
 
-globalDecl ::= COLON GLOBAL newGlob:ng {:RESULT = ng;:}
+globalDecl ::= newGlob:ng {:RESULT = ng;:}
 ;
 
 newGlob ::=
