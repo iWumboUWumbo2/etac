@@ -44,6 +44,9 @@ public class Use extends AstNode{
             EtiInterface eI = (EtiInterface) p.parse().value;
             HashMap<Id,Type> firstPass = eI.firstPass(); // to do need to fail in interface
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
+                if (table.contains(entry.getKey())){
+                    throw new Error(getLine()+":" + getColumn() + " error: function from interface already exists");
+                }
                 table.add(entry.getKey(),entry.getValue());
             }
         } catch (Error e) {

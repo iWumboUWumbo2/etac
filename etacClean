@@ -2,10 +2,13 @@
 DIR=`dirname $0`
 rm  -r $DIR/*.lexed
 rm  -r $DIR/*.parsed
+rm  -r $DIR/*.typed
 rm  -r $DIR/tests/*.lexed
 rm  -r $DIR/tests/*.parsed
+rm  -r $DIR/tests/*.typed
 rm  -r $DIR/tests/p2fails/*.lexed
 rm  -r $DIR/tests/p2fails/*.parsed
+rm  -r $DIR/tests/p2fails/*.typed
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java~

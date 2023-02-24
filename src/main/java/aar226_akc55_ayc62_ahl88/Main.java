@@ -1,6 +1,8 @@
 package aar226_akc55_ayc62_ahl88;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Program;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import java_cup.runtime.Symbol;
 import org.apache.commons.cli.*;
@@ -116,6 +118,57 @@ class Main {
             return;
         }
     }
+    private static void typeCheckFile(String filename) throws IOException {
+        try {
+            String zhenFilename =
+                    (isInputDirSpecified) ? Paths.get(inputDirectory, filename).toString() : filename;
+
+            if (filename.endsWith(".eta")) {
+                try {
+                    EtaParser p = new EtaParser(new Lexer(new FileReader(zhenFilename)));
+                    try {
+                        Program result = (Program) p.parse().value;
+                        SymbolTable<Type> context = new SymbolTable<Type>();
+                        result.typeCheck(context,inputDirectory,isInputDirSpecified);
+                        writeOutput(filename, "Valid Eta Program", "typed");
+                    } catch (Error e) {
+                        System.out.println(e.getMessage());
+                        writeOutput(filename, e.getMessage(), "typed");
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    System.out.println("File without that name found");
+                }
+            }
+            else if (filename.endsWith(".eti")) {
+                try {
+                    EtiParser p = new EtiParser(new Lexer(new FileReader(zhenFilename)));
+                    try {
+                        EtiInterface result = (EtiInterface) p.parse().value;
+                        SymbolTable<Type> context = new SymbolTable<Type>();
+                        result.firstPass();
+                        writeOutput(filename, "Valid Eta Program", "typed");
+                    } catch (Error e) {
+                        writeOutput(filename, e.getMessage(), "typed");
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    System.out.println("File without that name found");
+                }
+            }
+            else {
+                throw new FileNotFoundException(
+                        "Invalid filename "
+                                + filename
+                                + " provided: All files passed to etac must have a .eta extension");
+            }
+        }
+        catch (FileNotFoundException invalidFilename) {
+            System.out.println(invalidFilename.getMessage());
+            return;
+        }
+    }
     private static String prettyOut(Symbol s){
         String out = s.value().toString();
         switch (s.sym){
@@ -187,53 +240,6 @@ class Main {
         writeOutput(filename, lexedOutput.toString(), "lexed");
     }
 
-//    private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
-//        try {
-//            if (filename.endsWith(".eta")) {
-//                try {
-//                    EtaLexer etaLexer = new EtaLexer(new FileReader(filename));
-//                    try {
-//                        while (true) {
-//                            EtaLexer.Token t = etaLexer.nextToken();
-//                            if (t == null) break;
-//
-//                            if (t.type == EtaLexer.TokenType.ERROR) {
-//                                String lexed = String.format("%d:%d error: %s\n", t.line,
-//                                        t.col, t.text);
-//                                lexedOutput.append(lexed);
-//                                break;
-//                            }
-//
-//                            String lexed = String.format("%d:%d %s\n", t.line, t.col, t.text);
-//                            lexedOutput.append(lexed);
-//                        }
-//                    }
-//                    catch (Error e) {
-//                        String lexed = String.format("%d:%d lexical error \n", etaLexer.lineNumber(),
-//                                etaLexer.column());
-//                        lexedOutput.append(lexed);
-//                    }
-//                }
-//                catch (FileNotFoundException fileNotFoundException) {
-//                    System.out.println(fileNotFoundException.getMessage());
-//                    return;
-//                }
-//            }
-//            else {
-//                throw new FileNotFoundException(
-//                        "Invalid filename "
-//                                + filename
-//                                + " provided: All files passed to etac must have a .eta extension");
-//            }
-//        }
-//        catch (FileNotFoundException invalidFilename) {
-//            System.out.println(invalidFilename.getMessage());
-//            return;
-//        }
-//
-//        writeLexedOutput(filename, lexedOutput.toString());
-//    }
-
     public static void main(String[] args) throws java.io.IOException {
         // Create the command line parser
         CommandLineParser parser = new DefaultParser();
@@ -247,6 +253,8 @@ class Main {
                 "Generate output from lexical analysis.");
         Option parseOpt = new Option(null, "parse", true,
                 "Generate output from syntactic analysis.");
+        Option typeOpt = new Option(null, "typecheck", true,
+                "Generate output from semantic analysis.");
         Option sourcepathOpt   = new Option ("sourcepath", true,
                 "Specify where to find input source files.");
         Option dirOpt   = new Option ("D", true,
@@ -259,6 +267,7 @@ class Main {
         options.addOption(parseOpt);
         options.addOption(sourcepathOpt);
         options.addOption(lexOpt);
+        options.addOption(typeOpt);
 
         HelpFormatter formatter = new HelpFormatter();
 
@@ -295,6 +304,12 @@ class Main {
                 String[] filenames = cmd.getOptionValues("parse");
                 for (String filename : filenames) {
                     parseFile(filename, new StringBuilder());
+                }
+            }
+            if (cmd.hasOption("typecheck")) {
+                String[] filenames = cmd.getOptionValues("typecheck");
+                for (String filename : filenames) {
+                    typeCheckFile(filename);
                 }
             }
         }

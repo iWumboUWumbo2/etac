@@ -8,6 +8,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class EtiInterface extends AstNode {
     private ArrayList<Method_Interface> methods_inter;
@@ -37,15 +38,20 @@ public class EtiInterface extends AstNode {
 
     public HashMap<Id,Type> firstPass() {
         HashMap<Id,Type> res = new HashMap<>();
+        HashSet<String> methodName= new HashSet<>();
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
         for (Method_Interface mI: methods_inter){
             Type curMethod = mI.typeCheck(res,methodSymbols);
             Id nameOfMethod = mI.getName();
+            if (methodName.contains(nameOfMethod.toString())){
+                throw new Error(mI.getLine()+":" + mI.getColumn() +" error: interface function already exists");
+            }
             ArrayList<Type> inTypes = mI.getInputTypes();
             ArrayList<Type> outTypes = mI.getOutputtypes();
             Type funcTypeInTable = new Type(inTypes,outTypes);
             methodSymbols.add(nameOfMethod,funcTypeInTable);
             res.put(nameOfMethod,funcTypeInTable);
+            methodName.add(nameOfMethod.toString());
         }
         return res;
     }
