@@ -86,7 +86,7 @@ precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 start with program;
 
 program ::= importUseStar:ius definitionStar:dl {:
-    RESULT = new Program(ius, dl,iusleft,iusright);:}
+    RESULT = new Program(ius, dl,1,1);:}
     ;
 
 importUseStar ::=
@@ -430,7 +430,7 @@ type_list ::=
 declaration_assign_stmt ::=
     emptyBracketDecl:d GETS:g expr:e {: // ANNOTATED
     if (!d.type.dimensions.allEmpty) {
-        throw new Error(gleft + ":" + gright + " array with init len no Val");
+        throw new Error(gleft + ":" + gright + " error: array with init len no Val");
     }
     RESULT = new DeclAssignStmt(d,e,gleft,gright);
     :}

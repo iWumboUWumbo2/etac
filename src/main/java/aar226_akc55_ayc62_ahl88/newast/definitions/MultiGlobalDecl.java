@@ -15,10 +15,10 @@ public class MultiGlobalDecl extends Definition{
         decls = d;
         for (AnnotatedTypeDecl de: decls){
             if (!de.type.dimensions.allEmpty) {
-                throw new Error(left + ":" + right +" array with init len no Val");
+                throw new Error(left + ":" + right +" error: array with init len no Val");
             }
             if ((de.type.dimensions.getDim() != 0)){
-                throw new Error(left + ":" + right + " array can't have gets");
+                throw new Error(left + ":" + right + " error: array can't have gets");
             }
         }
         expressions = e;

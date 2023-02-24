@@ -1,1 +1,1 @@
-use A // WHY does this fail?
+use A

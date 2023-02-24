@@ -11,6 +11,9 @@ public class EtiInterface extends AstNode {
     public EtiInterface(ArrayList<Method_Interface> mi,int l, int c) {
         super(l,c);
         this.methods_inter = mi;
+        if (mi.size() == 0){
+            throw new Error(1+":"+1+" error: no method definitions");
+        }
     }
     // need pretty
     public String toString() {

@@ -14,6 +14,9 @@ public class Program extends AstNode {
         super(l,c);
         useList = uses;
         this.definitions = definitions;
+        if (definitions.size() == 0){
+            throw new Error(l+":"+c+" error: no definitions");
+        }
     }
 
     // need pretty
