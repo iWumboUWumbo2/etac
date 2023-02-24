@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.SemanticException;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
@@ -38,30 +39,63 @@ public class Return extends Stmt{
         ArrayList<Type> functionOutputs = functionType.outputTypes;
         ArrayList<Type> returnResult = new ArrayList<>();
 
-        for (Expr e: returnArgList) {
-            Type res = e.typeCheck(table);
-            if (res.getType() == Type.TypeCheckingType.FUNC) {
-                returnResult.addAll(res.outputTypes);
-            }
-            else {
+        if (returnArgList.size() == functionOutputs.size()) {
+            for (Expr e : returnArgList) {
+                Type res = e.typeCheck(table);
                 returnResult.add(res);
             }
         }
-
-        if (returnResult.size() != functionOutputs.size()) {
-            throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Number of resulting outputs doesn't equal function");
+        else {
+            if (returnArgList.size() != 1) {
+                throw new SemanticException();
+            }
+            else {
+                Type res = returnArgList.get(0).typeCheck(table);
+                returnResult.addAll(res.outputTypes);
+            }
         }
+
+//        for (Expr e : returnArgList) {
+//            Type res = e.typeCheck(table);
+//            if (res.getType() == Type.TypeCheckingType.FUNC) {
+//                returnResult.addAll(res.outputTypes);
+//            }
+//            else {
+//                returnResult.add(res);
+//            }
+//        }
+
+//        if (returnArgList.size() == 1) {
+//            Type res = returnArgList.get(0).typeCheck(table);
+//            if (res.getType() == Type.TypeCheckingType.FUNC) {
+//                returnResult.addAll(res.outputTypes);
+//            }
+//        }
+//
+//        for (Expr e : returnArgList) {
+//            Type res = e.typeCheck(table);
+//            if (res.getType() == Type.TypeCheckingType.FUNC) {
+//                throw new Error();
+//            }
+//            else {
+//                returnResult.add(res);
+//            }
+//        }
+
+//        if (returnResult.size() != functionOutputs.size()) {
+//            throw new Error(getLine() + ":" + getColumn() +
+//                    " Semantic error:  Number of resulting outputs doesn't equal function");
+//        }
 
         for (int i = 0; i < returnResult.size(); i++) {
             Type funcOut = functionOutputs.get(i);
             Type resOut = returnResult.get(i);
             if (!funcOut.sameType(resOut)){
-                throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Function output type doesn't match return");
+                throw new Error(getLine() + ":" + getColumn() +
+                        " Semantic error:  Function output type doesn't match return");
             }
         }
 
         return new Type(Type.TypeCheckingType.VOID);
     }
-
-
 }
