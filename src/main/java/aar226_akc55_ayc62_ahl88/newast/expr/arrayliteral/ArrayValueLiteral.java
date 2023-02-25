@@ -57,13 +57,15 @@ public class ArrayValueLiteral extends Expr {
         if (t1.isArray()) {
             long dim_num = t1.dimensions.getDim()+1;
             Dimension dim = new Dimension(dim_num, getLine(), getColumn());
-            return new Type(t1.getType(), dim);
+            return new Type(arrCheck.getType(), dim);
 
         }
-        // if t1 not array, return dim 0 array
+        // if t1 not array, return dim 1 array
         else {
             Dimension dim = new Dimension(1, getLine(), getColumn());
-            return new Type(t1.getType(), dim);
+            Type.TypeCheckingType one_dim_arr_t = (t1.getType() == Type.TypeCheckingType.INT) ?
+                    Type.TypeCheckingType.INTARRAY : Type.TypeCheckingType.INTARRAY;
+            return new Type(one_dim_arr_t, dim);
         }
 
     }

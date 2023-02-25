@@ -49,7 +49,7 @@ public class DeclAssignStmt extends Stmt{
         Type declType = decl.typeCheck(table);
         Type exprType = expression.typeCheck(table);
         if (!declType.sameType(exprType)) {
-            throw new Error(getLine() + ":" + getLine() +
+            throw new Error(expression.getLine() + ":" + expression.getColumn() +
                     " Semantic error: expression type not the same as declaration type");
         }
         if (decl instanceof AnnotatedTypeDecl) {

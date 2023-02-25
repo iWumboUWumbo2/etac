@@ -49,11 +49,16 @@ public class Type extends AstNode {
         else {
             tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
         }
+        inputTypes = new ArrayList<>();
+        outputTypes = new ArrayList<>();
     }
 
     public Type(TypeCheckingType tct) {
         super(-1, -1);
         this.tct = tct;
+        dimensions = new Dimension(0, getLine(), getColumn());
+        inputTypes = new ArrayList<>();
+        outputTypes = new ArrayList<>();
     }
     public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
         super(-1,-1);
@@ -61,11 +66,14 @@ public class Type extends AstNode {
         this.tct = Type.TypeCheckingType.FUNC;
         inputTypes = inTy;
         outputTypes = outTy;
+        dimensions = new Dimension(0, getLine(), getColumn());
     }
     public Type(TypeCheckingType tct, Dimension d){
         super(-1,-1);
         this.tct = tct;
         dimensions = d;
+        inputTypes = new ArrayList<>();
+        outputTypes = new ArrayList<>();
     }
 
     public boolean isArray() {
