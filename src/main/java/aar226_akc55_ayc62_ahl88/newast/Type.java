@@ -49,16 +49,16 @@ public class Type extends AstNode {
         else {
             tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
         }
-        inputTypes = new ArrayList<>();
-        outputTypes = new ArrayList<>();
+//        inputTypes = new ArrayList<>();
+//        outputTypes = new ArrayList<>();
     }
 
     public Type(TypeCheckingType tct) {
         super(-1, -1);
         this.tct = tct;
-        dimensions = new Dimension(0, getLine(), getColumn());
-        inputTypes = new ArrayList<>();
-        outputTypes = new ArrayList<>();
+//        dimensions = new Dimension(0, getLine(), getColumn());
+//        inputTypes = new ArrayList<>();
+//        outputTypes = new ArrayList<>();
     }
     public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
         super(-1,-1);
@@ -66,14 +66,14 @@ public class Type extends AstNode {
         this.tct = Type.TypeCheckingType.FUNC;
         inputTypes = inTy;
         outputTypes = outTy;
-        dimensions = new Dimension(0, getLine(), getColumn());
+//        dimensions = new Dimension(0, getLine(), getColumn());
     }
     public Type(TypeCheckingType tct, Dimension d){
         super(-1,-1);
         this.tct = tct;
         dimensions = d;
-        inputTypes = new ArrayList<>();
-        outputTypes = new ArrayList<>();
+//        inputTypes = new ArrayList<>();
+//        outputTypes = new ArrayList<>();
     }
 
     public boolean isArray() {
@@ -81,6 +81,53 @@ public class Type extends AstNode {
                 this.getType() == Type.TypeCheckingType.BOOLARRAY ||
                 this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
     }
+
+    public boolean isBasic(){
+        return getType() == TypeCheckingType.INT
+                || getType() == TypeCheckingType.BOOL
+                || getType() == TypeCheckingType.UNKNOWN;
+    }
+
+    public boolean sameArray(Type rhs){
+        if (!(isArray() && rhs.isArray())){
+            throw new Error ("we shouldnt be in array checker");
+        }
+        if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                rhs.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
+            return this.dimensions.getDim() <= rhs.dimensions.getDim();
+        } else if (rhs.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                this.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
+            return rhs.dimensions.getDim() <= this.dimensions.getDim();
+        } else if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+                this.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
+            return true;
+        }
+        else {
+            return dimensions.equalsDimension(rhs.dimensions);
+        }
+    }
+    public boolean sameBasic(Type rhs){
+        if (!(isBasic() && rhs.isBasic())){
+            throw new Error("we shouldn't be in same basic checker");
+        }
+        TypeCheckingType lhsType = getType();
+        TypeCheckingType rhsType = rhs.getType();
+
+        if (lhsType == TypeCheckingType.UNKNOWN || rhsType == TypeCheckingType.UNKNOWN){
+            return true;
+        }
+        else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.INT){
+            return true;
+        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
+            return true;
+        }else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.BOOL){
+            return false;
+        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
+            return false;
+        }
+        throw new Error("somehow we missed a case in same basic");
+    }
+
     public boolean sameType(Type rhs) {
         // check if param is array and make sure procedure input is also array. Then compare dimensions
         if (getType() == TypeCheckingType.UNDERSCORE || (rhs.getType() == TypeCheckingType.UNDERSCORE)) {
