@@ -129,11 +129,20 @@ public class Type extends AstNode {
     }
 
     public boolean sameType(Type rhs) {
-        // check if param is array and make sure procedure input is also array. Then compare dimensions
-        if (getType() == TypeCheckingType.UNDERSCORE || (rhs.getType() == TypeCheckingType.UNDERSCORE)) {
-            return true;
+        // if one of the types is ambiguous, then equality is true
+        // otherwise, if both types are not ambiguous, we type check
+        if (getType() != rhs.getType() &&
+                !(getType() == TypeCheckingType.UNKNOWN
+                || rhs.getType() == TypeCheckingType.UNKNOWN
+                || getType() == TypeCheckingType.UNKNOWNARRAY
+                || rhs.getType() == TypeCheckingType.UNKNOWNARRAY
+                || getType() == TypeCheckingType.UNDERSCORE
+                || rhs.getType() == TypeCheckingType.UNDERSCORE)) {
+            return false;
         }
-        if (isArray()) {
+
+        // type check array
+        if (isArray() && rhs.isArray()) { // if both sides are array, then type check them as array
             if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
                     rhs.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
                 return this.dimensions.getDim() <= rhs.dimensions.getDim();
@@ -147,11 +156,7 @@ public class Type extends AstNode {
             else {
                 return dimensions.equalsDimension(rhs.dimensions);
             }
-        }
-        // if one of the types is unknown, then equality is not false
-        if (getType() != rhs.getType() &&
-                !(getType() == TypeCheckingType.UNKNOWN ||
-                rhs.getType() == TypeCheckingType.UNKNOWN)) {
+        } else if (isArray() || rhs.isArray()) { // if one side is not array, then they do not type check
             return false;
         }
 
