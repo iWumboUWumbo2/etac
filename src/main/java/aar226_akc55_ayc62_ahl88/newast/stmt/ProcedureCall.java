@@ -24,6 +24,7 @@ public class ProcedureCall extends Stmt {
      */
     public ProcedureCall(Id id, ArrayList<Expr> parameterList, int l , int c) {
         super(l,c);
+//        System.out.println("In ProcedureCall");
         identifier = id;
         paramList = parameterList;
     }
@@ -37,7 +38,8 @@ public class ProcedureCall extends Stmt {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-
+//        System.out.println("In Procedure");
+//        System.out.println(identifier.toString());
         Type functionType = table.lookup(identifier);
 
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {

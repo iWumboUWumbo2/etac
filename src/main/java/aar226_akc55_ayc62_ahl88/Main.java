@@ -122,14 +122,13 @@ class Main {
         try {
             String zhenFilename =
                     (isInputDirSpecified) ? Paths.get(inputDirectory, filename).toString() : filename;
-
             if (filename.endsWith(".eta")) {
                 try {
                     EtaParser p = new EtaParser(new Lexer(new FileReader(zhenFilename)));
                     try {
                         Program result = (Program) p.parse().value;
                         SymbolTable<Type> context = new SymbolTable<Type>();
-                        result.typeCheck(context,inputDirectory,isInputDirSpecified);
+                        result.typeCheck(context,zhenFilename);
                         writeOutput(filename, "Valid Eta Program", "typed");
                     } catch (Error e) {
                         System.out.println(e.getMessage());

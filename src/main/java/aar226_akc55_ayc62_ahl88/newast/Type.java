@@ -57,7 +57,7 @@ public class Type extends AstNode {
     }
     public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
         super(-1,-1);
-        System.out.println("ONLY THE FUNC TYPE");
+//        System.out.println("ONLY THE FUNC TYPE");
         this.tct = Type.TypeCheckingType.FUNC;
         inputTypes = inTy;
         outputTypes = outTy;
@@ -105,6 +105,28 @@ public class Type extends AstNode {
     public TypeCheckingType getType() {return tct;}
 
 
+    //todo
+    public String toString(){
+        String builder = tct.toString();
+        switch (this.tct){
+            case FUNC:
+                builder += (" [ ");
+                for (Type t:inputTypes){
+                    builder += (t.toString() + " ");
+                }
+                builder += ("] ");
+                builder += ("[ ");
+                for (Type t: outputTypes){
+                    builder += (t.toString() + " ");
+                }
+                builder += ("]\n");
+                break;
+            default:
+                break;
+
+        }
+        return builder;
+    }
 
     private String getTypeAsString() {
         return (isInt) ? "int" : "bool";

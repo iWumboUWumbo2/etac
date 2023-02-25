@@ -41,6 +41,11 @@ public class Block extends Stmt {
 
         for (int i = 0; i < statementList.size() - 1; i++) { // every one but the last
             Stmt curStmt = statementList.get(i);
+            if (curStmt instanceof ProcedureCall){
+                ProcedureCall temp = (ProcedureCall) curStmt;
+                System.out.println("In Procedure");
+//                System.out.println(temp.identifier);
+            }
             Type stmtType = curStmt.typeCheck(table);
             if (stmtType.getType() != Type.TypeCheckingType.UNIT) {
                 throw new Error(curStmt.getLine() + ":" + curStmt.getLine()

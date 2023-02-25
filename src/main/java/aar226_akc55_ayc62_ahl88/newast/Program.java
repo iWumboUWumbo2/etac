@@ -43,11 +43,12 @@ public class Program extends AstNode {
         p.endList();
     }
 
-    public Type typeCheck(SymbolTable<Type> table, String inputDirectory, boolean specified){
+    public Type typeCheck(SymbolTable<Type> table, String zhenFile){
+        System.out.println("in program typecheck");
         table.enterScope();
         // first pass to add all Interfaces and Definitions
         for (Use u: useList){
-            Type useType = u.typeCheck(table,inputDirectory,specified);
+            Type useType = u.typeCheck(table,zhenFile);
             if (useType.getType() != Type.TypeCheckingType.UNIT){
                 throw new Error("use somehow not unit");
             }
@@ -55,7 +56,7 @@ public class Program extends AstNode {
         for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
             d.firstPass(table);
         }
-
+        table.printContext();
         for (Definition d: definitions){
             d.typeCheck(table);
         }

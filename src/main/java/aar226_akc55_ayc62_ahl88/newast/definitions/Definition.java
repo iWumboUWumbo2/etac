@@ -11,5 +11,6 @@ public abstract class Definition extends AstNode{
     }
 
     public abstract Type typeCheck(SymbolTable<Type> table);
+
     public abstract Type firstPass(SymbolTable<Type> table);
 }

@@ -60,7 +60,10 @@ public class Method extends Definition {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
+        System.out.println("in method");
         table.enterScope();
+        Id old = table.currentParentFunction;
+        table.currentParentFunction = id;
         for (AnnotatedTypeDecl atd: decls){
             if (id.toString().equals(atd.identifier.toString())){
                 throw new SemanticException(getLine(),getColumn(),"error: paramter same name as method");
@@ -70,6 +73,8 @@ public class Method extends Definition {
             }
             table.add(atd.identifier,atd.type);
         }
+        Type blockType = block.typeCheck(table);
+        table.currentParentFunction = old;
         table.exitScope();
         return new Type(Type.TypeCheckingType.UNIT);
     }
@@ -77,6 +82,8 @@ public class Method extends Definition {
     @Override
     public Type firstPass(SymbolTable<Type> table) {
         table.enterScope();
+        Id old = table.currentParentFunction;
+        table.currentParentFunction = id;
         for (AnnotatedTypeDecl atd: decls){
             if (id.toString().equals(atd.identifier.toString())){
                 throw new SemanticException(getLine(),getColumn(),"error: paramter same name as method");
@@ -86,6 +93,7 @@ public class Method extends Definition {
             }
             table.add(atd.identifier,atd.type);
         }
+        table.currentParentFunction = old;
         table.exitScope();
         Type methodType = new Type(getInputTypes(),getOutputtypes());
         table.add(id,methodType);

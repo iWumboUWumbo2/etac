@@ -40,6 +40,7 @@ public class EtiInterface extends AstNode {
         HashMap<Id,Type> res = new HashMap<>();
         HashSet<String> methodName= new HashSet<>();
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
+        methodSymbols.enterScope();
         for (Method_Interface mI: methods_inter){
             Type curMethod = mI.typeCheck(res,methodSymbols);
             Id nameOfMethod = mI.getName();
@@ -53,6 +54,7 @@ public class EtiInterface extends AstNode {
             res.put(nameOfMethod,funcTypeInTable);
             methodName.add(nameOfMethod.toString());
         }
+        methodSymbols.exitScope();
         return res;
     }
 }

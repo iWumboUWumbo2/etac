@@ -1,15 +1,16 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
-import aar226_akc55_ayc62_ahl88.EtaParser;
+import aar226_akc55_ayc62_ahl88.EtiParser;
+import aar226_akc55_ayc62_ahl88.Lexer;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-import java_cup.Lexer;
+import java.io.File;
+
+import java_cup.runtime.Symbol;
 
 import java.io.FileReader;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Use extends AstNode{
@@ -35,13 +36,29 @@ public class Use extends AstNode{
         id.prettyPrint(p);
         p.endList();
     }
-    public Type typeCheck(SymbolTable<Type> table,String inputDirectory, boolean specified){
-        String filename = id.toString() + ".eti";
-        String zhenFilename =
-                (specified) ? Paths.get(inputDirectory, filename).toString() : filename;
-        try (FileReader fileReader = new FileReader(zhenFilename)) {
-            EtaParser p = new EtaParser(new Lexer(fileReader));
-            EtiInterface eI = (EtiInterface) p.parse().value;
+    public Type typeCheck(SymbolTable<Type> table,String zhenFilename){
+        File myFile = new File( zhenFilename );
+        String myDir = myFile.getParent();
+        String pathSeparator = File.separator;
+//        System.out.println(myFile);
+//        System.out.println(myDir);
+//        System.out.println(pathSeparator);
+        String filename = myDir + pathSeparator + id.toString() + ".eti";
+
+
+        System.out.println(filename);
+        try {
+            EtiParser pi = new EtiParser(new Lexer(new FileReader(filename)));
+            EtiInterface res = (EtiInterface) pi.parse().value;
+            HashMap<Id,Type> firstPass = res.firstPass();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            throw new Error(getLine() + ":" + getColumn()+ " File without that name found" +filename);
+        }
+        try (FileReader fileReader = new FileReader(filename)) {
+            EtiParser pi = new EtiParser(new Lexer(fileReader));
+            EtiInterface eI = (EtiInterface) pi.parse().value;
             HashMap<Id,Type> firstPass = eI.firstPass(); // to do need to fail in interface
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 if (table.contains(entry.getKey())){
@@ -55,6 +72,7 @@ public class Use extends AstNode{
                     "Faulty interface file " + filename
             );
         } catch (Exception e) {
+            e.printStackTrace();
             //this would get thrown the file existed but was parsed as
             // a program file for some reason
             throw new Error(

@@ -7,7 +7,7 @@ import java.util.*;
 public class SymbolTable<T> {
 
     private ArrayList<HashMap<String, T>> scopes;
-    Id currentParentFunction;
+    public Id currentParentFunction;
 
     public SymbolTable() {
         this.scopes = new ArrayList<>();
@@ -28,7 +28,7 @@ public class SymbolTable<T> {
                 return scope.get(id.toString());
             }
         }
-        throw new Error(id.getLine() +":" +  id.getColumn() + " Semantic error: Identifier not found");
+        throw new Error(id.getLine() +":" +  id.getColumn() + " Semantic error: Identifier not found " + id.toString());
     }
 
     /**
@@ -76,5 +76,16 @@ public class SymbolTable<T> {
 
     public Id getCurrentFunction() {
         return currentParentFunction;
+    }
+
+    public void printContext(){
+        for (HashMap<String, T> s: scopes){
+            System.out.println("------------");
+            for (HashMap.Entry<String, T> e: s.entrySet()){
+                System.out.print (e.getKey());
+                System.out.println(" "+ e.getValue().toString());
+            }
+            System.out.println("------------");
+        }
     }
 }

@@ -7,6 +7,7 @@ import org.apache.commons.text.*;
 
 %%
 
+%public
 %class Lexer
 
 %line
