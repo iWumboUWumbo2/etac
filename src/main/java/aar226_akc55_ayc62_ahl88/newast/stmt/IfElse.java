@@ -36,10 +36,21 @@ public class IfElse extends Stmt {
             throw new Error(guard.getLine() + ":" + guard.getColumn() + " semantic error ");
         }
         table.enterScope();
+        System.out.println("IF CONTEXT: \n");
         Type trueClause = ifState.typeCheck(table);
+        if (!(ifState instanceof Block)) {
+            table.printContext();
+        }
+        System.out.println("\nEND IF CONTEXT. \n");
         table.exitScope();
+
         table.enterScope();
+        System.out.println("ELSE CONTEXT: \n");
         Type falseClause = elseState.typeCheck(table);
+        if (!(elseState instanceof Block)) {
+            table.printContext();
+        }
+        System.out.println("\nEND ELSE CONTEXT. \n");
         table.exitScope();
 
         if (!isRType(trueClause) || !isRType(falseClause)) {

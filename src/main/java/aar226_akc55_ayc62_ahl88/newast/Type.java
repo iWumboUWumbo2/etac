@@ -21,7 +21,8 @@ public class Type extends AstNode {
         VOID,
         RETURN,
         FUNC,
-        UNDERSCORE
+        UNDERSCORE,
+        MULTIRETURN
     }
     public Dimension dimensions;
     private boolean isInt;
@@ -29,6 +30,7 @@ public class Type extends AstNode {
     private TypeCheckingType tct;
 
     public ArrayList<Type> inputTypes, outputTypes;
+    public ArrayList<Type> multiTypes;
 
     public Type arrayType;
 
@@ -51,6 +53,12 @@ public class Type extends AstNode {
         }
 //        inputTypes = new ArrayList<>();
 //        outputTypes = new ArrayList<>();
+    }
+
+    public Type(ArrayList<Type> multiTypes) {
+        super(-1, -1);
+        this.multiTypes = multiTypes;
+        this.tct = TypeCheckingType.MULTIRETURN;
     }
 
     public Type(TypeCheckingType tct) {
@@ -129,6 +137,7 @@ public class Type extends AstNode {
     }
 
     public boolean sameType(Type rhs) {
+
         // if one of the types is ambiguous, then equality is true
         // otherwise, if both types are not ambiguous, we type check
         if (getType() != rhs.getType() &&

@@ -39,6 +39,8 @@ public class Block extends Stmt {
             return new Type(Type.TypeCheckingType.UNIT); // NO STATEMENTs
         }
 
+
+
         for (int i = 0; i < statementList.size() - 1; i++) { // every one but the last
             Stmt curStmt = statementList.get(i);
             if (curStmt instanceof ProcedureCall){
@@ -55,6 +57,11 @@ public class Block extends Stmt {
 
         Stmt lastStmt = statementList.get(statementList.size()-1);
         Type lastType = lastStmt.typeCheck(table);
+
+        System.out.println("BLOCK CONTEXT: \n");
+        table.printContext();
+        System.out.println("\nEND BLOCK CONTEXT. \n");
+
         table.exitScope(); // exiting Block
         return new Type(
                 lastType.getType() == Type.TypeCheckingType.UNIT

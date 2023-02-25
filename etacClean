@@ -6,6 +6,7 @@ rm  -r $DIR/*.typed
 rm  -r $DIR/tests/*.lexed
 rm  -r $DIR/tests/*.parsed
 rm  -r $DIR/tests/*.typed
+rm  -r $DIR/tests/pa3/*.typed
 rm  -r $DIR/tests/p2fails/*.lexed
 rm  -r $DIR/tests/p2fails/*.parsed
 rm  -r $DIR/tests/p2fails/*.typed

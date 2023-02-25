@@ -55,8 +55,8 @@ public class MultiDeclAssignStmt extends Stmt {
         }
         for (Expr e: expressions){
             Type curExprType = e.typeCheck(table);
-            if (curExprType.getType() == Type.TypeCheckingType.FUNC) {
-                exprTypes.addAll(curExprType.outputTypes);
+            if (curExprType.getType() == Type.TypeCheckingType.MULTIRETURN) {
+                exprTypes.addAll(curExprType.multiTypes);
             }
             else {
                 exprTypes.add(curExprType);
@@ -80,6 +80,6 @@ public class MultiDeclAssignStmt extends Stmt {
                 table.add(curD.identifier,declarationTypes.get(i));
             }
         }
-        return null;
+        return new Type(Type.TypeCheckingType.UNIT);
     }
 }

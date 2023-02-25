@@ -274,8 +274,8 @@ expr ::=
 
     // ARRAY LITERALS
     | OPEN_BRACE:ob CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Expr>(), obleft, obright);:}
-    | OPEN_BRACE exprList:x CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, xleft, xright);:}
-    | OPEN_BRACE exprList:x COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, xleft, xright); :}
+    | OPEN_BRACE:ob exprList:x CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, obleft, obright);:}
+    | OPEN_BRACE:ob exprList:x COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, obleft, obright); :}
 
     // Functions
     |  LENGTH OPEN_PAREN expr:e CLOSE_PAREN {: RESULT = new Length(e, eleft, eright); :}
