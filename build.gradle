@@ -29,6 +29,9 @@ test {
     useJUnitPlatform()
 }
 
+sourceCompatibility = '1.17'
+targetCompatibility = '1.17'
+
 dependencies {
     implementation fileTree(dir: 'deps/libs/main', include: '*.jar')
     implementation fileTree(dir: 'deps/libs/test', include: '*.jar')
