@@ -10,11 +10,13 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-class Main {
+public class Main {
     private static String outputDirectory;
     private static String inputDirectory;
+    public static String libpathDirectory;
     private static boolean isOutputDirSpecified;
     private static boolean isInputDirSpecified;
+    public static boolean isLibpathDirSpecified;
 
     // Write the lexed string into the corresponding file name
     private static void writeOutput(String filename, String output, String extension) {
@@ -258,6 +260,8 @@ class Main {
                 "Specify where to find input source files.");
         Option dirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
+        Option libpathOpt = new Option ("libpath", true,
+                "Specify where to find library interface files.");
 
         lexOpt.setArgs(Option.UNLIMITED_VALUES);
 
@@ -267,11 +271,12 @@ class Main {
         options.addOption(sourcepathOpt);
         options.addOption(lexOpt);
         options.addOption(typeOpt);
+        options.addOption(libpathOpt);
 
         HelpFormatter formatter = new HelpFormatter();
 
-        isOutputDirSpecified = isInputDirSpecified = false;
-        outputDirectory = inputDirectory = Paths.get("").toAbsolutePath().toString();
+        isOutputDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
+        outputDirectory = inputDirectory = libpathDirectory = Paths.get("").toAbsolutePath().toString();
 
 //        System.out.println(outputDirectory);
 
@@ -290,6 +295,11 @@ class Main {
             if (cmd.hasOption("sourcepath")) {
                 inputDirectory = cmd.getOptionValue("sourcepath");
                 isInputDirSpecified = true;
+            }
+
+            if (cmd.hasOption("libpath")) {
+                libpathDirectory = cmd.getOptionValue("libpath");
+                isLibpathDirSpecified = true;
             }
 
             if (cmd.hasOption("lex")) {

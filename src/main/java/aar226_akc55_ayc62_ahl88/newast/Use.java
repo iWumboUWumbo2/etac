@@ -7,10 +7,13 @@ import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import java.io.File;
+import aar226_akc55_ayc62_ahl88.Main;
 
+//import java_cup.Main;
 import java_cup.runtime.Symbol;
 
 import java.io.FileReader;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Use extends AstNode{
@@ -36,14 +39,19 @@ public class Use extends AstNode{
         id.prettyPrint(p);
         p.endList();
     }
-    public Type typeCheck(SymbolTable<Type> table,String zhenFilename){
+    public Type typeCheck(SymbolTable<Type> table, String zhenFilename) {
+        String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
+
+/*
         File myFile = new File( zhenFilename );
         String myDir = myFile.getParent();
         String pathSeparator = File.separator;
-//        System.out.println(myFile);
-//        System.out.println(myDir);
-//        System.out.println(pathSeparator);
+        System.out.println(myFile);
+        System.out.println(myDir);
+        System.out.println(pathSeparator);
         String filename = myDir + pathSeparator + id.toString() + ".eti";
+*/
+        String filename = Paths.get(libpathDir, id.toString()).toString();
 
 
         System.out.println(filename);
