@@ -41,8 +41,8 @@ public class ArrayValueLiteral extends Expr {
         for (Expr e : values) {     // check all elements same type
             Type eType = e.typeCheck(s);
             if (!arrCheck.sameType(eType)) {
-                String message = Integer.toString(e.getLine())
-                        + ":" + Integer.toString(e.getColumn())
+                String message = e.getLine()
+                        + ":" + e.getColumn()
                         + "  TypeError: array element type mismatch";
                 throw new Error(message);
             }
@@ -63,9 +63,15 @@ public class ArrayValueLiteral extends Expr {
         // if t1 not array, return dim 1 array
         else {
             Dimension dim = new Dimension(1, getLine(), getColumn());
-            Type.TypeCheckingType one_dim_arr_t = (t1.getType() == Type.TypeCheckingType.INT) ?
-                    Type.TypeCheckingType.INTARRAY : Type.TypeCheckingType.INTARRAY;
-            return new Type(one_dim_arr_t, dim);
+            if (arrCheck.getType() == Type.TypeCheckingType.INT){
+                return new Type(Type.TypeCheckingType.INTARRAY,dim);
+            }else if (arrCheck.getType() == Type.TypeCheckingType.BOOL){
+                return new Type(Type.TypeCheckingType.BOOLARRAY,dim);
+            }else if (arrCheck.getType() == Type.TypeCheckingType.UNKNOWN){
+                return new Type(Type.TypeCheckingType.UNKNOWNARRAY,dim);
+            }else{
+                throw new Error("Not a basic type");
+            }
         }
 
     }
