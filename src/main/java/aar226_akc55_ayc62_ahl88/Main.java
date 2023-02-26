@@ -1,7 +1,11 @@
 package aar226_akc55_ayc62_ahl88;
 
+import aar226_akc55_ayc62_ahl88.Errors.LexicalError;
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Program;
+import aar226_akc55_ayc62_ahl88.newast.SemanticException;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import java_cup.runtime.Symbol;
@@ -129,10 +133,20 @@ public class Main {
                     EtaParser p = new EtaParser(new Lexer(new FileReader(zhenFilename)));
                     try {
                         Program result = (Program) p.parse().value;
-                        SymbolTable<Type> context = new SymbolTable<Type>();
+                        SymbolTable<Type> context = new SymbolTable<>();
                         result.typeCheck(context,zhenFilename);
                         writeOutput(filename, "Valid Eta Program", "typed");
-                    } catch (Error e) {
+                    } catch (SemanticError e){
+                        System.out.println("Semantic error beginning at " + zhenFilename + ":" + e.getMessage());
+                        writeOutput(filename, e.getMessage(), "typed");
+                    }catch (SyntaxError e){
+                        System.out.println("Syntax error beginning at " + zhenFilename + ":" + e.getMessage());
+                        writeOutput(filename, e.getMessage(), "typed");
+                    }catch (LexicalError e){
+                        System.out.println("Lexical error beginning at " + zhenFilename + ":" + e.getMessage());
+                        writeOutput(filename, e.getMessage(), "typed");
+                    }catch (Error e) {
+                        System.out.println("ERRORED HERE");
                         System.out.println(e.getMessage());
                         writeOutput(filename, e.getMessage(), "typed");
                     }
