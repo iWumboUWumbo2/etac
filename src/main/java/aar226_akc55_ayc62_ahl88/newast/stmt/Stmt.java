@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.AstNode;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -28,7 +29,7 @@ public abstract class Stmt extends AstNode {
             return new Type(Type.TypeCheckingType.UNIT);
         }
 
-        throw new Error("Yabai");
+        throw new SemanticError(getLine(),getColumn(), "Yabai");
     }
 
     public abstract void prettyPrint(CodeWriterSExpPrinter p);

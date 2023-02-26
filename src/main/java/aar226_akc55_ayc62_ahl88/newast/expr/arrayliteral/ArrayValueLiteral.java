@@ -68,7 +68,7 @@ public class ArrayValueLiteral extends Expr {
             }else if (arrCheck.getType() == Type.TypeCheckingType.UNKNOWN){
                 return new Type(Type.TypeCheckingType.UNKNOWNARRAY,dim);
             }else{
-                throw new Error("Not a basic type");
+                throw new SemanticError(getLine(), getColumn(), "Not a basic type");
             }
         }
 

@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -98,7 +99,7 @@ public class Type extends AstNode {
 
     public boolean sameArray(Type rhs){
         if (!(isArray() && rhs.isArray())){
-            throw new Error ("we shouldnt be in array checker");
+            throw new SemanticError(getLine(), getColumn(),"we shouldnt be in array checker");
         }
         if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
                 rhs.getType() != Type.TypeCheckingType.UNKNOWNARRAY) {
@@ -116,7 +117,7 @@ public class Type extends AstNode {
     }
     public boolean sameBasic(Type rhs){
         if (!(isBasic() && rhs.isBasic())){
-            throw new Error("we shouldn't be in same basic checker");
+            throw new SemanticError(getLine(), getColumn(), "we shouldn't be in same basic checker");
         }
         TypeCheckingType lhsType = getType();
         TypeCheckingType rhsType = rhs.getType();
@@ -133,7 +134,7 @@ public class Type extends AstNode {
         }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
             return false;
         }
-        throw new Error("somehow we missed a case in same basic");
+        throw new SemanticError(getLine(), getColumn(), "somehow we missed a case in same basic");
     }
 
     public boolean sameType(Type rhs) {

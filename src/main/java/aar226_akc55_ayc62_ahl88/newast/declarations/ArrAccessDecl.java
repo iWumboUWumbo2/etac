@@ -69,7 +69,7 @@ public class ArrAccessDecl extends Decl{
                 return new Type(Type.TypeCheckingType.BOOL);
             }
             else {
-                throw new Error("somehow not an array");
+                throw new SemanticError(getLine(), getColumn(), "somehow not an array");
             }
         }
 
