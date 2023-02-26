@@ -147,7 +147,10 @@ public class Main {
                         writeOutput(filename, e.getMessage(), "typed");
                     }catch (Error e) {
 //                        System.out.println("ERRORED HERE");
-                        System.out.println(e.getMessage());
+                        System.out.println("FIX THIS ERROR INTO ONE OF THE THREE");
+//                        String lines = e.getMessage().substring(0, e.getMessage().indexOf(' '));
+//                        String content = e.getMessage().substring(e.getMessage().indexOf(' ') + 1);
+//                        writeOutput(filename, lines + " error: " + content, "typed");
                         writeOutput(filename, e.getMessage(), "typed");
                     }
                 }catch (Exception e){

@@ -42,19 +42,8 @@ public class Use extends AstNode{
     public Type typeCheck(SymbolTable<Type> table, String zhenFilename) {
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
 
-        String filename = Paths.get(libpathDir, id.toString()).toString();
+        String filename = Paths.get(libpathDir, id.toString() + ".eti").toString();
 
-
-//        System.out.println(filename);
-        try {
-            EtiParser pi = new EtiParser(new Lexer(new FileReader(filename)));
-            EtiInterface res = (EtiInterface) pi.parse().value;
-            HashMap<Id,Type> firstPass = res.firstPass();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            throw new Error(getLine() + ":" + getColumn()+ " File without that name found" +filename);
-        }
         try (FileReader fileReader = new FileReader(filename)) {
             EtiParser pi = new EtiParser(new Lexer(fileReader));
             EtiInterface eI = (EtiInterface) pi.parse().value;
@@ -67,15 +56,15 @@ public class Use extends AstNode{
             }
         } catch (Error e) {
             e.getMessage();
-            throw new Error(
-                    "Faulty interface file " + filename
+            throw new Error(getLine() + ":" + getColumn() +
+                    " error: Faulty interface file " + filename
             );
         } catch (Exception e) {
             e.printStackTrace();
             //this would get thrown the file existed but was parsed as
             // a program file for some reason
-            throw new Error(
-                    "Could not find interface ");
+            throw new Error(getLine() + ":" + getColumn() +
+                    " error: Could not find interface ");
         }
         return new Type(Type.TypeCheckingType.UNIT);
     }
