@@ -18,6 +18,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.*;
 
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.*;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 
 
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 // You might want to add types to these declarations.
 parser EtiParser {:
     public void syntax_error(Symbol cur_token){
-        throw new Error(cur_token.left + ":" + cur_token.right + " error: Parsing error " + cur_token.value());
+        throw new SyntaxError(cur_token.left,cur_token.right,"Parsing error " + cur_token.value());
     }
 :};
 
@@ -169,10 +170,10 @@ globalDecl ::=
     emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null, edleft, edright);:} // make sure to check NULL
     | emptyBracketDecl:ed GETS:g value:v {:
         if (!ed.type.dimensions.allEmpty) {
-            throw new Error(gleft +":" + gright +" "  + "array with init len no Val");
+            throw new SyntaxError(gleft, gright ,"array with init len no Val");
         }
         if (ed.type.dimensions.getDim() != 0){
-            throw new Error(gleft +":" + gright +" " + "global arr not init allowed");
+            throw new SyntaxError(gleft,gright ,"global arr not init allowed");
         }
         RESULT  = new Globdecl(ed, v, edleft, edright);
     :}
@@ -208,14 +209,14 @@ emptyDimension_star ::=
     ds.indices.add(null);
     RESULT = ds;:}
     |emptyDimension_star:ds OPEN_BRACKET INTEGER_LITERAL:i CLOSE_BRACKET {:
-        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " error: Filled index after empty");
+        if (ds.foundEmpty) throw new SyntaxError(ileft ,iright,"Filled index after empty");
         ds.allEmpty = false;
         IntLiteral iL = new IntLiteral(i,ileft,iright);
         ds.indices.add(iL);
         ds.increment(); // [][2]
         RESULT = ds;:}
     |emptyDimension_star:ds OPEN_BRACKET IDENTIFIER:i CLOSE_BRACKET {:
-        if (ds.foundEmpty) throw new Error(ileft + ":" + iright  + " error: Filled index after empty");
+        if (ds.foundEmpty) throw new SyntaxError(ileft , iright,"Filled index after empty");
         ds.allEmpty = false;
         ds.indices.add(new Id(i,ileft,iright));
         ds.increment(); // [][2]
@@ -415,7 +416,7 @@ type_list ::=
 declaration_assign_stmt ::=
     emptyBracketDecl:d GETS:g expr:e {: // ANNOTATED
     if (!d.type.dimensions.allEmpty) {
-        throw new Error(gleft + ":" + gright + " array with init len no Val");
+        throw new SyntaxError(gleft ,gright ,"array with init len no Val");
     }
     RESULT = new DeclAssignStmt(d,e,gleft,gright);
     :}

@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.definitions.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -17,7 +18,7 @@ public class Program extends AstNode {
         useList = uses;
         this.definitions = definitions;
         if (definitions.size() == 0){
-            throw new Error(l+":"+c+" error: no definitions");
+            throw new SyntaxError(l,c,"no definitions");
         }
     }
 
@@ -51,7 +52,7 @@ public class Program extends AstNode {
         for (Use u: useList){
             Type useType = u.typeCheck(table,zhenFile);
             if (useType.getType() != Type.TypeCheckingType.UNIT){
-                throw new Error("use somehow not unit");
+                throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
             }
         }
 

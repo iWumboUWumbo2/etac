@@ -1,23 +1,19 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.EtiParser;
 import aar226_akc55_ayc62_ahl88.Lexer;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-import java.io.File;
-import aar226_akc55_ayc62_ahl88.Main;
-
-//import java_cup.Main;
-import java_cup.runtime.Symbol;
 
 import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Use extends AstNode{
-    private Id id;
+    private final Id id;
 
     public Use(Id id, int l, int c) {
         super(l,c);
@@ -50,21 +46,18 @@ public class Use extends AstNode{
             HashMap<Id,Type> firstPass = eI.firstPass(); // to do need to fail in interface
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 if (table.contains(entry.getKey())){
-                    throw new Error(getLine()+":" + getColumn() + " error: function from interface already exists");
+                    throw new SemanticError(getLine(), getColumn() ,"function from interface already exists");
                 }
                 table.add(entry.getKey(),entry.getValue());
             }
         } catch (Error e) {
-            e.getMessage();
-            throw new Error(getLine() + ":" + getColumn() +
-                    " error: Faulty interface file " + filename
-            );
+            System.out.println(e.getMessage());
+            throw new SemanticError(getLine() , getColumn(),"Faulty interface file " + filename);
         } catch (Exception e) {
             e.printStackTrace();
             //this would get thrown the file existed but was parsed as
             // a program file for some reason
-            throw new Error(getLine() + ":" + getColumn() +
-                    " error: Could not find interface ");
+            throw new SemanticError(getLine(),getColumn(),"Could not find interface ");
         }
         return new Type(Type.TypeCheckingType.UNIT);
     }

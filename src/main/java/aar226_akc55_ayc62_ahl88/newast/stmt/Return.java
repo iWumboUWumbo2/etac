@@ -1,7 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
-import aar226_akc55_ayc62_ahl88.newast.SemanticException;
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
@@ -44,7 +44,7 @@ public class Return extends Stmt{
                 Type res = e.typeCheck(table);
                 if (res.getType() == Type.TypeCheckingType.FUNC){
                     if (res.outputTypes.size() != 1){
-                        throw new SemanticException(getLine(),getColumn()," function output more than one type");
+                        throw new SemanticError(getLine(),getColumn()," function output more than one type");
                     }else{
                         returnResult.addAll(res.outputTypes);
                     }
@@ -54,12 +54,12 @@ public class Return extends Stmt{
         }
         else {
             if (returnArgList.size() != 1) {
-                throw new SemanticException(getLine(),getColumn(),"return message");
+                throw new SemanticError(getLine(),getColumn(),"return message");
             }
             else {
                 Type res = returnArgList.get(0).typeCheck(table);
                 if (res.getType() != Type.TypeCheckingType.FUNC){
-                    throw new SemanticException(getLine(),getColumn(),"one arg is not func");
+                    throw new SemanticError(getLine(),getColumn(),"one arg is not func");
                 }
                 returnResult.addAll(res.outputTypes);
             }
@@ -101,8 +101,7 @@ public class Return extends Stmt{
             Type funcOut = functionOutputs.get(i);
             Type resOut = returnResult.get(i);
             if (!funcOut.sameType(resOut)){
-                throw new Error(getLine() + ":" + getColumn() +
-                        " Semantic error:  Function output type doesn't match return");
+                throw new SemanticError(getLine() , getColumn(),"Function output type doesn't match return");
             }
         }
 

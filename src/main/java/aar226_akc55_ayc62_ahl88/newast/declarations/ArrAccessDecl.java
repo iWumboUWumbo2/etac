@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.declarations;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -44,18 +45,18 @@ public class ArrAccessDecl extends Decl{
     public Type typeCheck(SymbolTable<Type> table) {
         Type identifierType = table.lookup(identifier);
         if (!identifierType.isArray()) {
-            throw new Error(getLine() + ":" + getColumn() + " semantic error: variable is not an array");
+            throw new SemanticError(getLine(), getColumn(), "variable is not an array");
         }
 
         for (Expr e : indices) {
             Type exprType = e.typeCheck(table);
             if (exprType.getType() != Type.TypeCheckingType.INT) {
-                throw new Error(getLine() + ":" + getColumn() + " semantic error: array access is not an int");
+                throw new SemanticError(getLine(), getColumn(), "array access is not an int");
             }
         }
 
         if (indices.size() > identifierType.dimensions.getDim()) {
-            throw new Error(getLine() + ":" + getColumn() + " semantic error: more indixes than expected");
+            throw new SemanticError(getLine(), getColumn() ,"more indices than expected");
         }
 
         Dimension d = identifierType.dimensions;

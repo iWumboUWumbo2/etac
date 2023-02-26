@@ -32,15 +32,3 @@ public class NoTypeDecl extends Decl{
         return table.lookup(identifier);
     }
 }
-//    @Override
-//    public void prettyPrint(CodeWriterSExpPrinter p) {
-//        if (type != null && id != null){
-//            p.startList();
-//            id.prettyPrint(p);
-//            type.prettyPrint(p);
-//            p.endList();
-//        } else if (id != null){
-//            id.prettyPrint(p);
-//        }
-//        else acc.prettyPrint(p);
-//    }

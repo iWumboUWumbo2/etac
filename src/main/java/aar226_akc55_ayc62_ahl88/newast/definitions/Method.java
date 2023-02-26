@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.*;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
@@ -19,12 +21,12 @@ public class Method extends Definition {
         super(l,c);
         for (AnnotatedTypeDecl cur: d){
             if (!cur.type.dimensions.allEmpty) {
-                throw new Error(cur.getLine() + ":" + cur.getColumn() + " error: array in param list has init value");
+                throw new SyntaxError(cur.getLine(), cur.getColumn(), "array in param list has init value");
             }
         }
         for (Type cur: t){
             if (!cur.dimensions.allEmpty) {
-                throw new Error(cur.getLine() + ":" + cur.getColumn() + " error: array in type list has init value");
+                throw new SyntaxError(cur.getLine() ,cur.getColumn() ," error: array in type list has init value");
             }
         }
         id = new Id(s, l, c);
@@ -66,10 +68,10 @@ public class Method extends Definition {
         table.currentParentFunction = id;
         for (AnnotatedTypeDecl atd: decls){
             if (id.toString().equals(atd.identifier.toString())){
-                throw new SemanticException(getLine(),getColumn(),"error: paramter same name as method");
+                throw new SemanticError(getLine(),getColumn(),"parameter same name as method");
             }
             if (table.contains(atd.identifier)){
-                throw new SemanticException(getLine(),getColumn(),"error: parameter already present");
+                throw new SemanticError(getLine(),getColumn(),"parameter already present");
             }
             table.add(atd.identifier,atd.type);
         }
@@ -82,7 +84,7 @@ public class Method extends Definition {
         // if is function, check if return void
         if (getOutputtypes().size() != 0) {
             if (blockType.getType() != Type.TypeCheckingType.VOID)
-                throw new SemanticException(
+                throw new SemanticError(
                     block.getLine(),
                     block.getColumn(),
                     "no return type detected"
@@ -98,10 +100,10 @@ public class Method extends Definition {
         table.currentParentFunction = id;
         for (AnnotatedTypeDecl atd: decls){
             if (id.toString().equals(atd.identifier.toString())){
-                throw new SemanticException(getLine(),getColumn(),"error: paramter same name as method");
+                throw new SemanticError(getLine(),getColumn(),"paramter same name as method");
             }
             if (table.contains(atd.identifier)){
-                throw new SemanticException(getLine(),getColumn(),"error: parameter already present");
+                throw new SemanticError(getLine(),getColumn(),"parameter already present");
             }
             table.add(atd.identifier,atd.type);
         }

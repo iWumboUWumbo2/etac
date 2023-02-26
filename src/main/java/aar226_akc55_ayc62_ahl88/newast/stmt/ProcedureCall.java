@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
@@ -44,19 +45,19 @@ public class ProcedureCall extends Stmt {
         Type functionType = table.lookup(identifier);
 
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {
-            throw new Error(identifier.getLine() + ":" + identifier.getColumn()
-                    + " Semantic error: identifier isn't function");
+            throw new SemanticError(identifier.getLine() , identifier.getColumn()
+                    ,"identifier isn't function");
         }
 
         if (functionType.outputTypes.size() != 0) { // check if procedure
-            throw new Error(identifier.getLine() + ":" + identifier.getColumn()
-                    + " Semantic error: function is not procedure");
+            throw new SemanticError(identifier.getLine() , identifier.getColumn()
+                    ,"function is not procedure");
         }
 
         ArrayList<Type> procedureInputs = functionType.inputTypes;
         if (paramList.size() != procedureInputs.size()) {
-            throw new Error(identifier.getLine() + ":" + identifier.getColumn()
-                    + " Semantic error: number of procedure inputs doesn't match call");
+            throw new SemanticError(identifier.getLine() ,identifier.getColumn()
+                    ,"number of procedure inputs doesn't match call");
         }
 
         for (int i = 0; i < paramList.size(); i++){
@@ -66,8 +67,8 @@ public class ProcedureCall extends Stmt {
 
             // if multireturn, then throw error
             if (paramType.getType() == Type.TypeCheckingType.MULTIRETURN){
-                    throw new Error(param_i.getLine() + ":" + param_i.getColumn()
-                            + " error: function has more than one output");
+                    throw new SemanticError(param_i.getLine() , param_i.getColumn()
+                            ,"function has more than one output");
                 }
 
             // otherwise, param is one element type
@@ -76,8 +77,8 @@ public class ProcedureCall extends Stmt {
 //                System.out.println(param_i);
 //                System.out.println(param_i instanceof ArrayValueLiteral);
 //                System.out.println(paramType);
-                throw new Error(param_i.getLine() + ":" + param_i.getColumn()
-                        + " Semantic error: procedure input doesn't match type");
+                throw new SemanticError(param_i.getLine(), param_i.getColumn()
+                        ,"procedure input doesn't match type");
             }
         }
 

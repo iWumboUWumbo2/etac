@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
@@ -26,10 +27,8 @@ public abstract class IntUnop extends UnopExpr {
         Type t1 = e1.typeCheck(s);
 
         if (t1.getType() != Type.TypeCheckingType.INT) {
-            String message = Integer.toString(e1.getLine())
-                    + ":" + Integer.toString(e1.getColumn())
-                    + "  TypeError: statements block must be of type int at ";
-            throw new Error(message);
+
+            throw new SemanticError(e1.getLine(), e1.getColumn(), "statements block must be of type int at");
         }
 
         return new Type(Type.TypeCheckingType.INT);

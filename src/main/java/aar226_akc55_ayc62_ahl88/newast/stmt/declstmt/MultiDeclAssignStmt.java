@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt.declstmt;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
@@ -22,7 +24,7 @@ public class MultiDeclAssignStmt extends Stmt {
             if (dec instanceof AnnotatedTypeDecl){
                 AnnotatedTypeDecl cast = (AnnotatedTypeDecl) dec;
                 if (!cast.type.dimensions.allEmpty) {
-                    throw new Error(cast.getLine() + ":" + cast.getColumn() +  " error: array in param list has init value");
+                    throw new SyntaxError(cast.getLine(), cast.getColumn() ,"array in param list has init value");
                 }
             }
         }
@@ -70,21 +72,20 @@ public class MultiDeclAssignStmt extends Stmt {
 
             // multi literal assign
             if (expressions.size() != 1) {
-                throw new Error(expressions.get(0).getLine() + ":" + expressions.get(0).getColumn() +
-                        " Semantic error: Cannot unpack " + declarationTypes.size() + " into " + exprTypes.size());
+                throw new SemanticError(expressions.get(0).getLine(), expressions.get(0).getColumn(),
+                        " Cannot unpack " + declarationTypes.size() + " into " + exprTypes.size());
             }
 
             // function multi assign
             else {
-                throw new Error(decls.get(0).getLine() + ":" + decls.get(0).getColumn() +
-                        " Semantic error: Mismatched number of values for func multi ass");
+                throw new SemanticError(decls.get(0).getLine() ,decls.get(0).getColumn() ,"Mismatched number of values for func multi ass");
             }
         }
         for (int i = 0; i < exprTypes.size(); i++) {
             Type decT = declarationTypes.get(i);
             Type exprT = exprTypes.get(i);
             if (!decT.sameType(exprT)){
-                throw new Error(decls.get(i).getLine() + ":" + decls.get(i).getColumn() + " Semantic error: Variable Type doesn't match Expr Type");
+                throw new SemanticError(decls.get(i).getLine() ,decls.get(i).getColumn() ,"Variable Type doesn't match Expr Type");
             }
         }
         // add these multi declarations to

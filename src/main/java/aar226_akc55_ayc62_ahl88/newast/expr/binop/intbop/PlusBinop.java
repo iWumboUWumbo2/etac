@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
@@ -46,10 +47,8 @@ public class PlusBinop extends BinopExpr {
 
         if (t1.getType() == Type.TypeCheckingType.INT) {
             if (t2.getType() != Type.TypeCheckingType.INT) {
-                message = e2.getLine()
-                        + ":" + e2.getColumn()
-                        + "  TypeError: plus e2 does not match e1 ";
-                throw new Error(message);
+
+                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
             } else {
                 return new Type(Type.TypeCheckingType.INT);
             }
@@ -58,16 +57,11 @@ public class PlusBinop extends BinopExpr {
                 return new Type(t1.getType(), t1.dimensions);
             } else {
                 // is this fine?????
-                message = e2.getLine()
-                        + ":" + e2.getColumn()
-                        + "  TypeError: plus e2 does not match e1 ";
-                throw new Error(message);
+                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
             }
         }else{
-            message = e1.getLine()
-                    + ":" + e1.getColumn()
-                    + "  TypeError: plus invalid e1 type ";
-            throw new Error(message);
+
+            throw new SemanticError(e1.getLine(),e1.getColumn() ,"plus invalid e1 type");
         }
     }
 }

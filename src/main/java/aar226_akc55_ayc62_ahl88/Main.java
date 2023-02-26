@@ -5,7 +5,6 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Program;
-import aar226_akc55_ayc62_ahl88.newast.SemanticException;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import java_cup.runtime.Symbol;

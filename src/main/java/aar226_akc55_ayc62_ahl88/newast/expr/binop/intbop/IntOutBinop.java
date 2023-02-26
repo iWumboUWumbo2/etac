@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
@@ -31,17 +32,12 @@ public abstract class IntOutBinop extends BinopExpr {
         Type t2 = e2.typeCheck(s);
 
         if (t1.getType() != Type.TypeCheckingType.INT) {
-            String message = Integer.toString(e1.getLine())
-                    + ":" + Integer.toString(e1.getColumn())
-                    + "  TypeError: statements block must be of type int at ";
-            throw new Error(message);
+            throw new SemanticError(e1.getLine(), e1.getColumn(), "statements block must be of type int at");
         }
 
         if (t2.getType() != Type.TypeCheckingType.INT) {
-            String message = Integer.toString(e2.getLine())
-                    + ":" + Integer.toString(e2.getColumn())
-                    + "  TypeError: statements block must be of type int at ";
-            throw new Error(message);
+
+            throw new SemanticError(e2.getLine(), e2.getColumn(), "statements block must be of type int at");
         }
 
         return new Type(Type.TypeCheckingType.INT);

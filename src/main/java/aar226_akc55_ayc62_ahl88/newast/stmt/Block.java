@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -50,8 +51,7 @@ public class Block extends Stmt {
             }
             Type stmtType = curStmt.typeCheck(table);
             if (stmtType.getType() != Type.TypeCheckingType.UNIT) {
-                throw new Error(curStmt.getLine() + ":" + curStmt.getLine()
-                        + " Semantic error: Only last stmt in block can be void");
+                throw new SemanticError(curStmt.getLine() , curStmt.getLine(),"Only last stmt in block can be void");
             }
         }
 

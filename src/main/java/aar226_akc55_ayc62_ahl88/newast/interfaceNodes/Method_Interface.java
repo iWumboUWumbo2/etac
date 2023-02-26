@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.interfaceNodes;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.AstNode;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -20,12 +22,12 @@ public class Method_Interface extends AstNode {
         super(l,c);
         for (AnnotatedTypeDecl cur: d){
             if (!cur.type.dimensions.allEmpty) {
-                throw new Error(cur + ":" + cur.getColumn() + "error: array in param list has init value");
+                throw new SyntaxError(cur.getLine() ,cur.getColumn(),"array in param list has init value");
             }
         }
         for (Type cur: t){
             if (!cur.dimensions.allEmpty) {
-                throw new Error(cur.getLine() + ":" + cur.getColumn() + "error: array in type list has init value");
+                throw new SyntaxError(cur.getLine() , cur.getColumn() ,"array in type list has init value");
             }
         }
         id = new Id(s,l,c);
@@ -60,11 +62,11 @@ public class Method_Interface extends AstNode {
         HashSet<String> prev = new HashSet<>();
         for (AnnotatedTypeDecl atd: decls){
             if (atd.identifier.toString().equals(id.toString())){ // decl name and function name
-                throw new Error("function and paramter have same name");
+                throw new SemanticError(atd.getLine(), atd.getColumn(), "function and parameter have same name");
             }
             Type curDeclType = atd.typeCheck(methods);
             if (prev.contains(atd.identifier.toString())){
-                throw new Error("paramter with same name in list");
+                throw new SemanticError(atd.getLine(), atd.getColumn(),"paramter with same name in list");
             }
             prev.add(atd.identifier.toString());
 //            inputTypes.add(curDeclType);

@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt.declstmt;
 
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
@@ -49,8 +50,7 @@ public class DeclAssignStmt extends Stmt{
         Type declType = decl.typeCheck(table);
         Type exprType = expression.typeCheck(table);
         if (!declType.sameType(exprType)) {
-            throw new Error(expression.getLine() + ":" + expression.getColumn() +
-                    " Semantic error: expression type not the same as declaration type");
+            throw new SemanticError(expression.getLine(), expression.getColumn(),"expression type not the same as declaration type");
         }
         if (decl instanceof AnnotatedTypeDecl) {
             table.add(decl.identifier, declType); // add the identifier and the type only if its a new type

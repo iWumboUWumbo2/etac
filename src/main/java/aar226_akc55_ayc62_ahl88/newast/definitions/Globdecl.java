@@ -1,7 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
 
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
-import aar226_akc55_ayc62_ahl88.newast.SemanticException;
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
@@ -24,7 +25,7 @@ public class Globdecl extends Definition {
         super(l, c);
         decl = d;
         if (!decl.type.dimensions.allEmpty){
-            throw new Error(l+":"+c + " error: global array can't be initalied");
+            throw new SyntaxError(l, c ,"global array can't be initalized");
         }
         value = v;
     }
@@ -54,13 +55,13 @@ public class Globdecl extends Definition {
     @Override
     public Type firstPass(SymbolTable<Type> table) {
         if (table.contains(decl.identifier)){
-            throw new SemanticException(getLine(),getColumn(),"error: global decl not same type");
+            throw new SemanticError(getLine(), getColumn(), "global decl not same type");
         }
         Type declType = decl.type;
         if (value != null) {
             Type valueType = value.typeCheck(table);
             if (!declType.sameType(valueType)) {
-                throw new SemanticException(getLine(),getColumn(),"error: global decl not same type");
+                throw new SemanticError(getLine(), getColumn(),"global decl not same type");
             }
         }
         table.add(decl.identifier,declType);

@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
@@ -33,15 +34,15 @@ public class FunctionCallExpr extends Expr {
         Type functionType = table.lookup(id);
 
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {
-            throw new Error(id.getLine() + ":" + id.getColumn() + " Semantic error: identifier isn't function");
+            throw new SemanticError(id.getLine(), id.getColumn(), "identifier isn't function");
         }
         if (functionType.outputTypes.size() == 0) {
-            throw new Error(id.getLine() + ":" + id.getColumn() + " Semantic error: function is not function");
+            throw new SemanticError(id.getLine(), id.getColumn() ,"function is not function");
         }
 
         ArrayList<Type> functionInputs = functionType.inputTypes;
         if (args.size() != functionInputs.size()) {
-            throw new Error(id.getLine() + ":" + id.getColumn() + " Semantic error: number of procedure inputs doesn't match call");
+            throw new SemanticError(id.getLine(), id.getColumn(),"number of procedure inputs doesn't match call");
         }
 
         for (int i = 0; i < args.size(); i++){
@@ -50,15 +51,13 @@ public class FunctionCallExpr extends Expr {
 
             // if multireturn, then throw error
             if (paramType.getType() == Type.TypeCheckingType.MULTIRETURN){
-                throw new Error(param_i.getLine() + ":" + param_i.getColumn()
-                        + " error: function has more than one output");
+                throw new SemanticError(param_i.getLine() , param_i.getColumn(),"function has more than one output");
             }
 
             // otherwise, param is one element type
             Type functionInputTypes = functionInputs.get(i);
             if (!paramType.sameType(functionInputTypes)){
-                throw new Error(param_i.getLine() + ":" + param_i.getColumn()
-                        + " Semantic error: procedure input doesn't match type");
+                throw new SemanticError(param_i.getLine() , param_i.getColumn(),"procedure input doesn't match type");
             }
         }
 

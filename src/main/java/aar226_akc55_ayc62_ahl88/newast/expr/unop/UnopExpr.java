@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.unop;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -38,7 +39,7 @@ public abstract class UnopExpr extends Expr {
                 out = "-";
                 break;
             default:
-                throw new Error(getLine()+":" + getColumn() + "Error in Unop Case Statement");
+                throw new SemanticError(getLine(), getColumn(), "Error in Unop Case Statement");
         }
         p.startList();
         p.printAtom(out);

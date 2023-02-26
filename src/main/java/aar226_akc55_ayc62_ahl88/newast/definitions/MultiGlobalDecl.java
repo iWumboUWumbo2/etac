@@ -1,7 +1,8 @@
 package aar226_akc55_ayc62_ahl88.newast.definitions;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
-import aar226_akc55_ayc62_ahl88.newast.SemanticException;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
@@ -18,10 +19,10 @@ public class MultiGlobalDecl extends Definition{
         decls = d;
         for (AnnotatedTypeDecl de: decls){
             if (!de.type.dimensions.allEmpty) {
-                throw new Error(left + ":" + right +" error: array with init len no Val");
+                throw new SyntaxError(left, right, "array with init len no Val");
             }
             if ((de.type.dimensions.getDim() != 0)){
-                throw new Error(left + ":" + right + " error: array can't have gets");
+                throw new SyntaxError(left, right ,"array can't have gets");
             }
         }
         expressions = e;
@@ -36,12 +37,12 @@ public class MultiGlobalDecl extends Definition{
     @Override
     public Type firstPass(SymbolTable<Type> table) {
         if (decls.size() != expressions.size()) {
-            throw new SemanticException(getLine(),getColumn(),"size of declarations dont match expressions");
+            throw new SemanticError(getLine(),getColumn(),"size of declarations dont match expressions");
         }
         for (AnnotatedTypeDecl atd: decls){
             Type curDeclType = atd.typeCheck(table);
             if (table.contains(atd.identifier)){
-                throw new SemanticException(getLine(),getColumn(),"error: decl is already defined");
+                throw new SemanticError(getLine(),getColumn(),"decl is already defined");
             }
             table.add(atd.identifier,curDeclType);
         }

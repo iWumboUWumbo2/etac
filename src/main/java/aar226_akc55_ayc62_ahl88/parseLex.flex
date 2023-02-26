@@ -2,7 +2,7 @@
 package aar226_akc55_ayc62_ahl88;
 
 
-import java_cup.runtime.*;
+import aar226_akc55_ayc62_ahl88.Errors.LexicalError;import java_cup.runtime.*;
 import org.apache.commons.text.*;
 
 %%
@@ -62,8 +62,8 @@ import org.apache.commons.text.*;
 
     public Symbol outputChar(int ch){
         if (ch > 0x10FFFF || ch < 0x0){
-            throw new Error(lineNumber()
-                  + ":" + column() +" error: Invalid Unicode Character ");
+            throw new LexicalError(lineNumber()
+                  ,column(),"Invalid Unicode Character ");
         } else if (isEscape(ch,true)){
             return symbol(sym.CHARACTER_LITERAL,globalLineNum,globalColNum,
             StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
@@ -108,8 +108,8 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
           try{
               return symbol(sym.INTEGER_LITERAL, Long.parseLong("-" + yytext()));
           }catch(Exception e){
-              throw new Error(lineNumber()
-              + ":" + column() + " error: invalid Integer");
+              throw new LexicalError(lineNumber()
+              ,column() ,"invalid Integer");
           }
       }
 
@@ -207,19 +207,16 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
                 return outputChar(ch);
           }
     \\.\'           { yybegin(YYINITIAL);
-                        throw new Error(globalLineNum +
-                                         ":" + globalColNum + " error: invalid escape character " + yytext());}
+                        throw new LexicalError(globalLineNum,globalColNum,"invalid escape character " + yytext());}
     [^] {
           yybegin(YYINITIAL);
-          throw new Error(globalLineNum +
-           ":" + globalColNum + " error: Invalid character constant " + yytext());
+          throw new LexicalError(globalLineNum,globalColNum,"Invalid character constant " + yytext());
       }
 }
 <STRING> {
     {LineTerminator} {
           yybegin(YYINITIAL);
-          throw new Error(globalLineNum +
-           ":" + globalColNum +" error: Unterminated string");
+          throw new LexicalError(globalLineNum ,globalColNum ,"Unterminated string");
       }
 
     \"  {
@@ -238,8 +235,7 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
     \\x\{{Hex}\} {
                                  int ch = Integer.parseInt(yytext().substring(3, yytext().length() - 1), 16);
                                  if (ch > 0x10FFFF || ch < 0x0){
-                                     throw new Error(lineNumber()
-                                          + ":" + column() +" error: Invalid Unicode Character ");
+                                     throw new LexicalError(lineNumber(),column() ,"Invalid Unicode Character ");
                                  }else if (isEscape(ch,false)){
                                     sb.append(StringEscapeUtils.escapeJava(new String(Character.toChars(ch))));
                                  }else if (ch >= 0x20 && ch <= 0x7E){
@@ -249,14 +245,12 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
                                  }
                            }
     \\.           { yybegin(YYINITIAL);
-                        throw new Error(globalLineNum +
-                        ":" + globalColNum + " error: invalid escape character " + yytext());}
+                        throw new LexicalError(globalLineNum,globalColNum,"invalid escape character " + yytext());}
     [^\"] {
         byte[] bytearr = yytext().getBytes("UTF-32");
         int ch = Integer.parseInt(String.valueOf(bytesToHex(bytearr)),16);
         if (ch > 0x10FFFF || ch < 0x0){
-            throw new Error(lineNumber()
-              + ":" + column() +" error: Invalid Unicode Character ");
+            throw new LexicalError(lineNumber(),column(),"Invalid Unicode Character ");
         }else if (isEscape(ch,false)){
             sb.append("\\x{"+Integer.toHexString(ch)+ "}");
         }else if (ch >= 0x20 && ch <= 0x7E){
@@ -267,9 +261,9 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
     }
 }
 <<EOF>> {   if (inString){
-            throw new Error(globalLineNum +":" + globalColNum +" error: Unterminated string");
+            throw new LexicalError(globalLineNum,globalColNum,"Unterminated string");
             }
             return symbol(sym.EOF); }
 /* error */
-[^]     { throw new Error(lineNumber() + ":" + column() +
-      " error: Illegal character <"+yytext()+">"); }
+[^]     { throw new LexicalError(lineNumber(),column() ,
+      "Illegal character <"+yytext()+">"); }

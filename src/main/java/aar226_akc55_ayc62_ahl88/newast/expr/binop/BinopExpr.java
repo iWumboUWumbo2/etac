@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop;
 
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -73,7 +74,7 @@ public abstract class BinopExpr extends Expr {
                 out = "%";
                 break;
             default:
-                throw new Error(getLine()+":" + getColumn() + "Error in Binop Case Statement");
+                throw new SyntaxError(getLine(),getColumn(),"Error in Binop Case Statement");
         }
         p.startList();
         p.printAtom(out);

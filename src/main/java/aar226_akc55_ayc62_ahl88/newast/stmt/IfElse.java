@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.stmt;
 
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
@@ -33,7 +34,7 @@ public class IfElse extends Stmt {
 
         Type tg = guard.typeCheck(table);
         if (tg.getType() != Type.TypeCheckingType.BOOL) {
-            throw new Error(guard.getLine() + ":" + guard.getColumn() + " semantic error ");
+            throw new SemanticError(guard.getLine() ,guard.getColumn() ,"guard is not bool");
         }
         table.enterScope();
 //        System.out.println("IF CONTEXT: \n");
@@ -54,7 +55,7 @@ public class IfElse extends Stmt {
         table.exitScope();
 
         if (!isRType(trueClause) || !isRType(falseClause)) {
-            throw new Error(ifState.getLine() + ":" + ifState.getColumn() + " Semantic error: Statement in If is not Unit or Void");
+            throw new SemanticError(ifState.getLine() , ifState.getColumn(),"Statement in If is not Unit or Void");
         }
 
         return lub(trueClause, falseClause);

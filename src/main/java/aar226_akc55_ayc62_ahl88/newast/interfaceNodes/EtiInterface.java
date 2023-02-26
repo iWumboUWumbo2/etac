@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast.interfaceNodes;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.AstNode;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -17,7 +19,7 @@ public class EtiInterface extends AstNode {
         super(l,c);
         this.methods_inter = mi;
         if (mi.size() == 0){
-            throw new Error(1+":"+1+" error: no method definitions");
+            throw new SyntaxError(1,1,"no method definitions");
         }
     }
     // need pretty
@@ -45,7 +47,7 @@ public class EtiInterface extends AstNode {
             Type curMethod = mI.typeCheck(res,methodSymbols);
             Id nameOfMethod = mI.getName();
             if (methodName.contains(nameOfMethod.toString())){
-                throw new Error(mI.getLine()+":" + mI.getColumn() +" error: interface function already exists");
+                throw new SemanticError(mI.getLine(), mI.getColumn() ,"interface function already exists");
             }
             ArrayList<Type> inTypes = mI.getInputTypes();
             ArrayList<Type> outTypes = mI.getOutputtypes();

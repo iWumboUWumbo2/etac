@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
@@ -33,27 +34,21 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
         if (t1.getType() == Type.TypeCheckingType.INT ||
                 t1.getType() == Type.TypeCheckingType.BOOL ) {
             if (!t1.sameType(t2)) {
-                message = Integer.toString(e2.getLine())
-                        + ":" + Integer.toString(e2.getColumn())
-                        + "  TypeError: equivalence e2 does not match e1 ";
-                throw new Error(message);
+
+                throw new SemanticError(e2.getLine(),e2.getColumn(),  "equivalence e2 does not match e1");
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);
             }
         } else if (t1.isArray()) {
             if (!t1.sameType(t2)) {
-                message = Integer.toString(e2.getLine())
-                        + ":" + Integer.toString(e2.getColumn())
-                        + "  TypeError: equivalence e2 does not match e1 ";
-                throw new Error(message);
+
+                throw new SemanticError(e2.getLine(),e2.getColumn(), "equivalence e2 does not match e1" );
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);
             }
         }else {
-            message = Integer.toString(e1.getLine())
-                    + ":" + Integer.toString(e1.getColumn())
-                    + "  TypeError: equivalence invalid e1 type ";
-            throw new Error(message);
+
+            throw new SemanticError(e1.getLine(), e1.getColumn(), "equivalence invalid e1 type");
         }
     }
 }

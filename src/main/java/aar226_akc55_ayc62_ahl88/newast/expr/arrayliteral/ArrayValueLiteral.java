@@ -5,6 +5,7 @@ import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 
 import java.util.ArrayList;
 
@@ -41,10 +42,7 @@ public class ArrayValueLiteral extends Expr {
         for (Expr e : values) {     // check all elements same type
             Type eType = e.typeCheck(s);
             if (!arrCheck.sameType(eType)) {
-                String message = e.getLine()
-                        + ":" + e.getColumn()
-                        + "  TypeError: array element type mismatch";
-                throw new Error(message);
+                throw new SemanticError(e.getLine(), e.getColumn(), "array element type mismatch");
             }
             if (t1.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
                     (eType.getType() == Type.TypeCheckingType.BOOLARRAY ||

@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.SymbolTable;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 
 import java.util.*;
@@ -28,7 +29,7 @@ public class SymbolTable<T> {
                 return scope.get(id.toString());
             }
         }
-        throw new Error(id.getLine() +":" +  id.getColumn() + " Semantic error: Identifier not found " + id.toString());
+        throw new SemanticError(id.getLine(),id.getColumn() ,"Name " + id.toString() + " cannot be resolved");
     }
 
     /**
@@ -54,7 +55,7 @@ public class SymbolTable<T> {
      */
     public void add(Id id, T type){
         if (scopes.size() == 0){
-            throw new Error(id.getLine() + ":" + id.getColumn() +" Semantic error: There is no Scope Somehow");
+            throw new SemanticError(id.getLine(),id.getColumn() ,"There is no Scope Somehow");
         }
         HashMap<String,T> last = scopes.get(scopes.size() - 1);
         last.put(id.toString(),type);

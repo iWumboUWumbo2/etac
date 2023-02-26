@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr;
 
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -30,10 +31,7 @@ public class ArrayAccessExpr extends Expr {
     private void typeCheckIndices(SymbolTable s) throws Error {
         for (Expr e : indicies) {
             if (e.typeCheck(s).getType() != Type.TypeCheckingType.INT){
-                String message = Integer.toString(e.getLine())
-                        + ":" + Integer.toString(e.getColumn())
-                        + "  TypeError: array index type not int";
-                throw new Error(message);
+                throw new SemanticError(e.getLine(), e.getColumn(), "array index type not int");
             }
         }
     }
@@ -46,19 +44,13 @@ public class ArrayAccessExpr extends Expr {
 
         // throw error if arg is not array
         if (!e.isArray()) {
-            String message = Integer.toString(orgArray.getLine())
-                    + ":" + Integer.toString(orgArray.getColumn())
-                    + "  TypeError: type is not indexable";
-            throw new Error(message);
+            throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "type is not indexable");
         } else {
             long return_dim = e.dimensions.getDim() - indicies.size();
 
             // throw error if length of access indices > arg dimension
             if (return_dim < 0) {
-                String message = Integer.toString(orgArray.getLine())
-                        + ":" + Integer.toString(orgArray.getColumn())
-                        + "  TypeError: array index size mismatch";
-                throw new Error(message);
+                throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "array index size mismatch");
             } else if (return_dim == 0) {   // if return dim == arg dim, return literal type
                 if (e.getType() == Type.TypeCheckingType.BOOLARRAY)
                     return new Type(Type.TypeCheckingType.BOOL);
