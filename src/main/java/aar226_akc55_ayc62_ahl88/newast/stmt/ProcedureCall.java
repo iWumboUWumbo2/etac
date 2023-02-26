@@ -61,7 +61,7 @@ public class ProcedureCall extends Stmt {
 
         for (int i = 0; i < paramList.size(); i++){
             Expr param_i = paramList.get(i);
-            System.out.println(param_i instanceof ArrayValueLiteral);
+//            System.out.println(param_i instanceof ArrayValueLiteral);
             Type paramType = param_i.typeCheck(table);
 
             // if multireturn, then throw error
@@ -73,9 +73,9 @@ public class ProcedureCall extends Stmt {
             // otherwise, param is one element type
             Type procedureInputType = procedureInputs.get(i);
             if (!paramType.sameType(procedureInputType)){
-                System.out.println(param_i);
-                System.out.println(param_i instanceof ArrayValueLiteral);
-                System.out.println(paramType);
+//                System.out.println(param_i);
+//                System.out.println(param_i instanceof ArrayValueLiteral);
+//                System.out.println(paramType);
                 throw new Error(param_i.getLine() + ":" + param_i.getColumn()
                         + " Semantic error: procedure input doesn't match type");
             }

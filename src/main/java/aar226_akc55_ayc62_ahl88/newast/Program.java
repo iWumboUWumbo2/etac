@@ -44,7 +44,7 @@ public class Program extends AstNode {
     }
 
     public Type typeCheck(SymbolTable<Type> table, String zhenFile){
-        System.out.println("in program typecheck");
+//        System.out.println("in program typecheck");
         table.enterScope();
         // first pass to add all Interfaces and Definitions
         for (Use u: useList){
@@ -58,7 +58,7 @@ public class Program extends AstNode {
         for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
             d.firstPass(table);
         }
-        table.printContext();
+//        table.printContext();
 
         // SECOND PASS
         for (Definition d: definitions){

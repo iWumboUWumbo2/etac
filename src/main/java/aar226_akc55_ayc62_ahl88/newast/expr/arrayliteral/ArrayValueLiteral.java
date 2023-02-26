@@ -78,7 +78,7 @@ public class ArrayValueLiteral extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable s) throws Error{
-        System.out.println("w hat si going on");
+//        System.out.println("w hat si going on");
         if (values.size() == 0) {
             return typeCheckUnknown(s);
         } else {

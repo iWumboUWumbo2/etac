@@ -58,9 +58,9 @@ public class Block extends Stmt {
         Stmt lastStmt = statementList.get(statementList.size()-1);
         Type lastType = lastStmt.typeCheck(table);
 
-        System.out.println("BLOCK CONTEXT: \n");
-        table.printContext();
-        System.out.println("\nEND BLOCK CONTEXT. \n");
+//        System.out.println("BLOCK CONTEXT: \n");
+//        table.printContext();
+//        System.out.println("\nEND BLOCK CONTEXT. \n");
 
         table.exitScope(); // exiting Block
         return new Type(

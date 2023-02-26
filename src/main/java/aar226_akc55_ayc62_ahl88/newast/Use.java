@@ -42,19 +42,10 @@ public class Use extends AstNode{
     public Type typeCheck(SymbolTable<Type> table, String zhenFilename) {
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
 
-/*
-        File myFile = new File( zhenFilename );
-        String myDir = myFile.getParent();
-        String pathSeparator = File.separator;
-        System.out.println(myFile);
-        System.out.println(myDir);
-        System.out.println(pathSeparator);
-        String filename = myDir + pathSeparator + id.toString() + ".eti";
-*/
         String filename = Paths.get(libpathDir, id.toString()).toString();
 
 
-        System.out.println(filename);
+//        System.out.println(filename);
         try {
             EtiParser pi = new EtiParser(new Lexer(new FileReader(filename)));
             EtiInterface res = (EtiInterface) pi.parse().value;

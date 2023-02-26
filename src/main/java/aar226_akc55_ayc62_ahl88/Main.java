@@ -146,7 +146,7 @@ public class Main {
                         System.out.println("Lexical error beginning at " + zhenFilename + ":" + e.getMessage());
                         writeOutput(filename, e.getMessage(), "typed");
                     }catch (Error e) {
-                        System.out.println("ERRORED HERE");
+//                        System.out.println("ERRORED HERE");
                         System.out.println(e.getMessage());
                         writeOutput(filename, e.getMessage(), "typed");
                     }

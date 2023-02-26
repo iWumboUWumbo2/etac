@@ -32,12 +32,12 @@ public class While extends Stmt {
         }
 
         table.enterScope();
-        System.out.println("WHILE CONTEXT: \n");
+//        System.out.println("WHILE CONTEXT: \n");
         Type cond1 = stmt.typeCheck(table);
-        if (!(stmt instanceof Block)) {
-            table.printContext();
-        }
-        System.out.println("\nEND WHILE CONTEXT. \n");
+//        if (!(stmt instanceof Block)) {
+//            table.printContext();
+//        }
+//        System.out.println("\nEND WHILE CONTEXT. \n");
         table.exitScope();
 
         if (!isRType(cond1)){

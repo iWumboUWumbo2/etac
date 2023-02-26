@@ -28,8 +28,8 @@ public class FunctionCallExpr extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        System.out.println("In Function");
-        System.out.println(id.toString());
+//        System.out.println("In Function");
+//        System.out.println(id.toString());
         Type functionType = table.lookup(id);
 
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {

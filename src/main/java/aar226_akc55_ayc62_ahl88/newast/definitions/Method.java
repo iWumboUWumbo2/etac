@@ -60,7 +60,7 @@ public class Method extends Definition {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        System.out.println("in method");
+//        System.out.println("in method");
         table.enterScope();
         Id old = table.currentParentFunction;
         table.currentParentFunction = id;
@@ -77,7 +77,7 @@ public class Method extends Definition {
         table.currentParentFunction = old;
         table.exitScope();
 
-        System.out.println(getOutputtypes().size());
+//        System.out.println(getOutputtypes().size());
 
         // if is function, check if return void
         if (getOutputtypes().size() != 0) {
