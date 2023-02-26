@@ -447,12 +447,12 @@ declaration_assign_stmt ::=
 ;
 
 block ::=
-    OPEN_BRACE statement_star:ss CLOSE_BRACE {:RESULT = new Block(ss,ssleft,ssright);:}
-    |OPEN_BRACE statement_star:ss SEMICOLON CLOSE_BRACE {:RESULT = new Block(ss,ssleft,ssright);:}
-    |OPEN_BRACE statement_star:ss SEMICOLON return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,ssleft,ssright);:}
-    |OPEN_BRACE statement_star:ss return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,ssleft,ssright);:}
-    |OPEN_BRACE statement_star:ss return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,ssleft,ssright);:}
-    |OPEN_BRACE statement_star:ss SEMICOLON return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,ssleft,ssright);:}
+    OPEN_BRACE:ob statement_star:ss CLOSE_BRACE {:RESULT = new Block(ss,obleft,obright);:}
+    |OPEN_BRACE:ob statement_star:ss SEMICOLON CLOSE_BRACE {:RESULT = new Block(ss,obleft,obright);:}
+    |OPEN_BRACE:ob statement_star:ss SEMICOLON return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
+    |OPEN_BRACE:ob statement_star:ss return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
+    |OPEN_BRACE:ob statement_star:ss return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
+    |OPEN_BRACE:ob statement_star:ss SEMICOLON return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
 ;
 
 statement_star ::=

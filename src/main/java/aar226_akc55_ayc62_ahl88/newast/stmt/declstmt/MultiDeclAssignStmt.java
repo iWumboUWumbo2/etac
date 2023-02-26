@@ -49,10 +49,13 @@ public class MultiDeclAssignStmt extends Stmt {
     public Type typeCheck(SymbolTable<Type> table) {
         ArrayList<Type> declarationTypes = new ArrayList<>();
         ArrayList<Type> exprTypes = new ArrayList<>();
+
+        // unpack deez nuts
         for (Decl d: decls){
             Type curDeclType = d.typeCheck(table);
             declarationTypes.add(curDeclType);
         }
+
         for (Expr e: expressions){
             Type curExprType = e.typeCheck(table);
             if (curExprType.getType() == Type.TypeCheckingType.MULTIRETURN) {
@@ -64,13 +67,24 @@ public class MultiDeclAssignStmt extends Stmt {
         }
 
         if ( declarationTypes.size() != exprTypes.size()) {
-            throw new Error(getLine() + ":" + getColumn() + " Semantic error:  Number of variable decls doesn't match number of expressions");
+
+            // multi literal assign
+            if (expressions.size() != 1) {
+                throw new Error(expressions.get(0).getLine() + ":" + expressions.get(0).getColumn() +
+                        " Semantic error: Cannot unpack " + declarationTypes.size() + " into " + exprTypes.size());
+            }
+
+            // function multi assign
+            else {
+                throw new Error(decls.get(0).getLine() + ":" + decls.get(0).getColumn() +
+                        " Semantic error: Mismatched number of values for func multi ass");
+            }
         }
         for (int i = 0; i < exprTypes.size(); i++) {
             Type decT = declarationTypes.get(i);
             Type exprT = exprTypes.get(i);
             if (!decT.sameType(exprT)){
-                throw new Error(getLine() + ":" + getColumn() + " Semantic error: Variable Type doesn't match Expr Type");
+                throw new Error(decls.get(i).getLine() + ":" + decls.get(i).getColumn() + " Semantic error: Variable Type doesn't match Expr Type");
             }
         }
         // add these multi declarations to

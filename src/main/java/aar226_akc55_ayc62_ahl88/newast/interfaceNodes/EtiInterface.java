@@ -54,6 +54,7 @@ public class EtiInterface extends AstNode {
             res.put(nameOfMethod,funcTypeInTable);
             methodName.add(nameOfMethod.toString());
         }
+
         methodSymbols.exitScope();
         return res;
     }

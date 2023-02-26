@@ -53,10 +53,14 @@ public class Program extends AstNode {
                 throw new Error("use somehow not unit");
             }
         }
+
+        // FIRST PASS
         for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
             d.firstPass(table);
         }
         table.printContext();
+
+        // SECOND PASS
         for (Definition d: definitions){
             d.typeCheck(table);
         }

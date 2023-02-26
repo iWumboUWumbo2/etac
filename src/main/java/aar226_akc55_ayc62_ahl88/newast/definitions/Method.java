@@ -76,6 +76,18 @@ public class Method extends Definition {
         Type blockType = block.typeCheck(table);
         table.currentParentFunction = old;
         table.exitScope();
+
+        System.out.println(getOutputtypes().size());
+
+        // if is function, check if return void
+        if (getOutputtypes().size() != 0) {
+            if (blockType.getType() != Type.TypeCheckingType.VOID)
+                throw new SemanticException(
+                    block.getLine(),
+                    block.getColumn(),
+                    "no return type detected"
+                );
+        }
         return new Type(Type.TypeCheckingType.UNIT);
     }
 
