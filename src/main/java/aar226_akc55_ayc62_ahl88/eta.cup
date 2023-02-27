@@ -146,6 +146,8 @@ fullBracketType::=
     Id a = new Id(i,ileft,iright);
     RESULT = new ArrAccessDecl(a,e, ileft,iright);
     :}
+    | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN fullBracketPlus:e{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright),new ArrayList<Expr>(),e, idleft, idright); :}
+    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN fullBracketPlus:indi{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), e,indi, idleft, idright); :}
  ;
 
 
@@ -311,7 +313,12 @@ multi_declaration_assign_stmt ::=
     type_list:tl GETS exprList:el {:RESULT = new MultiDeclAssignStmt(tl,el,tlleft,tlright);:}
 ;
 
-fullBracketAss ::= IDENTIFIER:id fullBracketPlus:fbp {: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), fbp,idleft,idright ); :};
+fullBracketAss ::= IDENTIFIER:id fullBracketPlus:fbp {: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), fbp,idleft,idright ); :}
+    | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN fullBracketPlus:e{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright),new ArrayList<Expr>(),e, idleft, idright); :}
+     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN fullBracketPlus:indi{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), e,indi, idleft, idright); :}
+;
+
+
 
 //TODO
 type_list ::=
