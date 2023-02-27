@@ -1,0 +1,5 @@
+a : int
+
+foo() {
+    b:int, a:int, c:int = 1,2,3;
+}
