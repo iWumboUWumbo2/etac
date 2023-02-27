@@ -1,3 +1,13 @@
 f() {
     x:int[1], y:bool[2]
+    g(4)[4], h()[5][6] = false,5;
+    g(2)[4], h()[5][6] = true,5;
+
+}
+
+g(a:int):bool[]{
+    return {true,false}
+}
+h():int[][]{
+    return {}
 }
