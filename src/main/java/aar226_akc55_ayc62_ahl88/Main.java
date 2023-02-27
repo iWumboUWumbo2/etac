@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88;
 
+import aar226_akc55_ayc62_ahl88.Errors.EtaError;
 import aar226_akc55_ayc62_ahl88.Errors.LexicalError;
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
@@ -135,16 +136,23 @@ public class Main {
                         SymbolTable<Type> context = new SymbolTable<>();
                         result.typeCheck(context,zhenFilename);
                         writeOutput(filename, "Valid Eta Program", "typed");
-                    } catch (SemanticError e){
-                        System.out.println("Semantic error beginning at " + zhenFilename + ":" + e.getMessage());
+                    }
+                    catch (EtaError e) {
+                        System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+                                e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
                         writeOutput(filename, e.getMessage(), "typed");
-                    }catch (SyntaxError e){
-                        System.out.println("Syntax error beginning at " + zhenFilename + ":" + e.getMessage());
-                        writeOutput(filename, e.getMessage(), "typed");
-                    }catch (LexicalError e){
-                        System.out.println("Lexical error beginning at " + zhenFilename + ":" + e.getMessage());
-                        writeOutput(filename, e.getMessage(), "typed");
-                    }catch (Error e) {
+                    }
+//                    catch (SemanticError e){
+//                        System.out.println("Semantic error beginning at " + zhenFilename + ":" + e.getMessage());
+//                        writeOutput(filename, e.getMessage(), "typed");
+//                    }catch (SyntaxError e){
+//                        System.out.println("Syntax error beginning at " + zhenFilename + ":" + e.getMessage());
+//                        writeOutput(filename, e.getMessage(), "typed");
+//                    }catch (LexicalError e){
+//                        System.out.println("Lexical error beginning at " + zhenFilename + ":" + e.getMessage());
+//                        writeOutput(filename, e.getMessage(), "typed");
+//                    }
+                catch (Error e) {
 //                        System.out.println("ERRORED HERE");
                         System.out.println("FIX THIS ERROR INTO ONE OF THE THREE");
 //                        String lines = e.getMessage().substring(0, e.getMessage().indexOf(' '));
