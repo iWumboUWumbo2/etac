@@ -1,5 +1,4 @@
-//x :int[4];
+x :int[4];
 foo(x :int) :int{
-    a[i], a[j] = a[j], a[i]
     return x;
 }
