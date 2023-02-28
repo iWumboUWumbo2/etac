@@ -12,6 +12,7 @@ rm  -r $DIR/tests/pa3Tests/multiassign/*.typed
 rm  -r $DIR/tests/pa3Tests/scope/*.typed
 rm  -r $DIR/tests/pa3Tests/unknown/*.typed
 rm  -r $DIR/tests/pa3Tests/function/*.typed
+rm  -r $DIR/tests/pa3Tests/examples/*.typed
 rm  -r $DIR/tests/p2fails/*.lexed
 rm  -r $DIR/tests/p2fails/*.parsed
 rm  -r $DIR/tests/p2fails/*.typed

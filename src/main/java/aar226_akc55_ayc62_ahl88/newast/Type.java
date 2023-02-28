@@ -137,6 +137,10 @@ public class Type extends AstNode {
         throw new SemanticError(getLine(), getColumn(), "somehow we missed a case in same basic");
     }
 
+    private boolean isUnknown() {
+        return this.getType() == Type.TypeCheckingType.UNKNOWN;
+    }
+
     public boolean sameType(Type rhs) {
 
         // if one of the types is ambiguous, then equality is true
@@ -166,7 +170,9 @@ public class Type extends AstNode {
             else {
                 return dimensions.equalsDimension(rhs.dimensions);
             }
-        } else if (isArray() || rhs.isArray()) { // if one side is not array, then they do not type check
+        } else if ((isArray() || rhs.isArray()) &&
+            !(isUnknown() || rhs.isUnknown())) {
+            // if one side is not array and neither unknown, then they do not type check
             return false;
         }
 

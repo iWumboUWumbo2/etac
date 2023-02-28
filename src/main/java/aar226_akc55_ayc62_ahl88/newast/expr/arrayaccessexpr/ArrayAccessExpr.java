@@ -42,6 +42,11 @@ public class ArrayAccessExpr extends Expr {
         // check if indices are all ints
         typeCheckIndices(s);
 
+        // allow array accesses to unknown
+        if (e.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
+            return new Type(Type.TypeCheckingType.UNKNOWN);
+        }
+
         // throw error if arg is not array
         if (!e.isArray()) {
             throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "type is not indexable");
@@ -54,9 +59,8 @@ public class ArrayAccessExpr extends Expr {
             } else if (return_dim == 0) {   // if return dim == arg dim, return literal type
                 if (e.getType() == Type.TypeCheckingType.BOOLARRAY)
                     return new Type(Type.TypeCheckingType.BOOL);
-                if (e.getType() == Type.TypeCheckingType.INTARRAY)
+                else
                     return new Type(Type.TypeCheckingType.INT);
-                return new Type(Type.TypeCheckingType.UNKNOWN);
             } else {    // otherwise, return array type
                 return new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
             }

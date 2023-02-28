@@ -1,0 +1,9 @@
+use io
+
+foo(str:int[]) {
+    print(str);
+}
+
+getchar(str:int[]) { // NAME SHADOWING
+
+}
