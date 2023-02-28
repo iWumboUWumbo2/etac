@@ -54,10 +54,10 @@ public class Use extends AstNode{
             System.out.println(e.getMessage());
             throw new SemanticError(getLine() , getColumn(),"Faulty interface file " + filename);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             //this would get thrown the file existed but was parsed as
             // a program file for some reason
-            throw new SemanticError(getLine(),getColumn(),"Could not find interface ");
+            throw new SemanticError(getLine(),getColumn(),"Could not find interface " + filename);
         }
         return new Type(Type.TypeCheckingType.UNIT);
     }
