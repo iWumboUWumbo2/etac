@@ -1,0 +1,4 @@
+foo() {
+    if (true) a:int = 3
+    else a = 4
+}

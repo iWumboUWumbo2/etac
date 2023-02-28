@@ -1,12 +1,13 @@
-
-
 main(args: int[][]) {
     a:int = 4;
-
 }
 
-
-intFunc():int{
-
+foo0() {
     return
+}
+
+foo2() {
+    {{{
+    return
+    }}}
 }

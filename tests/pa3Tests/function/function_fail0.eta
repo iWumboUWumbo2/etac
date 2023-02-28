@@ -1,0 +1,3 @@
+foo0():int{
+   a:int[] = "THIS FAILSSSSSS"
+}

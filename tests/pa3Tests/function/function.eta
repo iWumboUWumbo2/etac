@@ -1,0 +1,13 @@
+foo():int, int[]{
+    return 1, {1, 2, 3}
+}
+
+foo0():int{
+    {{{
+    return 3
+    }}}
+}
+
+foo1():int{
+    return foo0();
+}
