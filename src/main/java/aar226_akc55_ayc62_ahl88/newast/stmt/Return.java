@@ -54,7 +54,7 @@ public class Return extends Stmt{
         }
         else {
             if (returnArgList.size() != 1) {
-                throw new SemanticError(getLine(),getColumn(),"return message");
+                throw new SemanticError(getLine(),getColumn(),"Return list doesn't match function and not a single one for function");
             }
             else {
                 Type res = returnArgList.get(0).typeCheck(table);
