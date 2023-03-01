@@ -58,6 +58,9 @@ public class SymbolTable<T> {
             throw new SemanticError(id.getLine(),id.getColumn() ,"There is no Scope Somehow");
         }
         HashMap<String,T> last = scopes.get(scopes.size() - 1);
+        if (contains(id)){
+            throw new SemanticError(id.getLine(),id.getColumn(), "We are adding to context when id already exists");
+        }
         last.put(id.toString(),type);
     }
 

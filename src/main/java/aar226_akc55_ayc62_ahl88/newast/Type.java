@@ -97,6 +97,33 @@ public class Type extends AstNode {
                 || getType() == TypeCheckingType.UNKNOWN;
     }
 
+    public boolean isSameFunc(Type rhs){
+        if (!(tct == TypeCheckingType.FUNC && rhs.getType() == TypeCheckingType.FUNC)){
+            throw new SemanticError(-1,-1, "both aren't functions");
+        }
+        ArrayList<Type> rhsIn = rhs.inputTypes;
+        ArrayList<Type> rhsOut = rhs.outputTypes;
+        if (rhsIn.size() != inputTypes.size()){
+            return false;
+        }
+        for (int i = 0; i< rhsIn.size();i++){
+            if (!inputTypes.get(i).sameType(rhsIn.get(i))){
+                return false;
+            }
+        }
+        if (rhsOut.size() != outputTypes.size()){
+            return false;
+        }
+//        System.out.println("go through Out");
+        for (int i = 0; i< rhsOut.size();i++){
+            if (!outputTypes.get(i).sameType(rhsOut.get(i))){
+                return false;
+            }
+        }
+        return true;
+
+    }
+
     public boolean sameArray(Type rhs){
         if (!(isArray() && rhs.isArray())){
             throw new SemanticError(getLine(), getColumn(),"we shouldnt be in array checker");

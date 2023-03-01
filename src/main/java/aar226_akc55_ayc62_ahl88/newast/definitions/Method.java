@@ -110,7 +110,18 @@ public class Method extends Definition {
         table.currentParentFunction = old;
         table.exitScope();
         Type methodType = new Type(getInputTypes(),getOutputtypes());
-        table.add(id,methodType);
+
+        if (table.contains(id)){
+            Type rhs = table.lookup(id);
+            if (rhs.getType() != Type.TypeCheckingType.FUNC){
+                throw new  SemanticError(getLine(),getColumn(),"Another declaration in table that isn't method");
+            }
+            if (!methodType.isSameFunc(rhs)) {
+                throw new SemanticError(getLine(), getColumn(), " Duplicate Function not exact same");
+            }
+        }else {
+            table.add(id, methodType);
+        }
         return new Type(Type.TypeCheckingType.UNIT);
     }
     public ArrayList<Type> getInputTypes(){

@@ -55,11 +55,11 @@ public class Program extends AstNode {
                 throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
             }
         }
-
         // FIRST PASS
         for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
             d.firstPass(table);
         }
+        table.printContext();
 //        table.printContext();
 
         // SECOND PASS
