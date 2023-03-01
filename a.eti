@@ -1,1 +1,3 @@
 foo(a: int): int
+
+foo0() : bool

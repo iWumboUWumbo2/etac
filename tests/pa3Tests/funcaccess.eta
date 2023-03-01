@@ -1,0 +1,15 @@
+foo() : int[] {
+    return {}
+}
+
+foo0() : int {
+    foo()[0] = 3
+    foo()[0], x:int = 3, 5
+    foo()[0] = foo0()
+    y:int[] = {foo()[0], foo0(), foo1(foo()[0])}
+    return foo()[0]
+}
+
+foo1(a:int) : int {
+    return a
+}
