@@ -4,9 +4,11 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.definitions.*;
+import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Program extends AstNode {
     private ArrayList<Use> useList;
@@ -55,11 +57,12 @@ public class Program extends AstNode {
                 throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
             }
         }
+        HashSet<String> currentFileIds  = new HashSet<>();
         // FIRST PASS
         for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
-            d.firstPass(table);
+            d.firstPass(table,currentFileIds);
         }
-        table.printContext();
+//        table.printContext();
 //        table.printContext();
 
         // SECOND PASS

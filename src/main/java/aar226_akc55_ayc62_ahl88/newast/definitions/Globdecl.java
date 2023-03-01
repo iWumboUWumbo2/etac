@@ -6,7 +6,10 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
+import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+
+import java.util.HashSet;
 
 /**
  * Description for global declaration
@@ -53,9 +56,12 @@ public class Globdecl extends Definition {
     }
 
     @Override
-    public Type firstPass(SymbolTable<Type> table) {
+    public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
         if (table.contains(decl.identifier)){
             throw new SemanticError(getLine(), getColumn(), "global decl not same type");
+        }
+        if (currentFile.contains(decl.identifier.toString())){
+            throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
         }
         Type declType = decl.type;
         if (value != null) {
@@ -64,6 +70,7 @@ public class Globdecl extends Definition {
                 throw new SemanticError(getLine(), getColumn(),"global decl not same type");
             }
         }
+        currentFile.add(decl.identifier.toString());
         table.add(decl.identifier,declType);
         return new Type(Type.TypeCheckingType.UNIT);
     }

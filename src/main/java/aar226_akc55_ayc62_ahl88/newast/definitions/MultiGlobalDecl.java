@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MultiGlobalDecl extends Definition{
     private ArrayList<AnnotatedTypeDecl> decls;
@@ -35,7 +36,7 @@ public class MultiGlobalDecl extends Definition{
     }
 
     @Override
-    public Type firstPass(SymbolTable<Type> table) {
+    public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
         if (decls.size() != expressions.size()) {
             throw new SemanticError(getLine(),getColumn(),"size of declarations dont match expressions");
         }
@@ -44,6 +45,10 @@ public class MultiGlobalDecl extends Definition{
             if (table.contains(atd.identifier)){
                 throw new SemanticError(getLine(),getColumn(),"decl is already defined");
             }
+            if (currentFile.contains(atd.identifier.toString())){
+                throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
+            }
+            currentFile.add(atd.identifier.toString());
             table.add(atd.identifier,curDeclType);
         }
 
