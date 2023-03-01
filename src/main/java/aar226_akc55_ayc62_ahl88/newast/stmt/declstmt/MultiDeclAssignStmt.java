@@ -78,7 +78,7 @@ public class MultiDeclAssignStmt extends Stmt {
 
             // function multi assign
             else {
-                throw new SemanticError(decls.get(0).getLine() ,decls.get(0).getColumn() ,"Mismatched number of values for func multi ass");
+                throw new SemanticError(decls.get(0).getLine() ,decls.get(0).getColumn() ,"Mismatched number of values for assign.");
             }
         }
         for (int i = 0; i < exprTypes.size(); i++) {

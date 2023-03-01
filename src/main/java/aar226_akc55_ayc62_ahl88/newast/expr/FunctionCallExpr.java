@@ -37,7 +37,7 @@ public class FunctionCallExpr extends Expr {
             throw new SemanticError(id.getLine(), id.getColumn(), "identifier isn't function");
         }
         if (functionType.outputTypes.size() == 0) {
-            throw new SemanticError(id.getLine(), id.getColumn() ,"function is not function");
+            throw new SemanticError(id.getLine(), id.getColumn() ,id.toString() + " is not function");
         }
 
         ArrayList<Type> functionInputs = functionType.inputTypes;

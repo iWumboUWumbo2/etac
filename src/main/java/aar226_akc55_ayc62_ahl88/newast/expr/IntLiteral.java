@@ -3,7 +3,7 @@ package aar226_akc55_ayc62_ahl88.newast.expr;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-
+import org.apache.commons.text.*;
 /**
  * Class for Integer Literal
  */
@@ -31,7 +31,7 @@ public class IntLiteral extends Expr{
     public IntLiteral(String inputChar ,int l, int c) {
         super(l, c);
         rawChar = inputChar;
-        if (inputChar.length() > 1) { // hex representation
+        if (StringEscapeUtils.unescapeJava(inputChar).length() > 1) { // hex representation
             int first = inputChar.indexOf("{");
             int last = inputChar.lastIndexOf("}");
             number = Long.parseLong(inputChar.substring(first+1,last),16);

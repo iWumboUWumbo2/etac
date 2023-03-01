@@ -10,6 +10,7 @@ import aar226_akc55_ayc62_ahl88.newast.declarations.Decl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Method extends Definition {
     private Id id;
@@ -94,7 +95,7 @@ public class Method extends Definition {
     }
 
     @Override
-    public Type firstPass(SymbolTable<Type> table) {
+    public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
         table.enterScope();
         Id old = table.currentParentFunction;
         table.currentParentFunction = id;
@@ -110,7 +111,9 @@ public class Method extends Definition {
         table.currentParentFunction = old;
         table.exitScope();
         Type methodType = new Type(getInputTypes(),getOutputtypes());
-
+        if (currentFile.contains(id.toString())){
+            throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
+        }
         if (table.contains(id)){
             Type rhs = table.lookup(id);
             if (rhs.getType() != Type.TypeCheckingType.FUNC){

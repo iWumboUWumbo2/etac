@@ -1,0 +1,69 @@
+# eth test script
+#
+# This file is a test script for eth (etac Test Harness).  It
+# conforms to the following grammar:
+#
+#   ScriptFile      ::= Commands+
+#   Command         ::= build
+#                     | CompilerTest
+#   CompilerTest    ::= TestKind (\(TestName\))? ([TestPath])? ("CmdLineArgs")?
+#                           { (FileTest;)* }
+#   TestKind        ::= etac
+#   TestName        ::= LitString
+#   FileTest        ::= Filenames Description? FailureSet?
+#   Filenames       ::= Filename+
+#   Description     ::= LitString
+#   FailureSet      ::= Failure (, Failure)*
+#   Failure         ::= \( ErrorKind \)
+#                     | \( ErrorKind, LitString \)
+#
+#   TestPath        :   the path to the test files, enclosed in quotes,
+#                       relative to the path given in eth's -testpath flag.
+#   CmdLineArgs     :   command-line arguments for etac
+#   Filename        :   the name of a file, interpreted from TestPath.
+#   LitString       :   a literal string, enclosed in quotes.
+#   ErrorKind       :   one of, or a unique prefix of one of the following
+#                       strings: "Lexical Error", "Syntax Error", or
+#                       "Semantic Error".
+#
+# eth runs the commands in order of appearance.
+
+# build compiler first
+build
+
+etac ("Test --typecheck") "-libpath $(testpath) --typecheck" {
+	arr_fail.eta;
+	examples/ex01.eta;
+	examples/ex02.eta;
+	examples/ex03.eta;
+	examples/ex04_fail.eta;
+	examples/ex05_fail.eta;
+	examples/ex06_fail.eta;
+	examples/ex07_fail.eta;
+	examples/ex08_fail.eta;
+	examples/ex09.eta;
+	examples/ex10_fail.eta;
+	examples/ex11_fail.eta;
+	examples/ex12_fail.eta;
+	funcaccess.eta;
+	function/function.eta;
+	function/function_fail0.eta;
+	function/function_fail1.eta;
+	function/function_fail2.eta;
+	function/function_fail3.eta;
+	function/function_fail4.eta;
+	function/procedure.eta;
+	function/procedure_fail0.eta;
+	interface_fail.eta;
+	interface_fail0.eta;
+	interfacetest.eta;
+	multiassign/multiassign_fail0.eta;
+	multiassign/multiassign_fail1.eta;
+	scope/scope1.eta;
+	scope/scope_fail0.eta;
+	scope/scope_fail1.eta;
+	scope/scope_fail2.eta;
+	unknown/unknown.eta;
+	unknown/unknown_fail0.eta;
+	unknown/unknown_fail1.eta;
+}
