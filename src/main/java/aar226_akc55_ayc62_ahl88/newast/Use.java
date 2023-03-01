@@ -45,14 +45,22 @@ public class Use extends AstNode{
             EtiInterface eI = (EtiInterface) pi.parse().value;
             HashMap<Id,Type> firstPass = eI.firstPass(); // to do need to fail in interface
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
-                if (table.contains(entry.getKey())){
-                    throw new SemanticError(getLine(), getColumn() ,"function from interface already exists");
+                if (table.contains(entry.getKey())) {
+                    if (table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.FUNC ||
+                            entry.getValue().getType() != Type.TypeCheckingType.FUNC) {
+                        throw new SemanticError(getLine(), getColumn(), " Duplicate Name is not a function");
+                    } else {
+                        if (!entry.getValue().isSameFunc(table.lookup(entry.getKey()))) {
+                            throw new SemanticError(getLine(), getColumn(), " Duplicate Function not exact same");
+                        }
+                    }
+                }else {
+                    table.add(entry.getKey(), entry.getValue());
                 }
-                table.add(entry.getKey(),entry.getValue());
             }
         } catch (Error e) {
-            System.out.println(e.getMessage());
-            throw new SemanticError(getLine() , getColumn(),"Faulty interface file " + filename);
+//            System.out.println(e.getMessage());
+            throw new SemanticError(getLine() , getColumn(),"Faulty interface file " + filename + " " + e.getMessage());
         } catch (Exception e) {
 //            e.printStackTrace();
             //this would get thrown the file existed but was parsed as
