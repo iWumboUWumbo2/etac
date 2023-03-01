@@ -102,8 +102,9 @@ public class Main {
                         result.prettyPrint(printer);
                         printer.close();
                         writeOutput(filename, out.toString(), "parsed");
-                    } catch (Error e) {
-                        System.out.println(e.getMessage());
+                    } catch (EtaError e) {
+                        System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+                                e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
                         writeOutput(filename, e.getMessage(), "parsed");
                     }
                 }
@@ -142,22 +143,8 @@ public class Main {
                                 e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
                         writeOutput(filename, e.getMessage(), "typed");
                     }
-//                    catch (SemanticError e){
-//                        System.out.println("Semantic error beginning at " + zhenFilename + ":" + e.getMessage());
-//                        writeOutput(filename, e.getMessage(), "typed");
-//                    }catch (SyntaxError e){
-//                        System.out.println("Syntax error beginning at " + zhenFilename + ":" + e.getMessage());
-//                        writeOutput(filename, e.getMessage(), "typed");
-//                    }catch (LexicalError e){
-//                        System.out.println("Lexical error beginning at " + zhenFilename + ":" + e.getMessage());
-//                        writeOutput(filename, e.getMessage(), "typed");
-//                    }
                 catch (Error e) {
-//                        System.out.println("ERRORED HERE");
                         System.out.println("FIX THIS ERROR INTO ONE OF THE THREE");
-//                        String lines = e.getMessage().substring(0, e.getMessage().indexOf(' '));
-//                        String content = e.getMessage().substring(e.getMessage().indexOf(' ') + 1);
-//                        writeOutput(filename, lines + " error: " + content, "typed");
                         writeOutput(filename, e.getMessage(), "typed");
                     }
                 }catch (Exception e){
@@ -244,10 +231,10 @@ public class Main {
                         lexedOutput.append(lexed);
                     }
                 }
-                catch (Error e) {
-                    System.out.println(e.getMessage());
-                    String lexed = e.getMessage();
-                    lexedOutput.append(lexed);
+                catch (EtaError e) {
+                    System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+                            e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
+                    lexedOutput.append(e.getMessage());
                 }
             }
             else {
