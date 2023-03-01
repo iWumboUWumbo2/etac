@@ -1,7 +1,7 @@
 use a
 use b
-use c
 
 foo(c: int ) : int {
+    b : bool = foo0()
     return c
 }
