@@ -167,6 +167,41 @@ public class Type extends AstNode {
     private boolean isUnknown() {
         return this.getType() == Type.TypeCheckingType.UNKNOWN;
     }
+    private boolean isUnknownArray() {
+        return this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
+    }
+
+    /**
+     * PRECONDITION: assume both types have passed sameType
+     * @param t
+     * @return
+     */
+    public Type greaterType(Type t) {
+        // neither unknown
+        if (!(isUnknown() || isUnknownArray()) && !(t.isUnknown() || t.isUnknownArray())) {
+            return this;
+        // both unknown
+        } else if ((isUnknown() || isUnknownArray()) && (t.isUnknown() || t.isUnknownArray())) {
+//            System.out.println("this");
+//            System.out.println(dimensions.getDim());
+//            System.out.println("t");
+//            System.out.println(t.dimensions.getDim());
+            if ((dimensions != null) && (t.dimensions != null)
+                    && (dimensions.getDim() > t.dimensions.getDim())) {
+                System.out.println("here");
+                return this;
+            } else {
+                return t;
+            }
+        }
+        // this unknown
+        else if (isUnknown() || isUnknownArray()) {
+            return t;
+        // t unknown
+        } else {
+            return this;
+        }
+    }
 
     public boolean sameType(Type rhs) {
 

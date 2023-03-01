@@ -43,25 +43,43 @@ public class PlusBinop extends BinopExpr {
         Expr e2 = getRightExpr();
         Type t1 = e1.typeCheck(s);
         Type t2 = e2.typeCheck(s);
-        String message;
 
-        if (t1.getType() == Type.TypeCheckingType.INT) {
-            if (t2.getType() != Type.TypeCheckingType.INT) {
-
-                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
-            } else {
-                return new Type(Type.TypeCheckingType.INT);
-            }
-        } else if (t1.isArray()) {
-            if (t1.sameType(t2)) {
-                return new Type(t1.getType(), t1.dimensions);
-            } else {
-                // is this fine?????
-                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
-            }
-        }else{
-
-            throw new SemanticError(e1.getLine(),e1.getColumn() ,"plus invalid e1 type");
+        if (!t1.sameType(t2)) {
+            throw new SemanticError(getLine(), getColumn(), "plus e2 does not match e1");
         }
+
+        Type greaterType = t1.greaterType(t2);
+//        System.out.println(greaterType.dimensions.getDim());
+        if (greaterType.getType() == Type.TypeCheckingType.INT) {
+            return new Type(Type.TypeCheckingType.INT);
+        } else if (greaterType.isArray()) {
+            return new Type(greaterType.getType(), greaterType.dimensions);
+        } else {
+            return new Type(Type.TypeCheckingType.UNKNOWN);
+        }
+
+//        if (t1.getType() == Type.TypeCheckingType.INT) {
+//            if (!(t2.getType() == Type.TypeCheckingType.INT
+//                    || t2.getType() == Type.TypeCheckingType.UNKNOWN)) {
+//
+//                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
+//            } else {
+//                System.out.println("PLUSBINOPTYPE INT");
+//                return new Type(Type.TypeCheckingType.INT);
+//            }
+//        } else if (t1.isArray()) {
+//            if (t1.sameType(t2)) {
+//                System.out.println("PLUSBINOPTYPE");
+//                System.out.println(t1.getType());
+//                System.out.println(t1.dimensions);
+//                return new Type(t1.getType(), t1.dimensions);
+//            } else {
+//                // is this fine?????
+//                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
+//            }
+//        }else{
+//
+//            throw new SemanticError(e1.getLine(),e1.getColumn() ,"plus invalid e1 type");
+//        }
     }
 }

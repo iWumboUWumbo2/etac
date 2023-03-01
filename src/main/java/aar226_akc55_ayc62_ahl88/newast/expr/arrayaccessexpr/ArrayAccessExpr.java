@@ -41,9 +41,11 @@ public class ArrayAccessExpr extends Expr {
 
         // check if indices are all ints
         typeCheckIndices(s);
+        System.out.println("DIMENSION:");
+        System.out.println(e.dimensions.getDim());
 
         // allow array accesses to unknown
-        if (e.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
+        if (e.getType() == Type.TypeCheckingType.UNKNOWN) {
             return new Type(Type.TypeCheckingType.UNKNOWN);
         }
 
@@ -52,15 +54,20 @@ public class ArrayAccessExpr extends Expr {
             throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "type is not indexable");
         } else {
             long return_dim = e.dimensions.getDim() - indicies.size();
-
+            System.out.println("RETURN DIM: " + return_dim);
             // throw error if length of access indices > arg dimension
             if (return_dim < 0) {
+                // allow infinite access to unknown array
+                if (e.getType() == Type.TypeCheckingType.UNKNOWNARRAY)
+                    return new Type(Type.TypeCheckingType.UNKNOWN);
                 throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "array index size mismatch");
             } else if (return_dim == 0) {   // if return dim == arg dim, return literal type
                 if (e.getType() == Type.TypeCheckingType.BOOLARRAY)
                     return new Type(Type.TypeCheckingType.BOOL);
-                else
+                else if (e.getType() == Type.TypeCheckingType.INTARRAY)
                     return new Type(Type.TypeCheckingType.INT);
+                else
+                    return new Type(Type.TypeCheckingType.UNKNOWN);
             } else {    // otherwise, return array type
                 return new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
             }
