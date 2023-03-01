@@ -1,0 +1,7 @@
+use a
+use b
+use c
+
+foo(c: int ) : int {
+    return c
+}
