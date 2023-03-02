@@ -31,11 +31,15 @@ public class IntLiteral extends Expr{
     public IntLiteral(String inputChar ,int l, int c) {
         super(l, c);
         rawChar = inputChar;
-        if (StringEscapeUtils.unescapeJava(inputChar).length() > 1) { // hex representation
+        String escapeForm  = StringEscapeUtils.unescapeJava(inputChar);
+//        System.out.println(escapeForm.length());
+        if (escapeForm.length() > 1) { // hex representation
             int first = inputChar.indexOf("{");
             int last = inputChar.lastIndexOf("}");
             number = Long.parseLong(inputChar.substring(first+1,last),16);
-        }else{ // single character
+        }else if (escapeForm.length() == 1){ // single character
+            number = Character.getNumericValue(escapeForm.charAt(0));
+        }else{
             number  = Character.getNumericValue(inputChar.charAt(0));
         }
     }
