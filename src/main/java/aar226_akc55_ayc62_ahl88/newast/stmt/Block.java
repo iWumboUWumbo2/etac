@@ -46,7 +46,7 @@ public class Block extends Stmt {
             Stmt curStmt = statementList.get(i);
             if (curStmt instanceof ProcedureCall){
                 ProcedureCall temp = (ProcedureCall) curStmt;
-                System.out.println("In Procedure");
+//                System.out.println("In Procedure");
 //                System.out.println(temp.identifier);
             }
             Type stmtType = curStmt.typeCheck(table);
