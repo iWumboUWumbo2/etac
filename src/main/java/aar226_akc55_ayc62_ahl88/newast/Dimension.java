@@ -79,7 +79,7 @@ public class Dimension extends AstNode{
      * Pretty Print
      */
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        System.out.println("We should not be in Dimension Pretty Print");
+//        System.out.println("We should not be in Dimension Pretty Print");
         ArrayList<Expr> rev = new ArrayList<>(indices);
         Collections.reverse(rev);
         p.startList();

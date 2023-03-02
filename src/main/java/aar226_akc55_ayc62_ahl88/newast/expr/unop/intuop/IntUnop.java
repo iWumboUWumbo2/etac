@@ -26,7 +26,8 @@ public abstract class IntUnop extends UnopExpr {
         Expr e1 = getE();
         Type t1 = e1.typeCheck(s);
 
-        if (t1.getType() != Type.TypeCheckingType.INT) {
+        if (!(t1.getType() == Type.TypeCheckingType.INT ||
+                t1.getType() == Type.TypeCheckingType.UNKNOWN)) {
 
             throw new SemanticError(e1.getLine(), e1.getColumn(), "statements block must be of type int at");
         }

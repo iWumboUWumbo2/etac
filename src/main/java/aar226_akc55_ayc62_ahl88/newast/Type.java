@@ -189,7 +189,7 @@ public class Type extends AstNode {
 //            System.out.println(t.dimensions.getDim());
             if ((dimensions != null) && (t.dimensions != null)
                     && (dimensions.getDim() > t.dimensions.getDim())) {
-                System.out.println("here");
+//                System.out.println("here");
                 return this;
             } else {
                 return t;

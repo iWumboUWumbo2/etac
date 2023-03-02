@@ -31,12 +31,14 @@ public abstract class IntegerComparisonBinop extends BoolOutBinop{
         Type t1 = e1.typeCheck(s);
         Type t2 = e2.typeCheck(s);
 
-        if (t1.getType() != Type.TypeCheckingType.INT) {
+        if (!(t1.getType() == Type.TypeCheckingType.INT ||
+                t1.getType() == Type.TypeCheckingType.UNKNOWN)) {
 
             throw new SemanticError(e1.getLine(), e1.getColumn(), "statements block must be of type int at");
         }
 
-        if (t2.getType() != Type.TypeCheckingType.INT) {
+        if (!(t2.getType() == Type.TypeCheckingType.INT ||
+                t2.getType() == Type.TypeCheckingType.UNKNOWN)) {
             throw new SemanticError(e2.getLine(),e2.getColumn(),"statements block must be of type int at"  );
         }
 

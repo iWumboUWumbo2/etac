@@ -32,9 +32,9 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
         String message;
 
         if (t1.getType() == Type.TypeCheckingType.INT ||
-                t1.getType() == Type.TypeCheckingType.BOOL ) {
+                t1.getType() == Type.TypeCheckingType.BOOL ||
+                t1.getType() == Type.TypeCheckingType.UNKNOWN) {
             if (!t1.sameType(t2)) {
-
                 throw new SemanticError(e2.getLine(),e2.getColumn(),  "equivalence e2 does not match e1");
             } else {
                 return new Type(Type.TypeCheckingType.BOOL);

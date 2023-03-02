@@ -29,12 +29,14 @@ public abstract class LogicalBinop extends BoolOutBinop {
         Type t1 = e1.typeCheck(s);
         Type t2 = e2.typeCheck(s);
 
-        if (t1.getType() != Type.TypeCheckingType.BOOL) {
+        if (!(t1.getType() == Type.TypeCheckingType.BOOL ||
+                t1.getType() == Type.TypeCheckingType.UNKNOWN)) {
 
             throw new SemanticError(e1.getLine(), e1.getColumn(), "expr 1 not of type bool");
         }
 
-        if (t2.getType() != Type.TypeCheckingType.BOOL) {
+        if (!(t2.getType() == Type.TypeCheckingType.BOOL ||
+                t2.getType() == Type.TypeCheckingType.UNKNOWN)) {
 
             throw new SemanticError(e2.getLine(), e2.getColumn(), "expr 2 not of type bool");
         }

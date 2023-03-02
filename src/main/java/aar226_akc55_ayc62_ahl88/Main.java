@@ -42,8 +42,8 @@ public class Main {
             file.createNewFile();
         }
         catch (IOException e) {
-            System.out.println("An error occurred when writing to file.");
-            e.printStackTrace();
+//            System.out.println("An error occurred when writing to file.");
+//            e.printStackTrace();
             return;
         }
 
@@ -54,11 +54,11 @@ public class Main {
             myWriter.write(output);
             myWriter.close();
 
-            System.out.println("Successfully wrote to the file.");
+//            System.out.println("Successfully wrote to the file.");
         }
         catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+//            System.out.println("An error occurred.");
+//            e.printStackTrace();
         }
     }
 
@@ -82,12 +82,12 @@ public class Main {
 
                         //                    System.out.println("Result = " + result );
                     } catch (Error e) {
-                        System.out.println(e.getMessage());
+//                        System.out.println(e.getMessage());
                         writeOutput(filename, e.getMessage(), "parsed");
                     }
                 }catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println("File without that name found");
+//                    e.printStackTrace();
+//                    System.out.println("File without that name found");
                 }
             }
             else if (filename.endsWith(".eti")) {
@@ -109,8 +109,8 @@ public class Main {
                     }
                 }
                 catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println("File without that name found");
+//                    e.printStackTrace();
+//                    System.out.println("File without that name found");
                 }
             }
             else {
@@ -144,12 +144,12 @@ public class Main {
                         writeOutput(filename, e.getMessage(), "typed");
                     }
                 catch (Error e) {
-                        System.out.println("FIX THIS ERROR INTO ONE OF THE THREE");
+//                        System.out.println("FIX THIS ERROR INTO ONE OF THE THREE");
                         writeOutput(filename, e.getMessage(), "typed");
                     }
                 }catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println("File without that name found");
+//                    e.printStackTrace();
+//                    System.out.println("File without that name found");
                 }
             }
             else if (filename.endsWith(".eti")) {
@@ -165,8 +165,8 @@ public class Main {
                     }
                 }
                 catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println("File without that name found");
+//                    e.printStackTrace();
+//                    System.out.println("File without that name found");
                 }
             }
             else {
@@ -177,7 +177,7 @@ public class Main {
             }
         }
         catch (FileNotFoundException invalidFilename) {
-            System.out.println(invalidFilename.getMessage());
+//            System.out.println(invalidFilename.getMessage());
             return;
         }
     }
@@ -219,7 +219,7 @@ public class Main {
                     f = new FileReader(zhenFilename);
                 }
                 catch(Exception e) {
-                    System.out.println(e.getMessage());
+//                    System.out.println(e.getMessage());
                     return;
                 }
                 Lexer etaLexer = new Lexer(f);
@@ -245,7 +245,7 @@ public class Main {
             }
         }
         catch (FileNotFoundException invalidFilename) {
-            System.out.println(invalidFilename.getMessage());
+//            System.out.println(invalidFilename.getMessage());
             return;
         }
 
