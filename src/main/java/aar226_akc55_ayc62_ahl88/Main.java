@@ -42,7 +42,7 @@ public class Main {
             file.createNewFile();
         }
         catch (IOException e) {
-//            System.out.println("An error occurred when writing to file.");
+            System.out.println("An error occurred when creating the file.");
 //            e.printStackTrace();
             return;
         }
@@ -57,7 +57,7 @@ public class Main {
 //            System.out.println("Successfully wrote to the file.");
         }
         catch (IOException e) {
-//            System.out.println("An error occurred.");
+            System.out.println("An error occurred when writing to the file.");
 //            e.printStackTrace();
         }
     }
@@ -149,7 +149,7 @@ public class Main {
                     }
                 }catch (Exception e){
 //                    e.printStackTrace();
-//                    System.out.println("File without that name found");
+                    System.out.println("No file found with filename " + filename);
                 }
             }
             else if (filename.endsWith(".eti")) {
@@ -166,7 +166,7 @@ public class Main {
                 }
                 catch (Exception e){
 //                    e.printStackTrace();
-//                    System.out.println("File without that name found");
+                    System.out.println("No file found with filename " + filename);
                 }
             }
             else {
@@ -177,7 +177,7 @@ public class Main {
             }
         }
         catch (FileNotFoundException invalidFilename) {
-//            System.out.println(invalidFilename.getMessage());
+            System.out.println(invalidFilename.getMessage());
             return;
         }
     }
@@ -245,7 +245,7 @@ public class Main {
             }
         }
         catch (FileNotFoundException invalidFilename) {
-//            System.out.println(invalidFilename.getMessage());
+            System.out.println(invalidFilename.getMessage());
             return;
         }
 
