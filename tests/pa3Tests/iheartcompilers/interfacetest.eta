@@ -1,7 +1,11 @@
 use a
 use b
 
-foo(c: int ) : int {
+foo(c: int) : int {
     b : bool = foo0()
+    return c
+}
+foo1(c: int) : int {
+    d : bool = foo0()
     return c
 }

@@ -114,6 +114,7 @@ public class Method extends Definition {
         if (currentFile.contains(id.toString())){
             throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
         }
+        currentFile.add(id.toString());
         if (table.contains(id)){
             Type rhs = table.lookup(id);
             if (rhs.getType() != Type.TypeCheckingType.FUNC){
