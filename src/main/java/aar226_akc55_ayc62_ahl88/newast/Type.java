@@ -177,6 +177,7 @@ public class Type extends AstNode {
      * @return
      */
     public Type greaterType(Type t) {
+        if (!sameType(t)) throw new SemanticError(-1, -1,"U DONE FUCED UP");
         // neither unknown
         if (!(isUnknown() || isUnknownArray()) && !(t.isUnknown() || t.isUnknownArray())) {
             return this;

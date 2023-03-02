@@ -57,29 +57,5 @@ public class PlusBinop extends BinopExpr {
         } else {
             return new Type(Type.TypeCheckingType.UNKNOWN);
         }
-
-//        if (t1.getType() == Type.TypeCheckingType.INT) {
-//            if (!(t2.getType() == Type.TypeCheckingType.INT
-//                    || t2.getType() == Type.TypeCheckingType.UNKNOWN)) {
-//
-//                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
-//            } else {
-//                System.out.println("PLUSBINOPTYPE INT");
-//                return new Type(Type.TypeCheckingType.INT);
-//            }
-//        } else if (t1.isArray()) {
-//            if (t1.sameType(t2)) {
-//                System.out.println("PLUSBINOPTYPE");
-//                System.out.println(t1.getType());
-//                System.out.println(t1.dimensions);
-//                return new Type(t1.getType(), t1.dimensions);
-//            } else {
-//                // is this fine?????
-//                throw new SemanticError(e2.getLine(), e2.getColumn(), "plus e2 does not match e1");
-//            }
-//        }else{
-//
-//            throw new SemanticError(e1.getLine(),e1.getColumn() ,"plus invalid e1 type");
-//        }
     }
 }

@@ -1,0 +1,71 @@
+# eth test script
+#
+# This file is a test script for eth (etac Test Harness).  It
+# conforms to the following grammar:
+#
+#   ScriptFile      ::= Commands+
+#   Command         ::= build
+#                     | CompilerTest
+#   CompilerTest    ::= TestKind (\(TestName\))? ([TestPath])? ("CmdLineArgs")?
+#                           { (FileTest;)* }
+#   TestKind        ::= etac
+#   TestName        ::= LitString
+#   FileTest        ::= Filenames Description? FailureSet?
+#   Filenames       ::= Filename+
+#   Description     ::= LitString
+#   FailureSet      ::= Failure (, Failure)*
+#   Failure         ::= \( ErrorKind \)
+#                     | \( ErrorKind, LitString \)
+#
+#   TestPath        :   the path to the test files, enclosed in quotes,
+#                       relative to the path given in eth's -testpath flag.
+#   CmdLineArgs     :   command-line arguments for etac
+#   Filename        :   the name of a file, interpreted from TestPath.
+#   LitString       :   a literal string, enclosed in quotes.
+#   ErrorKind       :   one of, or a unique prefix of one of the following
+#                       strings: "Lexical Error", "Syntax Error", or
+#                       "Semantic Error".
+#
+# eth runs the commands in order of appearance.
+
+# build compiler first
+build
+
+etac ("Test --typecheck") "-libpath $(testpath) --typecheck" {
+arr_fail.eta;
+charat.eta;
+ex01.eta;
+ex02.eta;
+ex03.eta;
+ex04_fail.eta;
+ex05_fail.eta;
+ex06_fail.eta;
+ex07_fail.eta;
+ex08_fail.eta;
+ex09.eta;
+ex10_fail.eta;
+ex11_fail.eta;
+ex12_fail.eta;
+funcaccess.eta;
+function.eta;
+function_fail0.eta;
+function_fail1.eta;
+function_fail2.eta;
+function_fail3.eta;
+function_fail4.eta;
+interface_fail.eta;
+interface_fail0.eta;
+interfacetest.eta;
+multiassign_fail0.eta;
+multiassign_fail1.eta;
+multiglobaldecl_fail.eta;
+procedure.eta;
+procedure_fail0.eta;
+scope1.eta;
+scope_fail0.eta;
+scope_fail1.eta;
+scope_fail2.eta;
+unknown.eta;
+unknown_fail0.eta;
+unknown_fail1.eta;
+}
