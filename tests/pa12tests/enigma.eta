@@ -1,5 +1,5 @@
 use io
-use conv
+//use conv
 
 // An implementation of Turing's "bombe" attack on the Enigma cipher.
 // Essentially, given a crib, it's possible to figure out the position of the

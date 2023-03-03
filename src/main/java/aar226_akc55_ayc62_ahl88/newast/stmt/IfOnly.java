@@ -43,9 +43,9 @@ public class IfOnly extends Stmt {
         table.enterScope();
 //        System.out.println("IF CONTEXT: \n");
         Type cond1 = ifState.typeCheck(table);
-        if (!(ifState instanceof Block)) {
-            table.printContext();
-        }
+//        if (!(ifState instanceof Block)) {
+//            table.printContext();
+//        }
 //        System.out.println("\nEND IF CONTEXT. \n");
         table.exitScope();
 
