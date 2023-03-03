@@ -178,11 +178,19 @@ public class Main {
                         if (shouldWrite) {
                             writeOutput(filename, "Valid Eta Program", "typed");
                         }
-                    } catch (Error e) {
+                    }
+                    catch (EtaError e) {
+                        System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+                                e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
                         if (shouldWrite) {
                             writeOutput(filename, e.getMessage(), "typed");
                         }
                     }
+//                    catch (Error e) {
+//                        if (shouldWrite) {
+//                            writeOutput(filename, e.getMessage(), "typed");
+//                        }
+//                    }
                 }
                 catch (Exception e){
 //                    e.printStackTrace();
