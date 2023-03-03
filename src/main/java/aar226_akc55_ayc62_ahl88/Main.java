@@ -42,7 +42,7 @@ public class Main {
             file.createNewFile();
         }
         catch (IOException e) {
-            System.out.println("An error occurred when creating the file.");
+            System.out.println("An error occurred when creating the file " + filename);
 //            e.printStackTrace();
             return;
         }
@@ -57,12 +57,12 @@ public class Main {
 //            System.out.println("Successfully wrote to the file.");
         }
         catch (IOException e) {
-            System.out.println("An error occurred when writing to the file.");
+            System.out.println("An error occurred when writing to the file " + filename);
 //            e.printStackTrace();
         }
     }
 
-    private static void parseFile(String filename, StringBuilder parsedOutput) throws IOException {
+    private static void parseFile(String filename, StringBuilder parsedOutput, boolean shouldWrite) throws IOException {
         try {
             String zhenFilename =
                     (isInputDirSpecified) ? Paths.get(inputDirectory, filename).toString() : filename;
@@ -78,16 +78,21 @@ public class Main {
                         CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
                         result.prettyPrint(printer);
                         printer.close();
-                        writeOutput(filename, out.toString(), "parsed");
-
-                        //                    System.out.println("Result = " + result );
-                    } catch (Error e) {
-//                        System.out.println(e.getMessage());
-                        writeOutput(filename, e.getMessage(), "parsed");
+                        if (shouldWrite) {
+                            writeOutput(filename, out.toString(), "parsed");
+                        }
                     }
-                }catch (Exception e){
+                    catch (EtaError e) {
+//                        System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+//                                e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
+                        if (shouldWrite) {
+                            writeOutput(filename, e.getMessage(), "parsed");
+                        }
+                    }
+                }
+                catch (Exception e){
 //                    e.printStackTrace();
-//                    System.out.println("File without that name found");
+                    System.out.println("File without name " + filename + " found");
                 }
             }
             else if (filename.endsWith(".eti")) {
@@ -96,21 +101,26 @@ public class Main {
                     try {
                         EtiInterface result = (EtiInterface) p.parse().value;
                         StringWriter out = new StringWriter();
-                        //                    PrintWriter cw = new PrintWriter(System.out);
+
                         PrintWriter cw = new PrintWriter(out);
                         CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
                         result.prettyPrint(printer);
                         printer.close();
-                        writeOutput(filename, out.toString(), "parsed");
-                    } catch (EtaError e) {
-                        System.out.printf("%s error beginning at %s:%d:%d: %s\n",
-                                e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
-                        writeOutput(filename, e.getMessage(), "parsed");
+                        if (shouldWrite) {
+                            writeOutput(filename, out.toString(), "parsed");
+                        }
+                    }
+                    catch (EtaError e) {
+//                        System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+//                                e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
+                        if (shouldWrite) {
+                            writeOutput(filename, e.getMessage(), "parsed");
+                        }
                     }
                 }
                 catch (Exception e){
 //                    e.printStackTrace();
-//                    System.out.println("File without that name found");
+                    System.out.println("No file with ");
                 }
             }
             else {
@@ -125,7 +135,7 @@ public class Main {
             return;
         }
     }
-    private static void typeCheckFile(String filename) throws IOException {
+    private static void typeCheckFile(String filename, boolean shouldWrite) throws IOException {
         try {
             String zhenFilename =
                     (isInputDirSpecified) ? Paths.get(inputDirectory, filename).toString() : filename;
@@ -136,16 +146,22 @@ public class Main {
                         Program result = (Program) p.parse().value;
                         SymbolTable<Type> context = new SymbolTable<>();
                         result.typeCheck(context,zhenFilename);
-                        writeOutput(filename, "Valid Eta Program", "typed");
+                        if (shouldWrite) {
+                            writeOutput(filename, "Valid Eta Program", "typed");
+                        }
                     }
                     catch (EtaError e) {
                         System.out.printf("%s error beginning at %s:%d:%d: %s\n",
                                 e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
-                        writeOutput(filename, e.getMessage(), "typed");
+                        if (shouldWrite) {
+                            writeOutput(filename, e.getMessage(), "typed");
+                        }
                     }
                 catch (Error e) {
 //                        System.out.println("FIX THIS ERROR INTO ONE OF THE THREE");
-                        writeOutput(filename, e.getMessage(), "typed");
+                        if (shouldWrite) {
+                            writeOutput(filename, e.getMessage(), "typed");
+                        }
                     }
                 }catch (Exception e){
 //                    e.printStackTrace();
@@ -159,9 +175,13 @@ public class Main {
                         EtiInterface result = (EtiInterface) p.parse().value;
                         SymbolTable<Type> context = new SymbolTable<Type>();
                         result.firstPass();
-                        writeOutput(filename, "Valid Eta Program", "typed");
+                        if (shouldWrite) {
+                            writeOutput(filename, "Valid Eta Program", "typed");
+                        }
                     } catch (Error e) {
-                        writeOutput(filename, e.getMessage(), "typed");
+                        if (shouldWrite) {
+                            writeOutput(filename, e.getMessage(), "typed");
+                        }
                     }
                 }
                 catch (Exception e){
@@ -207,7 +227,7 @@ public class Main {
         }
         return String.format("%d:%d %s\n", s.left, s.right, out);
     }
-    private static void lexFile(String filename, StringBuilder lexedOutput) throws IOException {
+    private static void lexFile(String filename, StringBuilder lexedOutput, boolean shouldWrite) throws IOException {
         try {
             if (filename.endsWith(".eta") || filename.endsWith(".eti")) {
 
@@ -232,8 +252,8 @@ public class Main {
                     }
                 }
                 catch (EtaError e) {
-                    System.out.printf("%s error beginning at %s:%d:%d: %s\n",
-                            e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
+//                    System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+//                            e.getErrorType(), zhenFilename, e.getLine(), e.getCol(), e.getErrorString());
                     lexedOutput.append(e.getMessage());
                 }
             }
@@ -249,7 +269,9 @@ public class Main {
             return;
         }
 
-        writeOutput(filename, lexedOutput.toString(), "lexed");
+        if (shouldWrite) {
+            writeOutput(filename, lexedOutput.toString(), "lexed");
+        }
     }
 
     public static void main(String[] args) throws java.io.IOException {
@@ -316,20 +338,22 @@ public class Main {
             if (cmd.hasOption("lex")) {
                 String[] filenames = cmd.getOptionValues("lex");
                 for (String filename : filenames) {
-                    lexFile(filename, new StringBuilder());
+                    typeCheckFile(filename, false);
+                    lexFile(filename, new StringBuilder(), true);
                 }
             }
 
             if (cmd.hasOption("parse")) {
                 String[] filenames = cmd.getOptionValues("parse");
                 for (String filename : filenames) {
-                    parseFile(filename, new StringBuilder());
+                    typeCheckFile(filename, false);
+                    parseFile(filename, new StringBuilder(), true);
                 }
             }
             if (cmd.hasOption("typecheck")) {
                 String[] filenames = cmd.getOptionValues("typecheck");
                 for (String filename : filenames) {
-                    typeCheckFile(filename);
+                    typeCheckFile(filename, true);
                 }
             }
         }
