@@ -19,7 +19,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRReturn;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
-import polyglot.util.SerialVersionUID;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.SerialVersionUID;
 
 import java.io.BufferedReader;
 import java.io.IOException;

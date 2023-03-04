@@ -10,7 +10,7 @@ import java.util.Collections;
 /**
  * Class to represent a type
  */
-public class Type extends AstNode {
+public class Type implements Printer {
     public enum TypeCheckingType {
         INT,
         BOOL,
@@ -25,6 +25,17 @@ public class Type extends AstNode {
         UNDERSCORE,
         MULTIRETURN
     }
+    /**
+     * @return Return line number for element
+     */
+    public int getLine(){return line;}
+
+    /**
+     * @return Return starting column number for element
+     */
+    public int getColumn(){return col;}
+    int line;
+    int col;
     public Dimension dimensions;
     private boolean isInt;
 
@@ -43,7 +54,9 @@ public class Type extends AstNode {
      * @param c column number
      */
     public Type (boolean t,Dimension d,int l, int c) {
-        super(l,c);
+//        super(l,c);
+        line = l;
+        col = c;
         isInt = t;
         dimensions = d;
         if (d.getDim() == 0) {
@@ -57,20 +70,26 @@ public class Type extends AstNode {
     }
 
     public Type(ArrayList<Type> multiTypes) {
-        super(-1, -1);
+//        super(-1, -1);
+        line = -1;
+        col = -1;
         this.multiTypes = multiTypes;
         this.tct = TypeCheckingType.MULTIRETURN;
     }
 
     public Type(TypeCheckingType tct) {
-        super(-1, -1);
+//        super(-1, -1);
+        line = -1;
+        col = -1;
         this.tct = tct;
 //        dimensions = new Dimension(0, getLine(), getColumn());
 //        inputTypes = new ArrayList<>();
 //        outputTypes = new ArrayList<>();
     }
     public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
-        super(-1,-1);
+//        super(-1,-1);
+        line = -1;
+        col = -1;
 //        System.out.println("ONLY THE FUNC TYPE");
         this.tct = Type.TypeCheckingType.FUNC;
         inputTypes = inTy;
@@ -78,7 +97,9 @@ public class Type extends AstNode {
 //        dimensions = new Dimension(0, getLine(), getColumn());
     }
     public Type(TypeCheckingType tct, Dimension d){
-        super(-1,-1);
+//        super(-1,-1);
+        line = -1;
+        col = -1;
         this.tct = tct;
         dimensions = d;
 //        inputTypes = new ArrayList<>();
