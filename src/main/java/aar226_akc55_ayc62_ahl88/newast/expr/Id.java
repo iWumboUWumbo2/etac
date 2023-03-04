@@ -10,6 +10,8 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 public class Id extends Expr {
     private String identifer;
 
+    protected Type nodeType;
+
     /**
      * @param id Identifer Name
      * @param l  line Number
@@ -25,8 +27,8 @@ public class Id extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-
-        return table.lookup(this);
+        nodeType = table.lookup(this);
+        return nodeType;
 
     }
 

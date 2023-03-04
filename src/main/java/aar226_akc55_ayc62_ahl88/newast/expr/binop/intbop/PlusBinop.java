@@ -11,6 +11,9 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
  * Class for Plus Binary Operator
  */
 public class PlusBinop extends BinopExpr {
+
+    protected Type nodeType;
+
     /**
      * @param in1 left Expression
      * @param in2 right Expression
@@ -51,11 +54,14 @@ public class PlusBinop extends BinopExpr {
         Type greaterType = t1.greaterType(t2);
 //        System.out.println(greaterType.dimensions.getDim());
         if (greaterType.getType() == Type.TypeCheckingType.INT) {
-            return new Type(Type.TypeCheckingType.INT);
+            nodeType = new Type(Type.TypeCheckingType.INT);
+            return nodeType;
         } else if (greaterType.isArray()) {
-            return new Type(greaterType.getType(), greaterType.dimensions);
+            nodeType = new Type(greaterType.getType(), greaterType.dimensions);
+            return nodeType;
         } else {
-            return new Type(Type.TypeCheckingType.UNKNOWN);
+            nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
+            return nodeType;
         }
     }
 }

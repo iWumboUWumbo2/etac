@@ -7,6 +7,8 @@ import aar226_akc55_ayc62_ahl88.newast.Type;
 public class BoolLiteral extends Expr {
     private boolean boolVal;
 
+    protected Type nodeType;
+
     public BoolLiteral(boolean inputBool,int l, int c) {
         super(l,c);
         boolVal = inputBool;
@@ -14,7 +16,8 @@ public class BoolLiteral extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable s){
-        return new Type(Type.TypeCheckingType.BOOL);
+        nodeType = new Type(Type.TypeCheckingType.BOOL)
+        return nodeType;
     }
     public String toString() {
         return Boolean.toString(boolVal);
