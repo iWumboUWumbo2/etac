@@ -19,8 +19,12 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.IntegerComparisonBinop
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.LogicalBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
+import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.BooleanUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
+import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntegerNegExpr;
+import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
+import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.Method_Interface;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
@@ -94,6 +98,12 @@ public interface Visitor<T> {
 
     // unsure
     T visit(Type node);
+
+    T visit(EtiInterface node);
+
+    T visit(Method_Interface node);
+    T visit(BooleanUnop node);
+    T visit(IntUnop node);
 
 }
 
