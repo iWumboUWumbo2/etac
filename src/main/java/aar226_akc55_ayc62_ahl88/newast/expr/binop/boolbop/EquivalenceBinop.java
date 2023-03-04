@@ -11,7 +11,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
  * Can be used for both integer and Boolean and array inputs
  */
 public abstract class EquivalenceBinop extends BoolOutBinop {
-    protected Type nodeType;
     /**
      * @param b binary operation type
      * @param in1 left Expression

@@ -10,8 +10,6 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 public class Id extends Expr {
     private String identifer;
 
-    protected Type nodeType;
-
     /**
      * @param id Identifer Name
      * @param l  line Number

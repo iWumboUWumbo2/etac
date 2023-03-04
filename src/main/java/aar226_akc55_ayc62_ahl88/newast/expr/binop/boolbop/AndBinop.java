@@ -9,7 +9,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
  * Class for And Binary Operator
  */
 public class AndBinop extends LogicalBinop {
-    protected Type nodeType;
     /**
      * @param in1 left Expression
      * @param in2 right Expression

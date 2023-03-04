@@ -11,7 +11,6 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 public class Length extends Expr {
     Expr arg;
 
-    protected Type nodeType;
     /**
      * @param e Expression argument of length()
      * @param l line number

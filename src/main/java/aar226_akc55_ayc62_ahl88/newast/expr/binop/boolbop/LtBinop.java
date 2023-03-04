@@ -20,6 +20,7 @@ public class LtBinop extends EquivalenceBinop {
     }
     @Override
     public Type typeCheck(SymbolTable s){
-        return super.typeCheck(s);
+        nodeType = super.typeCheck(s);
+        return nodeType;
     }
 }

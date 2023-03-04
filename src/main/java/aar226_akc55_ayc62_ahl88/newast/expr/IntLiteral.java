@@ -11,8 +11,6 @@ public class IntLiteral extends Expr{
     private long number;
     private String rawChar;
 
-    protected Type nodeType;
-
     /**
      * @param i incoming Long into Int Literal
      * @param l line Number

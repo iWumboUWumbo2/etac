@@ -15,8 +15,6 @@ public class FunctionCallExpr extends Expr {
     Id id;
     ArrayList<Expr> args;
 
-    protected Type nodeType;
-
     /**
      * @param i function name
      * @param inArgs function arguments
@@ -65,11 +63,10 @@ public class FunctionCallExpr extends Expr {
 
         if (functionType.outputTypes.size() == 1) {
             nodeType = functionType.outputTypes.get(0);
-            return nodeType;
         } else {
             nodeType = new Type(functionType.outputTypes);
-            return nodeType;
         }
+        return nodeType;
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
