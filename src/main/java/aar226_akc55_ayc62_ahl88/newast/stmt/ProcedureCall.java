@@ -82,7 +82,8 @@ public class ProcedureCall extends Stmt {
             }
         }
 
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
 
     }
 

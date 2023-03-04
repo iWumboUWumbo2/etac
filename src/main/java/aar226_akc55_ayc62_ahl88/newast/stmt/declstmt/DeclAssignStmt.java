@@ -55,7 +55,7 @@ public class DeclAssignStmt extends Stmt{
         if (decl instanceof AnnotatedTypeDecl) {
             table.add(decl.identifier, declType); // add the identifier and the type only if its a new type
         }
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
-
 }

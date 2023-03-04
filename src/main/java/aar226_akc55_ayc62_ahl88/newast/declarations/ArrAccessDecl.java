@@ -88,15 +88,18 @@ public class ArrAccessDecl extends Decl{
             Dimension newDim = new Dimension(d.getDim() - indices.size(), d.getLine(), d.getColumn());
             if (newDim.getDim() == 0) {
                 if (identifierType.getType() == Type.TypeCheckingType.INTARRAY) {
-                    return new Type(Type.TypeCheckingType.INT);
+                    nodeType = new Type(Type.TypeCheckingType.INT);
+                    return nodeType;
                 } else if (identifierType.getType() == Type.TypeCheckingType.BOOLARRAY) {
-                    return new Type(Type.TypeCheckingType.BOOL);
+                    nodeType = new Type(Type.TypeCheckingType.BOOL);
+                    return nodeType;
                 } else {
                     throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                 }
             }
 
-            return new Type(identifierType.getType(), newDim);
+            nodeType = new Type(identifierType.getType(), newDim);
+            return nodeType;
         }else{
             if (identifierType.outputTypes.size() != 1){
                 throw new SemanticError(identifier.getLine(), identifierType.getColumn(), "Function has more than one type for array access");
@@ -121,14 +124,17 @@ public class ArrAccessDecl extends Decl{
             Dimension newDim = new Dimension(d.getDim() - indices.size(), d.getLine(), d.getColumn());
             if (newDim.getDim() == 0) {
                 if (funcOutType.getType() == Type.TypeCheckingType.INTARRAY) {
-                    return new Type(Type.TypeCheckingType.INT);
+                    nodeType = new Type(Type.TypeCheckingType.INT);
+                    return nodeType;
                 } else if (funcOutType.getType() == Type.TypeCheckingType.BOOLARRAY) {
-                    return new Type(Type.TypeCheckingType.BOOL);
+                    nodeType = new Type(Type.TypeCheckingType.BOOL);
+                    return nodeType;
                 } else {
                     throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                 }
             }
-            return new Type(funcOutType.getType(), newDim);
+            nodeType = new Type(funcOutType.getType(), newDim);
+            return nodeType;
         }
     }
 }

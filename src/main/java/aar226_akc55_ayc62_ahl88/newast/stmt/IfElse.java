@@ -58,7 +58,8 @@ public class IfElse extends Stmt {
             throw new SemanticError(ifState.getLine() , ifState.getColumn(),"Statement in If is not Unit or Void");
         }
 
-        return lub(trueClause, falseClause);
+        nodeType = lub(trueClause, falseClause);
+        return nodeType;
     }
 
     @Override

@@ -91,7 +91,8 @@ public class Method extends Definition {
                     "no return type detected"
                 );
         }
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 
     @Override
@@ -126,7 +127,8 @@ public class Method extends Definition {
         }else {
             table.add(id, methodType);
         }
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
     public ArrayList<Type> getInputTypes(){
         ArrayList<Type> inputTypes = new ArrayList<>();

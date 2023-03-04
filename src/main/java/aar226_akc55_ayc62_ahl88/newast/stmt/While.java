@@ -44,7 +44,8 @@ public class While extends Stmt {
         if (!isRType(cond1)){
             throw new SemanticError(stmt.getLine() ,stmt.getColumn() ,"Statement in WHILE is not Unit or Void");
         }
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 
     @Override
