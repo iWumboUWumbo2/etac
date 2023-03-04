@@ -72,11 +72,16 @@ public class Globdecl extends Definition {
         }
         currentFile.add(decl.identifier.toString());
         table.add(decl.identifier,declType);
-        return new Type(Type.TypeCheckingType.UNIT);
+
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        return new Type(Type.TypeCheckingType.UNIT);
+        if (nodeType == null) {
+            nodeType = new Type(Type.TypeCheckingType.UNIT);
+        }
+        return nodeType;
     }
 }

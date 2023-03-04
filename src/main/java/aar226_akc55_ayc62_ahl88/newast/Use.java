@@ -67,7 +67,8 @@ public class Use extends AstNode{
             // a program file for some reason
             throw new SemanticError(getLine(),getColumn(),"Could not find interface " + filename);
         }
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 
 }

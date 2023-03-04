@@ -95,6 +95,7 @@ public class MultiDeclAssignStmt extends Stmt {
                 table.add(curD.identifier,declarationTypes.get(i));
             }
         }
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 }

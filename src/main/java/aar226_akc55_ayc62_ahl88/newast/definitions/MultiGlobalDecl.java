@@ -52,11 +52,13 @@ public class MultiGlobalDecl extends Definition{
             table.add(atd.identifier,curDeclType);
         }
 
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 
     @Override

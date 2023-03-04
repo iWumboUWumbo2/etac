@@ -35,5 +35,4 @@ public abstract class AstNode implements Printer {
     public Type getNodeType(){
         return nodeType;
     }
-    public abstract Type typeCheck(SymbolTable<Type> table);
 }

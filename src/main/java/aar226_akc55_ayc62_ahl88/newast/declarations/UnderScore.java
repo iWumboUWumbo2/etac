@@ -18,7 +18,8 @@ public class UnderScore extends Decl{
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        return new Type(Type.TypeCheckingType.UNDERSCORE);
+        nodeType = new Type(Type.TypeCheckingType.UNDERSCORE);
+        return nodeType;
     }
 
     @Override
