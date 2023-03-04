@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.unop.UnopEnum;
  * Class for Integer Negation Unary Operator
  */
 public class IntegerNegExpr extends IntUnop {
+    protected Type nodeType;
     /**
      * @param in Expression input
      * @param l line number
@@ -20,6 +21,7 @@ public class IntegerNegExpr extends IntUnop {
 
     @Override
     public Type typeCheck(SymbolTable s){
-        return super.typeCheck(s);
+        nodeType = super.typeCheck(s);
+        return nodeType;
     }
 }
