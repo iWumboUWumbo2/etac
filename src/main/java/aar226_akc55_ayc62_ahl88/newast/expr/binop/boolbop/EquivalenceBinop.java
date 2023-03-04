@@ -11,6 +11,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
  * Can be used for both integer and Boolean and array inputs
  */
 public abstract class EquivalenceBinop extends BoolOutBinop {
+    protected Type nodeType;
     /**
      * @param b binary operation type
      * @param in1 left Expression
@@ -37,14 +38,16 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
             if (!t1.sameType(t2)) {
                 throw new SemanticError(e2.getLine(),e2.getColumn(),  "equivalence e2 does not match e1");
             } else {
-                return new Type(Type.TypeCheckingType.BOOL);
+                nodeType = new Type(Type.TypeCheckingType.BOOL);
+                return nodeType;
             }
         } else if (t1.isArray()) {
             if (!t1.sameType(t2)) {
 
                 throw new SemanticError(e2.getLine(),e2.getColumn(), "equivalence e2 does not match e1" );
             } else {
-                return new Type(Type.TypeCheckingType.BOOL);
+                nodeType = new Type(Type.TypeCheckingType.BOOL);
+                return nodeType;
             }
         }else {
 

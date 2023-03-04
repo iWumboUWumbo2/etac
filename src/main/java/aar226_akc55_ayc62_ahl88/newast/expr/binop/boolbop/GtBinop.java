@@ -9,6 +9,9 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
  * Class for Greater Than Binary Operator
  */
 public class GtBinop extends EquivalenceBinop {
+
+    protected Type nodeType;
+
     /**
      * @param in1 left Expression
      * @param in2 right Expression
@@ -21,6 +24,8 @@ public class GtBinop extends EquivalenceBinop {
 
     @Override
     public Type typeCheck(SymbolTable s){
-        return super.typeCheck(s);
+
+        nodeType = super.typeCheck(s);
+        return nodeType;
     }
 }

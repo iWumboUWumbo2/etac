@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
  * Class for Greater Than Or Equals To Binary Operator
  */
 public class GeqBinop extends EquivalenceBinop {
+    protected Type nodeType;
     /**
      * @param in1 left Expression
      * @param in2 right Expression
@@ -20,6 +21,7 @@ public class GeqBinop extends EquivalenceBinop {
     }
     @Override
     public Type typeCheck(SymbolTable s){
-        return super.typeCheck(s);
+        nodeType = super.typeCheck(s);
+        return nodeType;
     }
 }
