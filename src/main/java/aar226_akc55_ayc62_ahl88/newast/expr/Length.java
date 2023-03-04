@@ -11,6 +11,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 public class Length extends Expr {
     Expr arg;
 
+    protected Type nodeType;
     /**
      * @param e Expression argument of length()
      * @param l line number
@@ -45,9 +46,9 @@ public class Length extends Expr {
 //            throw new Error(message);
 //        }
         if (t1.isArray()) {
-            return (new Type(Type.TypeCheckingType.INT));
+            nodeType = new Type(Type.TypeCheckingType.INT);
+            return nodeType;
         } else {
-
             throw new SemanticError(getLine(), getColumn(), "Invalid length arg type");
         }
     }
