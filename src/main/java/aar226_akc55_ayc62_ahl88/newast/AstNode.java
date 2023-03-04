@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
 //import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 /**
@@ -9,6 +10,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 public abstract class AstNode implements Printer {
     int line;
     int col;
+    protected Type nodeType;
 
     /**
      * @param l line number
@@ -29,4 +31,10 @@ public abstract class AstNode implements Printer {
      */
     public int getColumn(){return col;}
     public abstract void prettyPrint(CodeWriterSExpPrinter p);
+
+    public Type getNodeType(){
+        return nodeType;
+    }
+    public abstract Type typeCheck(SymbolTable<Type> table);
+    public abstract void setNodeType();
 }
