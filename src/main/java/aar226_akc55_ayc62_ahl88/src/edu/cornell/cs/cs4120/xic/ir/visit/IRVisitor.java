@@ -85,7 +85,7 @@ public abstract class IRVisitor implements Copy<IRVisitor> {
      * @return a clone of v if v == this, or v otherwise
      */
     protected <V extends IRVisitor> V copyIfNeeded(V v) {
-        if (v == this) return edu.cornell.cs.cs4120.util.Copy.Util.copy(v);
+        if (v == this) return aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.Copy.Util.copy(v);
         return v;
     }
 
