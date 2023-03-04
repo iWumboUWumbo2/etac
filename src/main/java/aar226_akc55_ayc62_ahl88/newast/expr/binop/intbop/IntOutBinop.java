@@ -40,7 +40,6 @@ public abstract class IntOutBinop extends BinopExpr {
 
             throw new SemanticError(e2.getLine(), e2.getColumn(), "statements block must be of type int at");
         }
-        nodeType = new Type(Type.TypeCheckingType.INT);
-        return nodeType;
+        return new Type(Type.TypeCheckingType.INT);
     }
 }
