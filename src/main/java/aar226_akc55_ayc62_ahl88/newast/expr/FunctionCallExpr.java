@@ -62,10 +62,11 @@ public class FunctionCallExpr extends Expr {
         }
 
         if (functionType.outputTypes.size() == 1) {
-            return functionType.outputTypes.get(0);
+            nodeType = functionType.outputTypes.get(0);
         } else {
-            return new Type(functionType.outputTypes);
+            nodeType = new Type(functionType.outputTypes);
         }
+        return nodeType;
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {

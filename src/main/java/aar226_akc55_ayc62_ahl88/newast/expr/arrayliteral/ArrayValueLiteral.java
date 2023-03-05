@@ -78,9 +78,11 @@ public class ArrayValueLiteral extends Expr {
     public Type typeCheck(SymbolTable s) throws Error{
 //        System.out.println("w hat si going on");
         if (values.size() == 0) {
-            return typeCheckUnknown(s);
+            nodeType = typeCheckUnknown(s);
+            return nodeType;
         } else {
-            return typeCheckArray(s);
+            nodeType = typeCheckArray(s);
+            return nodeType;
         }
 
     }

@@ -20,6 +20,7 @@ public class AndBinop extends LogicalBinop {
     }
     @Override
     public Type typeCheck(SymbolTable s){
-        return super.typeCheck(s);
+        nodeType = super.typeCheck(s);
+        return nodeType;
     }
 }

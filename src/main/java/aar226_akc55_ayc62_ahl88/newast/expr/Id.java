@@ -25,8 +25,8 @@ public class Id extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-
-        return table.lookup(this);
+        nodeType = table.lookup(this);
+        return nodeType;
 
     }
 

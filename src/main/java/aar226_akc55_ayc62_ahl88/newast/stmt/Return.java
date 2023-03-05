@@ -105,6 +105,7 @@ public class Return extends Stmt{
             }
         }
 
-        return new Type(Type.TypeCheckingType.VOID);
+        nodeType = new Type(Type.TypeCheckingType.VOID);
+        return nodeType;
     }
 }

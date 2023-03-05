@@ -52,7 +52,8 @@ public class IfOnly extends Stmt {
         if (!isRType(cond1)){
             throw new SemanticError(ifState.getLine() , ifState.getColumn() ,"Statement in If is not Unit or Void");
         }
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 
 }

@@ -14,7 +14,8 @@ public class BoolLiteral extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable s){
-        return new Type(Type.TypeCheckingType.BOOL);
+        nodeType = new Type(Type.TypeCheckingType.BOOL);
+        return nodeType;
     }
     public String toString() {
         return Boolean.toString(boolVal);

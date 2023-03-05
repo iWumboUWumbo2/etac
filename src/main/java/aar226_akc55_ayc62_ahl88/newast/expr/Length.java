@@ -45,9 +45,9 @@ public class Length extends Expr {
 //            throw new Error(message);
 //        }
         if (t1.isArray()) {
-            return (new Type(Type.TypeCheckingType.INT));
+            nodeType = new Type(Type.TypeCheckingType.INT);
+            return nodeType;
         } else {
-
             throw new SemanticError(getLine(), getColumn(), "Invalid length arg type");
         }
     }

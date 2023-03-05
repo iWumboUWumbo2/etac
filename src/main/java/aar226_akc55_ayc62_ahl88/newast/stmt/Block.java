@@ -37,7 +37,8 @@ public class Block extends Stmt {
         table.enterScope(); // Entering Block
         if (statementList.size() == 0) {
             table.exitScope(); // exiting BLOCK
-            return new Type(Type.TypeCheckingType.UNIT); // NO STATEMENTs
+            nodeType = new Type(Type.TypeCheckingType.UNIT);
+            return nodeType; // NO STATEMENTs
         }
 
 
@@ -63,11 +64,13 @@ public class Block extends Stmt {
 //        System.out.println("\nEND BLOCK CONTEXT. \n");
 
         table.exitScope(); // exiting Block
-        return new Type(
+        nodeType = new Type(
                 lastType.getType() == Type.TypeCheckingType.UNIT
                         ? Type.TypeCheckingType.UNIT
                         : Type.TypeCheckingType.VOID
         );
+
+        return nodeType;
 
         // unit if no return
         // void if return

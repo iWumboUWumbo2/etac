@@ -72,7 +72,8 @@ public class Program extends AstNode {
 
         // Then go through Methods again to type check only their blocks
         table.exitScope();
-        return new Type(Type.TypeCheckingType.UNIT);
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
 
     }
 }

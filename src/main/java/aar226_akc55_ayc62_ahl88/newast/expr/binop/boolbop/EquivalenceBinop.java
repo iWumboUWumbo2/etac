@@ -37,14 +37,16 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
             if (!t1.sameType(t2)) {
                 throw new SemanticError(e2.getLine(),e2.getColumn(),  "equivalence e2 does not match e1");
             } else {
-                return new Type(Type.TypeCheckingType.BOOL);
+                nodeType = new Type(Type.TypeCheckingType.BOOL);
+                return nodeType;
             }
         } else if (t1.isArray()) {
             if (!t1.sameType(t2)) {
 
                 throw new SemanticError(e2.getLine(),e2.getColumn(), "equivalence e2 does not match e1" );
             } else {
-                return new Type(Type.TypeCheckingType.BOOL);
+                nodeType = new Type(Type.TypeCheckingType.BOOL);
+                return nodeType;
             }
         }else {
 

@@ -30,6 +30,7 @@ public class AnnotatedTypeDecl extends Decl{
         if (table.contains(identifier)) {
             throw new SemanticError(getLine(), getColumn(), "variable has already been seen");
         }
+        nodeType = type;
         return type;
     }
 

@@ -29,6 +29,7 @@ public class NoTypeDecl extends Decl{
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-        return table.lookup(identifier);
+        nodeType = table.lookup(identifier);
+        return nodeType;
     }
 }

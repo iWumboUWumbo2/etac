@@ -46,7 +46,8 @@ public class ArrayAccessExpr extends Expr {
 
         // allow array accesses to unknown
         if (e.getType() == Type.TypeCheckingType.UNKNOWN) {
-            return new Type(Type.TypeCheckingType.UNKNOWN);
+            nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
+            return nodeType;
         }
 
         // throw error if arg is not array
@@ -58,18 +59,22 @@ public class ArrayAccessExpr extends Expr {
             // throw error if length of access indices > arg dimension
             if (return_dim < 0) {
                 // allow infinite access to unknown array
-                if (e.getType() == Type.TypeCheckingType.UNKNOWNARRAY)
-                    return new Type(Type.TypeCheckingType.UNKNOWN);
+                if (e.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
+                    nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
+                    return nodeType;
+                }
                 throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "array index size mismatch");
             } else if (return_dim == 0) {   // if return dim == arg dim, return literal type
                 if (e.getType() == Type.TypeCheckingType.BOOLARRAY)
-                    return new Type(Type.TypeCheckingType.BOOL);
+                    nodeType = new Type(Type.TypeCheckingType.BOOL);
                 else if (e.getType() == Type.TypeCheckingType.INTARRAY)
-                    return new Type(Type.TypeCheckingType.INT);
+                    nodeType = new Type(Type.TypeCheckingType.INT);
                 else
-                    return new Type(Type.TypeCheckingType.UNKNOWN);
+                    nodeType = new Type(Type.TypeCheckingType.INT);
+                return nodeType;
             } else {    // otherwise, return array type
-                return new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
+                nodeType = new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
+                return nodeType;
             }
         }
     }

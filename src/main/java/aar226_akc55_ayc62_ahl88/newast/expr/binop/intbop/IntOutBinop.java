@@ -11,7 +11,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
  * Abstract class for all binary expressions
  */
 public abstract class IntOutBinop extends BinopExpr {
-
     /**
      * @param b binary operation type
      * @param in1 first expression input
@@ -41,7 +40,6 @@ public abstract class IntOutBinop extends BinopExpr {
 
             throw new SemanticError(e2.getLine(), e2.getColumn(), "statements block must be of type int at");
         }
-
         return new Type(Type.TypeCheckingType.INT);
     }
 }
