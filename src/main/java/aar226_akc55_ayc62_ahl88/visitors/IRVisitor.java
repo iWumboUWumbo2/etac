@@ -136,7 +136,8 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(IntegerNegExpr node) {
-        return null;
+        IRExpr ire = (IRExpr) node.accept(this);
+        return new IRBinOp(IRBinOp.OpType.SUB, new IRConst(0), ire);
     }
 
     @Override
