@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
 
 /**
  * Abstract class for all Binary Expressions
@@ -91,5 +92,16 @@ public abstract class BinopExpr extends Expr {
         return e2;
     }
 
+    public IRBinOp.OpType getOpType(){
+        switch (binopType) {
+            case DIVIDE: return IRBinOp.OpType.DIV;
+            case HIGHMULT: return IRBinOp.OpType.HMUL;
+            case MINUS: return IRBinOp.OpType.SUB;
+            case MODULO: return IRBinOp.OpType.MOD;
+            case TIMES: return IRBinOp.OpType.MUL;
+            default:
+                throw new Error("Invalid binary operation");
+        }
+    }
     // Type checking
 }

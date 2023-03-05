@@ -13,6 +13,8 @@ import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr.ArrayAccessExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.EquivalenceBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.IntegerComparisonBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.LogicalBinop;
@@ -24,12 +26,22 @@ import aar226_akc55_ayc62_ahl88.newast.stmt.*;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 
 public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRNode visit(IntOutBinop node) {
-        return null;
+//        DIVIDE, HIGHMULT, MINUS, MODULO, TIMES
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
+
+        IRExpr ire1 = (IRExpr) e1.accept(this);
+        IRExpr ire2 = (IRExpr) e2.accept(this);
+        IRBinOp.OpType op = node.getOpType();
+
+        return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
