@@ -27,11 +27,9 @@ public class Block extends Stmt {
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
-
         p.startUnifiedList();
         statementList.forEach(e -> e.prettyPrint(p));
         p.endList();
-
     }
 
     @Override
@@ -42,8 +40,6 @@ public class Block extends Stmt {
             nodeType = new Type(Type.TypeCheckingType.UNIT);
             return nodeType; // NO STATEMENTs
         }
-
-
 
         for (int i = 0; i < statementList.size() - 1; i++) { // every one but the last
             Stmt curStmt = statementList.get(i);
@@ -78,6 +74,9 @@ public class Block extends Stmt {
         // void if return
     }
 
+    public ArrayList<Stmt> getStatementList(){
+        return statementList;
+    }
     @Override
     public IRNode accept(IRVisitor visitor) {
         return visitor.visit(this);

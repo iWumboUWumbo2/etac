@@ -171,7 +171,6 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRNode visit(ArrayValueLiteral node) {
         return null;
     }
-
     @Override
     public IRNode visit(ArrayAccessExpr node) {
         return null;
@@ -179,7 +178,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(Block node) {
-        return null;
+        ArrayList<Stmt> statements = node.getStatementList();
+        ArrayList<IRStmt> IRstmtList = new ArrayList<IRStmt>();
+        for (Stmt stmt: statements) {
+            IRstmtList.add((IRStmt) stmt.accept(this));
+        }
+        return new IRSeq(IRstmtList);
     }
 
     @Override
