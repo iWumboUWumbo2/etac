@@ -64,7 +64,15 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(PlusBinop node) {
-        return null;
+        IRExpr l = (IRExpr) node.getLeftExpr().accept(this);
+        IRExpr r = (IRExpr) node.getRightExpr().accept(this);
+
+        return new IRBinOp(IRBinOp.OpType.ADD, l, r);
+
+        // if both ints, return irbinop
+        // if one unknown and other int, return int
+        // if both arrays, add
+        // if one unknown array and other array, return array
     }
 
     @Override
@@ -82,7 +90,8 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(EquivalenceBinop node) {
-        return null;
+        IRExpr l = (IRExpr) node.getLeftExpr().accept(this);
+        IRExpr r = (IRExpr) node.getRightExpr().accept(this);
     }
 
     @Override
