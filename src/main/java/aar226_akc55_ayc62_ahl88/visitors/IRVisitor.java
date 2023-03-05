@@ -169,7 +169,6 @@ public class IRVisitor implements Visitor<IRNode>{
                 elseStatement,
                 new IRLabel(lafter)
         );
-
     }
 
     @Override
@@ -190,10 +189,20 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRNode visit(Return node) {
         return null;
     }
-
     @Override
     public IRNode visit(While node) {
-        return null;
+        String lh = newLabel();
+        String l1 = newLabel();
+        String le = newLabel();
+        IRStmt condStmt = booleanAsControlFlow(node.getGuard(),l1,le);
+        IRStmt bodyStmt = (IRStmt) node.getStmt().accept(this);
+        return new IRSeq(
+                new IRLabel(lh),
+                condStmt,
+                new IRLabel(l1),
+                bodyStmt,
+                new IRJump(new IRName(lh)),
+                new IRLabel(le));
     }
 
     @Override

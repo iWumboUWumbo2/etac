@@ -64,4 +64,11 @@ public class While extends Stmt {
         p.endList();
     }
 
+    public Expr getGuard() {
+        return guard;
+    }
+
+    public Stmt getStmt() {
+        return stmt;
+    }
 }
