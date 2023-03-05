@@ -28,6 +28,8 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 
+import java.util.ArrayList;
+
 public class IRVisitor implements Visitor<IRNode>{
 
     private static final int WORD_BYTES = 8;
@@ -187,7 +189,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(Return node) {
-        return null;
+        ArrayList<Expr> retList = node.getReturnArgList();
+        ArrayList<IRExpr> IRRet = new ArrayList<>();
+        for (Expr ret: retList){
+            IRRet.add((IRExpr) ret.accept(this));
+        }
+        return new IRReturn(IRRet);
     }
     @Override
     public IRNode visit(While node) {

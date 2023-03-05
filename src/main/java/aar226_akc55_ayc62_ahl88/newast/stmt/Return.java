@@ -115,4 +115,8 @@ public class Return extends Stmt{
     public IRNode accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
+
+    public ArrayList<Expr> getReturnArgList() {
+        return returnArgList;
+    }
 }
