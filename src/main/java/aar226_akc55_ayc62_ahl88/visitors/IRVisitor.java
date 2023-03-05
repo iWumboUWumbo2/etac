@@ -152,7 +152,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(Length node) {
-        return null;
+        IRMem mem = new IRMem(new IRBinOp(IRBinOp.OpType.ADD, (IRExpr) node.getArg().accept(this), new IRConst(-WORD_BYTES)));
+        IRMove move = new IRMove(new IRTemp(nxtTemp()), mem);
+        return move;
     }
 
     @Override

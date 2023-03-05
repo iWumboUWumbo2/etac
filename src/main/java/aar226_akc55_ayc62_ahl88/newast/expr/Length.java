@@ -54,6 +54,10 @@ public class Length extends Expr {
         }
     }
 
+    public Expr getArg() {
+        return arg;
+    }
+
     @Override
     public IRNode accept(IRVisitor visitor) {
         return visitor.visit(this);
