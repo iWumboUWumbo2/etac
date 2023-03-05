@@ -69,7 +69,15 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(IntegerComparisonBinop node) {
-        return null;
+//        < , <= , > , >=
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
+
+        IRExpr ire1 = (IRExpr) e1.accept(this);
+        IRExpr ire2 = (IRExpr) e2.accept(this);
+        IRBinOp.OpType op = node.getOpType();
+
+        return new IRBinOp(op, ire1, ire2);
     }
 
     @Override

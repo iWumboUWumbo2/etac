@@ -99,6 +99,10 @@ public abstract class BinopExpr extends Expr {
             case MINUS: return IRBinOp.OpType.SUB;
             case MODULO: return IRBinOp.OpType.MOD;
             case TIMES: return IRBinOp.OpType.MUL;
+            case LT: return IRBinOp.OpType.LT;
+            case LEQ: return IRBinOp.OpType.LEQ;
+            case GT: return IRBinOp.OpType.GT;
+            case GEQ: return IRBinOp.OpType.GEQ;
             default:
                 throw new Error("Invalid binary operation");
         }
