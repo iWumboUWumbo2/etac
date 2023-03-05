@@ -15,6 +15,10 @@ public abstract class BinopExpr extends Expr {
     Expr e2;
     BinopEnum binopType;
 
+    public BinopEnum getBinopType() {
+        return binopType;
+    }
+
     /**
      * @param b binary operation type
      * @param in1 left Expression

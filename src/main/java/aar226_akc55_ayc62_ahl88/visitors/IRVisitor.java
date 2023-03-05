@@ -41,11 +41,11 @@ public class IRVisitor implements Visitor<IRNode>{
         tempCnt = 0;
         compUnitName = name;
     }
-    private String newLabel() {
+    private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
     }
 
-    private String newTemp() {
+    private String nxtTemp() {
         return String.format("t%d", (tempCnt++));
     }
 
@@ -100,7 +100,32 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(LogicalBinop node) {
-        return null;
+        String l1 = nxtLabel();
+        String l2 = nxtLabel();
+        String lend = nxtLabel();
+        String x = nxtTemp();
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
+        switch (node.getBinopType()){
+            case AND:
+
+                return new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(0)),
+                        new IRCJump((IRExpr) e1.accept(this), l1, lend),
+                        new IRLabel(l1), new IRCJump((IRExpr) e2.accept(this), l2, lend),
+                        new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(1)),
+                        new IRLabel(lend)),
+                        new IRTemp(x));
+            case OR:
+
+                return new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(1)),
+                        new IRCJump((IRExpr) e1.accept(this), lend, l1),
+                        new IRLabel(l1), new IRCJump((IRExpr) e2.accept(this), lend, l2),
+                        new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(0)),
+                        new IRLabel(lend)),
+                        new IRTemp(x));
+            default:
+                throw new Error("NOT LOGICAL BINOP");
+        }
     }
 
     @Override
@@ -158,9 +183,9 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRNode visit(IfElse node) {
         IRStmt iFStatement = (IRStmt) node.getIfState().accept(this);
         IRStmt elseStatement = (IRStmt) node.getElseState().accept(this);
-        String lt =newLabel();
-        String lf = newLabel();
-        String lafter = newLabel();
+        String lt = nxtLabel();
+        String lf = nxtLabel();
+        String lafter = nxtLabel();
         IRStmt condStmt = booleanAsControlFlow(node.getGuard(),lt,lf);
         IRJump endJmp = new IRJump(new IRName(lafter));
         return new IRSeq(condStmt,
@@ -175,8 +200,8 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(IfOnly node) {
-        String l1 = newLabel();
-        String l2 = newLabel();
+        String l1 = nxtLabel();
+        String l2 = nxtLabel();
         IRStmt condStmt = booleanAsControlFlow(node.guard,l1,l2);
         IRStmt statement = (IRStmt) node.ifState.accept(this);
         return new IRSeq(condStmt,new IRLabel(l1),statement, new IRLabel(l2));
@@ -198,9 +223,9 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     @Override
     public IRNode visit(While node) {
-        String lh = newLabel();
-        String l1 = newLabel();
-        String le = newLabel();
+        String lh = nxtLabel();
+        String l1 = nxtLabel();
+        String le = nxtLabel();
         IRStmt condStmt = booleanAsControlFlow(node.getGuard(),l1,le);
         IRStmt bodyStmt = (IRStmt) node.getStmt().accept(this);
         return new IRSeq(
@@ -211,7 +236,6 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRJump(new IRName(lh)),
                 new IRLabel(le));
     }
-
     @Override
     public IRNode visit(DeclAssignStmt node) {
         return null;
@@ -282,16 +306,16 @@ public class IRVisitor implements Visitor<IRNode>{
             boolean val = ((BoolLiteral) e).boolVal;
             return new IRJump(new IRName(val ? lt : lf));
         } else if (e instanceof AndBinop){ // C[e1 & e2, t, f]  = SEQ(C[e1,l1,f],l1,C[e2,t,f])
-            Expr e1 = ((OrBinop) e).getLeftExpr();
-            Expr e2 = ((OrBinop) e).getRightExpr();
-            String l1 = newLabel();
+            Expr e1 = ((AndBinop) e).getLeftExpr();
+            Expr e2 = ((AndBinop) e).getRightExpr();
+            String l1 = nxtLabel();
             IRStmt first = booleanAsControlFlow(e1,l1,lf);
             IRStmt second = booleanAsControlFlow(e2,lt,lf);
             return new IRSeq(first,new IRLabel(l1),second);
         }else if (e instanceof OrBinop){ // C[e1 | e2, t, f]  = SEQ(C[e1,t,l1],l1,C[e2,t,f])
             Expr e1 = ((OrBinop) e).getLeftExpr();
             Expr e2 = ((OrBinop) e).getRightExpr();
-            String l1 = newLabel();
+            String l1 = nxtLabel();
             IRStmt first = booleanAsControlFlow(e1,lt,l1);
             IRStmt second = booleanAsControlFlow(e2,lt,lf);
             return new IRSeq(first,new IRLabel(l1),second);
