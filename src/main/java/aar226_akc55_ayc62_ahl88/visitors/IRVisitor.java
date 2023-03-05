@@ -13,11 +13,7 @@ import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr.ArrayAccessExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.EquivalenceBinop;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.IntegerComparisonBinop;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.LogicalBinop;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
@@ -26,6 +22,7 @@ import aar226_akc55_ayc62_ahl88.newast.stmt.*;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
@@ -78,7 +75,15 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(IntegerComparisonBinop node) {
-        return null;
+//        < , <= , > , >=
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
+
+        IRExpr ire1 = (IRExpr) e1.accept(this);
+        IRExpr ire2 = (IRExpr) e2.accept(this);
+        IRBinOp.OpType op = node.getOpType();
+
+        return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
@@ -235,5 +240,30 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRNode visit(Type node) {
         return null;
+    }
+
+    private IRStmt booleanAsControlFlow(Expr e, String lt, String lf) {
+        if (e instanceof BoolLiteral) { // C[true/false, t, f]  = JUMP(NAME(t/f))
+            boolean val = ((BoolLiteral) e).boolVal;
+            return new IRJump(new IRName(val ? lt : lf));
+        } else if (e instanceof AndBinop){ // C[e1 & e2, t, f]  = SEQ(C[e1,l1,f],l1,C[e2,t,f])
+            Expr e1 = ((OrBinop) e).getLeftExpr();
+            Expr e2 = ((OrBinop) e).getRightExpr();
+            String l1 = newLabel();
+            IRStmt first = booleanAsControlFlow(e1,l1,lf);
+            IRStmt second = booleanAsControlFlow(e2,lt,lf);
+            return new IRSeq(first,new IRLabel(l1),second);
+        }else if (e instanceof OrBinop){ // C[e1 | e2, t, f]  = SEQ(C[e1,t,l1],l1,C[e2,t,f])
+            Expr e1 = ((OrBinop) e).getLeftExpr();
+            Expr e2 = ((OrBinop) e).getRightExpr();
+            String l1 = newLabel();
+            IRStmt first = booleanAsControlFlow(e1,lt,l1);
+            IRStmt second = booleanAsControlFlow(e2,lt,lf);
+            return new IRSeq(first,new IRLabel(l1),second);
+        }else if (e instanceof NotUnop){ // C[!e, t, f]  = C[e, f, t]
+            return booleanAsControlFlow(e,lf,lt);
+        }
+        IRExpr cond = (IRExpr) e.accept(this);         // C[e, t, f]  = CJUMP(E[e], t, f)
+        return new IRCJump(cond, lt, lf);
     }
 }

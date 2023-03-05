@@ -108,7 +108,6 @@ public abstract class BinopExpr extends Expr {
             case LT: return IRBinOp.OpType.LT;
             case GT: return IRBinOp.OpType.GT;
             case PLUS: return IRBinOp.OpType.ADD;
-
             default:
                 throw new Error("Invalid binary operation");
         }
