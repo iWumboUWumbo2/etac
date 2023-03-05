@@ -12,8 +12,8 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
  * Class for If-Statement without Else
  */
 public class IfOnly extends Stmt {
-    private Expr guard;
-    private Stmt ifState;
+    public Expr guard;
+    public Stmt ifState;
 
     /**
      * @param e Expression

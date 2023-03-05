@@ -33,7 +33,7 @@ public class IRVisitor implements Visitor<IRNode>{
     private static final int WORD_BYTES = 8;
     private int labelCnt;
     private int tempCnt;
-    private String compUnitName;
+    private final String compUnitName;
     public IRVisitor(String name) {
         labelCnt = 0;
         tempCnt = 0;
@@ -159,7 +159,11 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(IfOnly node) {
-        return null;
+        String l1 = newLabel();
+        String l2 = newLabel();
+        IRStmt condStmt = booleanAsControlFlow(node.guard,l1,l2);
+        IRStmt statement = (IRStmt) node.ifState.accept(this);
+        return new IRSeq(condStmt,new IRLabel(l1),statement, new IRLabel(l2));
     }
 
     @Override
