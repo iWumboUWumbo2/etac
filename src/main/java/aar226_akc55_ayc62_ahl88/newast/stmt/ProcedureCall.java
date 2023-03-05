@@ -100,4 +100,12 @@ public class ProcedureCall extends Stmt {
     public IRNode accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
+
+    public ArrayList<Expr> getParamList() {
+        return paramList;
+    }
+
+    public Id getIdentifier() {
+        return identifier;
+    }
 }

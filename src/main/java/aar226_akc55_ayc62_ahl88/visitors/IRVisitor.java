@@ -216,7 +216,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(ProcedureCall node) {
-        return null;
+        IRName func = new IRName(genABIFunc(node.getNodeType(),node.getIdentifier()));
+        ArrayList<IRExpr> paramListIR = new ArrayList<>();
+        for (Expr param: node.getParamList()){
+            paramListIR.add((IRExpr) param.accept(this));
+        }
+        return new IRExp(new IRCall(func,paramListIR));
     }
 
     @Override
