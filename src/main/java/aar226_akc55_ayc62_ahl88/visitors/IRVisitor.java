@@ -27,6 +27,7 @@ import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 
@@ -84,6 +85,10 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRNode visit(EquivalenceBinop node) {
         IRExpr l = (IRExpr) node.getLeftExpr().accept(this);
         IRExpr r = (IRExpr) node.getRightExpr().accept(this);
+
+        IRBinOp.OpType op = node.getOpType();
+
+        return new IRBinOp(op, l, r);
     }
 
     @Override
@@ -93,7 +98,8 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(NotUnop node) {
-        return null;
+        IRExpr ire = (IRExpr) node.accept(this);
+        return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), ire);
     }
 
     @Override
@@ -103,12 +109,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(BoolLiteral node) {
-        return null;
+        return new IRConst(node.boolVal ? 1 : 0);
     }
 
     @Override
     public IRNode visit(IntLiteral node) {
-        return null;
+        return new IRConst(node.number);
     }
 
     @Override

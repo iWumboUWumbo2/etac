@@ -10,7 +10,7 @@ import org.apache.commons.text.*;
  * Class for Integer Literal
  */
 public class IntLiteral extends Expr{
-    private long number;
+    public long number;
     private String rawChar;
 
     /**
