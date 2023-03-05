@@ -20,6 +20,8 @@ public class ProcedureCall extends Stmt {
     Id identifier;
     ArrayList<Expr> paramList;
 
+    Type functionSig;
+
     /**
      * @param id Identifer to Procedure
      * @param parameterList List of Parameters
@@ -40,11 +42,16 @@ public class ProcedureCall extends Stmt {
         p.endList();
     }
 
+    public Type getFunctionSig() {
+        return functionSig;
+    }
+
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
 //        System.out.println("In Procedure");
 //        System.out.println(identifier.toString());
         Type functionType = table.lookup(identifier);
+        functionSig = functionType;
 
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {
             throw new SemanticError(identifier.getLine() , identifier.getColumn()

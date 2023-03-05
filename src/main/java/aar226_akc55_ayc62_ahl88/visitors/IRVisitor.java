@@ -332,4 +332,42 @@ public class IRVisitor implements Visitor<IRNode>{
         IRExpr cond = (IRExpr) e.accept(this);         // C[e, t, f]  = CJUMP(E[e], t, f)
         return new IRCJump(cond, lt, lf);
     }
+
+    private String genABIFunc(Type funcType, Id funcName){
+        if (funcType.getType() != Type.TypeCheckingType.FUNC){
+            throw new Error("HOW ARE WE HERE");
+        }
+        String replaceName = funcName.toString().replaceAll("_","__");
+        String inputABIName = genABIArr(funcType.inputTypes,true);
+        String outputABIName = genABIArr(funcType.outputTypes,false);
+        return "_I" + replaceName + outputABIName + inputABIName;
+    }
+    private String genABIArr(ArrayList<Type> arrTypes, boolean isInput){
+        if (arrTypes.size() == 0){
+            return isInput ? "": "p";
+        }
+        else if (arrTypes.size() == 1){
+            return genABIType(arrTypes.get(0));
+        }else{
+            StringBuilder temp = new StringBuilder(isInput ? "" : "t" + arrTypes.size());
+            for (Type t: arrTypes){
+                temp.append(genABIType(t));
+            }
+            return temp.toString();
+        }
+    }
+    private String genABIType(Type t){
+        if (t.isBasic()){
+            return (t.getType() == Type.TypeCheckingType.INT) ? "i": "b";
+        }else if (t.isArray()){
+            StringBuilder build = new StringBuilder();
+            for (int i = 0 ; i< t.dimensions.getDim();i++){
+                build.append("a");
+            }
+            build.append((t.getType() == Type.TypeCheckingType.INTARRAY) ? "i":"b");
+            return build.toString();
+        }else{
+            throw new Error("WE SHOULD NOT BE IN GENTYPE");
+        }
+    }
 }
