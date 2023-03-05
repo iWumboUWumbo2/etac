@@ -5,6 +5,8 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 import java.util.ArrayList;
 /**
@@ -74,6 +76,11 @@ public class Block extends Stmt {
 
         // unit if no return
         // void if return
+    }
+
+    @Override
+    public IRNode accept(IRVisitor visitor) {
+        return visitor.visit(this);
     }
 }
 

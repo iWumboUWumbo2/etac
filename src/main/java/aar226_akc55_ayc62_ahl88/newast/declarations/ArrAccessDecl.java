@@ -6,6 +6,8 @@ import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import org.apache.tools.ant.util.OutputStreamFunneler;
 
 import java.lang.reflect.Array;
@@ -33,6 +35,11 @@ public class ArrAccessDecl extends Decl{
         super(id,l, c);
         funcParams = funcs;
         this.indices = indices;
+    }
+
+    @Override
+    public IRNode accept(IRVisitor visitor) {
+        return visitor.visit(this);
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {

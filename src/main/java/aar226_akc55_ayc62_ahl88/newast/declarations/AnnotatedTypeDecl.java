@@ -5,6 +5,9 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
+
 /**
  * Class For Declarations that do have a type
  * Annotation
@@ -32,6 +35,11 @@ public class AnnotatedTypeDecl extends Decl{
         }
         nodeType = type;
         return type;
+    }
+
+    @Override
+    public IRNode accept(IRVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override

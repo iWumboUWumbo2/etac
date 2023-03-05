@@ -6,6 +6,8 @@ import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
  * Class for Plus Binary Operator
@@ -60,5 +62,10 @@ public class PlusBinop extends BinopExpr {
             nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
             return nodeType;
         }
+    }
+
+    @Override
+    public IRNode accept(IRVisitor visitor) {
+        return visitor.visit(this);
     }
 }

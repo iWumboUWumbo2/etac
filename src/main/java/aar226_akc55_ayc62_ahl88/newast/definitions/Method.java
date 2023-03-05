@@ -9,6 +9,9 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 import aar226_akc55_ayc62_ahl88.newast.declarations.Decl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -140,5 +143,10 @@ public class Method extends Definition {
 
     public ArrayList<Type> getOutputtypes(){
         return types;
+    }
+
+    @Override
+    public IRNode accept(IRVisitor visitor) {
+        return visitor.visit(this);
     }
 }

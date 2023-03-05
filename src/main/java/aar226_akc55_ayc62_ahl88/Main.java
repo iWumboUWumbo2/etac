@@ -1,9 +1,6 @@
 package aar226_akc55_ayc62_ahl88;
 
 import aar226_akc55_ayc62_ahl88.Errors.EtaError;
-import aar226_akc55_ayc62_ahl88.Errors.LexicalError;
-import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
-import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -14,17 +11,21 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+
 public class Main {
     private static String outputDirectory;
     private static String inputDirectory;
     public static String libpathDirectory;
+
     private static boolean isOutputDirSpecified;
     private static boolean isInputDirSpecified;
     public static boolean isLibpathDirSpecified;
 
     // Write the lexed string into the corresponding file name
     private static void writeOutput(String filename, String output, String extension) {
-        Path path = (isOutputDirSpecified) ? Paths.get(outputDirectory, filename) : Paths.get(filename);
+        Path path = (isOutputDirSpecified)
+                        ? Paths.get(outputDirectory, filename)
+                        : Paths.get(filename);
 
         String pathname = path.toString();
         pathname = pathname.substring(0, pathname.length() - 3) + extension;
@@ -43,7 +44,6 @@ public class Main {
         }
         catch (IOException e) {
             System.out.println("An error occurred when creating the file " + filename);
-//            e.printStackTrace();
             return;
         }
 
@@ -53,19 +53,18 @@ public class Main {
 
             myWriter.write(output);
             myWriter.close();
-
-//            System.out.println("Successfully wrote to the file.");
         }
         catch (IOException e) {
             System.out.println("An error occurred when writing to the file " + filename);
-//            e.printStackTrace();
         }
     }
 
     private static void parseFile(String filename, StringBuilder parsedOutput, boolean shouldWrite) throws IOException {
         try {
             String zhenFilename =
-                    (isInputDirSpecified) ? Paths.get(inputDirectory, filename).toString() : filename;
+                    (isInputDirSpecified)
+                            ? Paths.get(inputDirectory, filename).toString()
+                            : filename;
 
             if (filename.endsWith(".eta")) {
                 try {
@@ -73,11 +72,12 @@ public class Main {
                     try {
                         Program result = (Program) p.parse().value;
                         StringWriter out = new StringWriter();
-                        //                    PrintWriter cw = new PrintWriter(System.out);
+
                         PrintWriter cw = new PrintWriter(out);
                         CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
                         result.prettyPrint(printer);
                         printer.close();
+
                         if (shouldWrite) {
                             writeOutput(filename, out.toString(), "parsed");
                         }
@@ -91,7 +91,6 @@ public class Main {
                     }
                 }
                 catch (Exception e){
-//                    e.printStackTrace();
                     System.out.println("File without name " + filename + " found");
                 }
             }
