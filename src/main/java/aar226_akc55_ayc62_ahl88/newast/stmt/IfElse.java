@@ -31,6 +31,16 @@ public class IfElse extends Stmt {
         elseState = elseS;
     }
 
+    public Expr getGuard() {
+        return guard;
+    }
+    public Stmt getIfState() {
+        return ifState;
+    }
+    public Stmt getElseState() {
+        return elseState;
+    }
+
     @Override
     public Type typeCheck(SymbolTable table) {
 

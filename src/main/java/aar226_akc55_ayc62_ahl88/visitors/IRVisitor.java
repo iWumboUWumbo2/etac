@@ -154,7 +154,22 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(IfElse node) {
-        return null;
+        IRStmt iFStatement = (IRStmt) node.getIfState().accept(this);
+        IRStmt elseStatement = (IRStmt) node.getElseState().accept(this);
+        String lt =newLabel();
+        String lf = newLabel();
+        String lafter = newLabel();
+        IRStmt condStmt = booleanAsControlFlow(node.getGuard(),lt,lf);
+        IRJump endJmp = new IRJump(new IRName(lafter));
+        return new IRSeq(condStmt,
+                new IRLabel(lt),
+                iFStatement,
+                endJmp,
+                new IRLabel(lf),
+                elseStatement,
+                new IRLabel(lafter)
+        );
+
     }
 
     @Override
