@@ -15,6 +15,10 @@ public class ArrayValueLiteral extends Expr {
     private String raw;
     private ArrayList<Expr> values;
 
+    public ArrayList<Expr> getValues() {
+        return values;
+    }
+
     public ArrayValueLiteral(String s, int l, int c) {
         super(l, c);
         values = new ArrayList<>();

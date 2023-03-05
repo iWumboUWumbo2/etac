@@ -29,6 +29,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
 
@@ -171,7 +172,48 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(ArrayValueLiteral node) {
-        return null;
+        String t = nxtTemp();   // temp label for malloc
+        ArrayList<Expr> values = node.getValues();
+        long n = values.size();
+        String l = nxtTemp();
+
+        // reg[l] <- length
+        IRMove length_to_l = new IRMove(new IRTemp(l), new IRConst(n));
+
+        // 8*n+8
+        IRBinOp size = new IRBinOp(IRBinOp.OpType.ADD,
+                new IRBinOp(IRBinOp.OpType.MUL,
+                        new IRTemp(l),
+                        new IRConst(WORD_BYTES)),
+                new IRConst(WORD_BYTES));
+
+        // CALL(NAME(malloc), size)
+        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), size);
+
+        // reg[t] <- call malloc
+        IRMove malloc_move = new IRMove(new IRTemp(t), alloc_call);
+
+        IRMove size_move = new IRMove(new IRMem(new IRTemp(t)), new IRTemp(l));
+
+        List<IRStmt> seq_list = new ArrayList<>(List.of(length_to_l, malloc_move, size_move));
+
+        for(int i = 0; i < n; i++) {
+            IRExpr ire = (IRExpr) values.get(i).accept(this);
+            IRMove move_elmnt = new IRMove(new IRMem(new IRBinOp(
+                    IRBinOp.OpType.ADD,
+                    new IRTemp(t),
+                    new IRConst(8*(i+1)))),
+                    ire );
+            seq_list.add(move_elmnt);
+        }
+
+        IRSeq ir_seq = new IRSeq(seq_list);
+
+        return new IRESeq(ir_seq,
+                new IRBinOp(IRBinOp.OpType.ADD,
+                        new IRTemp(t),
+                        new IRConst(WORD_BYTES)));
+
     }
     @Override
     public IRNode visit(ArrayAccessExpr node) {
