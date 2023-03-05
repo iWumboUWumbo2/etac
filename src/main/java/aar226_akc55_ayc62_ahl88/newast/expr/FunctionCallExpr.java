@@ -16,6 +16,19 @@ import java.util.ArrayList;
 public class FunctionCallExpr extends Expr {
     Id id;
     ArrayList<Expr> args;
+    Type functionSig;
+
+    public Type getFunctionSig() {
+        return functionSig;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public ArrayList<Expr> getArgs() {
+        return args;
+    }
 
     /**
      * @param i function name
@@ -34,6 +47,7 @@ public class FunctionCallExpr extends Expr {
 //        System.out.println("In Function");
 //        System.out.println(id.toString());
         Type functionType = table.lookup(id);
+        functionSig = functionType;
 
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {
             throw new SemanticError(id.getLine(), id.getColumn(), "identifier isn't function");
