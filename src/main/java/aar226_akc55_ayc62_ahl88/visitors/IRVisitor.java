@@ -24,6 +24,8 @@ import aar226_akc55_ayc62_ahl88.newast.stmt.*;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 
 public class IRVisitor implements Visitor<IRNode>{
@@ -34,7 +36,15 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(PlusBinop node) {
-        return null;
+        IRExpr l = (IRExpr) node.getLeftExpr().accept(this);
+        IRExpr r = (IRExpr) node.getRightExpr().accept(this);
+
+        return new IRBinOp(IRBinOp.OpType.ADD, l, r);
+
+        // if both ints, return irbinop
+        // if one unknown and other int, return int
+        // if both arrays, add
+        // if one unknown array and other array, return array
     }
 
     @Override
@@ -44,7 +54,8 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(EquivalenceBinop node) {
-        return null;
+        IRExpr l = (IRExpr) node.getLeftExpr().accept(this);
+        IRExpr r = (IRExpr) node.getRightExpr().accept(this);
     }
 
     @Override
