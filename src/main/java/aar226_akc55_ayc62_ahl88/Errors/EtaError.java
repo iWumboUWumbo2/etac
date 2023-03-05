@@ -22,6 +22,11 @@ public class EtaError extends Error {
         return errorType;
     }
 
+    public void printError(String filename) {
+        System.out.printf("%s error beginning at %s:%d:%d: %s\n",
+                getErrorType(), filename, getLine(), getCol(), getErrorString());
+    }
+
     public EtaError(EtaErrorTypes type, int line, int col, String m) {
         super(String.format("%d:%d error:%s", line, col, m));
 
