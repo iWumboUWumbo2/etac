@@ -31,6 +31,24 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 
 public class IRVisitor implements Visitor<IRNode>{
+
+    private static final int WORD_BYTES = 8;
+    private int labelCnt;
+    private int tempCnt;
+    private String compUnitName;
+    public IRVisitor(String name) {
+        labelCnt = 0;
+        tempCnt = 0;
+        compUnitName = name;
+    }
+    private String newLabel() {
+        return String.format("l%d", (labelCnt++));
+    }
+
+    private String newTemp() {
+        return String.format("t%d", (tempCnt++));
+    }
+
     @Override
     public IRNode visit(IntOutBinop node) {
 //        DIVIDE, HIGHMULT, MINUS, MODULO, TIMES
