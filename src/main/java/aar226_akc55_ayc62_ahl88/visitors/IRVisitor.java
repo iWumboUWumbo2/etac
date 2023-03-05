@@ -13,6 +13,8 @@ import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr.ArrayAccessExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.EquivalenceBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.IntegerComparisonBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.LogicalBinop;
@@ -29,9 +31,35 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 
 public class IRVisitor implements Visitor<IRNode>{
+
+    private static final int WORD_BYTES = 8;
+    private int labelCnt;
+    private int tempCnt;
+    private String compUnitName;
+    public IRVisitor(String name) {
+        labelCnt = 0;
+        tempCnt = 0;
+        compUnitName = name;
+    }
+    private String newLabel() {
+        return String.format("l%d", (labelCnt++));
+    }
+
+    private String newTemp() {
+        return String.format("t%d", (tempCnt++));
+    }
+
     @Override
     public IRNode visit(IntOutBinop node) {
-        return null;
+//        DIVIDE, HIGHMULT, MINUS, MODULO, TIMES
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
+
+        IRExpr ire1 = (IRExpr) e1.accept(this);
+        IRExpr ire2 = (IRExpr) e2.accept(this);
+        IRBinOp.OpType op = node.getOpType();
+
+        return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
