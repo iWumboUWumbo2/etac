@@ -309,7 +309,7 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRNode visit(DeclNoAssignStmt node) {
 
-        if (node.getDecl() instanceof AnnotatedTypeDecl){ // might need to wrap in SEQ
+        if (node.getDecl() instanceof AnnotatedTypeDecl){ // might need to wrap in SEQ remove I think
             AnnotatedTypeDecl atd = (AnnotatedTypeDecl) node.getDecl();
             if (atd.type.isArray()){
                 if (atd.type.dimensions.allEmpty){ // random init is fine
@@ -354,7 +354,17 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(AnnotatedTypeDecl node) {
-        return null;
+        AnnotatedTypeDecl atd = node;
+        if (atd.type.isArray()){
+            if (atd.type.dimensions.allEmpty){ // random init is fine
+                return new IRMove(new IRTemp(atd.identifier.toString()),new IRMem(new IRConst(0)));
+            }else{
+                throw new InternalCompilerError("Gotta create init array malloc thing");
+            }
+        }else if (atd.type.isBasic()){
+            return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
+        }
+        throw new InternalCompilerError("Annotated can only be array or basic");
     }
 
     @Override
@@ -364,12 +374,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(NoTypeDecl node) {
-        return null;
+        return new IRTemp(node.getIdentifier().toString());
     }
 
     @Override
     public IRNode visit(UnderScore node) {
-        return null;
+        return new IRTemp("_");
     }
 
     @Override

@@ -34,5 +34,9 @@ public abstract class Decl extends AstNode {
     public abstract Type typeCheck(SymbolTable<Type> table);
 
     public abstract IRNode accept(IRVisitor visitor);
+
+    public Id getIdentifier() {
+        return identifier;
+    }
 }
 
