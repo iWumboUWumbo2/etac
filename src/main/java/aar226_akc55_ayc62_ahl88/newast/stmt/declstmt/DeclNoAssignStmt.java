@@ -59,4 +59,7 @@ public class DeclNoAssignStmt extends Stmt {
         return visitor.visit(this);
     }
 
+    public Decl getDecl() {
+        return decl;
+    }
 }

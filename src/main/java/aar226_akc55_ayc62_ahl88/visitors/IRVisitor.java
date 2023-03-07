@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.visitors;
 
+import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.Use;
@@ -27,6 +28,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -299,7 +301,28 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(DeclNoAssignStmt node) {
-        return null;
+
+        if (node.getDecl() instanceof AnnotatedTypeDecl){ // might need to wrap in SEQ
+            AnnotatedTypeDecl atd = (AnnotatedTypeDecl) node.getDecl();
+            if (atd.type.isArray()){
+                if (atd.type.dimensions.allEmpty){ // random init is fine
+                    return new IRMove(new IRTemp(atd.identifier.toString()),new IRMem(new IRConst(0)));
+                }else{
+                    throw new InternalCompilerError("Gotta create init array malloc thing");
+                }
+            }else if (atd.type.isBasic()){
+                return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
+            }
+        }
+        throw new InternalCompilerError("no assign can only be annotated");
+
+        //Annotated Type Decl
+
+        // ArrAccessDecl Can't
+
+        // No Type Decl  Can't
+
+        // UnderScore Can't
     }
 
     @Override
@@ -418,5 +441,12 @@ public class IRVisitor implements Visitor<IRNode>{
         }else{
             throw new Error("WE SHOULD NOT BE IN GENTYPE");
         }
+    }
+    private IRNode recursiveMalloc(int index, Dimension d){
+//        if (index == d.getDim()){
+//            return new IRMove(,new IRConst(0));
+//        }
+        return null;
+
     }
 }
