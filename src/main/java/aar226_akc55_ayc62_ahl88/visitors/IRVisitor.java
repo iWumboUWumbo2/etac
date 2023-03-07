@@ -173,8 +173,8 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(Id node) {
-        return null;
+    public IRNode visit(Id node) { // x = a; this is only a
+        return new IRTemp(node.toString());
     }
 
     @Override
