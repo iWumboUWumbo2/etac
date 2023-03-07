@@ -303,26 +303,17 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRNode visit(DeclAssignStmt node) {
 //        if (node.getDecl() instanceof UnderScore){
 //        }
-        return null;
+        IRStmt left = (IRStmt) node.getDecl().accept(this);
+        IRExpr right = (IRExpr) node.getExpression().accept(this);
+        return new IRMove(new IRTemp(node.getDecl().identifier.toString()),right);
     }
 
     @Override
     public IRNode visit(DeclNoAssignStmt node) {
-
-        if (node.getDecl() instanceof AnnotatedTypeDecl){ // might need to wrap in SEQ remove I think
-            AnnotatedTypeDecl atd = (AnnotatedTypeDecl) node.getDecl();
-            if (atd.type.isArray()){
-                if (atd.type.dimensions.allEmpty){ // random init is fine
-                    return new IRMove(new IRTemp(atd.identifier.toString()),new IRMem(new IRConst(0)));
-                }else{
-                    throw new InternalCompilerError("Gotta create init array malloc thing");
-                }
-            }else if (atd.type.isBasic()){
-                return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
-            }
+        if (!(node.getDecl() instanceof  AnnotatedTypeDecl)){
+            throw new InternalCompilerError("no assign can only be annotated");
         }
-        throw new InternalCompilerError("no assign can only be annotated");
-
+        return node.getDecl().accept(this);
         //Annotated Type Decl
 
         // ArrAccessDecl Can't
