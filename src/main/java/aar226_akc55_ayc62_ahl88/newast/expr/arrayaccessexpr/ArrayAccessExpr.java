@@ -18,6 +18,14 @@ public class ArrayAccessExpr extends Expr {
     // Type Check that it is an Actual Array
     Expr orgArray;
 
+    public Expr getOrgArray() {
+        return orgArray;
+    }
+
+    public ArrayList<Expr> getIndicies() {
+        return indicies;
+    }
+
     // Read This Left to Right
     ArrayList<Expr> indicies;
 

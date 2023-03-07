@@ -164,7 +164,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRNode visit(FunctionCallExpr node) {
-        return null;
+        IRName func = new IRName(genABIFunc(node.getFunctionSig(),node.getId()));
+        ArrayList<IRExpr> paramListIR = new ArrayList<>();
+        for (Expr param: node.getArgs()){
+            paramListIR.add((IRExpr) param.accept(this));
+        }
+        return new IRCall(func,paramListIR);
     }
 
     @Override
@@ -296,6 +301,8 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     @Override
     public IRNode visit(DeclAssignStmt node) {
+//        if (node.getDecl() instanceof UnderScore){
+//        }
         return null;
     }
 

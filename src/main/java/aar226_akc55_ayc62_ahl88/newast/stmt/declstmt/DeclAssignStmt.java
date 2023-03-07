@@ -65,4 +65,12 @@ public class DeclAssignStmt extends Stmt{
     public IRNode accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
+
+    public Decl getDecl() {
+        return decl;
+    }
+
+    public Expr getExpression() {
+        return expression;
+    }
 }
