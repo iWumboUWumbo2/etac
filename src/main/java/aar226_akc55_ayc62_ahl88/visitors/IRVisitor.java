@@ -53,22 +53,22 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(IntOutBinop node) {
+    public IRExpr visit(IntOutBinop node) {
 //        DIVIDE, HIGHMULT, MINUS, MODULO, TIMES
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
 
-        IRExpr ire1 = (IRExpr) e1.accept(this);
-        IRExpr ire2 = (IRExpr) e2.accept(this);
+        IRExpr ire1 = e1.accept(this);
+        IRExpr ire2 = e2.accept(this);
         IRBinOp.OpType op = node.getOpType();
 
         return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
-    public IRNode visit(PlusBinop node) {
-        IRExpr l = (IRExpr) node.getLeftExpr().accept(this);
-        IRExpr r = (IRExpr) node.getRightExpr().accept(this);
+    public IRExpr visit(PlusBinop node) {
+        IRExpr l = node.getLeftExpr().accept(this);
+        IRExpr r = node.getRightExpr().accept(this);
 
         return new IRBinOp(IRBinOp.OpType.ADD, l, r);
 
@@ -84,17 +84,17 @@ public class IRVisitor implements Visitor<IRNode>{
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
 
-        IRExpr ire1 = (IRExpr) e1.accept(this);
-        IRExpr ire2 = (IRExpr) e2.accept(this);
+        IRExpr ire1 = e1.accept(this);
+        IRExpr ire2 = e2.accept(this);
         IRBinOp.OpType op = node.getOpType();
 
         return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
-    public IRNode visit(EquivalenceBinop node) {
-        IRExpr l = (IRExpr) node.getLeftExpr().accept(this);
-        IRExpr r = (IRExpr) node.getRightExpr().accept(this);
+    public IRExpr visit(EquivalenceBinop node) {
+        IRExpr l = node.getLeftExpr().accept(this);
+        IRExpr r = node.getRightExpr().accept(this);
 
         IRBinOp.OpType op = node.getOpType();
 
@@ -102,7 +102,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(LogicalBinop node) {
+    public IRExpr visit(LogicalBinop node) {
         String l1 = nxtLabel();
         String l2 = nxtLabel();
         String lend = nxtLabel();
@@ -132,29 +132,29 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(NotUnop node) {
+    public IRExpr visit(NotUnop node) {
         IRExpr ire = (IRExpr) node.accept(this);
         return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), ire);
     }
 
     @Override
-    public IRNode visit(IntegerNegExpr node) {
+    public IRExpr visit(IntegerNegExpr node) {
         IRExpr ire = (IRExpr) node.accept(this);
         return new IRBinOp(IRBinOp.OpType.SUB, new IRConst(0), ire);
     }
 
     @Override
-    public IRNode visit(BoolLiteral node) {
+    public IRExpr visit(BoolLiteral node) {
         return new IRConst(node.boolVal ? 1 : 0);
     }
 
     @Override
-    public IRNode visit(IntLiteral node) {
+    public IRExpr visit(IntLiteral node) {
         return new IRConst(node.number);
     }
 
     @Override
-    public IRNode visit(Length node) {
+    public IRExpr visit(Length node) {
         String x = nxtTemp();
         IRMem mem = new IRMem(new IRBinOp(IRBinOp.OpType.SUB, (IRExpr) node.getArg().accept(this), new IRConst(WORD_BYTES)));
         IRMove move = new IRMove(new IRTemp(x), mem);
@@ -163,7 +163,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(FunctionCallExpr node) {
+    public IRExpr visit(FunctionCallExpr node) {
         IRName func = new IRName(genABIFunc(node.getFunctionSig(),node.getId()));
         ArrayList<IRExpr> paramListIR = new ArrayList<>();
         for (Expr param: node.getArgs()){
@@ -173,12 +173,12 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(Id node) { // x = a; this is only a
+    public IRExpr visit(Id node) { // x = a; this is only a
         return new IRTemp(node.toString());
     }
 
     @Override
-    public IRNode visit(ArrayValueLiteral node) {
+    public IRExpr visit(ArrayValueLiteral node) {
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
         long n = values.size();
@@ -223,12 +223,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
     }
     @Override
-    public IRNode visit(ArrayAccessExpr node) {
+    public IRExpr visit(ArrayAccessExpr node) {
         return null;
     }
 
     @Override
-    public IRNode visit(Block node) {
+    public IRStmt visit(Block node) {
         ArrayList<Stmt> statements = node.getStatementList();
         ArrayList<IRStmt> IRstmtList = new ArrayList<IRStmt>();
         for (Stmt stmt: statements) {
@@ -238,7 +238,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(IfElse node) {
+    public IRStmt visit(IfElse node) {
         IRStmt iFStatement = (IRStmt) node.getIfState().accept(this);
         IRStmt elseStatement = (IRStmt) node.getElseState().accept(this);
         String lt = nxtLabel();
@@ -257,7 +257,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(IfOnly node) {
+    public IRStmt visit(IfOnly node) {
         String l1 = nxtLabel();
         String l2 = nxtLabel();
         IRStmt condStmt = booleanAsControlFlow(node.guard,l1,l2);
@@ -266,7 +266,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(ProcedureCall node) {
+    public IRStmt visit(ProcedureCall node) {
         IRName func = new IRName(genABIFunc(node.getFunctionSig(),node.getIdentifier()));
         ArrayList<IRExpr> paramListIR = new ArrayList<>();
         for (Expr param: node.getParamList()){
@@ -276,7 +276,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(Return node) {
+    public IRStmt visit(Return node) {
         ArrayList<Expr> retList = node.getReturnArgList();
         ArrayList<IRExpr> IRRet = new ArrayList<>();
         for (Expr ret: retList){
@@ -285,7 +285,7 @@ public class IRVisitor implements Visitor<IRNode>{
         return new IRReturn(IRRet);
     }
     @Override
-    public IRNode visit(While node) {
+    public IRStmt visit(While node) {
         String lh = nxtLabel();
         String l1 = nxtLabel();
         String le = nxtLabel();
@@ -300,20 +300,21 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRLabel(le));
     }
     @Override
-    public IRNode visit(DeclAssignStmt node) {
+    public IRStmt visit(DeclAssignStmt node) {
 //        if (node.getDecl() instanceof UnderScore){
 //        }
-        IRStmt left = (IRStmt) node.getDecl().accept(this);
+        IRNode left =  node.getDecl().accept(this); // just in case we need to initalize
         IRExpr right = (IRExpr) node.getExpression().accept(this);
         return new IRMove(new IRTemp(node.getDecl().identifier.toString()),right);
     }
 
     @Override
-    public IRNode visit(DeclNoAssignStmt node) {
+    public IRStmt visit(DeclNoAssignStmt node) {
         if (!(node.getDecl() instanceof  AnnotatedTypeDecl)){
             throw new InternalCompilerError("no assign can only be annotated");
         }
-        return node.getDecl().accept(this);
+        AnnotatedTypeDecl atd = (AnnotatedTypeDecl) node.getDecl();
+        return atd.accept(this);
         //Annotated Type Decl
 
         // ArrAccessDecl Can't
@@ -324,27 +325,27 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(MultiDeclAssignStmt node) {
+    public IRStmt visit(MultiDeclAssignStmt node) {
         return null;
     }
 
     @Override
-    public IRNode visit(Globdecl node) {
+    public IRStmt visit(Globdecl node) {
         return null;
     }
 
     @Override
-    public IRNode visit(Method node) {
+    public IRStmt visit(Method node) {
         return null;
     }
 
     @Override
-    public IRNode visit(MultiGlobalDecl node) {
+    public IRStmt visit(MultiGlobalDecl node) {
         return null;
     }
 
     @Override
-    public IRNode visit(AnnotatedTypeDecl node) {
+    public IRStmt visit(AnnotatedTypeDecl node) { // could be IREXPR
         AnnotatedTypeDecl atd = node;
         if (atd.type.isArray()){
             if (atd.type.dimensions.allEmpty){ // random init is fine
@@ -359,32 +360,32 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(ArrAccessDecl node) {
+    public IRExpr visit(ArrAccessDecl node) {
         return null;
     }
 
     @Override
-    public IRNode visit(NoTypeDecl node) {
+    public IRExpr visit(NoTypeDecl node) {
         return new IRTemp(node.getIdentifier().toString());
     }
 
     @Override
-    public IRNode visit(UnderScore node) {
+    public IRExpr visit(UnderScore node) {
         return new IRTemp("_");
     }
 
     @Override
-    public IRNode visit(Use node) {
+    public IRStmt visit(Use node) {
         return null;
     }
 
     @Override
-    public IRNode visit(Program node) {
+    public IRCompUnit visit(Program node) {
         return null;
     }
 
     @Override
-    public IRNode visit(Type node) {
+    public IRStmt visit(Type node) {
         return null;
     }
 

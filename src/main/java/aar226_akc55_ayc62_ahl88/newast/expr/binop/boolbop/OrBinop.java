@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
@@ -27,7 +28,7 @@ public class OrBinop extends LogicalBinop {
     }
 
     @Override
-    public IRNode accept(IRVisitor visitor) {
+    public IRExpr accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
 }

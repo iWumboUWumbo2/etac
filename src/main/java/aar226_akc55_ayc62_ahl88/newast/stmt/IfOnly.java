@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
@@ -59,7 +60,7 @@ public class IfOnly extends Stmt {
     }
 
     @Override
-    public IRNode accept(IRVisitor visitor) {
+    public IRStmt accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
 }
