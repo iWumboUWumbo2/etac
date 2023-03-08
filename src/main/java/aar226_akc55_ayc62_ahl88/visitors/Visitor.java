@@ -93,7 +93,6 @@ public interface Visitor<T> {
     T visit(Program node);
 
     // unsure
-    T visit(Type node);
 
 }
 

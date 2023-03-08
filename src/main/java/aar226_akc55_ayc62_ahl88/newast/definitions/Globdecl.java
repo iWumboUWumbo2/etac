@@ -8,6 +8,7 @@ import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRData;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
@@ -19,6 +20,14 @@ import java.util.HashSet;
 public class Globdecl extends Definition {
     private AnnotatedTypeDecl decl;
     private Expr value;
+
+    public AnnotatedTypeDecl getDecl() {
+        return decl;
+    }
+
+    public Expr getValue() {
+        return value;
+    }
 
     /**
      * @param d Declaration

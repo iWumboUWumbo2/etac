@@ -178,7 +178,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRExpr visit(ArrayValueLiteral node) {
+    public IRExpr visit(ArrayValueLiteral node) { // Gonna have to be DATA if String
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
         long n = values.size();
@@ -330,7 +330,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRStmt visit(Globdecl node) {
+    public IRStmt visit(Globdecl node) { // gonna have to be IRDATA
         return null;
     }
 
@@ -384,10 +384,10 @@ public class IRVisitor implements Visitor<IRNode>{
         return null;
     }
 
-    @Override
-    public IRStmt visit(Type node) {
-        return null;
-    }
+//    @Override
+//    public IRStmt visit(Type node) {
+//        return null;
+//    }
 
     private IRStmt booleanAsControlFlow(Expr e, String lt, String lf) {
         if (e instanceof BoolLiteral) { // C[true/false, t, f]  = JUMP(NAME(t/f))
