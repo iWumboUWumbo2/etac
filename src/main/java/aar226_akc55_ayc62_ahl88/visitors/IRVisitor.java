@@ -91,9 +91,7 @@ public class IRVisitor implements Visitor<IRNode>{
         // reg[t] <- call malloc
 //        IRMove malloc_move1 = new IRMove(new IRTemp(t1), alloc_call1);
 
-        IRMove size_move1 = new IRMove(new IRMem(new IRTemp(t1)), new IRTemp(l1));
-
-        List<IRStmt> seq_list1 = new ArrayList<>(List.of(length_to_l1, malloc_move1, size_move1));
+        List<IRStmt> seq_list1 = new ArrayList<>(List.of(length_to_l1, malloc_move1));
 
         for(int i = 0; i < n1; i++) {
             IRExpr ire1 = (IRExpr) values1.get(i).accept(this);
@@ -105,12 +103,8 @@ public class IRVisitor implements Visitor<IRNode>{
             seq_list1.add(move_elmnt1);
         }
 
-        IRSeq ir_seq1 = new IRSeq(seq_list1);
-
-        IRESeq allo_arr1 =  new IRESeq(ir_seq1,
-                        new IRBinOp(IRBinOp.OpType.ADD,
-                        new IRTemp(t1),
-                        new IRConst(WORD_BYTES)));
+        seq_list1.add(new IRMove(new IRTemp(t1),
+                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t1), new IRConst(WORD_BYTES))));
         // END ALLOCATE ARR1
 
         // START ALLOCATE ARR2
@@ -131,13 +125,10 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // CALL(NAME(malloc), size)
         IRCall alloc_call2 = new IRCall(new IRName("_xi_alloc"), size2);
+        IRCallStmt alc2 = new IRCallStmt(alloc_call2.target(), 1L,alloc_call2.args());
+        IRSeq malloc_move2 = new IRSeq(alc2,new IRMove(new IRTemp(t2), new IRTemp("_RV1")));
 
-        // reg[t] <- call malloc
-        IRMove malloc_move2 = new IRMove(new IRTemp(t2), alloc_call2);
-
-        IRMove size_move2 = new IRMove(new IRMem(new IRTemp(t2)), new IRTemp(l2));
-
-        List<IRStmt> seq_list2 = new ArrayList<IRStmt>(List.of(length_to_l2, malloc_move2,size_move2));
+        List<IRStmt> seq_list2 = new ArrayList<IRStmt>(List.of(length_to_l2, malloc_move2));
 
         for(int i = 0; i < n2; i++) {
             IRExpr ire2 = (IRExpr) values2.get(i).accept(this);
@@ -149,9 +140,8 @@ public class IRVisitor implements Visitor<IRNode>{
             seq_list2.add(move_elmnt2);
         }
 
-        IRSeq ir_seq2 = new IRSeq(seq_list2);
-
-        IRESeq allo_arr2 =  new IRESeq(ir_seq2, new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t2), new IRConst(WORD_BYTES)));
+        seq_list2.add(new IRMove(new IRTemp(t2),
+                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t2), new IRConst(WORD_BYTES))));
         // END ALLOCATE ARR2
 
         String size_reg = nxtTemp();
@@ -162,16 +152,25 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRMem(new IRBinOp(
                         IRBinOp.OpType.SUB, new IRTemp(t1), new IRConst(8))),
                 new IRMem(new IRBinOp(
-                        IRBinOp.OpType.SUB, new IRTemp(t1), new IRConst(8))));
+                        IRBinOp.OpType.SUB, new IRTemp(t2), new IRConst(8))));
 
         IRMove get_size_move = new IRMove(new IRTemp(size_reg), get_new_size);
 
-        // reg[t] <- call malloc
-        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), new IRTemp(size_reg));
-        IRMove malloc_move = new IRMove(new IRTemp(t3), alloc_call);
-        IRMove size_move = new IRMove(new IRMem(new IRTemp(t3)), new IRTemp(size_reg));
+        // 8*n+8
+        IRBinOp size = new IRBinOp(IRBinOp.OpType.ADD,
+                new IRBinOp(IRBinOp.OpType.MUL,
+                        new IRTemp(l2),
+                        new IRConst(WORD_BYTES)),
+                new IRConst(WORD_BYTES));
 
-        List<IRStmt> seq_list3 = new ArrayList<IRStmt>(List.of(get_size_move, malloc_move,size_move));
+        // CALL(NAME(malloc), size)
+        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), size);
+        IRCallStmt alc = new IRCallStmt(alloc_call.target(), 1L,alloc_call.args());
+        IRSeq malloc_move = new IRSeq(alc,new IRMove(new IRTemp(t3), new IRTemp("_RV1")));
+
+        List<IRStmt> seq_list3 = new ArrayList<IRStmt>(seq_list1);
+        seq_list3.addAll(seq_list2);
+        seq_list3.addAll(List.of(get_size_move, malloc_move));
 
         // MEM[8*(t3+i)] <= t1 + i
         for(int i = 0; i < n1; i++) {
@@ -179,7 +178,7 @@ public class IRVisitor implements Visitor<IRNode>{
                     new IRBinOp(
                             IRBinOp.OpType.ADD,
                             new IRTemp(t3),
-                            new IRConst(8*(i+1)))),
+                            new IRConst(8*(i)))),
                     new IRBinOp(
                             IRBinOp.OpType.ADD,
                             new IRTemp(t1),
@@ -193,7 +192,7 @@ public class IRVisitor implements Visitor<IRNode>{
                     new IRBinOp(
                             IRBinOp.OpType.ADD,
                             new IRTemp(t3),
-                            new IRConst(8*(i+n1+1)))),
+                            new IRConst(8*(i+n1)))),
                     new IRBinOp(
                             IRBinOp.OpType.ADD,
                             new IRTemp(t2),
@@ -203,13 +202,8 @@ public class IRVisitor implements Visitor<IRNode>{
 
         IRSeq ir_seq3 = new IRSeq(seq_list3);
 
-        IRESeq allo_arr3 =  new IRESeq(ir_seq3, new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t3), new IRConst(WORD_BYTES)));
-
-
-        return new IRESeq(allo_arr1, allo_arr2, allo_arr3);
-
-
-
+        return new IRESeq(ir_seq3,
+                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t3), new IRConst(WORD_BYTES)));
     }
 
     @Override
