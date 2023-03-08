@@ -37,6 +37,7 @@ import java.util.List;
 public class IRVisitor implements Visitor<IRNode>{
 
     private static final int WORD_BYTES = 8;
+    private static final String OUT_OF_BOUNDS = "out_of_bounds_error";
     private int labelCnt;
     private int tempCnt;
     private final String compUnitName;
@@ -304,7 +305,62 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     @Override
     public IRExpr visit(ArrayAccessExpr node) {
-        return null;
+        IRExpr arrIR = node.getOrgArray().accept(this);
+        assert(node.getIndicies().size() >= 1);
+        IRExpr firstInd = node.getIndicies().get(0).accept(this);
+        String ta = nxtTemp();
+        String ti = nxtTemp();
+        String lok = nxtLabel();
+        IRESeq sol = new IRESeq( // 1d array need loop for further
+                new IRSeq(
+                    new IRMove(new IRTemp(ta),arrIR),
+                    new IRMove(new IRTemp(ti),firstInd),
+                    new IRCJump(
+                        new IRBinOp(IRBinOp.OpType.ULT,
+                                new IRTemp(ti),
+                                new IRMem(
+                                        new IRBinOp(IRBinOp.OpType.SUB,
+                                                new IRTemp(ta),
+                                                new IRConst(8)))),
+                    lok,OUT_OF_BOUNDS), new IRLabel(lok)),
+                new IRMem(
+                        new IRBinOp(
+                            IRBinOp.OpType.ADD,
+                            new IRTemp(ta),
+                            new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
+                        )));
+        if (node.getIndicies().size() == 1){
+            return sol;
+        }
+        return accessRecursive(1, node, sol);
+    }
+//
+    private IRESeq accessRecursive(int ind, ArrayAccessExpr node, IRESeq ire){
+        IRExpr curInd = node.getIndicies().get(ind).accept(this);
+        String ta = nxtTemp();
+        String ti = nxtTemp();
+        String lok = nxtLabel();
+        IRESeq sol = new IRESeq( // 1d array need loop for further
+                new IRSeq(
+                        new IRMove(new IRTemp(ta),ire),
+                        new IRMove(new IRTemp(ti),curInd),
+                        new IRCJump(
+                                new IRBinOp(IRBinOp.OpType.ULT,
+                                        new IRTemp(ti),
+                                        new IRMem(
+                                                new IRBinOp(IRBinOp.OpType.SUB,
+                                                        new IRTemp(ta),
+                                                        new IRConst(8)))),
+                                lok,OUT_OF_BOUNDS), new IRLabel(lok)),
+                new IRMem(
+                        new IRBinOp(IRBinOp.OpType.ADD,
+                                new IRTemp(ta),
+                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
+                        )));
+        if (ind == node.getIndicies().size() -1){
+            return sol;
+        }
+        return accessRecursive(ind + 1, node, sol);
     }
 
     @Override
@@ -385,6 +441,9 @@ public class IRVisitor implements Visitor<IRNode>{
 //        }
         IRNode left =  node.getDecl().accept(this); // just in case we need to initalize
         IRExpr right = (IRExpr) node.getExpression().accept(this);
+        if (right instanceof IRCall) {
+            return new IRMove(new IRTemp(node.getDecl().identifier.toString()),new IRTemp("_RV1"));
+        }
         return new IRMove(new IRTemp(node.getDecl().identifier.toString()),right);
     }
 
