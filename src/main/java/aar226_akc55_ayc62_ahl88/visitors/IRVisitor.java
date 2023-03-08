@@ -244,16 +244,44 @@ public class IRVisitor implements Visitor<IRNode>{
                                                 new IRConst(8)))),
                     lok,OUT_OF_BOUNDS), new IRLabel(lok)),
                 new IRMem(
-                        new IRBinOp(IRBinOp.OpType.ADD,
-                        new IRTemp(ta),
-                        new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
+                        new IRBinOp(
+                            IRBinOp.OpType.ADD,
+                            new IRTemp(ta),
+                            new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
                         )));
-        return sol;
+        if (node.getIndicies().size() == 1){
+            return sol;
+        }
+        return accessRecursive(1, node, sol);
     }
 //
-//    private IRESeq accessRecursive(){
-//
-//    }
+    private IRESeq accessRecursive(int ind, ArrayAccessExpr node, IRESeq ire){
+        IRExpr curInd = node.getIndicies().get(ind).accept(this);
+        String ta = nxtTemp();
+        String ti = nxtTemp();
+        String lok = nxtLabel();
+        IRESeq sol = new IRESeq( // 1d array need loop for further
+                new IRSeq(
+                        new IRMove(new IRTemp(ta),ire),
+                        new IRMove(new IRTemp(ti),curInd),
+                        new IRCJump(
+                                new IRBinOp(IRBinOp.OpType.ULT,
+                                        new IRTemp(ti),
+                                        new IRMem(
+                                                new IRBinOp(IRBinOp.OpType.SUB,
+                                                        new IRTemp(ta),
+                                                        new IRConst(8)))),
+                                lok,OUT_OF_BOUNDS), new IRLabel(lok)),
+                new IRMem(
+                        new IRBinOp(IRBinOp.OpType.ADD,
+                                new IRTemp(ta),
+                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
+                        )));
+        if (ind == node.getIndicies().size() -1){
+            return sol;
+        }
+        return accessRecursive(ind + 1, node, sol);
+    }
 
     @Override
     public IRStmt visit(Block node) {
