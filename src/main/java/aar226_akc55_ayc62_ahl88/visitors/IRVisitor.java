@@ -154,12 +154,58 @@ public class IRVisitor implements Visitor<IRNode>{
         // END ALLOCATE ARR2
 
         String size_reg = nxtTemp();
+        String t3 = nxtTemp();
+
+        // R[size_reg] <= MEM[t1-8] + MEM[t2-8]
         IRExpr get_new_size = new IRBinOp(IRBinOp.OpType.ADD,
                 new IRMem(new IRBinOp(
                         IRBinOp.OpType.SUB, new IRTemp(t1), new IRConst(8))),
                 new IRMem(new IRBinOp(
                         IRBinOp.OpType.SUB, new IRTemp(t1), new IRConst(8))));
 
+        IRMove get_size_move = new IRMove(new IRTemp(size_reg), get_new_size);
+
+        // reg[t] <- call malloc
+        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), new IRTemp(size_reg));
+        IRMove malloc_move = new IRMove(new IRTemp(t3), alloc_call);
+        IRMove size_move = new IRMove(new IRMem(new IRTemp(t3)), new IRTemp(size_reg));
+
+        List<IRStmt> seq_list3 = new ArrayList<IRStmt>(List.of(get_size_move, malloc_move,size_move));
+
+        // MEM[8*(t3+i)] <= t1 + i
+        for(int i = 0; i < n1; i++) {
+            IRMove move_elmnt3 = new IRMove(new IRMem(
+                    new IRBinOp(
+                            IRBinOp.OpType.ADD,
+                            new IRTemp(t3),
+                            new IRConst(8*(i+1)))),
+                    new IRBinOp(
+                            IRBinOp.OpType.ADD,
+                            new IRTemp(t1),
+                            new IRConst(8*i)));
+            seq_list3.add(move_elmnt3);
+        }
+
+        // MEM[8*(t3+n1)] <= t2 + i
+        for(int i = 0; i < n2; i++) {
+            IRMove move_elmnt3 = new IRMove(new IRMem(
+                    new IRBinOp(
+                            IRBinOp.OpType.ADD,
+                            new IRTemp(t3),
+                            new IRConst(8*(i+n1+1)))),
+                    new IRBinOp(
+                            IRBinOp.OpType.ADD,
+                            new IRTemp(t2),
+                            new IRConst(8*i)));
+            seq_list3.add(move_elmnt3);
+        }
+
+        IRSeq ir_seq3 = new IRSeq(seq_list3);
+
+        IRESeq allo_arr3 =  new IRESeq(ir_seq3, new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t3), new IRConst(WORD_BYTES)));
+
+
+        return new IRESeq(allo_arr1, allo_arr2, allo_arr3);
 
 
 
