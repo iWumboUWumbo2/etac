@@ -86,9 +86,10 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // CALL(NAME(malloc), size)
         IRCall alloc_call1 = new IRCall(new IRName("_xi_alloc"), size1);
-
+        IRCallStmt alc1 = new IRCallStmt(alloc_call1.target(), 1L,alloc_call1.args());
+        IRSeq malloc_move1 = new IRSeq(alc1,new IRMove(new IRTemp(t1), new IRTemp("_RV1")));
         // reg[t] <- call malloc
-        IRMove malloc_move1 = new IRMove(new IRTemp(t1), alloc_call1);
+//        IRMove malloc_move1 = new IRMove(new IRTemp(t1), alloc_call1);
 
         IRMove size_move1 = new IRMove(new IRMem(new IRTemp(t1)), new IRTemp(l1));
 
