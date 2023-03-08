@@ -359,10 +359,20 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRStmt visit(DeclAssignStmt node) {
 //        if (node.getDecl() instanceof UnderScore){
 //        }
-        IRNode left =  node.getDecl().accept(this); // just in case we need to initalize
         IRExpr right = (IRExpr) node.getExpression().accept(this);
         if (right instanceof IRCall) {
-            return new IRMove(new IRTemp(node.getDecl().identifier.toString()),new IRTemp("_RV1"));
+            IRExpr tar = ((IRCall) right).target();
+            List<IRExpr> args = ((IRCall) right).args();
+            IRCallStmt ircs = new IRCallStmt(tar, (long) args.size(),args);
+            if (node.getDecl() instanceof AnnotatedTypeDecl){
+                IRStmt left = ((AnnotatedTypeDecl) node.getDecl()).accept(this);
+                return new IRSeq(ircs, left, new IRMove(new IRTemp(node.getDecl().identifier.toString()),new IRTemp("_RV1")));
+            }
+            return new IRSeq(ircs, new IRMove(new IRTemp(node.getDecl().identifier.toString()),new IRTemp("_RV1")));
+        }
+        if (node.getDecl() instanceof AnnotatedTypeDecl){
+            IRStmt left = ((AnnotatedTypeDecl) node.getDecl()).accept(this);
+            return new IRSeq(left,new IRMove(new IRTemp(node.getDecl().identifier.toString()),right));
         }
         return new IRMove(new IRTemp(node.getDecl().identifier.toString()),right);
     }
