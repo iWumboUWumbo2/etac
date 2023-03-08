@@ -29,8 +29,8 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
@@ -66,17 +66,133 @@ public class IRVisitor implements Visitor<IRNode>{
         return new IRBinOp(op, ire1, ire2);
     }
 
+    public IRExpr plusArrays(ArrayValueLiteral e1, ArrayValueLiteral e2) {
+
+        // START ALLOCATE ARR1
+        String t1 = nxtTemp();   // temp label for malloc
+        ArrayList<Expr> values1 = e1.getValues();
+        long n1 = values1.size();
+        String l1 = nxtTemp();
+
+        // reg[l] <- length
+        IRMove length_to_l1 = new IRMove(new IRTemp(l1), new IRConst(n1));
+
+        // 8*n+8
+        IRBinOp size1 = new IRBinOp(IRBinOp.OpType.ADD,
+                new IRBinOp(IRBinOp.OpType.MUL,
+                        new IRTemp(l1),
+                        new IRConst(WORD_BYTES)),
+                new IRConst(WORD_BYTES));
+
+        // CALL(NAME(malloc), size)
+        IRCall alloc_call1 = new IRCall(new IRName("_xi_alloc"), size1);
+
+        // reg[t] <- call malloc
+        IRMove malloc_move1 = new IRMove(new IRTemp(t1), alloc_call1);
+
+        IRMove size_move1 = new IRMove(new IRMem(new IRTemp(t1)), new IRTemp(l1));
+
+        List<IRStmt> seq_list1 = new ArrayList<>(List.of(length_to_l1, malloc_move1, size_move1));
+
+        for(int i = 0; i < n1; i++) {
+            IRExpr ire1 = (IRExpr) values1.get(i).accept(this);
+            IRMove move_elmnt1 = new IRMove(new IRMem(new IRBinOp(
+                    IRBinOp.OpType.ADD,
+                    new IRTemp(t1),
+                    new IRConst(8*(i+1)))),
+                    ire1 );
+            seq_list1.add(move_elmnt1);
+        }
+
+        IRSeq ir_seq1 = new IRSeq(seq_list1);
+
+        IRESeq allo_arr1 =  new IRESeq(ir_seq1,
+                        new IRBinOp(IRBinOp.OpType.ADD,
+                        new IRTemp(t1),
+                        new IRConst(WORD_BYTES)));
+        // END ALLOCATE ARR1
+
+        // START ALLOCATE ARR2
+        String t2 = nxtTemp();   // temp label for malloc
+        ArrayList<Expr> values2 = e2.getValues();
+        long n2 = values2.size();
+        String l2 = nxtTemp();
+
+        // reg[l] <- length
+        IRMove length_to_l2 = new IRMove(new IRTemp(l2), new IRConst(n2));
+
+        // 8*n+8
+        IRBinOp size2 = new IRBinOp(IRBinOp.OpType.ADD,
+                new IRBinOp(IRBinOp.OpType.MUL,
+                        new IRTemp(l2),
+                        new IRConst(WORD_BYTES)),
+                new IRConst(WORD_BYTES));
+
+        // CALL(NAME(malloc), size)
+        IRCall alloc_call2 = new IRCall(new IRName("_xi_alloc"), size2);
+
+        // reg[t] <- call malloc
+        IRMove malloc_move2 = new IRMove(new IRTemp(t2), alloc_call2);
+
+        IRMove size_move2 = new IRMove(new IRMem(new IRTemp(t2)), new IRTemp(l2));
+
+        List<IRStmt> seq_list2 = new ArrayList<IRStmt>(List.of(length_to_l2, malloc_move2,size_move2));
+
+        for(int i = 0; i < n2; i++) {
+            IRExpr ire2 = (IRExpr) values2.get(i).accept(this);
+            IRMove move_elmnt2 = new IRMove(new IRMem(new IRBinOp(
+                    IRBinOp.OpType.ADD,
+                    new IRTemp(t2),
+                    new IRConst(8*(i+1)))),
+                    ire2 );
+            seq_list2.add(move_elmnt2);
+        }
+
+        IRSeq ir_seq2 = new IRSeq(seq_list2);
+
+        IRESeq allo_arr2 =  new IRESeq(ir_seq2, new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t2), new IRConst(WORD_BYTES)));
+        // END ALLOCATE ARR2
+
+        String size_reg = nxtTemp();
+        IRExpr get_new_size = new IRBinOp(IRBinOp.OpType.ADD,
+                new IRMem(new IRBinOp(
+                        IRBinOp.OpType.SUB, new IRTemp(t1), new IRConst(8))),
+                new IRMem(new IRBinOp(
+                        IRBinOp.OpType.SUB, new IRTemp(t1), new IRConst(8))));
+
+
+
+
+    }
+
     @Override
     public IRExpr visit(PlusBinop node) {
-        IRExpr l = node.getLeftExpr().accept(this);
-        IRExpr r = node.getRightExpr().accept(this);
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
+        IRExpr ire1 = e1.accept(this);
+        IRExpr ire2 = e2.accept(this);
 
-        return new IRBinOp(IRBinOp.OpType.ADD, l, r);
+        // if both arrays, add
+        // if one unknown array and other array, return array
+        if  (e1.getNodeType().isArray() && e2.getNodeType().isArray()) {
+            if (e1.getNodeType().isUnknownArray() && !e2.getNodeType().isUnknownArray()) {
+                return ire2;
+            } else if (!e1.getNodeType().isUnknownArray() && e2.getNodeType().isUnknownArray()) {
+                return ire1;
+            } else {
+                return plusArrays((ArrayValueLiteral) e1, (ArrayValueLiteral) e2, ire1, ire2);
+            }
+        }
 
         // if both ints, return irbinop
         // if one unknown and other int, return int
-        // if both arrays, add
-        // if one unknown array and other array, return array
+        if (e1.getNodeType().getType() == Type.TypeCheckingType.INT && e2.getNodeType().getType() == Type.TypeCheckingType.INT){
+            return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);    
+        } else if (e1.getNodeType().isUnknown() && !e2.getNodeType().isUnknownArray()) {
+            return new IRBinOp(IRBinOp.OpType.ADD, new IRConst(0), ire2);
+        } else {
+            return new IRBinOp(IRBinOp.OpType.ADD, ire1, new IRConst(0));
+        }
     }
 
     @Override

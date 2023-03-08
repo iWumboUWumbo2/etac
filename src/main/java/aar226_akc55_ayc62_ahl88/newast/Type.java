@@ -185,10 +185,10 @@ public class Type implements Printer {
         throw new SemanticError(getLine(), getColumn(), "somehow we missed a case in same basic");
     }
 
-    private boolean isUnknown() {
+    public boolean isUnknown() {
         return this.getType() == Type.TypeCheckingType.UNKNOWN;
     }
-    private boolean isUnknownArray() {
+    public boolean isUnknownArray() {
         return this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
     }
 
