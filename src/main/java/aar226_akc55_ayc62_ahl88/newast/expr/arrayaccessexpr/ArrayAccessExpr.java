@@ -19,14 +19,6 @@ public class ArrayAccessExpr extends Expr {
     // Type Check that it is an Actual Array
     Expr orgArray;
 
-    public Expr getOrgArray() {
-        return orgArray;
-    }
-
-    public ArrayList<Expr> getIndicies() {
-        return indicies;
-    }
-
     // Read This Left to Right
     ArrayList<Expr> indicies;
 
@@ -102,7 +94,13 @@ public class ArrayAccessExpr extends Expr {
             p.endList();
         }
     }
+    public Expr getOrgArray() {
+        return orgArray;
+    }
 
+    public ArrayList<Expr> getIndicies() {
+        return indicies;
+    }
     @Override
     public IRExpr accept(IRVisitor visitor) {
         return visitor.visit(this);
