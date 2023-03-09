@@ -579,8 +579,8 @@ public class IRVisitor implements Visitor<IRNode>{
             if (atd.type.dimensions.allEmpty){ // random init is fine
                 return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
             }else{
-                IRExpr iden = atd.getIdentifier().accept(this);
-                return initArrayDecl(0,atd.type.dimensions,iden);
+                IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
+                return initArrayDecl(0,atd.type.dimensions,iden); // passed in temp x
             }
         }else if (atd.type.isBasic()){
             return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
@@ -697,7 +697,7 @@ public class IRVisitor implements Visitor<IRNode>{
     private IRStmt initArrayDecl(int ind, Dimension d, IRExpr curHead){ // this is for a:int[4][3][] etc
         // a:int[e1][e2][][]
         if (ind == d.getDim() || d.getIndices().get(ind) == null){
-            return new IRMove(new IRMem(curHead),new IRConst(0));
+            return new IRMove(new IRMem(curHead),new IRConst(0)); // base case x: int[] x <- random val
         }
 
         Expr curExp = d.getIndices().get(ind);
@@ -716,17 +716,21 @@ public class IRVisitor implements Visitor<IRNode>{
                         new IRConst(WORD_BYTES)),
                 new IRConst(WORD_BYTES));
 
+        // call alloc and move RV1 into val
         IRCall alloc_call1 = new IRCall(new IRName("_xi_alloc"), size1);
         IRSeq malloc_move1 = new IRSeq(new IRExp(alloc_call1),new IRMove(new IRTemp(tm), new IRTemp("_RV1")));
 
+        // move len into -1
         IRMove move_len = new IRMove(new IRMem(new IRTemp(tm)),new IRTemp(tn));
 
-
+        // increment pointer to head
         IRBinOp add_8 = new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(tm), new IRConst(WORD_BYTES));
         IRMove inc_pointer_to_head = new IRMove(curHead,add_8);
-
+        // do all the top level shit first
         IRSeq top_level_Order = new IRSeq(length_to_l1,malloc_move1,move_len,inc_pointer_to_head);
 
+
+        // now time to recrusively alloc
         String lh = nxtLabel();
         String l1 = nxtLabel();
         String le = nxtLabel();
@@ -744,6 +748,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRBinOp(IRBinOp.OpType.MUL,
                     new IRTemp(counter),
                     new IRConst(WORD_BYTES))));
+        // if we were at int[4][5] we now are in the "5" after recur executes after 5 it will be in "nothing" which means base case
         IRStmt recur = initArrayDecl(ind+1, d, memHead);
         // increment counter
         IRMove inc = new IRMove(new IRTemp(counter),new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(counter), new IRConst(1)));
