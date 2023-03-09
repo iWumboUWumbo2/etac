@@ -86,8 +86,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // CALL(NAME(malloc), size)
         IRCall alloc_call1 = new IRCall(new IRName("_xi_alloc"), size1);
-        IRCallStmt alc1 = new IRCallStmt(alloc_call1.target(), 1L,alloc_call1.args());
-        IRSeq malloc_move1 = new IRSeq(alc1,new IRMove(new IRTemp(t1), new IRTemp("_RV1")));
+        IRSeq malloc_move1 = new IRSeq(new IRExp(alloc_call1),new IRMove(new IRTemp(t1), new IRTemp("_RV1")));
         // reg[t] <- call malloc
 //        IRMove malloc_move1 = new IRMove(new IRTemp(t1), alloc_call1);
 
@@ -125,8 +124,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // CALL(NAME(malloc), size)
         IRCall alloc_call2 = new IRCall(new IRName("_xi_alloc"), size2);
-        IRCallStmt alc2 = new IRCallStmt(alloc_call2.target(), 1L,alloc_call2.args());
-        IRSeq malloc_move2 = new IRSeq(alc2,new IRMove(new IRTemp(t2), new IRTemp("_RV1")));
+        IRSeq malloc_move2 = new IRSeq(new IRExp(alloc_call2),new IRMove(new IRTemp(t2), new IRTemp("_RV1")));
 
         List<IRStmt> seq_list2 = new ArrayList<IRStmt>(List.of(length_to_l2, malloc_move2));
 
@@ -165,8 +163,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // CALL(NAME(malloc), size)
         IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), size);
-        IRCallStmt alc = new IRCallStmt(alloc_call.target(), 1L,alloc_call.args());
-        IRSeq malloc_move = new IRSeq(alc,new IRMove(new IRTemp(t3), new IRTemp("_RV1")));
+        IRSeq malloc_move = new IRSeq(new IRExp(alloc_call),new IRMove(new IRTemp(t3), new IRTemp("_RV1")));
 
         List<IRStmt> seq_list3 = new ArrayList<IRStmt>(seq_list1);
         seq_list3.addAll(seq_list2);
@@ -221,7 +218,11 @@ public class IRVisitor implements Visitor<IRNode>{
             } else if (!e1.getNodeType().isUnknownArray() && e2.getNodeType().isUnknownArray()) {
                 return ire1;
             } else {
-                return plusArrays((ArrayValueLiteral) e1, (ArrayValueLiteral) e2, ire1, ire2);
+                // ESEQ
+                // SEQ -> ACCEPT E1 -> MOVE E1 to new TEMP -> ACCEPT E2 -> MOVE E2 to new TEMP ->
+                // EXPR is the second ESEQ from plus arrays
+//                return plusArrays((ArrayValueLiteral) e1, (ArrayValueLiteral) e2, ire1, ire2); // FIX
+                return plusArrays((ArrayValueLiteral) e1, (ArrayValueLiteral) e2); // FIX
             }
         }
 
@@ -327,7 +328,7 @@ public class IRVisitor implements Visitor<IRNode>{
         for (Expr param: node.getArgs()){
             paramListIR.add((IRExpr) param.accept(this));
         }
-        return new IRCall(func,paramListIR);
+        return new IRESeq(new IRExp(new IRCall(func,paramListIR)),new IRTemp("_RV1"));
     }
 
     @Override
@@ -356,11 +357,11 @@ public class IRVisitor implements Visitor<IRNode>{
         IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), size);
 
         // reg[t] <- call malloc
-        IRMove malloc_move = new IRMove(new IRTemp(t), alloc_call);
+        IRMove malloc_move = new IRMove(new IRTemp(t), new IRTemp("_RV1"));
 
         IRMove size_move = new IRMove(new IRMem(new IRTemp(t)), new IRTemp(l));
 
-        List<IRStmt> seq_list = new ArrayList<>(List.of(length_to_l, malloc_move, size_move));
+        List<IRStmt> seq_list = new ArrayList<>(List.of(length_to_l, new IRExp(alloc_call), malloc_move, size_move));
 
         for(int i = 0; i < n; i++) {
             IRExpr ire = (IRExpr) values.get(i).accept(this);
@@ -517,21 +518,29 @@ public class IRVisitor implements Visitor<IRNode>{
 //        if (node.getDecl() instanceof UnderScore){
 //        }
         IRExpr right = (IRExpr) node.getExpression().accept(this);
-        if (right instanceof IRCall) {
-            IRExpr tar = ((IRCall) right).target();
-            List<IRExpr> args = ((IRCall) right).args();
-            IRCallStmt ircs = new IRCallStmt(tar, (long) args.size(),args);
-            if (node.getDecl() instanceof AnnotatedTypeDecl){
-                IRStmt left = ((AnnotatedTypeDecl) node.getDecl()).accept(this);
-                return new IRSeq(ircs, left, new IRMove(new IRTemp(node.getDecl().identifier.toString()),new IRTemp("_RV1")));
-            }
-            return new IRSeq(ircs, new IRMove(new IRTemp(node.getDecl().identifier.toString()),new IRTemp("_RV1")));
-        }
+        IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
+                new IRESeq(new IRExp(right),new IRTemp("_RV1")): right;
+
         if (node.getDecl() instanceof AnnotatedTypeDecl){
-            IRStmt left = ((AnnotatedTypeDecl) node.getDecl()).accept(this);
-            return new IRSeq(left,new IRMove(new IRTemp(node.getDecl().identifier.toString()),right));
+            AnnotatedTypeDecl atd = (AnnotatedTypeDecl) node.getDecl();
+            if (atd.type.isArray()){
+                if (atd.type.dimensions.allEmpty){ // random init is fine
+                    return new IRMove(new IRTemp(atd.identifier.toString()),exec);
+                }else{
+                    throw new InternalCompilerError("Gotta create init array malloc thing");
+                }
+            }else if (atd.type.isBasic()){
+                return new IRMove(new IRTemp(atd.identifier.toString()),exec);
+            }
+            throw new InternalCompilerError("Annotated can only be array or basic");
+        }else if (node.getDecl() instanceof ArrAccessDecl){
+            throw new InternalCompilerError("ALLOCATE A NEW TEMP FOR THAT POINTER");
+        }else if (node.getDecl() instanceof NoTypeDecl){
+            return new IRMove(new IRTemp(node.getDecl().identifier.toString()),exec);
+        }else if (node.getDecl() instanceof UnderScore){
+            return new IRExp(exec);
         }
-        return new IRMove(new IRTemp(node.getDecl().identifier.toString()),right);
+        throw new InternalCompilerError("NOT A DECL?");
     }
 
     @Override
@@ -570,7 +579,7 @@ public class IRVisitor implements Visitor<IRNode>{
         return null;
     }
 
-    @Override
+    @Override // Visit only on No Assign
     public IRStmt visit(AnnotatedTypeDecl node) { // could be IREXPR
         AnnotatedTypeDecl atd = node;
         if (atd.type.isArray()){
