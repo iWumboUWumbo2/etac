@@ -387,36 +387,9 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRExpr visit(ArrayAccessExpr node) {
         IRExpr arrIR = node.getOrgArray().accept(this);
         assert(node.getIndicies().size() >= 1);
-        return accessRecur(0,node,arrIR);
+        return accessRecur(0,node.getIndicies(),arrIR);
     }
 //
-    private IRExpr accessRecur(int ind, ArrayAccessExpr node, IRExpr expr) {
-        if (ind == node.getIndicies().size()) {
-            return expr;
-        }
-        IRExpr curInd = node.getIndicies().get(ind).accept(this);
-        String ta = nxtTemp();
-        String ti = nxtTemp();
-        String lok = nxtLabel();
-        IRESeq sol = new IRESeq( // 1d array need loop for further
-                new IRSeq(
-                        new IRMove(new IRTemp(ta), expr),
-                        new IRMove(new IRTemp(ti), curInd),
-                        new IRCJump(
-                                new IRBinOp(IRBinOp.OpType.ULT,
-                                        new IRTemp(ti),
-                                        new IRMem(
-                                                new IRBinOp(IRBinOp.OpType.SUB,
-                                                        new IRTemp(ta),
-                                                        new IRConst(8)))),
-                                lok,OUT_OF_BOUNDS), new IRLabel(lok)),
-                new IRMem(
-                        new IRBinOp(IRBinOp.OpType.ADD,
-                                new IRTemp(ta),
-                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
-                        )));
-        return accessRecur(ind + 1, node, sol);
-    }
 
     @Override
     public IRStmt visit(Block node) {
@@ -512,7 +485,23 @@ public class IRVisitor implements Visitor<IRNode>{
             }
             throw new InternalCompilerError("Annotated can only be array or basic");
         }else if (node.getDecl() instanceof ArrAccessDecl){
-            throw new InternalCompilerError("ALLOCATE A NEW TEMP FOR THAT POINTER"); // find a[e1][e2]
+            ArrAccessDecl aad = (ArrAccessDecl) node.getDecl();
+            assert(aad.getIndices().size() >= 1);
+            if (aad.getFuncParams() ==  null){ // a[e1][e2]
+                IRExpr arrIdIR = aad.getIdentifier().accept(this);
+                IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
+                return new IRMove(memComponent,exec);
+            }else{ // g1(e1,e2)[4][5]
+                String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
+                ArrayList<IRExpr> argsList = new ArrayList<>();
+                for (Expr param: aad.getFuncParams()){
+                    argsList.add((IRExpr) param.accept(this));
+                }
+                IRCall funcCall = new IRCall(new IRName(funcName),argsList);
+                IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
+                IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
+                return new IRMove(memComponent,exec);
+            }// find a[e1][e2]
         }else if (node.getDecl() instanceof NoTypeDecl){
             return new IRMove(new IRTemp(node.getDecl().identifier.toString()),exec);
         }else if (node.getDecl() instanceof UnderScore){
@@ -751,6 +740,33 @@ public class IRVisitor implements Visitor<IRNode>{
         // HELP ANGELA After finishing This.
         // TODO ALAN
         return null;
+    }
+    private IRExpr accessRecur(int ind, ArrayList<Expr> indexes, IRExpr expr) {
+        if (ind == indexes.size()) {
+            return expr;
+        }
+        IRExpr curInd = indexes.get(ind).accept(this);
+        String ta = nxtTemp();
+        String ti = nxtTemp();
+        String lok = nxtLabel();
+        IRESeq sol = new IRESeq( // 1d array need loop for further
+                new IRSeq(
+                        new IRMove(new IRTemp(ta), expr),
+                        new IRMove(new IRTemp(ti), curInd),
+                        new IRCJump(
+                                new IRBinOp(IRBinOp.OpType.ULT,
+                                        new IRTemp(ti),
+                                        new IRMem(
+                                                new IRBinOp(IRBinOp.OpType.SUB,
+                                                        new IRTemp(ta),
+                                                        new IRConst(8)))),
+                                lok,OUT_OF_BOUNDS), new IRLabel(lok)),
+                new IRMem(
+                        new IRBinOp(IRBinOp.OpType.ADD,
+                                new IRTemp(ta),
+                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
+                        )));
+        return accessRecur(ind + 1, indexes, sol);
     }
 
 

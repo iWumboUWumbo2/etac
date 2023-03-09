@@ -21,6 +21,19 @@ public class ArrAccessDecl extends Decl{
 
     private ArrayList<Expr> indices;
     private ArrayList<Expr> funcParams;
+    private Type functionSig;
+
+    public Type getFunctionSig() {
+        return functionSig;
+    }
+
+    public ArrayList<Expr> getIndices() {
+        return indices;
+    }
+
+    public ArrayList<Expr> getFuncParams() {
+        return funcParams;
+    }
 
     /**
      * @param id id
@@ -76,6 +89,7 @@ public class ArrAccessDecl extends Decl{
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         Type identifierType = table.lookup(identifier);
+        functionSig = identifierType;
         if (identifierType.getType() != Type.TypeCheckingType.FUNC) {
             if (!identifierType.isArray()) {
                 throw new SemanticError(getLine(), getColumn(), "variable is not an array");
@@ -107,7 +121,6 @@ public class ArrAccessDecl extends Decl{
             }
 
             nodeType = new Type(identifierType.getType(), newDim);
-            return nodeType;
         }else{
             if (identifierType.outputTypes.size() != 1){
                 throw new SemanticError(identifier.getLine(), identifierType.getColumn(), "Function has more than one type for array access");
@@ -142,7 +155,7 @@ public class ArrAccessDecl extends Decl{
                 }
             }
             nodeType = new Type(funcOutType.getType(), newDim);
-            return nodeType;
         }
+        return nodeType;
     }
 }

@@ -106,4 +106,12 @@ public class MultiDeclAssignStmt extends Stmt {
     public IRStmt accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
+
+    public ArrayList<Decl> getDecls() {
+        return decls;
+    }
+
+    public ArrayList<Expr> getExpressions() {
+        return expressions;
+    }
 }
