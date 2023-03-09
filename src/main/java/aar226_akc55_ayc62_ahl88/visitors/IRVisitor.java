@@ -595,22 +595,22 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRExpr visit(ArrAccessDecl node) {
+    public IRExpr visit(ArrAccessDecl node) {// no need to visit
         return null;
     }
 
     @Override
-    public IRExpr visit(NoTypeDecl node) {
+    public IRExpr visit(NoTypeDecl node) {// no need to visit
         return new IRTemp(node.getIdentifier().toString());
     }
 
     @Override
-    public IRExpr visit(UnderScore node) {
+    public IRExpr visit(UnderScore node) {// no need to visit
         return new IRTemp("_");
     }
 
     @Override
-    public IRStmt visit(Use node) {
+    public IRStmt visit(Use node) { // no need to visit
         return null;
     }
 
