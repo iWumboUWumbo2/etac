@@ -686,11 +686,7 @@ public class IRVisitor implements Visitor<IRNode>{
             throw new Error("WE SHOULD NOT BE IN GENTYPE");
         }
     }
-    private IRNode recursiveMalloc(int index, Dimension d){
-//        if (index == d.getDim()){
-//            return new IRMove(,new IRConst(0));
-//        }
+    private IRStmt initArrayDecl(int ind, Dimension d){
         return null;
-
     }
 }
