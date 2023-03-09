@@ -579,7 +579,8 @@ public class IRVisitor implements Visitor<IRNode>{
             if (atd.type.dimensions.allEmpty){ // random init is fine
                 return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
             }else{
-                throw new InternalCompilerError("Gotta create init array malloc thing");
+                IRExpr iden = atd.getIdentifier().accept(this);
+                return initArrayDecl(0,atd.type.dimensions,iden);
             }
         }else if (atd.type.isBasic()){
             return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
