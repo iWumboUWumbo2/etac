@@ -589,7 +589,7 @@ public class IRVisitor implements Visitor<IRNode>{
                     order.add(new IRMove(memComponent,new IRTemp(curTemp)));
                 }// find a[e1][e2]
             }else if (d instanceof NoTypeDecl){
-                order.add(new IRMove(new IRTemp(d.identifier.toString()),new IRTemp(curTemp)));
+                order.add(new IRMove(new IRTemp(d.identifier.toString()),new IRTemp(curTemp))); // might need to check for Globals
             }else if (d instanceof UnderScore){
                 order.add(new IRExp(new IRTemp(curTemp)));
             }else {
