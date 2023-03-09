@@ -339,7 +339,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRExpr visit(ArrayValueLiteral node) { // Gonna have to be DATA if String
+    public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
         long n = values.size();
@@ -577,7 +577,7 @@ public class IRVisitor implements Visitor<IRNode>{
         AnnotatedTypeDecl atd = node;
         if (atd.type.isArray()){
             if (atd.type.dimensions.allEmpty){ // random init is fine
-                return new IRMove(new IRTemp(atd.identifier.toString()),new IRMem(new IRConst(0)));
+                return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
             }else{
                 throw new InternalCompilerError("Gotta create init array malloc thing");
             }
@@ -693,23 +693,78 @@ public class IRVisitor implements Visitor<IRNode>{
             throw new Error("WE SHOULD NOT BE IN GENTYPE");
         }
     }
-    private IRStmt initArrayDecl(int ind, Dimension d){ // this is for a:int[4][3][] etc
-        // a:int[4][3][][]
+    private IRStmt initArrayDecl(int ind, Dimension d, IRExpr curHead){ // this is for a:int[4][3][] etc
+        // a:int[e1][e2][][]
+        if (ind == d.getDim() || d.getIndices().get(ind) == null){
+            return new IRMove(new IRMem(curHead),new IRConst(0));
+        }
 
+        Expr curExp = d.getIndices().get(ind);
+        IRExpr irExp = curExp.accept(this);
+
+        String tn = nxtTemp();
+        String tm = nxtTemp();
+
+        // reg[l] <- length
+        IRMove length_to_l1 = new IRMove(new IRTemp(tn), irExp);
+
+        // 8*n+8
+        IRBinOp size1 = new IRBinOp(IRBinOp.OpType.ADD,
+                new IRBinOp(IRBinOp.OpType.MUL,
+                        new IRTemp(tn),
+                        new IRConst(WORD_BYTES)),
+                new IRConst(WORD_BYTES));
+
+        IRCall alloc_call1 = new IRCall(new IRName("_xi_alloc"), size1);
+        IRSeq malloc_move1 = new IRSeq(new IRExp(alloc_call1),new IRMove(new IRTemp(tm), new IRTemp("_RV1")));
+
+        IRMove move_len = new IRMove(new IRMem(new IRTemp(tm)),new IRTemp(tn));
+
+
+        IRBinOp add_8 = new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(tm), new IRConst(WORD_BYTES));
+        IRMove inc_pointer_to_head = new IRMove(curHead,add_8);
+
+        IRSeq top_level_Order = new IRSeq(length_to_l1,malloc_move1,move_len,inc_pointer_to_head);
+
+        String lh = nxtLabel();
+        String l1 = nxtLabel();
+        String le = nxtLabel();
+        String counter = nxtTemp();
+        IRBinOp guard = new IRBinOp(IRBinOp.OpType.LT,new IRTemp(counter), irExp);
+        // set counter = 0;
+        IRMove set0Coutner = new IRMove(new IRTemp(counter), new IRConst(0));
+        IRLabel whileHead = new IRLabel(lh);
+        // check if counter < irExp
+        IRCJump loopCheck = new IRCJump(guard,l1,le);
+        IRLabel whileBody = new IRLabel(l1);
+        // create memory location for head of new array
+        IRMem memHead = new IRMem(new IRBinOp(IRBinOp.OpType.ADD,
+                curHead,
+                new IRBinOp(IRBinOp.OpType.MUL,
+                    new IRTemp(counter),
+                    new IRConst(WORD_BYTES))));
+        IRStmt recur = initArrayDecl(ind+1, d, memHead);
+        // increment counter
+        IRMove inc = new IRMove(new IRTemp(counter),new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(counter), new IRConst(1)));
+        // jump back to loop head
+        IRJump go_back_to_head = new IRJump(new IRName(lh));
+        IRLabel afterLoop = new IRLabel(le);
+
+        IRSeq loopComponent = new IRSeq(set0Coutner,whileHead,loopCheck,whileBody,recur,inc,go_back_to_head,afterLoop);
+
+        return new IRSeq(top_level_Order,loopComponent);
         // malloc 4
 
         // for each of those Elements Recursively
 
 
         // TODO ANDY
-        // finish at ind == d.size() - 1
         // Create IR STMT recursively
 
         // Malloc Then Move
 
         // Go through all elements and Malloc and Move Again
 
-        return null;
     }
 
     private IRData initSingleGlobal(Globdecl node){

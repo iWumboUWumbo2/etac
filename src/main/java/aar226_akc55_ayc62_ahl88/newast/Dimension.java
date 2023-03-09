@@ -91,4 +91,8 @@ public class Dimension extends AstNode{
         }
         p.endList();
     }
+
+    public ArrayList<Expr> getIndices() {
+        return indices;
+    }
 }
