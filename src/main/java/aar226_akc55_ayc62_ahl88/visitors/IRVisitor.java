@@ -205,6 +205,8 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(PlusBinop node) {
+
+        // TODO FINISH PLUS ANGELA
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
         IRExpr ire1 = e1.accept(this);
@@ -561,21 +563,41 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRStmt visit(MultiDeclAssignStmt node) {
+        // TODO ANDY
+        // If no function go through one by one
+        // Must execute VALUES FIRST AND LOAD TO TEMPs
+
+        // If Function Go through RV's
+
+        // RETURN STMTS
+
         return null;
     }
 
     @Override
     public IRStmt visit(Globdecl node) { // gonna have to be IRDATA
+        // Don't visit create function that adds to Global MAP
         return null;
     }
 
     @Override
-    public IRStmt visit(Method node) {
+    public IRFuncDecl visit(Method node) {
+        // TODO ANDY
+
+        // MOVE ARGS INTO PARAMS
+
+        // EXECUTE BLOCK
+
+        // ADD RET IF NEEDED
+
+        // CREATE NODE
+
         return null;
     }
 
     @Override
     public IRStmt visit(MultiGlobalDecl node) {
+    // Don't visit create function that adds to Global MAP
         return null;
     }
 
@@ -616,6 +638,20 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRCompUnit visit(Program node) {
+
+        // Arun TODO
+        // Create  Comp Unit
+
+        // Add Single Global Decls to the DATA MAP USE FUNC BELOW
+
+        // Add multi global decls to the DATA map use the Func Below
+
+
+
+        // Add Function Decls and Name
+
+        // Return Comp Unit
+
         return null;
     }
 
@@ -686,7 +722,48 @@ public class IRVisitor implements Visitor<IRNode>{
             throw new Error("WE SHOULD NOT BE IN GENTYPE");
         }
     }
-    private IRStmt initArrayDecl(int ind, Dimension d){
+    private IRStmt initArrayDecl(int ind, Dimension d){ // this is for a:int[4][3][] etc
+
+        // TODO ANDY
+        // finish at ind == d.size() - 1
+        // Create IR STMT recursively
+
+        // Malloc Then Move
+
+        // Go through all elements and Malloc and Move Again
+
         return null;
     }
+
+    private IRData initSingleGlobal(Globdecl node){
+        //TODO ALAN
+
+
+        // Check if right side is null or not for initalized Value
+
+        // FOLLOW ABI For Naming Conventions
+
+        // Put Data into Single Global Decl
+
+        // Return IR DATA
+
+        return null;
+    }
+
+    private ArrayList<IRData> initMultiGlobal(MultiGlobalDecl node){
+
+        // Make sure each one lines up correctly
+
+        // FOLLOW ABI For Naming Conventions
+
+        // PUT DATA INTO Building GLOBAL DECLS
+
+        // Return Multiple Global Decls
+
+        // HELP ANGELA After finishing This.
+        // TODO ALAN
+        return null;
+    }
+
+
 }

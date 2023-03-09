@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 import aar226_akc55_ayc62_ahl88.newast.declarations.Decl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
@@ -146,7 +147,7 @@ public class Method extends Definition {
     }
 
     @Override
-    public IRNode accept(IRVisitor visitor) {
+    public IRFuncDecl accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
 }
