@@ -536,56 +536,14 @@ public class IRVisitor implements Visitor<IRNode>{
         ArrayList<Expr> exprs = node.getExpressions();
         ArrayList<IRStmt> order =new ArrayList<>();
         ArrayList<String> tempNames = new ArrayList<>();
-        if (exprs.get(0) instanceof FunctionCallExpr){
+        if (exprs.get(0) instanceof FunctionCallExpr) {
             assert (right.size() == 1);
             order.add(new IRExp(right.get(0)));
-            for (int i = 0; i< node.getDecls().size();i++){
+            for (int i = 0; i < node.getDecls().size(); i++) {
                 String tempName = nxtTemp();
-                IRMove curMove = new IRMove(new IRTemp(tempName),new IRTemp("_RV" + (i+1)));
+                IRMove curMove = new IRMove(new IRTemp(tempName), new IRTemp("_RV" + (i + 1)));
                 order.add(curMove);
                 tempNames.add(tempName);
-            }
-            for (int i = 0 ;i< node.getDecls().size();i++){ // need to check if global VAR
-                String curTemp = tempNames.get(i);
-                Decl d = node.getDecls().get(i);
-                if (d instanceof AnnotatedTypeDecl atd){
-                    if (atd.type.isArray()){
-                        if (atd.type.dimensions.allEmpty){ // random init is fine
-                            order.add(new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp)));
-                        }else{
-                            IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
-                            order.add(initArrayDecl(0,atd.type.dimensions,iden)); // passed in temp x
-//                            throw new InternalCompilerError("Gotta create init array malloc thing");
-                        }
-                    }else if (atd.type.isBasic()){
-                        order.add(new IRMove(new IRTemp(atd.identifier.toString()),new IRTemp(curTemp)));
-                    }else {
-                        throw new InternalCompilerError("Annotated can only be array or basic");
-                    }
-                }else if (d instanceof ArrAccessDecl aad){
-                    assert(aad.getIndices().size() >= 1);
-                    if (aad.getFuncParams() ==  null){ // a[e1][e2]
-                        IRExpr arrIdIR = aad.getIdentifier().accept(this);
-                        IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
-                        order.add (new IRMove(memComponent,new IRTemp(curTemp)));
-                    }else{ // g1(e1,e2)[4][5]
-                        String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
-                        ArrayList<IRExpr> argsList = new ArrayList<>();
-                        for (Expr param: aad.getFuncParams()){
-                            argsList.add((IRExpr) param.accept(this));
-                        }
-                        IRCall funcCall = new IRCall(new IRName(funcName),argsList);
-                        IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
-                        IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
-                        order.add(new IRMove(memComponent,new IRTemp(curTemp)));
-                    }// find a[e1][e2]
-                }else if (d instanceof NoTypeDecl){
-                    order.add(new IRMove(new IRTemp(d.identifier.toString()),new IRTemp(curTemp)));
-                }else if (d instanceof UnderScore){
-                    order.add(new IRExp(new IRTemp(curTemp)));
-                }else {
-                    throw new InternalCompilerError("NOT A DECL?");
-                }
             }
         }else{
             for (int i = 0; i< node.getDecls().size();i++){
@@ -595,47 +553,47 @@ public class IRVisitor implements Visitor<IRNode>{
                 order.add(curMove);
                 tempNames.add(tempName);
             }
-            for (int i = 0 ;i< node.getDecls().size();i++){ // need to check if global VAR
-                String curTemp = tempNames.get(i);
-                Decl d = node.getDecls().get(i);
-                if (d instanceof AnnotatedTypeDecl atd){
-                    if (atd.type.isArray()){
-                        if (atd.type.dimensions.allEmpty){ // random init is fine
-                            order.add(new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp)));
-                        }else{
-                            IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
-                            order.add(initArrayDecl(0,atd.type.dimensions,iden)); // passed in temp x
+        }
+        for (int i = 0 ;i< node.getDecls().size();i++){ // need to check if global VAR
+            String curTemp = tempNames.get(i);
+            Decl d = node.getDecls().get(i);
+            if (d instanceof AnnotatedTypeDecl atd){
+                if (atd.type.isArray()){
+                    if (atd.type.dimensions.allEmpty){ // random init is fine
+                        order.add(new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp)));
+                    }else{
+                        IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
+                        order.add(initArrayDecl(0,atd.type.dimensions,iden)); // passed in temp x
 //                            throw new InternalCompilerError("Gotta create init array malloc thing");
-                        }
-                    }else if (atd.type.isBasic()){
-                        order.add(new IRMove(new IRTemp(atd.identifier.toString()),new IRTemp(curTemp)));
-                    }else {
-                        throw new InternalCompilerError("Annotated can only be array or basic");
                     }
-                }else if (d instanceof ArrAccessDecl aad){
-                    assert(aad.getIndices().size() >= 1);
-                    if (aad.getFuncParams() ==  null){ // a[e1][e2]
-                        IRExpr arrIdIR = aad.getIdentifier().accept(this);
-                        IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
-                        order.add (new IRMove(memComponent,new IRTemp(curTemp)));
-                    }else{ // g1(e1,e2)[4][5]
-                        String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
-                        ArrayList<IRExpr> argsList = new ArrayList<>();
-                        for (Expr param: aad.getFuncParams()){
-                            argsList.add((IRExpr) param.accept(this));
-                        }
-                        IRCall funcCall = new IRCall(new IRName(funcName),argsList);
-                        IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
-                        IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
-                        order.add(new IRMove(memComponent,new IRTemp(curTemp)));
-                    }// find a[e1][e2]
-                }else if (d instanceof NoTypeDecl){
-                    order.add(new IRMove(new IRTemp(d.identifier.toString()),new IRTemp(curTemp)));
-                }else if (d instanceof UnderScore){
-                    order.add(new IRExp(new IRTemp(curTemp)));
+                }else if (atd.type.isBasic()){
+                    order.add(new IRMove(new IRTemp(atd.identifier.toString()),new IRTemp(curTemp)));
                 }else {
-                    throw new InternalCompilerError("NOT A DECL?");
+                    throw new InternalCompilerError("Annotated can only be array or basic");
                 }
+            }else if (d instanceof ArrAccessDecl aad){
+                assert(aad.getIndices().size() >= 1);
+                if (aad.getFuncParams() ==  null){ // a[e1][e2]
+                    IRExpr arrIdIR = aad.getIdentifier().accept(this);
+                    IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
+                    order.add (new IRMove(memComponent,new IRTemp(curTemp)));
+                }else{ // g1(e1,e2)[4][5]
+                    String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
+                    ArrayList<IRExpr> argsList = new ArrayList<>();
+                    for (Expr param: aad.getFuncParams()){
+                        argsList.add((IRExpr) param.accept(this));
+                    }
+                    IRCall funcCall = new IRCall(new IRName(funcName),argsList);
+                    IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
+                    IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
+                    order.add(new IRMove(memComponent,new IRTemp(curTemp)));
+                }// find a[e1][e2]
+            }else if (d instanceof NoTypeDecl){
+                order.add(new IRMove(new IRTemp(d.identifier.toString()),new IRTemp(curTemp)));
+            }else if (d instanceof UnderScore){
+                order.add(new IRExp(new IRTemp(curTemp)));
+            }else {
+                throw new InternalCompilerError("NOT A DECL?");
             }
         }
         return new IRSeq(order);
