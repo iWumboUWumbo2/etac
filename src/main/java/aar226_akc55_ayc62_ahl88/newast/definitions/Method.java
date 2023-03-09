@@ -21,6 +21,27 @@ public class Method extends Definition {
     private ArrayList<AnnotatedTypeDecl> decls;
     private ArrayList<Type> types;
     private Block block;
+    private Type functionSig;
+
+    public Type getFunctionSig() {
+        return functionSig;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public ArrayList<AnnotatedTypeDecl> getDecls() {
+        return decls;
+    }
+
+    public ArrayList<Type> getTypes() {
+        return types;
+    }
+
+    public Block getBlock() {
+        return block;
+    }
 
     public Method(String s, ArrayList<AnnotatedTypeDecl> d, ArrayList<Type> t, Block b, int l, int c){
         super(l,c);
@@ -116,6 +137,7 @@ public class Method extends Definition {
         table.currentParentFunction = old;
         table.exitScope();
         Type methodType = new Type(getInputTypes(),getOutputtypes());
+        functionSig = methodType;
         if (currentFile.contains(id.toString())){
             throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
         }

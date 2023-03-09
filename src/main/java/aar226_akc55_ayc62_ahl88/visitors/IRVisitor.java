@@ -387,43 +387,21 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRExpr visit(ArrayAccessExpr node) {
         IRExpr arrIR = node.getOrgArray().accept(this);
         assert(node.getIndicies().size() >= 1);
-        IRExpr firstInd = node.getIndicies().get(0).accept(this);
-        String ta = nxtTemp();
-        String ti = nxtTemp();
-        String lok = nxtLabel();
-        IRESeq sol = new IRESeq( // 1d array need loop for further
-                new IRSeq(
-                    new IRMove(new IRTemp(ta),arrIR),
-                    new IRMove(new IRTemp(ti),firstInd),
-                    new IRCJump(
-                        new IRBinOp(IRBinOp.OpType.ULT,
-                                new IRTemp(ti),
-                                new IRMem(
-                                        new IRBinOp(IRBinOp.OpType.SUB,
-                                                new IRTemp(ta),
-                                                new IRConst(8)))),
-                    lok,OUT_OF_BOUNDS), new IRLabel(lok)),
-                new IRMem(
-                        new IRBinOp(
-                            IRBinOp.OpType.ADD,
-                            new IRTemp(ta),
-                            new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
-                        )));
-        if (node.getIndicies().size() == 1){
-            return sol;
-        }
-        return accessRecursive(1, node, sol);
+        return accessRecur(0,node,arrIR);
     }
 //
-    private IRESeq accessRecursive(int ind, ArrayAccessExpr node, IRESeq ire){
+    private IRExpr accessRecur(int ind, ArrayAccessExpr node, IRExpr expr) {
+        if (ind == node.getIndicies().size()) {
+            return expr;
+        }
         IRExpr curInd = node.getIndicies().get(ind).accept(this);
         String ta = nxtTemp();
         String ti = nxtTemp();
         String lok = nxtLabel();
         IRESeq sol = new IRESeq( // 1d array need loop for further
                 new IRSeq(
-                        new IRMove(new IRTemp(ta),ire),
-                        new IRMove(new IRTemp(ti),curInd),
+                        new IRMove(new IRTemp(ta), expr),
+                        new IRMove(new IRTemp(ti), curInd),
                         new IRCJump(
                                 new IRBinOp(IRBinOp.OpType.ULT,
                                         new IRTemp(ti),
@@ -437,10 +415,7 @@ public class IRVisitor implements Visitor<IRNode>{
                                 new IRTemp(ta),
                                 new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
                         )));
-        if (ind == node.getIndicies().size() -1){
-            return sol;
-        }
-        return accessRecursive(ind + 1, node, sol);
+        return accessRecur(ind + 1, node, sol);
     }
 
     @Override
@@ -519,6 +494,7 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRStmt visit(DeclAssignStmt node) {
 //        if (node.getDecl() instanceof UnderScore){
 //        }
+        // might need to do call stmt
         IRExpr right = (IRExpr) node.getExpression().accept(this);
         IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
                 new IRESeq(new IRExp(right),new IRTemp("_RV1")): right;
@@ -536,7 +512,7 @@ public class IRVisitor implements Visitor<IRNode>{
             }
             throw new InternalCompilerError("Annotated can only be array or basic");
         }else if (node.getDecl() instanceof ArrAccessDecl){
-            throw new InternalCompilerError("ALLOCATE A NEW TEMP FOR THAT POINTER");
+            throw new InternalCompilerError("ALLOCATE A NEW TEMP FOR THAT POINTER"); // find a[e1][e2]
         }else if (node.getDecl() instanceof NoTypeDecl){
             return new IRMove(new IRTemp(node.getDecl().identifier.toString()),exec);
         }else if (node.getDecl() instanceof UnderScore){
@@ -582,17 +558,23 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRFuncDecl visit(Method node) {
-        // TODO ANDY
-
+        ArrayList<IRStmt> stmtList = new ArrayList<>();
         // MOVE ARGS INTO PARAMS
+        for (int i = 0;i < node.getDecls().size();i++){
+            AnnotatedTypeDecl atd = node.getDecls().get(i);
+            stmtList.add(new IRMove(new IRTemp(atd.identifier.toString()),new IRTemp("_ARG" + (i+1))));
+        }
 
         // EXECUTE BLOCK
-
+        stmtList.add(node.getBlock().accept(this)); // might need to move return inside
         // ADD RET IF NEEDED
+        if (node.getBlock().getNodeType().getType() == Type.TypeCheckingType.UNIT){
+            stmtList.add(new IRReturn());
+        }
 
+        String abiName = genABIFunc(node.getFunctionSig(), node.getId());
         // CREATE NODE
-
-        return null;
+        return new IRFuncDecl(abiName, new IRSeq(stmtList));
     }
 
     @Override
@@ -723,6 +705,12 @@ public class IRVisitor implements Visitor<IRNode>{
         }
     }
     private IRStmt initArrayDecl(int ind, Dimension d){ // this is for a:int[4][3][] etc
+        // a:int[4][3][][]
+
+        // malloc 4
+
+        // for each of those Elements Recursively
+
 
         // TODO ANDY
         // finish at ind == d.size() - 1
