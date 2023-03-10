@@ -37,10 +37,10 @@ public class Main {
 
         String pathname = path.toString();
         pathname = pathname.substring(0, pathname.length() - 3) + extension;
-
+//        System.out.println(pathname);
         Path parentPath = path.getParent();
         String dirname = (parentPath == null) ? "" : parentPath.toString();
-
+//        System.out.println(dirname);
         // Create directory
         File dir = new File(dirname);
         dir.mkdirs();
@@ -256,7 +256,7 @@ public class Main {
 //
 //        }
 
-        IRNode ir = root.accept(new IRVisitor(filename.substring(0, filename.length() - 3)));
+        IRNode ir = root.accept(new IRVisitor(filename.substring(0, filename.length() - 2)));
 
         return ir;
     }
@@ -404,9 +404,9 @@ public class Main {
             }
 
             if (cmd.hasOption("irgen")) {
-                String[] filenames = cmd.getOptionValues("typecheck");
+                String[] filenames = cmd.getOptionValues("irgen");
                 for (String filename : filenames) {
-//                    irgenFile(filename, true);
+                    irgenFile(filename);
                 }
             }
         }
