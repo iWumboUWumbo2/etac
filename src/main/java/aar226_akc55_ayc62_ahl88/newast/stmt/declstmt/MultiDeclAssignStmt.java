@@ -17,14 +17,6 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java.util.ArrayList;
 
 public class MultiDeclAssignStmt extends Stmt {
-    public ArrayList<Decl> getDecls() {
-        return decls;
-    }
-
-    public ArrayList<Expr> getExpressions() {
-        return expressions;
-    }
-
     private ArrayList<Decl> decls;
     private ArrayList<Expr> expressions;
 
@@ -121,5 +113,6 @@ public class MultiDeclAssignStmt extends Stmt {
 
     public ArrayList<Expr> getExpressions() {
         return expressions;
+    }
     }
 }
