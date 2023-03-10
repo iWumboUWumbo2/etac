@@ -336,6 +336,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(Id node) { // x = a; this is only a
+        if (globalIds.contains(node.toString())){
+            return new IRTemp("_" + node.toString());
+        }
         return new IRTemp(node.toString());
     }
 
@@ -506,7 +509,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 return new IRMove(memComponent,exec);
             }// find a[e1][e2]
         }else if (node.getDecl() instanceof NoTypeDecl){
-            return new IRMove(new IRTemp(node.getDecl().identifier.toString()),exec);
+            return new IRMove(node.getDecl().identifier.accept(this),exec);
         }else if (node.getDecl() instanceof UnderScore){
             return new IRExp(exec);
         }
@@ -591,7 +594,7 @@ public class IRVisitor implements Visitor<IRNode>{
                     order.add(new IRMove(memComponent,new IRTemp(curTemp)));
                 }// find a[e1][e2]
             }else if (d instanceof NoTypeDecl){
-                order.add(new IRMove(new IRTemp(d.identifier.toString()),new IRTemp(curTemp))); // might need to check for Globals
+                order.add(new IRMove(d.identifier.accept(this),new IRTemp(curTemp))); // might need to check for Globals
             }else if (d instanceof UnderScore){
                 order.add(new IRExp(new IRTemp(curTemp)));
             }else {
