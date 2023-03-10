@@ -326,7 +326,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRExpr visit(Id node) { // x = a; this is only a
+    public IRExpr visit(Id node) { // x = andy; this is only a
         if (globalIds.contains(node.toString())){
             return new IRTemp("_" + node.toString());
         }
@@ -361,7 +361,7 @@ public class IRVisitor implements Visitor<IRNode>{
         List<IRStmt> seq_list = new ArrayList<>(List.of(length_to_l, new IRExp(alloc_call), malloc_move, size_move));
 
         for(int i = 0; i < n; i++) {
-            IRExpr ire = (IRExpr) values.get(i).accept(this);
+            IRExpr ire = values.get(i).accept(this);
             IRMove move_elmnt = new IRMove(new IRMem(new IRBinOp(
                     IRBinOp.OpType.ADD,
                     new IRTemp(t),
@@ -389,17 +389,17 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRStmt visit(Block node) {
         ArrayList<Stmt> statements = node.getStatementList();
-        ArrayList<IRStmt> IRstmtList = new ArrayList<IRStmt>();
+        ArrayList<IRStmt> IRstmtList = new ArrayList<>();
         for (Stmt stmt: statements) {
-            IRstmtList.add((IRStmt) stmt.accept(this));
+            IRstmtList.add(stmt.accept(this));
         }
         return new IRSeq(IRstmtList);
     }
 
     @Override
     public IRStmt visit(IfElse node) {
-        IRStmt iFStatement = (IRStmt) node.getIfState().accept(this);
-        IRStmt elseStatement = (IRStmt) node.getElseState().accept(this);
+        IRStmt iFStatement = node.getIfState().accept(this);
+        IRStmt elseStatement = node.getElseState().accept(this);
         String lt = nxtLabel();
         String lf = nxtLabel();
         String lafter = nxtLabel();
@@ -420,7 +420,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String l1 = nxtLabel();
         String l2 = nxtLabel();
         IRStmt condStmt = booleanAsControlFlow(node.guard,l1,l2);
-        IRStmt statement = (IRStmt) node.ifState.accept(this);
+        IRStmt statement = node.ifState.accept(this);
         return new IRSeq(condStmt,new IRLabel(l1),statement, new IRLabel(l2));
     }
 
@@ -429,7 +429,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRName func = new IRName(genABIFunc(node.getFunctionSig(),node.getIdentifier()));
         ArrayList<IRExpr> paramListIR = new ArrayList<>();
         for (Expr param: node.getParamList()){
-            paramListIR.add((IRExpr) param.accept(this));
+            paramListIR.add(param.accept(this));
         }
         return new IRExp(new IRCall(func,paramListIR));
     }
@@ -439,7 +439,7 @@ public class IRVisitor implements Visitor<IRNode>{
         ArrayList<Expr> retList = node.getReturnArgList();
         ArrayList<IRExpr> IRRet = new ArrayList<>();
         for (Expr ret: retList){
-            IRRet.add((IRExpr) ret.accept(this));
+            IRRet.add(ret.accept(this));
         }
         return new IRReturn(IRRet);
     }
@@ -449,7 +449,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String l1 = nxtLabel();
         String le = nxtLabel();
         IRStmt condStmt = booleanAsControlFlow(node.getGuard(),l1,le);
-        IRStmt bodyStmt = (IRStmt) node.getStmt().accept(this);
+        IRStmt bodyStmt = node.getStmt().accept(this);
         return new IRSeq(
                 new IRLabel(lh),
                 condStmt,
@@ -463,7 +463,7 @@ public class IRVisitor implements Visitor<IRNode>{
 //        if (node.getDecl() instanceof UnderScore){
 //        }
         // might need to do call stmt
-        IRExpr right = (IRExpr) node.getExpression().accept(this);
+        IRExpr right = node.getExpression().accept(this);
         IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
                 new IRESeq(new IRExp(right),new IRTemp("_RV1")): right;
 
@@ -490,7 +490,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
                 ArrayList<IRExpr> argsList = new ArrayList<>();
                 for (Expr param: aad.getFuncParams()){
-                    argsList.add((IRExpr) param.accept(this));
+                    argsList.add(param.accept(this));
                 }
                 IRCall funcCall = new IRCall(new IRName(funcName),argsList);
                 IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
@@ -571,7 +571,7 @@ public class IRVisitor implements Visitor<IRNode>{
                     String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
                     ArrayList<IRExpr> argsList = new ArrayList<>();
                     for (Expr param: aad.getFuncParams()){
-                        argsList.add((IRExpr) param.accept(this));
+                        argsList.add(param.accept(this));
                     }
                     IRCall funcCall = new IRCall(new IRName(funcName),argsList);
                     IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
@@ -590,7 +590,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRStmt visit(Globdecl node) { // gonna have to be IRDATA
+    public IRStmt visit(Globdecl node) { // going have to be IRDATA
         // Don't visit create function that adds to Global MAP
         return null;
     }
@@ -706,7 +706,7 @@ public class IRVisitor implements Visitor<IRNode>{
         }else if (e instanceof NotUnop){ // C[!e, t, f]  = C[e, f, t]
             return booleanAsControlFlow(e,lf,lt);
         }
-        IRExpr cond = (IRExpr) e.accept(this);         // C[e, t, f]  = CJUMP(E[e], t, f)
+        IRExpr cond = e.accept(this);         // C[e, t, f]  = CJUMP(E[e], t, f)
         return new IRCJump(cond, lt, lf);
     }
 
