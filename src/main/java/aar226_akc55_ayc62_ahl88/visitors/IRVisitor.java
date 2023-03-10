@@ -27,6 +27,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
+import javax.naming.Name;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -328,7 +329,7 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRExpr visit(Id node) { // x = andy; this is only a
         if (globalIds.contains(node.toString())){
-            return new IRTemp("_" + node.toString());
+            return new IRMem(new IRName( "_" + node.toString()));
         }
         return new IRTemp(node.toString());
     }

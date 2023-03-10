@@ -72,13 +72,11 @@ public class MultiDeclAssignStmt extends Stmt {
         }
 
         if ( declarationTypes.size() != exprTypes.size()) {
-
             // multi literal assign
             if (expressions.size() != 1) {
                 throw new SemanticError(expressions.get(0).getLine(), expressions.get(0).getColumn(),
                         " Cannot unpack " + declarationTypes.size() + " into " + exprTypes.size());
             }
-
             // function multi assign
             else {
                 throw new SemanticError(decls.get(0).getLine() ,decls.get(0).getColumn() ,"Mismatched number of values for assign.");
@@ -88,6 +86,8 @@ public class MultiDeclAssignStmt extends Stmt {
             Type decT = declarationTypes.get(i);
             Type exprT = exprTypes.get(i);
             if (!decT.sameType(exprT)){
+                System.out.println(decT.getType());
+                System.out.println(exprT.getType());
                 throw new SemanticError(decls.get(i).getLine() ,decls.get(i).getColumn() ,"Variable Type doesn't match Expr Type");
             }
         }

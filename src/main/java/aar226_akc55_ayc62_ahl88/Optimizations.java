@@ -8,13 +8,10 @@ enum OptimizationTypes {
 }
 
 public class Optimizations {
-    private Boolean[] optimizations;
+    private boolean[] optimizations;
 
     public Optimizations() {
-        optimizations =
-                (Boolean[]) Arrays.stream(OptimizationTypes.values())
-                                  .map(e -> false)
-                                  .toArray();
+        optimizations = new boolean[OptimizationTypes.values().length];
     }
 
     public void setOptimizations(OptimizationTypes... opts) {

@@ -48,10 +48,14 @@ public class PlusBinop extends BinopExpr {
         Type t2 = e2.typeCheck(s);
 
         if (!t1.sameType(t2)) {
-            throw new SemanticError(getLine(), getColumn(), "plus e2 does not match e1");
+            throw new SemanticError(getLine(), getColumn(), " plus e2 does not match e1");
+        }
+        if (t1.getType() == Type.TypeCheckingType.BOOL){
+            throw new SemanticError(getLine(), getColumn(), " plus doesn't work on bool");
         }
 
         Type greaterType = t1.greaterType(t2);
+        System.out.println(greaterType.getType());
 //        System.out.println(greaterType.dimensions.getDim());
         if (greaterType.getType() == Type.TypeCheckingType.INT) {
             nodeType = new Type(Type.TypeCheckingType.INT);

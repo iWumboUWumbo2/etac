@@ -226,7 +226,9 @@ public class Type implements Printer {
     }
 
     public boolean sameType(Type rhs) {
-
+        if (getType() == TypeCheckingType.UNDERSCORE){
+            return rhs.getType() != TypeCheckingType.MULTIRETURN;
+        }
         // if one of the types is ambiguous, then equality is true
         // otherwise, if both types are not ambiguous, we type check
         if (getType() != rhs.getType() &&
