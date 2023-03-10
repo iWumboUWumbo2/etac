@@ -65,147 +65,120 @@ public class IRVisitor implements Visitor<IRNode>{
         return new IRBinOp(op, ire1, ire2);
     }
 
-    public IRExpr plusArrays(ArrayValueLiteral e1, ArrayValueLiteral e2) {
-
-        // START ALLOCATE ARR1
-        String t1 = nxtTemp();   // temp label for malloc
-        ArrayList<Expr> values1 = e1.getValues();
-        long n1 = values1.size();
-        String l1 = nxtTemp();
-
-        // reg[l] <- length
-        IRMove length_to_l1 = new IRMove(new IRTemp(l1), new IRConst(n1));
+    private IRExpr plusArrays(IRExpr ire1, IRExpr ire2){
+        String size1 = nxtTemp();
+        String size2 = nxtTemp();
+        String size3 = nxtTemp();
+        IRMove get_size1 = new IRMove(new IRTemp(size1), new IRMem( //store size1
+                new IRBinOp(IRBinOp.OpType.SUB, ire1, new IRConst(WORD_BYTES))));
+        IRMove get_size2 = new IRMove(new IRTemp(size2), new IRMem( // store size2
+                new IRBinOp(IRBinOp.OpType.SUB, ire2, new IRConst(WORD_BYTES))));
+        IRMove get_size3 = new IRMove(new IRTemp(size3), // size3 <= size1 + size2
+                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(size1), new IRTemp(size2)));
 
         // 8*n+8
-        IRBinOp size1 = new IRBinOp(IRBinOp.OpType.ADD,
+        IRBinOp malloc_size = new IRBinOp(IRBinOp.OpType.ADD,
                 new IRBinOp(IRBinOp.OpType.MUL,
-                        new IRTemp(l1),
+                        new IRTemp(size3),
                         new IRConst(WORD_BYTES)),
                 new IRConst(WORD_BYTES));
 
+        String head_pointer = nxtTemp();
         // CALL(NAME(malloc), size)
-        IRCall alloc_call1 = new IRCall(new IRName("_xi_alloc"), size1);
-        IRSeq malloc_move1 = new IRSeq(new IRExp(alloc_call1),new IRMove(new IRTemp(t1), new IRTemp("_RV1")));
-        // reg[t] <- call malloc
-//        IRMove malloc_move1 = new IRMove(new IRTemp(t1), alloc_call1);
+        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), malloc_size);
+        IRSeq malloc_move = new IRSeq(new IRExp(alloc_call),new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
 
-        List<IRStmt> seq_list1 = new ArrayList<>(List.of(length_to_l1, malloc_move1));
+        IRMove move_len = new IRMove(new IRMem(new IRTemp(head_pointer)),new IRTemp(size3));
+        // move len into -1
 
-        for(int i = 0; i < n1; i++) {
-            IRExpr ire1 =  values1.get(i).accept(this);
-            IRMove move_elmnt1 = new IRMove(new IRMem(new IRBinOp(
-                    IRBinOp.OpType.ADD,
-                    new IRTemp(t1),
-                    new IRConst(8L*(i+1)))),
-                    ire1 );
-            seq_list1.add(move_elmnt1);
-        }
+        // increment pointer to head
+        IRBinOp add_8 = new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(head_pointer), new IRConst(WORD_BYTES));
+        IRMove inc_pointer_to_head = new IRMove(new IRTemp(head_pointer),add_8);
+        // do all the top level shit first
+        IRSeq top_level_Order = new IRSeq(get_size1,get_size2,get_size3,malloc_move,move_len,inc_pointer_to_head);
 
-        seq_list1.add(new IRMove(new IRTemp(t1),
-                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t1), new IRConst(WORD_BYTES))));
-        // END ALLOCATE ARR1
+        /* START LOOP 1 */
+        // now time to recrusively alloc
+        String lh = nxtLabel();
+        String l1 = nxtLabel();
+        String le = nxtLabel();
+        String counter = nxtTemp();
+        IRBinOp guard = new IRBinOp(IRBinOp.OpType.LT,new IRTemp(counter), new IRTemp(size1));
+        // set counter = 0;
+        IRMove set0Counter = new IRMove(new IRTemp(counter), new IRConst(0));
+        IRLabel whileHead = new IRLabel(lh);
+        // check if counter < irExp
+        IRCJump loopCheck = new IRCJump(guard,l1,le);
+        IRLabel whileBody = new IRLabel(l1);
+        // create memory location for destination
+        IRMem leftMem = new IRMem(
+                new IRBinOp(IRBinOp.OpType.ADD,
+                        new IRBinOp(IRBinOp.OpType.MUL,new IRConst(WORD_BYTES),new IRTemp(counter)),
+                        new IRTemp(head_pointer))
+        );
 
-        // START ALLOCATE ARR2
-        String t2 = nxtTemp();   // temp label for malloc
-        ArrayList<Expr> values2 = e2.getValues();
-        long n2 = values2.size();
-        String l2 = nxtTemp();
+        IRMem rightMem = new IRMem(
+                new IRBinOp(IRBinOp.OpType.ADD,
+                        new IRBinOp(IRBinOp.OpType.MUL,new IRConst(WORD_BYTES),new IRTemp(counter)),
+                        ire1)
+        );
 
-        // reg[l] <- length
-        IRMove length_to_l2 = new IRMove(new IRTemp(l2), new IRConst(n2));
+        IRMove load_element = new IRMove(leftMem, rightMem);
+        IRMove inc_counter = new IRMove(new IRTemp(counter),
+                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(counter), new IRConst(1)));
+        // jump back to loop head
+        IRJump go_back_to_head = new IRJump(new IRName(lh));
+        IRLabel afterLoop = new IRLabel(le);
 
-        // 8*n+8
-        IRBinOp size2 = new IRBinOp(IRBinOp.OpType.ADD,
-                new IRBinOp(IRBinOp.OpType.MUL,
-                        new IRTemp(l2),
-                        new IRConst(WORD_BYTES)),
-                new IRConst(WORD_BYTES));
+        IRSeq loopComponent1 = new IRSeq(set0Counter,whileHead,loopCheck,whileBody,
+                load_element,inc_counter,go_back_to_head,afterLoop);
+        /* END LOOP 1 */
 
-        // CALL(NAME(malloc), size)
-        IRCall alloc_call2 = new IRCall(new IRName("_xi_alloc"), size2);
-        IRSeq malloc_move2 = new IRSeq(new IRExp(alloc_call2),new IRMove(new IRTemp(t2), new IRTemp("_RV1")));
+        /* START LOOP 2 */
+        String lh2 = nxtLabel();
+        String l12 = nxtLabel();
+        String le2 = nxtLabel();
+        String counter2 = nxtTemp();
+        IRBinOp guard2 = new IRBinOp(IRBinOp.OpType.LT,new IRTemp(counter2), new IRTemp(size2));
+        // set counter = 0;
+        IRMove set0Counter2 = new IRMove(new IRTemp(counter2), new IRConst(0));
+        IRLabel whileHead2 = new IRLabel(lh2);
+        // check if counter < irExp
+        IRCJump loopCheck2 = new IRCJump(guard,l12,le2);
+        IRLabel whileBody2 = new IRLabel(l12);
+        // create memory location for destination
+        IRMem leftMem2 = new IRMem(
+                new IRBinOp(IRBinOp.OpType.ADD,
+                        new IRBinOp(IRBinOp.OpType.MUL,new IRConst(WORD_BYTES),
+                                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(counter2), new IRTemp(size1))),
+                        new IRTemp(head_pointer))
+        );
 
-        List<IRStmt> seq_list2 = new ArrayList<>(List.of(length_to_l2, malloc_move2));
+        IRMem rightMem2 = new IRMem(
+                new IRBinOp(IRBinOp.OpType.ADD,
+                        new IRBinOp(IRBinOp.OpType.MUL,new IRConst(WORD_BYTES),new IRTemp(counter2)),
+                        ire2)
+        );
 
-        for(int i = 0; i < n2; i++) {
-            IRExpr ire2 = values2.get(i).accept(this);
-            IRMove move_elmnt2 = new IRMove(new IRMem(new IRBinOp(
-                    IRBinOp.OpType.ADD,
-                    new IRTemp(t2),
-                    new IRConst(8L*(i+1)))),
-                    ire2 );
-            seq_list2.add(move_elmnt2);
-        }
+        IRMove load_element2 = new IRMove(leftMem2, rightMem2);
+        IRMove inc_counter2 = new IRMove(new IRTemp(counter2),
+                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(counter2), new IRConst(1)));
+        // jump back to loop head
+        IRJump go_back_to_head2 = new IRJump(new IRName(lh2));
+        IRLabel afterLoop2 = new IRLabel(le2);
 
-        seq_list2.add(new IRMove(new IRTemp(t2),
-                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t2), new IRConst(WORD_BYTES))));
-        // END ALLOCATE ARR2
+        IRSeq loopComponent2 = new IRSeq(set0Counter2,whileHead2,loopCheck2,whileBody2,
+                load_element2,inc_counter2,go_back_to_head2,afterLoop2);
+        /* END LOOP 2 */
 
-        String size_reg = nxtTemp();
-        String t3 = nxtTemp();
 
-        // R[size_reg] <= MEM[t1-8] + MEM[t2-8]
-        IRExpr get_new_size = new IRBinOp(IRBinOp.OpType.ADD,
-                new IRMem(new IRBinOp(
-                        IRBinOp.OpType.SUB, new IRTemp(t1), new IRConst(8))),
-                new IRMem(new IRBinOp(
-                        IRBinOp.OpType.SUB, new IRTemp(t2), new IRConst(8))));
-
-        IRMove get_size_move = new IRMove(new IRTemp(size_reg), get_new_size);
-
-        // 8*n+8
-        IRBinOp size = new IRBinOp(IRBinOp.OpType.ADD,
-                new IRBinOp(IRBinOp.OpType.MUL,
-                        new IRTemp(l2),
-                        new IRConst(WORD_BYTES)),
-                new IRConst(WORD_BYTES));
-
-        // CALL(NAME(malloc), size)
-        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), size);
-        IRSeq malloc_move = new IRSeq(new IRExp(alloc_call),new IRMove(new IRTemp(t3), new IRTemp("_RV1")));
-
-        List<IRStmt> seq_list3 = new ArrayList<>(seq_list1);
-        seq_list3.addAll(seq_list2);
-        seq_list3.addAll(List.of(get_size_move, malloc_move));
-
-        // MEM[8*(t3+i)] <= t1 + i
-        for(int i = 0; i < n1; i++) {
-            IRMove move_elmnt3 = new IRMove(new IRMem(
-                    new IRBinOp(
-                            IRBinOp.OpType.ADD,
-                            new IRTemp(t3),
-                            new IRConst(8L*(i)))),
-                    new IRBinOp(
-                            IRBinOp.OpType.ADD,
-                            new IRTemp(t1),
-                            new IRConst(8L*i)));
-            seq_list3.add(move_elmnt3);
-        }
-
-        // MEM[8*(t3+n1)] <= t2 + i
-        for(int i = 0; i < n2; i++) {
-            IRMove move_elmnt3 = new IRMove(new IRMem(
-                    new IRBinOp(
-                            IRBinOp.OpType.ADD,
-                            new IRTemp(t3),
-                            new IRConst(8*(i+n1)))),
-                    new IRBinOp(
-                            IRBinOp.OpType.ADD,
-                            new IRTemp(t2),
-                            new IRConst(8L*i)));
-            seq_list3.add(move_elmnt3);
-        }
-
-        IRSeq ir_seq3 = new IRSeq(seq_list3);
-
-        return new IRESeq(ir_seq3,
-                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t3), new IRConst(WORD_BYTES)));
+        IRSeq final_seq = new IRSeq(top_level_Order,loopComponent1, loopComponent2);
+        return new IRESeq(final_seq, new IRTemp(head_pointer));
     }
 
     @Override
     public IRExpr visit(PlusBinop node) {
 
-        // TODO FINISH PLUS ANGELA
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
         IRExpr ire1 = e1.accept(this);
@@ -222,8 +195,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 // ESEQ
                 // SEQ -> ACCEPT E1 -> MOVE E1 to new TEMP -> ACCEPT E2 -> MOVE E2 to new TEMP ->
                 // EXPR is the second ESEQ from plus arrays
-//                return plusArrays((ArrayValueLiteral) e1, (ArrayValueLiteral) e2, ire1, ire2); // FIX
-                return plusArrays((ArrayValueLiteral) e1, (ArrayValueLiteral) e2); // FIX
+                return plusArrays(ire1,ire2);
             }
         }
 
