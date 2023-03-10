@@ -37,6 +37,13 @@ public class MultiGlobalDecl extends Definition{
         return build;
     }
 
+    public ArrayList<AnnotatedTypeDecl> getDecls() {
+        return decls;
+    }
+
+    public ArrayList<Expr> getExpressions() {
+        return expressions;
+    }
     @Override
     public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
         if (decls.size() != expressions.size()) {

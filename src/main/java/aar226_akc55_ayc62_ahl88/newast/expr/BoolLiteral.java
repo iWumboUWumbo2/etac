@@ -15,6 +15,10 @@ public class BoolLiteral extends Expr {
         boolVal = inputBool;
     }
 
+    public boolean getBoolVal(){
+        return boolVal;
+    }
+
     @Override
     public Type typeCheck(SymbolTable s){
         nodeType = new Type(Type.TypeCheckingType.BOOL);

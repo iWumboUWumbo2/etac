@@ -834,17 +834,36 @@ public class IRVisitor implements Visitor<IRNode>{
 
     private IRData initSingleGlobal(Globdecl node){
         //TODO ALAN
+        Expr e = node.getValue();
+        AnnotatedTypeDecl d = node.getDecl();
+        IRData irdata;
+        long[] data;
+        String name = "_" + d.getIdentifier();
 
+        if (e == null) {
+            irdata = new IRData(name, new long[]{});
+            return irdata;
+        }
 
+        if (e.getNodeType().getType() == Type.TypeCheckingType.INT) {
+            data = new long[]{((IntLiteral) e).getLong()};
+            irdata = new IRData(name, data);
+        } else if (e.getNodeType().getType() == Type.TypeCheckingType.BOOL) {
+            Boolean b = ((BoolLiteral) e).getBoolVal();
+            if (b) {
+                data = new long[]{1};
+            } else {
+                data = new long[]{0};
+            }
+            irdata = new IRData(name, data);
+        } else {
+            throw new InternalCompilerError("Unable to global assign this type.");
+        }
+        return irdata;
         // Check if right side is null or not for initalized Value
-
         // FOLLOW ABI For Naming Conventions
-
         // Put Data into Single Global Decl
-
         // Return IR DATA
-
-        return null;
     }
 
     private ArrayList<IRData> initMultiGlobal(MultiGlobalDecl node){
@@ -858,8 +877,18 @@ public class IRVisitor implements Visitor<IRNode>{
         // Return Multiple Global Decls
 
         // HELP ANGELA After finishing This.
+
         // TODO ALAN
-        return null;
+        ArrayList<AnnotatedTypeDecl> decls = node.getDecls();
+        ArrayList<Expr> exprs = node.getExpressions();
+
+        ArrayList<IRData> irDataList = new ArrayList<>(decls.size());
+        for (int i = 0; i < decls.size(); i++) {
+            Globdecl glob = new Globdecl(decls.get(i), exprs.get(i), -1 ,-1);
+            irDataList.set(i, initSingleGlobal(glob));
+        }
+
+        return irDataList;
     }
     private IRExpr accessRecur(int ind, ArrayList<Expr> indexes, IRExpr expr) {
         if (ind == indexes.size()) {
