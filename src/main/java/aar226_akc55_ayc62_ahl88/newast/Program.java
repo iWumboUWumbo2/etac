@@ -12,10 +12,17 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class Program extends AstNode {
     private ArrayList<Use> useList;
     private ArrayList<Definition> definitions;
+
+    public List<Type> getMethodSigs() {
+        return methodSigs;
+    }
+
+    private List<Type> methodSigs;
 
 
     public Program(ArrayList<Use> uses, ArrayList<Definition> definitions,int l, int c) {
@@ -24,6 +31,12 @@ public class Program extends AstNode {
         this.definitions = definitions;
         if (definitions.size() == 0){
             throw new SyntaxError(l,c,"no definitions");
+        }
+        else {
+            methodSigs = definitions.stream()
+                    .filter(defn -> defn instanceof Method)
+                    .map(m -> ((Method) m).getFunctionSig())
+                    .toList();
         }
     }
 
@@ -82,5 +95,13 @@ public class Program extends AstNode {
 
     public IRCompUnit accept(IRVisitor visitor) {
         return visitor.visit(this);
+    }
+
+    public ArrayList<Use> getUseList() {
+        return useList;
+    }
+
+    public ArrayList<Definition> getDefinitions() {
+        return definitions;
     }
 }
