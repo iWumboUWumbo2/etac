@@ -27,11 +27,8 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class IRVisitor implements Visitor<IRNode>{
 
@@ -94,11 +91,11 @@ public class IRVisitor implements Visitor<IRNode>{
         List<IRStmt> seq_list1 = new ArrayList<>(List.of(length_to_l1, malloc_move1));
 
         for(int i = 0; i < n1; i++) {
-            IRExpr ire1 = (IRExpr) values1.get(i).accept(this);
+            IRExpr ire1 =  values1.get(i).accept(this);
             IRMove move_elmnt1 = new IRMove(new IRMem(new IRBinOp(
                     IRBinOp.OpType.ADD,
                     new IRTemp(t1),
-                    new IRConst(8*(i+1)))),
+                    new IRConst(8L*(i+1)))),
                     ire1 );
             seq_list1.add(move_elmnt1);
         }
@@ -127,14 +124,14 @@ public class IRVisitor implements Visitor<IRNode>{
         IRCall alloc_call2 = new IRCall(new IRName("_xi_alloc"), size2);
         IRSeq malloc_move2 = new IRSeq(new IRExp(alloc_call2),new IRMove(new IRTemp(t2), new IRTemp("_RV1")));
 
-        List<IRStmt> seq_list2 = new ArrayList<IRStmt>(List.of(length_to_l2, malloc_move2));
+        List<IRStmt> seq_list2 = new ArrayList<>(List.of(length_to_l2, malloc_move2));
 
         for(int i = 0; i < n2; i++) {
-            IRExpr ire2 = (IRExpr) values2.get(i).accept(this);
+            IRExpr ire2 = values2.get(i).accept(this);
             IRMove move_elmnt2 = new IRMove(new IRMem(new IRBinOp(
                     IRBinOp.OpType.ADD,
                     new IRTemp(t2),
-                    new IRConst(8*(i+1)))),
+                    new IRConst(8L*(i+1)))),
                     ire2 );
             seq_list2.add(move_elmnt2);
         }
@@ -166,7 +163,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), size);
         IRSeq malloc_move = new IRSeq(new IRExp(alloc_call),new IRMove(new IRTemp(t3), new IRTemp("_RV1")));
 
-        List<IRStmt> seq_list3 = new ArrayList<IRStmt>(seq_list1);
+        List<IRStmt> seq_list3 = new ArrayList<>(seq_list1);
         seq_list3.addAll(seq_list2);
         seq_list3.addAll(List.of(get_size_move, malloc_move));
 
@@ -176,11 +173,11 @@ public class IRVisitor implements Visitor<IRNode>{
                     new IRBinOp(
                             IRBinOp.OpType.ADD,
                             new IRTemp(t3),
-                            new IRConst(8*(i)))),
+                            new IRConst(8L*(i)))),
                     new IRBinOp(
                             IRBinOp.OpType.ADD,
                             new IRTemp(t1),
-                            new IRConst(8*i)));
+                            new IRConst(8L*i)));
             seq_list3.add(move_elmnt3);
         }
 
@@ -194,7 +191,7 @@ public class IRVisitor implements Visitor<IRNode>{
                     new IRBinOp(
                             IRBinOp.OpType.ADD,
                             new IRTemp(t2),
-                            new IRConst(8*i)));
+                            new IRConst(8L*i)));
             seq_list3.add(move_elmnt3);
         }
 
@@ -271,37 +268,32 @@ public class IRVisitor implements Visitor<IRNode>{
         String x = nxtTemp();
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
-        switch (node.getBinopType()){
-            case AND:
-
-                return new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(0)),
-                        new IRCJump((IRExpr) e1.accept(this), l1, lend),
-                        new IRLabel(l1), new IRCJump((IRExpr) e2.accept(this), l2, lend),
-                        new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(1)),
-                        new IRLabel(lend)),
-                        new IRTemp(x));
-            case OR:
-
-                return new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(1)),
-                        new IRCJump((IRExpr) e1.accept(this), lend, l1),
-                        new IRLabel(l1), new IRCJump((IRExpr) e2.accept(this), lend, l2),
-                        new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(0)),
-                        new IRLabel(lend)),
-                        new IRTemp(x));
-            default:
-                throw new Error("NOT LOGICAL BINOP");
-        }
+        return switch (node.getBinopType()) {
+            case AND -> new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(0)),
+                    new IRCJump(e1.accept(this), l1, lend),
+                    new IRLabel(l1), new IRCJump(e2.accept(this), l2, lend),
+                    new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(1)),
+                    new IRLabel(lend)),
+                    new IRTemp(x));
+            case OR -> new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(1)),
+                    new IRCJump(e1.accept(this), lend, l1),
+                    new IRLabel(l1), new IRCJump(e2.accept(this), lend, l2),
+                    new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(0)),
+                    new IRLabel(lend)),
+                    new IRTemp(x));
+            default -> throw new Error("NOT LOGICAL BINOP");
+        };
     }
 
     @Override
     public IRExpr visit(NotUnop node) {
-        IRExpr ire = (IRExpr) node.accept(this);
+        IRExpr ire = node.accept(this);
         return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), ire);
     }
 
     @Override
     public IRExpr visit(IntegerNegExpr node) {
-        IRExpr ire = (IRExpr) node.accept(this);
+        IRExpr ire = node.accept(this);
         return new IRBinOp(IRBinOp.OpType.SUB, new IRConst(0), ire);
     }
 
@@ -318,10 +310,9 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRExpr visit(Length node) {
         String x = nxtTemp();
-        IRMem mem = new IRMem(new IRBinOp(IRBinOp.OpType.SUB, (IRExpr) node.getArg().accept(this), new IRConst(WORD_BYTES)));
+        IRMem mem = new IRMem(new IRBinOp(IRBinOp.OpType.SUB, node.getArg().accept(this), new IRConst(WORD_BYTES)));
         IRMove move = new IRMove(new IRTemp(x), mem);
-        IRESeq seq = new IRESeq(move, new IRTemp(x));
-        return seq;
+        return new IRESeq(move, new IRTemp(x));
     }
 
     @Override
@@ -329,7 +320,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRName func = new IRName(genABIFunc(node.getFunctionSig(),node.getId()));
         ArrayList<IRExpr> paramListIR = new ArrayList<>();
         for (Expr param: node.getArgs()){
-            paramListIR.add((IRExpr) param.accept(this));
+            paramListIR.add(param.accept(this));
         }
         return new IRESeq(new IRExp(new IRCall(func,paramListIR)),new IRTemp("_RV1"));
     }
@@ -374,7 +365,7 @@ public class IRVisitor implements Visitor<IRNode>{
             IRMove move_elmnt = new IRMove(new IRMem(new IRBinOp(
                     IRBinOp.OpType.ADD,
                     new IRTemp(t),
-                    new IRConst(8*(i+1)))),
+                    new IRConst(8L*(i+1)))),
                     ire );
             seq_list.add(move_elmnt);
         }
@@ -476,8 +467,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
                 new IRESeq(new IRExp(right),new IRTemp("_RV1")): right;
 
-        if (node.getDecl() instanceof AnnotatedTypeDecl){
-            AnnotatedTypeDecl atd = (AnnotatedTypeDecl) node.getDecl();
+        if (node.getDecl() instanceof AnnotatedTypeDecl atd){
             if (atd.type.isArray()){
                 if (atd.type.dimensions.allEmpty){ // random init is fine
                     return new IRMove(new IRTemp(atd.identifier.toString()),exec);
@@ -490,8 +480,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 return new IRMove(new IRTemp(atd.identifier.toString()),exec);
             }
             throw new InternalCompilerError("Annotated can only be array or basic");
-        }else if (node.getDecl() instanceof ArrAccessDecl){
-            ArrAccessDecl aad = (ArrAccessDecl) node.getDecl();
+        }else if (node.getDecl() instanceof ArrAccessDecl aad){
             assert(aad.getIndices().size() >= 1);
             if (aad.getFuncParams() ==  null){ // a[e1][e2]
                 IRExpr arrIdIR = aad.getIdentifier().accept(this);
@@ -518,10 +507,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRStmt visit(DeclNoAssignStmt node) {
-        if (!(node.getDecl() instanceof  AnnotatedTypeDecl)){
+        if (!(node.getDecl() instanceof AnnotatedTypeDecl atd)){
             throw new InternalCompilerError("no assign can only be annotated");
         }
-        AnnotatedTypeDecl atd = (AnnotatedTypeDecl) node.getDecl();
         return atd.accept(this);
         //Annotated Type Decl
 
@@ -534,10 +522,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRStmt visit(MultiDeclAssignStmt node) {
-//        List<IRNode> left = node.getDecls().stream().map(d -> d.accept(this)).toList();
-//        node.getDecls().forEach(d -> d.accept(this));
         List<IRExpr> right = node.getExpressions().stream().map(expr -> expr.accept(this)).toList();
-        ArrayList<IRExpr> exec = new ArrayList<>();
         ArrayList<Expr> exprs = node.getExpressions();
         ArrayList<IRStmt> order =new ArrayList<>();
         ArrayList<String> tempNames = new ArrayList<>();
@@ -639,16 +624,15 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override // Visit only on No Assign
     public IRStmt visit(AnnotatedTypeDecl node) { // could be IREXPR
-        AnnotatedTypeDecl atd = node;
-        if (atd.type.isArray()){
-            if (atd.type.dimensions.allEmpty){ // random init is fine
-                return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
+        if (node.type.isArray()){
+            if (node.type.dimensions.allEmpty){ // random init is fine
+                return new IRMove(new IRTemp(node.identifier.toString()),new IRConst(0));
             }else{
-                IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
-                return initArrayDecl(0,atd.type.dimensions,iden); // passed in temp x
+                IRExpr iden = node.getIdentifier().accept(this); // x:int[e1][e2][e3]
+                return initArrayDecl(0, node.type.dimensions,iden); // passed in temp x
             }
-        }else if (atd.type.isBasic()){
-            return new IRMove(new IRTemp(atd.identifier.toString()),new IRConst(0));
+        }else if (node.type.isBasic()){
+            return new IRMove(new IRTemp(node.identifier.toString()),new IRConst(0));
         }
         throw new InternalCompilerError("Annotated can only be array or basic");
     }
@@ -700,11 +684,6 @@ public class IRVisitor implements Visitor<IRNode>{
 
         return compUnit;
     }
-
-//    @Override
-//    public IRStmt visit(Type node) {
-//        return null;
-//    }
 
     private IRStmt booleanAsControlFlow(Expr e, String lt, String lf) {
         if (e instanceof BoolLiteral) { // C[true/false, t, f]  = JUMP(NAME(t/f))
@@ -862,7 +841,7 @@ public class IRVisitor implements Visitor<IRNode>{
             data = new long[]{((IntLiteral) e).getLong()};
             irdata = new IRData(name, data);
         } else if (e.getNodeType().getType() == Type.TypeCheckingType.BOOL) {
-            Boolean b = ((BoolLiteral) e).getBoolVal();
+            boolean b = ((BoolLiteral) e).getBoolVal();
             if (b) {
                 data = new long[]{1};
             } else {
