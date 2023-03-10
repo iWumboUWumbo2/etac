@@ -190,8 +190,8 @@ public class TypeCheckerVisitor implements Visitor<Void>{
         return null;
     }
 
-    @Override
-    public Void visit(Type node) {
-        return null;
-    }
+//    @Override
+//    public Void visit(Type node) {
+//        return null;
+//    }
 }

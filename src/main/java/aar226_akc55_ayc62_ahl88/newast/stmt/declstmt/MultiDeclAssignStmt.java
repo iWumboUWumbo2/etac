@@ -114,5 +114,4 @@ public class MultiDeclAssignStmt extends Stmt {
     public ArrayList<Expr> getExpressions() {
         return expressions;
     }
-    }
 }

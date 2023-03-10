@@ -513,51 +513,6 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRStmt visit(MultiDeclAssignStmt node) {
-//        List<IRNode> left = node.getDecls().stream().map(d -> d.accept(this)).toList();
-//        node.getDecls().forEach(d -> d.accept(this));
-        List<IRExpr> right = node.getExpressions().stream().map(expr -> expr.accept(this)).toList();
-        ArrayList<IRExpr> exec = new ArrayList<>();
-        ArrayList<Expr> exprs = node.getExpressions();
-        int j = 1;
-        for (int i = 0; i < exprs.size(); i++) {
-            exec.add(
-                    (exprs.get(i) instanceof FunctionCallExpr)
-                            ? new IRESeq(new IRExp(right.get(i)),new IRTemp("_RV"+(j++)))
-                            : right.get(i)
-            );
-        }
-
-        ArrayList<IRStmt> moves = new ArrayList<>();
-        for (int i = 0; i < node.getDecls().size(); i++) {
-            Decl d = node.getDecls().get(i);
-            IRExpr e = exec.get(i);
-            if (d instanceof AnnotatedTypeDecl){
-                AnnotatedTypeDecl atd = (AnnotatedTypeDecl) d;
-                if (atd.type.isArray()){
-                    if (atd.type.dimensions.allEmpty){ // random init is fine
-                        moves.add(new IRMove(new IRTemp(atd.identifier.toString()), e));
-                    }else{
-                        throw new InternalCompilerError("Gotta create init array malloc thing");
-                    }
-                }else if (atd.type.isBasic()){
-                    moves.add(new IRMove(new IRTemp(atd.identifier.toString()),e));
-                }
-                throw new InternalCompilerError("Annotated can only be array or basic");
-            }else if (d instanceof ArrAccessDecl){
-                throw new InternalCompilerError("ALLOCATE A NEW TEMP FOR THAT POINTER");
-            }else if (d instanceof NoTypeDecl){
-                moves.add(new IRMove(new IRTemp(d.identifier.toString()),e));
-            }else if (d instanceof UnderScore){
-                moves.add(new IRExp(e));
-            }
-            throw new InternalCompilerError("NOT A DECL?");
-        }
-
-        return new IRSeq(moves);
-    }
-
-    @Override
     public IRStmt visit(DeclNoAssignStmt node) {
         if (!(node.getDecl() instanceof  AnnotatedTypeDecl)){
             throw new InternalCompilerError("no assign can only be annotated");
