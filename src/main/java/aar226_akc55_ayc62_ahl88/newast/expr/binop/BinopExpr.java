@@ -73,7 +73,7 @@ public abstract class BinopExpr extends Expr {
                 out = "*";
                 break;
             case HIGHMULT:
-                out = ">>*";
+                out = "*>>";
                 break;
             case MODULO:
                 out = "%";
