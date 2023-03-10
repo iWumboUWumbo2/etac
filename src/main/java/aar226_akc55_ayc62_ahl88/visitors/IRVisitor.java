@@ -40,6 +40,7 @@ public class IRVisitor implements Visitor<IRNode>{
     private int labelCnt;
     private int tempCnt;
     private final String compUnitName;
+    private ArrayList<String> globalIds;
     public IRVisitor(String name) {
         labelCnt = 0;
         tempCnt = 0;
@@ -674,12 +675,13 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // Arun TODO
         // Create  Comp Unit
-        IRCompUnit compUnit = new IRCompUnit("");
-
+        IRCompUnit compUnit = new IRCompUnit(compUnitName);
+        globalIds = node.getGlobalsID();
         node.getDefinitions().forEach(definition -> {
             // Add Single Global Decls to the DATA MAP USE FUNC BELOW
             if (definition instanceof Globdecl) {
                 compUnit.appendData(initSingleGlobal((Globdecl) definition));
+
             }
             // Add multi global decls to the DATA map use the Func Below
             else if (definition instanceof MultiGlobalDecl) {
@@ -842,7 +844,6 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     private IRData initSingleGlobal(Globdecl node){
-        //TODO ALAN
         Expr e = node.getValue();
         AnnotatedTypeDecl d = node.getDecl();
         IRData irdata;
@@ -887,7 +888,6 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // HELP ANGELA After finishing This.
 
-        // TODO ALAN
         ArrayList<AnnotatedTypeDecl> decls = node.getDecls();
         ArrayList<Expr> exprs = node.getExpressions();
 

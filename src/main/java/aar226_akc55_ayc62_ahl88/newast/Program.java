@@ -21,7 +21,6 @@ public class Program extends AstNode {
     public List<Type> getMethodSigs() {
         return methodSigs;
     }
-
     private List<Type> methodSigs;
 
 
@@ -103,5 +102,18 @@ public class Program extends AstNode {
 
     public ArrayList<Definition> getDefinitions() {
         return definitions;
+    }
+
+    public ArrayList<String> getGlobalsID(){
+        ArrayList<String> res = new ArrayList<>();
+        for (Definition d: definitions){
+            if (d instanceof Globdecl gd){
+                res.add(gd.getDecl().getIdentifier().toString());
+            }else if (d instanceof MultiGlobalDecl mgd){
+                mgd.getDecls().forEach(e -> res.add(e.getIdentifier().toString()));
+            }
+            // no need for methods
+        }
+        return res;
     }
 }
