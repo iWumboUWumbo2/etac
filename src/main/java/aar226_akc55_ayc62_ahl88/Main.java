@@ -324,13 +324,25 @@ public class Main {
         }
     }
 
-    private static void irrunFile(String filename) {
+    private static void irrunFile(String filename, boolean shouldWrite) {
         String zhenFilename = getZhenFilename(filename);
 
         try {
             IRNode ir = irbuild(zhenFilename);
+
+            StringWriter out = new StringWriter();
+            PrintWriter pw = new PrintWriter(out);
+
+            CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
+
             IRSimulator sim = new IRSimulator((IRCompUnit) ir);
             sim.call("_Imain_paai", 0);
+
+            printer.close();
+
+            if (shouldWrite) {
+                writeOutput(filename, out.toString(), "ir");
+            }
         }
         catch (EtaError e) {
             e.printError(zhenFilename);
@@ -345,8 +357,6 @@ public class Main {
         for (int i = args.length - 1; i >= 0; i--) {
             if (args[i].endsWith(".eta") || args[i].endsWith(".eti")) {
                 filenames.add(args[i]);
-            } else {
-                break;
             }
         }
 
@@ -380,8 +390,6 @@ public class Main {
                 " Disable optimizations.");
         Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
-
-        lexOpt.setArgs(Option.UNLIMITED_VALUES);
 
         options.addOption(helpOpt);
         options.addOption(lexOpt);
@@ -461,7 +469,7 @@ public class Main {
 
             if (cmd.hasOption("irrun")) {
                 for (String filename : filenames) {
-                    irrunFile(filename);
+                    irrunFile(filename, true);
                 }
             }
 

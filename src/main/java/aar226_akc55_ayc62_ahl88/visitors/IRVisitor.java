@@ -30,6 +30,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import javax.naming.Name;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +76,23 @@ public class IRVisitor implements Visitor<IRNode>{
         IRExpr ire2 = e2.accept(this);
         IRBinOp.OpType op = node.getOpType();
 
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            long e1int = ire1.constant();
+            long e2int = ire2.constant();
+
+            switch (op) {
+                case DIV: if (e2int == 0) {
+                    return new IRConst(e1int / e2int);
+                }
+                throw new Error("DIVIDE BY ZERO");
+                case HMUL: BigInteger a = BigInteger.valueOf(e1int).multiply(BigInteger.valueOf(e2int));
+                            return new IRConst(a.shiftRight(64).longValue());
+                case SUB: return new IRConst(e1int - e2int);
+                case MOD: return new IRConst(e1int % e2int);
+                case MUL: return new IRConst(e1int * e2int);
+                default: throw new Error("NOT INTEGER COMPARISON BINOP");
+            }
+        }
         return new IRBinOp(op, ire1, ire2);
     }
 
@@ -99,6 +117,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String head_pointer = nxtTemp();
         // CALL(NAME(malloc), size)
         IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), malloc_size);
+//        IRMove malloc_move = new IRMove(new IRTemp(head_pointer),alloc_call);
         IRSeq malloc_move = new IRSeq(new IRExp(alloc_call),new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
 
         IRMove move_len = new IRMove(new IRMem(new IRTemp(head_pointer)),new IRTemp(size3));
@@ -157,7 +176,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRMove set0Counter2 = new IRMove(new IRTemp(counter2), new IRConst(0));
         IRLabel whileHead2 = new IRLabel(lh2);
         // check if counter < irExp
-        IRCJump loopCheck2 = new IRCJump(guard,l12,le2);
+        IRCJump loopCheck2 = new IRCJump(guard2,l12,le2);
         IRLabel whileBody2 = new IRLabel(l12);
         // create memory location for destination
         IRMem leftMem2 = new IRMem(
