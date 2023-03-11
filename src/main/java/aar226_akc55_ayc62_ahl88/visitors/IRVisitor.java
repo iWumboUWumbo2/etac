@@ -218,7 +218,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(IntegerComparisonBinop node {
+    public IRNode visit(IntegerComparisonBinop node) {
 //        < , <= , > , >=
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
