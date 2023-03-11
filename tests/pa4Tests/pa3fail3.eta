@@ -1,0 +1,18 @@
+main(args: int[][]){
+  x = y * z + x
+  x = y *>> z + x
+  x = y / z + x
+  x = y % z + x
+  x = y * z - x
+  x = y *>> z - x
+  x = y / z - x
+  x = y % z - x
+  x = x + y * z
+  x = x + y *>> z
+  x = x + y / z
+  x = x + y % z
+  x = x - y * z
+  x = x - y *>> z
+  x = x - y / z
+  x = x - y % z
+}

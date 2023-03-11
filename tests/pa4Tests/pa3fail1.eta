@@ -1,0 +1,18 @@
+main(args: int[][]){
+    x : int = 0 < 1
+    x = 0 <= 1
+    x = 0 >= 1
+    x = 0 > 1
+    x = 0 == 1
+    x = 0 != 1
+    x = true == false
+    x = true != false
+    x = true & false
+    x = false | true
+    x = 0 + 1
+    x = 0 - 1
+    x = 0 * 1
+    x = 0 *>> 1
+    x = 0 / 1
+    x = 0 % 1
+}
