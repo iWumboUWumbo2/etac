@@ -41,6 +41,8 @@ public class IRVisitor implements Visitor<IRNode>{
     private final String compUnitName;
     private ArrayList<String> globalIds;
 
+    private boolean constantFold;
+
     private ArrayList<IRData> string_consts;
     public IRVisitor(String name) {
         labelCnt = 0;
@@ -197,8 +199,6 @@ public class IRVisitor implements Visitor<IRNode>{
         if  (e1.getNodeType().isArray() && e2.getNodeType().isArray()) {
             if (e1.getNodeType().isUnknownArray() && !e2.getNodeType().isUnknownArray()) {
                 return ire2;
-            } else if (!e1.getNodeType().isUnknownArray() && e2.getNodeType().isUnknownArray()) {
-                return ire1;
             } else {
                 // ESEQ
                 // SEQ -> ACCEPT E1 -> MOVE E1 to new TEMP -> ACCEPT E2 -> MOVE E2 to new TEMP ->
@@ -209,12 +209,10 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // if both ints, return irbinop
         // if one unknown and other int, return int
-        if (e1.getNodeType().getType() == Type.TypeCheckingType.INT && e2.getNodeType().getType() == Type.TypeCheckingType.INT){
-            return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);    
-        } else if (e1.getNodeType().isUnknown() && !e2.getNodeType().isUnknownArray()) {
-            return new IRBinOp(IRBinOp.OpType.ADD, new IRConst(0), ire2);
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            return new IRConst(ire1.constant() + ire2.constant());
         } else {
-            return new IRBinOp(IRBinOp.OpType.ADD, ire1, new IRConst(0));
+                return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
         }
     }
 
@@ -249,16 +247,27 @@ public class IRVisitor implements Visitor<IRNode>{
         String x = nxtTemp();
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
+        IRExpr ire1 = e1.accept(this);
+        IRExpr ire2 = e2.accept(this);
+
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            return switch (node.getBinopType()) {
+                case AND -> new IRConst((ire1.constant() == 1)  && (ire2.constant() == 1)  ? 1 : 0);
+                case OR -> new IRConst((ire1.constant() == 1)  || (ire2.constant() == 1)  ? 1 : 0);
+                default -> throw new Error("NOT LOGICAL BINOP");
+            };
+        }
+
         return switch (node.getBinopType()) {
             case AND -> new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(0)),
-                    new IRCJump(e1.accept(this), l1, lend),
-                    new IRLabel(l1), new IRCJump(e2.accept(this), l2, lend),
+                    new IRCJump(ire1, l1, lend),
+                    new IRLabel(l1), new IRCJump(ire2, l2, lend),
                     new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(1)),
                     new IRLabel(lend)),
                     new IRTemp(x));
             case OR -> new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(1)),
-                    new IRCJump(e1.accept(this), lend, l1),
-                    new IRLabel(l1), new IRCJump(e2.accept(this), lend, l2),
+                    new IRCJump(ire1, lend, l1),
+                    new IRLabel(l1), new IRCJump(ire2, lend, l2),
                     new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(0)),
                     new IRLabel(lend)),
                     new IRTemp(x));
