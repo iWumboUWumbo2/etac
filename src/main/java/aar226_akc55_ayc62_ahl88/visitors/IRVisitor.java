@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
-
     private static final int WORD_BYTES = 8;
     private static final String OUT_OF_BOUNDS = "_xi_out_of_bounds";
     private int labelCnt;
@@ -43,9 +42,7 @@ public class IRVisitor implements Visitor<IRNode>{
     private int stringCnt;
     private final String compUnitName;
     private ArrayList<String> globalIds;
-
     private boolean constantFold;
-
     private ArrayList<IRData> string_consts;
     public IRVisitor(String name) {
         labelCnt = 0;
@@ -58,7 +55,6 @@ public class IRVisitor implements Visitor<IRNode>{
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
     }
-
     private String nxtTemp() {
         return String.format("t%d", (tempCnt++));
     }
@@ -251,9 +247,6 @@ public class IRVisitor implements Visitor<IRNode>{
         if (constantFold && ire1.isConstant() && ire2.isConstant()) {
             long e1int = ire1.constant();
             long e2int = ire2.constant();
-            System.out.println(e1int);
-            System.out.println(e2int);
-            System.out.println(e1int >= e2int);
 
             return switch (op) {
                 case LT -> new IRConst(e1int < e2int ? 1 : 0);
