@@ -26,6 +26,11 @@ public class Optimizations {
         }
     }
 
+    @Override
+    public String toString() {
+        return Arrays.toString(OptimizationTypes.values()) + "\n" + Arrays.toString(optimizations);
+    }
+
     public boolean isSet(OptimizationTypes opt) {
         return optimizations[opt.ordinal()];
     }
