@@ -11,7 +11,7 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 /**
  * Class for Greater Than Binary Operator
  */
-public class GtBinop extends EquivalenceBinop {
+public class GtBinop extends IntegerComparisonBinop {
 
     /**
      * @param in1 left Expression
@@ -31,6 +31,6 @@ public class GtBinop extends EquivalenceBinop {
 
     @Override
     public IRExpr accept(IRVisitor visitor) {
-        return visitor.visit(this);
+        return (IRExpr) visitor.visit(this);
     }
 }

@@ -11,7 +11,7 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 /**
  * Class for Greater Than Or Equals To Binary Operator
  */
-public class GeqBinop extends EquivalenceBinop {
+public class GeqBinop extends IntegerComparisonBinop {
     /**
      * @param in1 left Expression
      * @param in2 right Expression
@@ -29,6 +29,6 @@ public class GeqBinop extends EquivalenceBinop {
 
     @Override
     public IRExpr accept(IRVisitor visitor) {
-        return visitor.visit(this);
+        return (IRExpr) visitor.visit(this);
     }
 }

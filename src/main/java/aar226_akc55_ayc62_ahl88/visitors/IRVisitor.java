@@ -81,16 +81,16 @@ public class IRVisitor implements Visitor<IRNode>{
             long e2int = ire2.constant();
 
             switch (op) {
-                case DIV: if (e2int == 0) {
+                case DIV: if (e2int != 0) {
                     return new IRConst(e1int / e2int);
                 }
-                throw new Error("DIVIDE BY ZERO");
+                    throw new Error("DIVIDE BY ZERO");
                 case HMUL: BigInteger a = BigInteger.valueOf(e1int).multiply(BigInteger.valueOf(e2int));
                             return new IRConst(a.shiftRight(64).longValue());
                 case SUB: return new IRConst(e1int - e2int);
                 case MOD: return new IRConst(e1int % e2int);
                 case MUL: return new IRConst(e1int * e2int);
-                default: throw new Error("NOT INTEGER COMPARISON BINOP");
+                default: throw new Error("NOT INTEGER ARITHMETIC BINOP");
             }
         }
         return new IRBinOp(op, ire1, ire2);
@@ -251,6 +251,9 @@ public class IRVisitor implements Visitor<IRNode>{
         if (constantFold && ire1.isConstant() && ire2.isConstant()) {
             long e1int = ire1.constant();
             long e2int = ire2.constant();
+            System.out.println(e1int);
+            System.out.println(e2int);
+            System.out.println(e1int >= e2int);
 
             return switch (op) {
                 case LT -> new IRConst(e1int < e2int ? 1 : 0);

@@ -11,7 +11,7 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 /**
  * Class for Less Than Or Equals To Binary Operator
  */
-public class LeqBinop extends EquivalenceBinop {
+public class LeqBinop extends IntegerComparisonBinop {
     /**
      * @param in1 left Expression
      * @param in2 right Expression
@@ -29,6 +29,6 @@ public class LeqBinop extends EquivalenceBinop {
 
     @Override
     public IRExpr accept(IRVisitor visitor) {
-        return visitor.visit(this);
+        return (IRExpr) visitor.visit(this);
     }
 }
