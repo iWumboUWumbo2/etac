@@ -217,7 +217,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(IntegerComparisonBinop node) {
+    public IRNode visit(IntegerComparisonBinop node {
 //        < , <= , > , >=
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
@@ -226,17 +226,37 @@ public class IRVisitor implements Visitor<IRNode>{
         IRExpr ire2 = e2.accept(this);
         IRBinOp.OpType op = node.getOpType();
 
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            long e1int = ire1.constant();
+            long e2int = ire2.constant();
+
+            return switch (op) {
+                case LT -> new IRConst(e1int < e2int ? 1 : 0);
+                case LEQ -> new IRConst(e1int <= e2int ? 1 : 0);
+                case GT -> new IRConst(e1int > e2int ? 1 : 0);
+                case GEQ -> new IRConst(e1int >= e2int ? 1 : 0);
+                default -> throw new Error("NOT INTEGER COMPARISON BINOP");
+            };
+        }
         return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
     public IRExpr visit(EquivalenceBinop node) {
-        IRExpr l = node.getLeftExpr().accept(this);
-        IRExpr r = node.getRightExpr().accept(this);
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
 
+        IRExpr ire1 = e1.accept(this);
+        IRExpr ire2 = e2.accept(this);
         IRBinOp.OpType op = node.getOpType();
 
-        return new IRBinOp(op, l, r);
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            long e1int = ire1.constant();
+            long e2int = ire2.constant();
+
+            return new IRConst(e1int == e2int ? 1 : 0);
+        }
+        return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
@@ -278,12 +298,19 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRExpr visit(NotUnop node) {
         IRExpr ire = node.accept(this);
+
+        if (constantFold && ire.isConstant()) {
+            return new IRConst(1-ire.constant());
+        }
         return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), ire);
     }
 
     @Override
     public IRExpr visit(IntegerNegExpr node) {
         IRExpr ire = node.accept(this);
+        if (constantFold && ire.isConstant()) {
+            return new IRConst(-1 * ire.constant());
+        }
         return new IRBinOp(IRBinOp.OpType.SUB, new IRConst(0), ire);
     }
 
@@ -325,13 +352,13 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
-        if (node.getRaw() != null){ // its a string
+        if (node.getRaw() != null){ // it is a string
             String stringName = nxtString();
             long[] res  = new long[node.getValues().size()+1];
             res[0] = node.getValues().size();
             for (int i = 0; i< node.getRaw().length();i++){
                 char c = node.getRaw().charAt(i);
-                res[i+1] = Character.getNumericValue(c);
+                res[i+1] = (int) c;
             }
             IRData str =  new IRData(stringName,res);
             string_consts.add(str);
