@@ -1,28 +1,29 @@
 #!/bin/bash
 DIR=`dirname $0`
-rm  -r $DIR/*.lexed
-rm  -r $DIR/*.parsed
-rm  -r $DIR/*.typed
-rm  -r $DIR/tests/*.lexed
-rm  -r $DIR/tests/*.parsed
-rm  -r $DIR/tests/*.typed
-rm  -r $DIR/tests/pa3/*.typed
-rm  -r $DIR/tests/pa3Tests/*.typed
-rm  -r $DIR/tests/pa3Tests/multiassign/*.typed
-rm  -r $DIR/tests/pa3Tests/scope/*.typed
-rm  -r $DIR/tests/pa3Tests/unknown/*.typed
-rm  -r $DIR/tests/pa3Tests/iheartcompilers/*.typed
-rm  -r $DIR/tests/pa3Tests/function/*.typed
-rm  -r $DIR/tests/pa3Tests/examples/*.typed
-rm  -r $DIR/tests/p2fails/*.lexed
-rm  -r $DIR/tests/p2fails/*.parsed
-rm  -r $DIR/tests/p2fails/*.typed
-rm  -r $DIR/tests/pa3fails/*.lexed
-rm  -r $DIR/tests/pa3fails/*.parsed
-rm  -r $DIR/tests/pa3fails/*.typed
-rm  -r $DIR/tests/pa4Tests/*.lexed
-rm  -r $DIR/tests/pa4Tests/*.parsed
-rm  -r $DIR/tests/pa4Tests/*.typed
+find $DIR -name "*.lexed" -exec rm -r {} \;
+find $DIR -name "*.parsed" -exec rm -r {} \;
+find $DIR -name "*.typed" -exec rm -r {} \;
+find $DIR -name "*.ir" -exec rm -r {} \;
+#rm  -r $DIR/*.lexed
+#rm  -r $DIR/*.parsed
+#rm  -r $DIR/*.typed
+#rm  -r $DIR/tests/*.lexed
+#rm  -r $DIR/tests/*.parsed
+#rm  -r $DIR/tests/*.typed
+#rm  -r $DIR/tests/pa3/*.typed
+#rm  -r $DIR/tests/pa3Tests/*.typed
+#rm  -r $DIR/tests/pa3Tests/multiassign/*.typed
+#rm  -r $DIR/tests/pa3Tests/scope/*.typed
+#rm  -r $DIR/tests/pa3Tests/unknown/*.typed
+#rm  -r $DIR/tests/pa3Tests/iheartcompilers/*.typed
+#rm  -r $DIR/tests/pa3Tests/function/*.typed
+#rm  -r $DIR/tests/pa3Tests/examples/*.typed
+#rm  -r $DIR/tests/p2fails/*.lexed
+#rm  -r $DIR/tests/p2fails/*.parsed
+#rm  -r $DIR/tests/p2fails/*.typed
+#rm  -r $DIR/tests/pa3fails/*.lexed
+#rm  -r $DIR/tests/pa3fails/*.parsed
+#rm  -r $DIR/tests/pa3fails/*.typed
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java~

@@ -114,6 +114,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String head_pointer = nxtTemp();
         // CALL(NAME(malloc), size)
         IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), malloc_size);
+//        IRMove malloc_move = new IRMove(new IRTemp(head_pointer),alloc_call);
         IRSeq malloc_move = new IRSeq(new IRExp(alloc_call),new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
 
         IRMove move_len = new IRMove(new IRMem(new IRTemp(head_pointer)),new IRTemp(size3));
@@ -172,7 +173,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRMove set0Counter2 = new IRMove(new IRTemp(counter2), new IRConst(0));
         IRLabel whileHead2 = new IRLabel(lh2);
         // check if counter < irExp
-        IRCJump loopCheck2 = new IRCJump(guard,l12,le2);
+        IRCJump loopCheck2 = new IRCJump(guard2,l12,le2);
         IRLabel whileBody2 = new IRLabel(l12);
         // create memory location for destination
         IRMem leftMem2 = new IRMem(
@@ -235,7 +236,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(IntegerComparisonBinop node {
+    public IRNode visit(IntegerComparisonBinop node) {
 //        < , <= , > , >=
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
