@@ -341,6 +341,7 @@ public class Main {
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
+        options.addOption(optOpt);
         options.addOption(dirOpt);
         options.addOption(irrunOpt);
 
