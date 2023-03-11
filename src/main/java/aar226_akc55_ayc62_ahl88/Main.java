@@ -30,7 +30,7 @@ public class Main {
     private static boolean isInputDirSpecified;
     public static boolean isLibpathDirSpecified;
 
-    private static Optimizations opts;
+    public static Optimizations opts;
 
     // Write the lexed string into the corresponding file name
     private static void writeOutput(String filename, String output, String extension) {
@@ -275,7 +275,9 @@ public class Main {
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.firstPass(); // Just to throw EtaErrors
+                    System.out.println("Fuck");
                 }
+                else {System.out.println("Gigafuck ");}
 
 //                if (opts.isSet(OptimizationTypes.CONSTANT_FOLDING)) {
 //
@@ -304,8 +306,8 @@ public class Main {
             PrintWriter pw = new PrintWriter(out);
 
             CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-//            System.out.println(ir);
-//            System.out.println(ir instanceof IRCompUnit);
+            System.out.println(ir);
+            System.out.println(ir instanceof IRCompUnit);
             ir.printSExp(printer);
 
             printer.close();

@@ -1,0 +1,16 @@
+main(args: int[][]) {
+  a:int = 2+2;
+  a = -14;
+  a = -9223372036854775808;
+
+  b:bool = 2 < 1;
+  b = 2 <= 1;
+  b = 2 > 1;
+  b = 2 >= 1;
+  b = 2 == 2;
+
+  b = "peepee" == "poopoo"; // shouldn't const fold
+  b = true | false;
+  b = true & false;
+  b = !true;
+}

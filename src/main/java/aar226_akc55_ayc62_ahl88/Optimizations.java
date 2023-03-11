@@ -2,11 +2,6 @@ package aar226_akc55_ayc62_ahl88;
 
 import java.util.Arrays;
 
-enum OptimizationTypes {
-    CONSTANT_FOLDING,
-    IR_LOWERING
-}
-
 public class Optimizations {
     private boolean[] optimizations;
 

@@ -1,5 +1,7 @@
 package aar226_akc55_ayc62_ahl88.visitors;
 
+import aar226_akc55_ayc62_ahl88.Main;
+import aar226_akc55_ayc62_ahl88.OptimizationTypes;
 import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -50,6 +52,7 @@ public class IRVisitor implements Visitor<IRNode>{
         stringCnt = 1;
         compUnitName = name;
         string_consts = new ArrayList<>();
+        constantFold = Main.opts.isSet(OptimizationTypes.CONSTANT_FOLDING);
     }
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
@@ -217,7 +220,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     @Override
-    public IRNode visit(IntegerComparisonBinop node {
+    public IRNode visit(IntegerComparisonBinop node) {
 //        < , <= , > , >=
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
@@ -297,7 +300,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(NotUnop node) {
-        IRExpr ire = node.accept(this);
+        IRExpr ire = node.getE().accept(this);
 
         if (constantFold && ire.isConstant()) {
             return new IRConst(1-ire.constant());
@@ -307,7 +310,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(IntegerNegExpr node) {
-        IRExpr ire = node.accept(this);
+        IRExpr ire = node.getE().accept(this);
         if (constantFold && ire.isConstant()) {
             return new IRConst(-1 * ire.constant());
         }
