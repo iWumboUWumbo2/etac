@@ -292,7 +292,7 @@ public class Main {
         return null;
     }
 
-    private static void irgenFile(String filename) {
+    private static void irgenFile(String filename, boolean shouldWrite) {
         String zhenFilename = getZhenFilename(filename);
 
         try {
@@ -307,6 +307,10 @@ public class Main {
             ir.printSExp(printer);
 
             printer.close();
+
+            if (shouldWrite) {
+                writeOutput(filename, out.toString(), "ir");
+            }
         }
         catch (EtaError e) {
             e.printError(zhenFilename);
@@ -443,7 +447,7 @@ public class Main {
             if (cmd.hasOption("irgen")) {
                 String[] filenames = cmd.getOptionValues("irgen");
                 for (String filename : filenames) {
-                    irgenFile(filename);
+                    irgenFile(filename, true);
                 }
             }
 

@@ -41,9 +41,9 @@ public class IntLiteral extends Expr{
             int last = inputChar.lastIndexOf("}");
             number = Long.parseLong(inputChar.substring(first+1,last),16);
         }else if (escapeForm.length() == 1){ // single character
-            number = Character.getNumericValue(escapeForm.charAt(0));
+            number = escapeForm.charAt(0);
         }else{
-            number  = Character.getNumericValue(inputChar.charAt(0));
+            number  = inputChar.charAt(0);
         }
     }
 

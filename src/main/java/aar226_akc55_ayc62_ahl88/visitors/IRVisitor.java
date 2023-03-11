@@ -343,13 +343,13 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
-        if (node.getRaw() != null){ // its a string
+        if (node.getRaw() != null){ // it is a string
             String stringName = nxtString();
             long[] res  = new long[node.getValues().size()+1];
             res[0] = node.getValues().size();
             for (int i = 0; i< node.getRaw().length();i++){
                 char c = node.getRaw().charAt(i);
-                res[i+1] = Character.getNumericValue(c);
+                res[i+1] = (int) c;
             }
             IRData str =  new IRData(stringName,res);
             string_consts.add(str);
