@@ -41,6 +41,8 @@ public class IRVisitor implements Visitor<IRNode>{
     private final String compUnitName;
     private ArrayList<String> globalIds;
 
+    private boolean constantFold;
+
     private ArrayList<IRData> string_consts;
     public IRVisitor(String name) {
         labelCnt = 0;
@@ -197,8 +199,6 @@ public class IRVisitor implements Visitor<IRNode>{
         if  (e1.getNodeType().isArray() && e2.getNodeType().isArray()) {
             if (e1.getNodeType().isUnknownArray() && !e2.getNodeType().isUnknownArray()) {
                 return ire2;
-            } else if (!e1.getNodeType().isUnknownArray() && e2.getNodeType().isUnknownArray()) {
-                return ire1;
             } else {
                 // ESEQ
                 // SEQ -> ACCEPT E1 -> MOVE E1 to new TEMP -> ACCEPT E2 -> MOVE E2 to new TEMP ->
@@ -209,17 +209,15 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // if both ints, return irbinop
         // if one unknown and other int, return int
-        if (e1.getNodeType().getType() == Type.TypeCheckingType.INT && e2.getNodeType().getType() == Type.TypeCheckingType.INT){
-            return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);    
-        } else if (e1.getNodeType().isUnknown() && !e2.getNodeType().isUnknownArray()) {
-            return new IRBinOp(IRBinOp.OpType.ADD, new IRConst(0), ire2);
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            return new IRConst(ire1.constant() + ire2.constant());
         } else {
-            return new IRBinOp(IRBinOp.OpType.ADD, ire1, new IRConst(0));
+                return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
         }
     }
 
     @Override
-    public IRNode visit(IntegerComparisonBinop node) {
+    public IRNode visit(IntegerComparisonBinop node {
 //        < , <= , > , >=
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
@@ -228,17 +226,37 @@ public class IRVisitor implements Visitor<IRNode>{
         IRExpr ire2 = e2.accept(this);
         IRBinOp.OpType op = node.getOpType();
 
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            long e1int = ire1.constant();
+            long e2int = ire2.constant();
+
+            return switch (op) {
+                case LT -> new IRConst(e1int < e2int ? 1 : 0);
+                case LEQ -> new IRConst(e1int <= e2int ? 1 : 0);
+                case GT -> new IRConst(e1int > e2int ? 1 : 0);
+                case GEQ -> new IRConst(e1int >= e2int ? 1 : 0);
+                default -> throw new Error("NOT INTEGER COMPARISON BINOP");
+            };
+        }
         return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
     public IRExpr visit(EquivalenceBinop node) {
-        IRExpr l = node.getLeftExpr().accept(this);
-        IRExpr r = node.getRightExpr().accept(this);
+        Expr e1 = node.getLeftExpr();
+        Expr e2 = node.getRightExpr();
 
+        IRExpr ire1 = e1.accept(this);
+        IRExpr ire2 = e2.accept(this);
         IRBinOp.OpType op = node.getOpType();
 
-        return new IRBinOp(op, l, r);
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            long e1int = ire1.constant();
+            long e2int = ire2.constant();
+
+            return new IRConst(e1int == e2int ? 1 : 0);
+        }
+        return new IRBinOp(op, ire1, ire2);
     }
 
     @Override
@@ -249,16 +267,27 @@ public class IRVisitor implements Visitor<IRNode>{
         String x = nxtTemp();
         Expr e1 = node.getLeftExpr();
         Expr e2 = node.getRightExpr();
+        IRExpr ire1 = e1.accept(this);
+        IRExpr ire2 = e2.accept(this);
+
+        if (constantFold && ire1.isConstant() && ire2.isConstant()) {
+            return switch (node.getBinopType()) {
+                case AND -> new IRConst((ire1.constant() == 1)  && (ire2.constant() == 1)  ? 1 : 0);
+                case OR -> new IRConst((ire1.constant() == 1)  || (ire2.constant() == 1)  ? 1 : 0);
+                default -> throw new Error("NOT LOGICAL BINOP");
+            };
+        }
+
         return switch (node.getBinopType()) {
             case AND -> new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(0)),
-                    new IRCJump(e1.accept(this), l1, lend),
-                    new IRLabel(l1), new IRCJump(e2.accept(this), l2, lend),
+                    new IRCJump(ire1, l1, lend),
+                    new IRLabel(l1), new IRCJump(ire2, l2, lend),
                     new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(1)),
                     new IRLabel(lend)),
                     new IRTemp(x));
             case OR -> new IRESeq(new IRSeq(new IRMove(new IRTemp(x), new IRConst(1)),
-                    new IRCJump(e1.accept(this), lend, l1),
-                    new IRLabel(l1), new IRCJump(e2.accept(this), lend, l2),
+                    new IRCJump(ire1, lend, l1),
+                    new IRLabel(l1), new IRCJump(ire2, lend, l2),
                     new IRLabel(l2), new IRMove(new IRTemp(x), new IRConst(0)),
                     new IRLabel(lend)),
                     new IRTemp(x));
@@ -269,12 +298,19 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRExpr visit(NotUnop node) {
         IRExpr ire = node.accept(this);
+
+        if (constantFold && ire.isConstant()) {
+            return new IRConst(1-ire.constant());
+        }
         return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), ire);
     }
 
     @Override
     public IRExpr visit(IntegerNegExpr node) {
         IRExpr ire = node.accept(this);
+        if (constantFold && ire.isConstant()) {
+            return new IRConst(-1 * ire.constant());
+        }
         return new IRBinOp(IRBinOp.OpType.SUB, new IRConst(0), ire);
     }
 
@@ -316,13 +352,13 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
-        if (node.getRaw() != null){ // its a string
+        if (node.getRaw() != null){ // it is a string
             String stringName = nxtString();
             long[] res  = new long[node.getValues().size()+1];
             res[0] = node.getValues().size();
             for (int i = 0; i< node.getRaw().length();i++){
                 char c = node.getRaw().charAt(i);
-                res[i+1] = Character.getNumericValue(c);
+                res[i+1] = (int) c;
             }
             IRData str =  new IRData(stringName,res);
             string_consts.add(str);
