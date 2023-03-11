@@ -47,6 +47,7 @@ public class IRVisitor implements Visitor<IRNode>{
         tempCnt = 0;
         stringCnt = 1;
         compUnitName = name;
+        string_consts = new ArrayList<>();
     }
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
@@ -716,7 +717,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String replaceName = funcName.toString().replaceAll("_","__");
         String inputABIName = genABIArr(funcType.inputTypes,true);
         String outputABIName = genABIArr(funcType.outputTypes,false);
-        return "_I" + replaceName + outputABIName + inputABIName;
+        return "_I" + replaceName +"_"+ outputABIName + inputABIName;
     }
     private String genABIArr(ArrayList<Type> arrTypes, boolean isInput){
         if (arrTypes.size() == 0){
