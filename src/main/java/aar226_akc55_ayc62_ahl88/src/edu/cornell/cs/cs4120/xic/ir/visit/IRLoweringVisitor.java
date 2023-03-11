@@ -2,6 +2,8 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 
+import java.util.ArrayList;
+
 public class IRLoweringVisitor extends IRVisitor {
     private static final int WORD_BYTES = 8;
     private static final String OUT_OF_BOUNDS = "_xi_out_of_bounds";
@@ -48,7 +50,15 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
-        return node;
+        ArrayList<IRStmt> flatten = new ArrayList<>();
+        for (IRStmt stmt: node.stmts()){
+            if (stmt instanceof IRSeq seq){
+                flatten.addAll(seq.stmts());
+            }else{
+                flatten.add(stmt);
+            }
+        }
+        return new IRSeq(flatten);
     }
 
     // Lower each return expressions then add Return

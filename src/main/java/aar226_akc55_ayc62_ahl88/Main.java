@@ -246,7 +246,7 @@ public class Main {
 
 
 
-    private static IRNode irbuild(String filename) throws FileNotFoundException {
+    private static IRNode irbuild(String filename) throws Exception {
         try {
             String zhenFilename = getZhenFilename(filename);
 
@@ -285,8 +285,10 @@ public class Main {
 
             } catch (EtaError e) {
                 e.printError(zhenFilename);
+                throw e;
             } catch (Exception e) {
                 e.printStackTrace();
+                throw e;
             }
         }
         catch (FileNotFoundException invalidFilename) {
