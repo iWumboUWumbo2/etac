@@ -109,23 +109,38 @@ public class IRLoweringVisitor extends IRVisitor {
     }
     // MEM
     private IRNode canon(IRMem node){
-        if (node.expr() instanceof IRESeq ireseq){ // lift expression
+        if (node.expr() instanceof IRESeq ireseq) { // lift expression
             IRStmt svec = ireseq.stmt();
             IRExpr ire = ireseq.expr();
+            return new IRESeq(svec, new IRMem(ire));
         }
         return node;
     }
     // Conditional Jump
     private IRNode canon(IRCJump node){
+        if (node.cond() instanceof IRESeq ireseq) {
+            IRStmt svec = ireseq.stmt();
+            IRExpr ire = ireseq.expr();
+            return new IRSeq(svec, new IRCJump(ire, node.trueLabel(), node.falseLabel()));
+        }
         return node;
     }
     // Jump
     private IRNode canon(IRJump node){
-
+        if (node.target() instanceof IRESeq ireseq) {
+            IRStmt svec = ireseq.stmt();
+            IRExpr ire = ireseq.expr();
+            return new IRSeq(svec, new IRJump(ire));
+        }
         return node;
     }
     // ESEQ
     private IRNode canon(IRESeq node){
+        if (node.expr() instanceof IRESeq ireseq) {
+            IRStmt svec = ireseq.stmt();
+            IRExpr ire = ireseq.expr();
+            return new IRESeq(new IRSeq(node.stmt(), svec), ire);
+        }
         return node;
     }
 }
