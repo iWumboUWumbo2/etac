@@ -17,6 +17,8 @@ import org.apache.commons.cli.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 public class Main {
@@ -302,7 +304,7 @@ public class Main {
             PrintWriter pw = new PrintWriter(out);
 
             CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-            System.out.println(ir);
+//            System.out.println(ir);
 //            System.out.println(ir instanceof IRCompUnit);
             ir.printSExp(printer);
 
@@ -329,8 +331,7 @@ public class Main {
             sim.call("_Imain_paai", 0);
         }
         catch (EtaError e) {
-            e.printError(filename);
-
+            e.printError(zhenFilename);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -338,6 +339,15 @@ public class Main {
     }
 
     public static void main(String[] args) throws java.io.IOException {
+        ArrayList<String> filenames = new ArrayList<>();
+        for (int i = args.length - 1; i >= 0; i--) {
+            if (args[i].endsWith(".eta") || args[i].endsWith(".eti")) {
+                filenames.add(args[i]);
+            } else {
+                break;
+            }
+        }
+
         // Create the command line parser
         CommandLineParser parser = new DefaultParser();
 
@@ -347,13 +357,13 @@ public class Main {
         Option helpOpt = new Option("h", "help", false,
                 "Print a synopsis of options.");
 
-        Option lexOpt = new Option(null, "lex", true,
+        Option lexOpt = new Option(null, "lex", false,
                 "Generate output from lexical analysis.");
-        Option parseOpt = new Option(null, "parse", true,
+        Option parseOpt = new Option(null, "parse", false,
                 "Generate output from syntactic analysis.");
-        Option typeOpt = new Option(null, "typecheck", true,
+        Option typeOpt = new Option(null, "typecheck", false,
                 "Generate output from semantic analysis.");
-        Option irgenOpt = new Option (null, "irgen", true,
+        Option irgenOpt = new Option (null, "irgen", false,
                 "Generate intermediate code.");
 
 
@@ -366,7 +376,7 @@ public class Main {
                 "Specify where to place generated diagnostic files.");
         Option optOpt   = new Option ("O", false,
                 " Disable optimizations.");
-        Option irrunOpt = new Option (null, "irrun", true,
+        Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
 
         lexOpt.setArgs(Option.UNLIMITED_VALUES);
@@ -422,7 +432,6 @@ public class Main {
             }
 
             if (cmd.hasOption("lex")) {
-                String[] filenames = cmd.getOptionValues("lex");
                 for (String filename : filenames) {
                     typeCheckFile(filename, false);
                     lexFile(filename, new StringBuilder(), true);
@@ -430,7 +439,6 @@ public class Main {
             }
 
             if (cmd.hasOption("parse")) {
-                String[] filenames = cmd.getOptionValues("parse");
                 for (String filename : filenames) {
                     typeCheckFile(filename, false);
                     parseFile(filename, true);
@@ -438,21 +446,18 @@ public class Main {
             }
 
             if (cmd.hasOption("typecheck")) {
-                String[] filenames = cmd.getOptionValues("typecheck");
                 for (String filename : filenames) {
                     typeCheckFile(filename, true);
                 }
             }
 
             if (cmd.hasOption("irgen")) {
-                String[] filenames = cmd.getOptionValues("irgen");
                 for (String filename : filenames) {
                     irgenFile(filename, true);
                 }
             }
 
             if (cmd.hasOption("irrun")) {
-                String[] filenames = cmd.getOptionValues("irrun");
                 for (String filename : filenames) {
                     irrunFile(filename);
                 }
