@@ -7,6 +7,7 @@ import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
@@ -244,21 +245,51 @@ public class Main {
 
 
     private static IRNode irbuild(String filename) throws FileNotFoundException {
+        try {
+            String zhenFilename = getZhenFilename(filename);
 
-        Program root = null;
+            Lexer lex = null;
+            try {
+                lex = new Lexer(new FileReader(zhenFilename));
+            } catch (Exception e) {
+                System.out.println("No file found with filename " + filename);
+                return null;
+            }
 
-//        String zhenFilename = getZhenFilename(filename);
-//
-//        Lexer lex = new Lexer(new FileReader(zhenFilename));
-//
-//
-//        if (opts.isSet(OptimizationTypes.CONSTANT_FOLDING)) {
-//
-//        }
+            lr_parser p;
+            if (filename.endsWith(".eta")) p = new EtaParser(lex);
+            else if (filename.endsWith(".eti")) p = new EtiParser(lex);
+            else throw new FileNotFoundException(
+                        "Invalid filename "
+                                + filename
+                                + " provided: All files passed to etac must have a .eta extension");
 
-        IRNode ir = root.accept(new IRVisitor(filename.substring(0, filename.length() - 2)));
+            try {
+                if (filename.endsWith(".eta")) {
+                    Program result = (Program) p.parse().value;
+                    result.typeCheck(new SymbolTable<>(), zhenFilename);
+                    IRNode ir = result.accept(new IRVisitor(filename.substring(0, filename.length() - 2)));
+                    return ir;
+                } else if (filename.endsWith(".eti")) {
+                    EtiInterface result = (EtiInterface) p.parse().value;
+                    result.firstPass(); // Just to throw EtaErrors
+                }
 
-        return ir;
+//                if (opts.isSet(OptimizationTypes.CONSTANT_FOLDING)) {
+//
+//                }
+
+            } catch (EtaError e) {
+                e.printError(zhenFilename);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        catch (FileNotFoundException invalidFilename) {
+            System.out.println(invalidFilename.getMessage());
+        }
+
+        return null;
     }
 
     private static void irgenFile(String filename) {
@@ -271,7 +302,10 @@ public class Main {
             PrintWriter pw = new PrintWriter(out);
 
             CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
+            System.out.println(ir);
+//            System.out.println(ir instanceof IRCompUnit);
             ir.printSExp(printer);
+
             printer.close();
         }
         catch (EtaError e) {
@@ -341,6 +375,7 @@ public class Main {
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
+        options.addOption(optOpt);
         options.addOption(dirOpt);
         options.addOption(irrunOpt);
 
@@ -367,7 +402,9 @@ public class Main {
             }
 
             if (cmd.hasOption("O")) {
+                System.out.println(opts);
                 opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+                System.out.println(opts);
             }
 
             if (cmd.hasOption("sourcepath")) {
@@ -409,6 +446,14 @@ public class Main {
                     irgenFile(filename);
                 }
             }
+
+            if (cmd.hasOption("irrun")) {
+                String[] filenames = cmd.getOptionValues("irrun");
+                for (String filename : filenames) {
+                    irrunFile(filename);
+                }
+            }
+
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);

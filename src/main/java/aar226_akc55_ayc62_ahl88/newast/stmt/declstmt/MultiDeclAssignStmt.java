@@ -86,8 +86,8 @@ public class MultiDeclAssignStmt extends Stmt {
             Type decT = declarationTypes.get(i);
             Type exprT = exprTypes.get(i);
             if (!decT.sameType(exprT)){
-                System.out.println(decT.getType());
-                System.out.println(exprT.getType());
+//                System.out.println(decT.getType());
+//                System.out.println(exprT.getType());
                 throw new SemanticError(decls.get(i).getLine() ,decls.get(i).getColumn() ,"Variable Type doesn't match Expr Type");
             }
         }

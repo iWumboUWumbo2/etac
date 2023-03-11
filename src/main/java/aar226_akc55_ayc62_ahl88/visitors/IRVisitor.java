@@ -37,12 +37,17 @@ public class IRVisitor implements Visitor<IRNode>{
     private static final String OUT_OF_BOUNDS = "_xi_out_of_bounds";
     private int labelCnt;
     private int tempCnt;
+    private int stringCnt;
     private final String compUnitName;
     private ArrayList<String> globalIds;
+
+    private ArrayList<IRData> string_consts;
     public IRVisitor(String name) {
         labelCnt = 0;
         tempCnt = 0;
+        stringCnt = 1;
         compUnitName = name;
+        string_consts = new ArrayList<>();
     }
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
@@ -50,6 +55,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
     private String nxtTemp() {
         return String.format("t%d", (tempCnt++));
+    }
+    private String nxtString() {
+        return String.format("string_const%d", (stringCnt++));
     }
 
     @Override
@@ -308,6 +316,21 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
+        if (node.getRaw() != null){ // its a string
+            String stringName = nxtString();
+            long[] res  = new long[node.getValues().size()+1];
+            res[0] = node.getValues().size();
+            for (int i = 0; i< node.getRaw().length();i++){
+                char c = node.getRaw().charAt(i);
+                res[i+1] = Character.getNumericValue(c);
+            }
+            IRData str =  new IRData(stringName,res);
+            string_consts.add(str);
+            String temp = nxtTemp();
+            return new IRESeq(new IRMove(new IRTemp(temp),new IRName(stringName)),
+                    new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(temp),new IRConst(8)));
+
+        }
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
         long n = values.size();
@@ -653,6 +676,10 @@ public class IRVisitor implements Visitor<IRNode>{
             }
         });
 
+        for (IRData ird: string_consts){
+            compUnit.appendData(ird);
+        }
+
         // Return Comp Unit
 
         return compUnit;
@@ -690,7 +717,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String replaceName = funcName.toString().replaceAll("_","__");
         String inputABIName = genABIArr(funcType.inputTypes,true);
         String outputABIName = genABIArr(funcType.outputTypes,false);
-        return "_I" + replaceName + outputABIName + inputABIName;
+        return "_I" + replaceName +"_"+ outputABIName + inputABIName;
     }
     private String genABIArr(ArrayList<Type> arrTypes, boolean isInput){
         if (arrTypes.size() == 0){

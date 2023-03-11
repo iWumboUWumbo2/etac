@@ -55,7 +55,7 @@ public class PlusBinop extends BinopExpr {
         }
 
         Type greaterType = t1.greaterType(t2);
-        System.out.println(greaterType.getType());
+//        System.out.println(greaterType.getType());
 //        System.out.println(greaterType.dimensions.getDim());
         if (greaterType.getType() == Type.TypeCheckingType.INT) {
             nodeType = new Type(Type.TypeCheckingType.INT);
