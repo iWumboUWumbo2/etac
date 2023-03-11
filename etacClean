@@ -20,6 +20,9 @@ rm  -r $DIR/tests/p2fails/*.typed
 rm  -r $DIR/tests/pa3fails/*.lexed
 rm  -r $DIR/tests/pa3fails/*.parsed
 rm  -r $DIR/tests/pa3fails/*.typed
+rm  -r $DIR/tests/pa4Tests/*.lexed
+rm  -r $DIR/tests/pa4Tests/*.parsed
+rm  -r $DIR/tests/pa4Tests/*.typed
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
 rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java~
