@@ -110,6 +110,9 @@ public class ArrayValueLiteral extends Expr {
             p.printAtom("\"" +raw+ "\"");
         }
     }
+    public String getRaw() {
+        return raw;
+    }
 
     @Override
     public IRExpr accept(IRVisitor visitor) {

@@ -109,11 +109,14 @@ public class IRLoweringVisitor extends IRVisitor {
     }
     // MEM
     private IRNode canon(IRMem node){
-        return null;
+        if (node.expr() instanceof IRESeq ireseq){ // lift expression
+            IRStmt svec = ireseq.stmt();
+            IRExpr ire = ireseq.expr();
+        }
+        return node;
     }
     // Conditional Jump
     private IRNode canon(IRCJump node){
-
         return node;
     }
     // Jump
