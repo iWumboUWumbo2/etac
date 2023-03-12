@@ -137,9 +137,47 @@ public class IRLoweringVisitor extends IRVisitor {
         return node;
     }
 
+    // TODO
+    private boolean doesCommute(IRExpr expr1, IRExpr expr2) {
+        return true;
+    }
+
     // if commute do that otherwise do normal
     private IRNode canon(IRBinOp node) {
-        return node;
+        IRExpr left = node.left();
+        IRExpr right = node.right();
+
+        if (!(left instanceof IRESeq) && !(right instanceof IRESeq)) {
+            return node;
+        }
+
+        IRExpr e1, e2;
+        IRStmt s1, s2;
+
+        s1 = s2 = null;
+
+        if (left instanceof IRESeq lseq) {
+            e1 = lseq.expr();
+            s1 = lseq.stmt();
+        } else {
+            e1 = left;
+        }
+
+        if (right instanceof IRESeq rseq) {
+            e2 = rseq.expr();
+            s2 = rseq.stmt();
+        } else {
+            e2 = right;
+        }
+
+        if (doesCommute(left, right)) {
+            return new IRESeq(new IRSeq(s1, s2), new IRBinOp(node.opType(), e1, e2));
+        }
+        else {
+            String t1 = nxtTemp();
+            return new IRESeq(new IRSeq(s1, new IRMove(new IRTemp(t1), e1), s2),
+                    new IRBinOp(node.opType(), new IRTemp(t1), e2));
+        }
     }
 
     // canonical
