@@ -401,6 +401,8 @@ public class Main {
         Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
 
+        optOpt.setOptionalArg(true);
+
         options.addOption(helpOpt);
         options.addOption(lexOpt);
         options.addOption(parseOpt);
@@ -438,7 +440,15 @@ public class Main {
             if (cmd.hasOption("O")) {
                 System.out.println(opts);
 
-                switch (Integer.parseInt(cmd.getOptionValue("O"))) {
+                int level;
+                try {
+                    level = Integer.parseInt(cmd.getOptionValue("O"));
+                }
+                catch (Exception e) {
+                    level = 3;
+                }
+
+                switch (level) {
                     case 0:
                         opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
                         break;
