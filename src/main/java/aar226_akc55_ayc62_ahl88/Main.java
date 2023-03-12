@@ -250,7 +250,7 @@ public class Main {
         try {
             String zhenFilename = getZhenFilename(filename);
 
-            Lexer lex = null;
+            Lexer lex;
             try {
                 lex = new Lexer(new FileReader(zhenFilename));
             } catch (Exception e) {
@@ -275,9 +275,10 @@ public class Main {
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.firstPass(); // Just to throw EtaErrors
-                    System.out.println("Fuck");
                 }
-                else {System.out.println("Gigafuck ");}
+                else {
+                    System.out.println("Why are we here");
+                }
 
 //                if (opts.isSet(OptimizationTypes.CONSTANT_FOLDING)) {
 //
@@ -308,8 +309,8 @@ public class Main {
             PrintWriter pw = new PrintWriter(out);
 
             CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-            System.out.println(ir);
-            System.out.println(ir instanceof IRCompUnit);
+//            System.out.println(ir);
+//            System.out.println(ir instanceof IRCompUnit);
             ir.printSExp(printer);
 
             printer.close();

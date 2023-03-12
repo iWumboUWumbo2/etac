@@ -115,9 +115,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String head_pointer = nxtTemp();
         // CALL(NAME(malloc), size)
-        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), malloc_size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"), 1L, malloc_size);
 //        IRMove malloc_move = new IRMove(new IRTemp(head_pointer),alloc_call);
-        IRSeq malloc_move = new IRSeq(new IRExp(alloc_call),new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
+        IRSeq malloc_move = new IRSeq(alloc_call,new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
 
         IRMove move_len = new IRMove(new IRMem(new IRTemp(head_pointer)),new IRTemp(size3));
         // move len into -1
@@ -360,7 +360,9 @@ public class IRVisitor implements Visitor<IRNode>{
         for (Expr param: node.getArgs()){
             paramListIR.add(param.accept(this));
         }
-        return new IRESeq(new IRExp(new IRCall(func,paramListIR)),new IRTemp("_RV1"));
+        long num = node.getFunctionSig().outputTypes.size();
+        return new IRESeq(new IRCallStmt(func,num,paramListIR),new IRTemp("_RV1"));
+//        return new IRESeq(new IRExp(new IRCall(func,paramListIR)),new IRTemp("_RV1"));
     }
 
     @Override
@@ -404,14 +406,14 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // CALL(NAME(malloc), size)
-        IRCall alloc_call = new IRCall(new IRName("_xi_alloc"), size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"),1L, size);
 
         // reg[t] <- call malloc
         IRMove malloc_move = new IRMove(new IRTemp(t), new IRTemp("_RV1"));
 
         IRMove size_move = new IRMove(new IRMem(new IRTemp(t)), new IRTemp(l));
 
-        List<IRStmt> seq_list = new ArrayList<>(List.of(length_to_l, new IRExp(alloc_call), malloc_move, size_move));
+        List<IRStmt> seq_list = new ArrayList<>(List.of(length_to_l, alloc_call, malloc_move, size_move));
 
         for(int i = 0; i < n; i++) {
             IRExpr ire = values.get(i).accept(this);
@@ -484,7 +486,7 @@ public class IRVisitor implements Visitor<IRNode>{
         for (Expr param: node.getParamList()){
             paramListIR.add(param.accept(this));
         }
-        return new IRExp(new IRCall(func,paramListIR));
+        return new IRCallStmt(func,1L,paramListIR);
     }
 
     @Override
@@ -545,8 +547,8 @@ public class IRVisitor implements Visitor<IRNode>{
                 for (Expr param: aad.getFuncParams()){
                     argsList.add(param.accept(this));
                 }
-                IRCall funcCall = new IRCall(new IRName(funcName),argsList);
-                IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
+                IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
+                IRESeq sideEffects = new IRESeq(funcCall, new IRTemp("_RV1"));
                 IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
                 return new IRMove(memComponent,exec);
             }// find a[e1][e2]
@@ -626,8 +628,8 @@ public class IRVisitor implements Visitor<IRNode>{
                     for (Expr param: aad.getFuncParams()){
                         argsList.add(param.accept(this));
                     }
-                    IRCall funcCall = new IRCall(new IRName(funcName),argsList);
-                    IRESeq sideEffects = new IRESeq(new IRExp(funcCall), new IRTemp("_RV1"));
+                    IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
+                    IRESeq sideEffects = new IRESeq(funcCall, new IRTemp("_RV1"));
                     IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
                     order.add(new IRMove(memComponent,new IRTemp(curTemp)));
                 }// find a[e1][e2]
@@ -827,8 +829,8 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // call alloc and move RV1 into val
-        IRCall alloc_call1 = new IRCall(new IRName("_xi_alloc"), size1);
-        IRSeq malloc_move1 = new IRSeq(new IRExp(alloc_call1),new IRMove(new IRTemp(tm), new IRTemp("_RV1")));
+        IRCallStmt alloc_call1 = new IRCallStmt(new IRName("_xi_alloc"),1L, size1);
+        IRSeq malloc_move1 = new IRSeq(alloc_call1,new IRMove(new IRTemp(tm), new IRTemp("_RV1")));
 
         // move len into -1
         IRMove move_len = new IRMove(new IRMem(new IRTemp(tm)),new IRTemp(tn));
