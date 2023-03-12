@@ -239,6 +239,12 @@ emptyDimension_star ::=
         ds.indices.add(new Id(i,ileft,iright));
         ds.increment(); // [][2]
         RESULT = ds;:}
+    |emptyDimension_star:ds OPEN_BRACKET expr:e CLOSE_BRACKET {:
+            if (ds.foundEmpty) throw new SyntaxError(eleft,eright,"Filled index after empty");
+            ds.allEmpty = false;
+            ds.indices.add(e);
+            ds.increment(); // [][2]
+            RESULT = ds;:}
     | {:RESULT = new Dimension(-1,-1); :} // Maybe check future
     ;
 
