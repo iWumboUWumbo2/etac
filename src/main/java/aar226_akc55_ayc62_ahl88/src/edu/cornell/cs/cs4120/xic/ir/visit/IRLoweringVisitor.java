@@ -17,7 +17,7 @@ public class IRLoweringVisitor extends IRVisitor {
     }
 
     private String nxtTemp() {
-        return String.format("t%d", (tempCnt++));
+        return String.format("tl%d", (tempCnt++));
     }
     public IRLoweringVisitor (IRNodeFactory inf) {
         super(inf);
@@ -90,12 +90,63 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Lower Move be very careful look at slides
     private IRNode canon(IRMove node) {
-//        IRExpr target = node.target();
-//        IRExpr source = node.source();
+        IRExpr target = node.target();
+        IRExpr source = node.source();
 //
-//        if (target instanceof )
+        if (target instanceof IRTemp){
+            return tempMove(node);
+        }else if (target instanceof IRMem mem){
+            return moveCommute(node) ? moveNaive(mem,source) : moveGeneral(mem,source);
+        }
 
         return node;
+    }
+
+    private IRNode tempMove(IRMove node){
+        if (node.source() instanceof IRESeq ires){
+            return new IRSeq(ires.stmt(),new IRMove(node.target(),ires.expr()));
+        }
+        return node;
+    }
+    // to do
+    private boolean moveCommute(IRMove node){
+        return false;
+    }
+    private IRStmt moveNaive(IRMem targ, IRExpr src){
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        IRExpr e1 = targ.expr();
+        IRExpr e2 = src;
+        if (targ.expr() instanceof IRESeq ires){
+            stmts.add(ires.stmt());
+            e1 = ires.expr();
+        }
+        if (src instanceof  IRESeq ires2){
+            stmts.add(ires2.stmt());
+            e2 = ires2.expr();
+        }
+        if (stmts.size() != 0){
+            stmts.add(new IRMove(new IRMem(e1),e2));
+            return new IRSeq(stmts);
+        }
+        return new IRMove(targ,src);
+    }
+
+    private IRStmt moveGeneral(IRMem targ, IRExpr src){
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        IRExpr e1 = targ.expr();
+        IRExpr e2 = src;
+        if (targ.expr() instanceof IRESeq ires){
+            stmts.add(ires.stmt());
+            e1 = ires.expr();
+        }
+        String t = nxtTemp();
+        stmts.add(new IRMove(new IRTemp(t),e1));
+        if (src instanceof  IRESeq ires2){
+            stmts.add(ires2.stmt());
+            e2 = ires2.expr();
+        }
+        stmts.add(new IRMove(new IRMem(new IRTemp(t)),e2));
+        return new IRSeq(stmts);
     }
 
     // Create Basic Blocks And reorder all the body
