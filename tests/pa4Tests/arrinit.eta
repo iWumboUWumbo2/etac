@@ -1,0 +1,4 @@
+main(args: int[][]) {
+    a:int = 3;
+    x:int[1][1];
+}

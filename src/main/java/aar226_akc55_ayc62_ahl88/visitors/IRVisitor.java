@@ -809,7 +809,11 @@ public class IRVisitor implements Visitor<IRNode>{
     private IRStmt initArrayDecl(int ind, Dimension d, IRExpr curHead){ // this is for a:int[4][3][] etc
         // a:int[e1][e2][][]
         if (ind == d.getDim() || d.getIndices().get(ind) == null){
-            return new IRMove(new IRMem(curHead),new IRConst(0)); // base case x: int[] x <- random val
+//            System.out.println(ind);
+//            System.out.println(d.getDim());
+//            System.out.println(ind == d.getDim());
+//            System.out.println("here");
+            return new IRMove(curHead,new IRConst(0)); // base case x: int[] x <- random val
         }
 
         Expr curExp = d.getIndices().get(ind);
