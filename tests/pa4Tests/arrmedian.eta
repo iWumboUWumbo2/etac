@@ -1,0 +1,44 @@
+main(args: int[][]) {
+  n1:int, n2:int = 20, 30;
+  n3:int = n1+n2;
+  v:int[n3];
+  num1:int[n1];
+  num2:int[n2];
+
+  while (n1>0) {
+    num1[n1-1] = n1
+  }
+  while (n2>0) {
+      num2[n2-1] = n2
+  }
+
+  result:int = foo(num1, num2, v, n1, n2);
+
+  }
+
+  foo(num1:int[], num2:int[], v:int[], n1:int, n2:int) : int {
+        i:int, j:int, last:int = 0, 0, -1;
+        while(i<n1 & j<n2) {
+            if(num1[i]<=num2[j]) {
+                v[last]=num1[i];
+                i = i + 1
+                last = last + 1;
+            } else {
+                v[last]=num2[j];
+                last = last + 1;
+                j = j + 1
+            }
+        }
+
+        while(i<n1) {
+            v[last]=num1[i];
+            i = i + 1
+            last = last + 1;
+        }
+        while(j<n2) {
+            v[last]=num2[j];
+            last = last + 1;
+            j = j + 1
+        }
+        return n1+n2;
+  }
