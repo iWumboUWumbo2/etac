@@ -274,7 +274,7 @@ public class Main {
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
 //                    filename.substring(0, filename.length() - 2)
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
-//                    ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
+                    ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     return ir;
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;

@@ -77,7 +77,11 @@ public class IRLoweringVisitor extends IRVisitor {
             String ti = nxtTemp();
             temps_strs.add(ti);
             if (expr instanceof IRESeq eseq) {
-                stmts.add(eseq.stmt());
+                if (eseq.stmt() instanceof IRSeq seq){
+                    stmts.addAll(seq.stmts());
+                }else{
+                    stmts.add(eseq.stmt());
+                }
                 stmts.add(new IRMove(new IRTemp(ti),eseq.expr()));
             }else{
                 stmts.add(new IRMove(new IRTemp(ti),expr));
@@ -97,18 +101,35 @@ public class IRLoweringVisitor extends IRVisitor {
         IRExpr target = node.target();
         IRExpr source = node.source();
 //
-        if (target instanceof IRTemp){
-            return tempMove(node);
-        }else if (target instanceof IRMem mem){
+        if (target instanceof IRMem mem){
             return moveCommute(node) ? moveNaive(mem,source) : moveGeneral(mem,source);
         }
-
-        return node;
+        return easyMove(node);
     }
 
-    private IRNode tempMove(IRMove node){
+    private IRNode easyMove(IRMove node){
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        IRExpr targ = node.target();
+        IRExpr source = node.source();
+        if (node.target() instanceof IRESeq ires1){
+            if (ires1.stmt() instanceof IRSeq seq){
+                stmts.addAll(seq.stmts());
+            }else{
+                stmts.add(ires1.stmt());
+            }
+            targ = ires1.expr();
+        }
         if (node.source() instanceof IRESeq ires){
-            return new IRSeq(ires.stmt(),new IRMove(node.target(),ires.expr()));
+            if (ires.stmt() instanceof IRSeq seq2){
+                stmts.addAll(seq2.stmts());
+            }else{
+                stmts.add(ires.stmt());
+            }
+            source = ires.expr();
+        }
+        if (stmts.size() != 0){
+            stmts.add(new IRMove(targ,source));
+            return new IRSeq(stmts);
         }
         return node;
     }
@@ -121,11 +142,19 @@ public class IRLoweringVisitor extends IRVisitor {
         IRExpr e1 = targ.expr();
         IRExpr e2 = src;
         if (targ.expr() instanceof IRESeq ires){
-            stmts.add(ires.stmt());
+            if (ires.stmt() instanceof IRSeq seq){
+                stmts.addAll(seq.stmts());
+            }else{
+                stmts.add(ires.stmt());
+            }
             e1 = ires.expr();
         }
         if (src instanceof  IRESeq ires2){
-            stmts.add(ires2.stmt());
+            if (ires2.stmt() instanceof IRSeq seq1){
+                stmts.addAll(seq1.stmts());
+            }else{
+                stmts.add(ires2.stmt());
+            }
             e2 = ires2.expr();
         }
         if (stmts.size() != 0){
@@ -140,13 +169,21 @@ public class IRLoweringVisitor extends IRVisitor {
         IRExpr e1 = targ.expr();
         IRExpr e2 = src;
         if (targ.expr() instanceof IRESeq ires){
-            stmts.add(ires.stmt());
+            if (ires.stmt() instanceof IRSeq seq){
+                stmts.addAll(seq.stmts());
+            }else{
+                stmts.add(ires.stmt());
+            }
             e1 = ires.expr();
         }
         String t = nxtTemp();
         stmts.add(new IRMove(new IRTemp(t),e1));
         if (src instanceof  IRESeq ires2){
-            stmts.add(ires2.stmt());
+            if (ires2.stmt() instanceof IRSeq seq1){
+                stmts.addAll(seq1.stmts());
+            }else{
+                stmts.add(ires2.stmt());
+            }
             e2 = ires2.expr();
         }
         stmts.add(new IRMove(new IRMem(new IRTemp(t)),e2));
@@ -165,7 +202,11 @@ public class IRLoweringVisitor extends IRVisitor {
     // Lift Statement that is it
     private IRNode canon(IRExp node) {
         if (node.expr() instanceof IRESeq ire) {
-            return ire.stmt();
+            if (ire.stmt() instanceof IRSeq seq){
+                return new IRSeq(seq.stmts());
+            }else{
+                return ire.stmt();
+            }
         }
         return new IRSeq();
     }
@@ -184,7 +225,11 @@ public class IRLoweringVisitor extends IRVisitor {
             String ti = nxtTemp();
             temps_strs.add(ti);
             if (expr instanceof IRESeq eseq) {
-                stmts.add(eseq.stmt());
+                if (eseq.stmt() instanceof IRSeq seq){
+                    stmts.addAll(seq.stmts());
+                }else{
+                    stmts.add(eseq.stmt());
+                }
                 stmts.add(new IRMove(new IRTemp(ti),eseq.expr()));
             }else{
                 stmts.add(new IRMove(new IRTemp(ti),expr));
@@ -199,6 +244,7 @@ public class IRLoweringVisitor extends IRVisitor {
         stmts.add(new IRCallStmt(node.target(), node.n_returns(), temps));
 //        stmts.add(new IRMove(new IRTemp(t), new IRTemp("_RV1")));
 //        System.out.println(new IRSeq(stmts));
+
         return new IRSeq(stmts);
     }
     // Lower each Expr we never call this lol?
@@ -221,11 +267,19 @@ public class IRLoweringVisitor extends IRVisitor {
         IRExpr e1 = node.left();
         IRExpr e2 = node.right();
         if (node.left() instanceof IRESeq ires1){
-            hoisted.add(ires1.stmt());
+            if (ires1.stmt() instanceof IRSeq seq){
+                hoisted.addAll(seq.stmts());
+            }else{
+                hoisted.add(ires1.stmt());
+            }
             e1 = ires1.expr();
         }
         if (node.right() instanceof  IRESeq ires2){
-            hoisted.add(ires2.stmt());
+            if (ires2.stmt() instanceof IRSeq seq2){
+                hoisted.addAll(seq2.stmts());
+            }else{
+                hoisted.add(ires2.stmt());
+            }
             e2 = ires2.expr();
         }
         if (hoisted.size() != 0){
@@ -236,19 +290,29 @@ public class IRLoweringVisitor extends IRVisitor {
     private IRNode defaultBinop(IRBinOp node){
         ArrayList<IRStmt> stmts = new ArrayList<>();
         String t1 = nxtTemp();
+        IRExpr e2 = node.right();
         if (node.left() instanceof IRESeq ires1){
-            stmts.add(ires1.stmt());
+            if (ires1.stmt() instanceof IRSeq seq){
+                stmts.addAll(seq.stmts());
+            }else{
+                stmts.add(ires1.stmt());
+            }
             stmts.add(new IRMove(new IRTemp(t1), ires1.expr()));
         }else{
             stmts.add(new IRMove(new IRTemp(t1), node.left()));
         }
+
         if (node.right() instanceof IRESeq ires2){
-            stmts.add(ires2.stmt());
-            return new IRESeq(new IRSeq(stmts),new IRBinOp(node.opType(),new IRTemp(t1),ires2.expr()));
-        }else{
-            
+            if (ires2.stmt() instanceof IRSeq seq2){
+                stmts.addAll(seq2.stmts());
+            }else{
+                stmts.add(ires2.stmt());
+            }
+            e2 = ires2.expr();
         }
-        return node;
+//        System.out.println(new IRSeq(stmts));
+        return new IRESeq(new IRSeq(stmts),
+                new IRBinOp(node.opType(),new IRTemp(t1),e2));
     }
 
     // canonical
@@ -279,27 +343,49 @@ public class IRLoweringVisitor extends IRVisitor {
     // Conditional Jump
     private IRNode canon(IRCJump node){
         if (node.cond() instanceof IRESeq ireseq) {
-            IRStmt svec = ireseq.stmt();
+            ArrayList<IRStmt> stmts = new ArrayList<>();
+            if (ireseq.stmt() instanceof IRSeq seq){
+                stmts.addAll(seq.stmts());
+            }else{
+                stmts.add(ireseq.stmt());
+            }
             IRExpr ire = ireseq.expr();
-            return new IRSeq(svec, new IRCJump(ire, node.trueLabel(), node.falseLabel()));
+            stmts.add(new IRCJump(ire, node.trueLabel(), node.falseLabel()));
+            return new IRSeq(stmts);
         }
         return node;
     }
     // Jump
     private IRNode canon(IRJump node){
         if (node.target() instanceof IRESeq ireseq) {
-            IRStmt svec = ireseq.stmt();
+            ArrayList<IRStmt> stmts = new ArrayList<>();
+            if (ireseq.stmt() instanceof IRSeq seq){
+                stmts.addAll(seq.stmts());
+            }else{
+                stmts.add(ireseq.stmt());
+            }
             IRExpr ire = ireseq.expr();
-            return new IRSeq(svec, new IRJump(ire));
+            stmts.add(new IRJump(ire));
+            return new IRSeq(stmts);
         }
         return node;
     }
     // ESEQ
     private IRNode canon(IRESeq node){
         if (node.expr() instanceof IRESeq ireseq) {
-            IRStmt svec = ireseq.stmt();
             IRExpr ire = ireseq.expr();
-            return new IRESeq(new IRSeq(node.stmt(), svec), ire);
+            ArrayList<IRStmt> stmts = new ArrayList<>();
+            if (node.stmt() instanceof  IRSeq seqNode){
+                stmts.addAll(seqNode.stmts());
+            }else{
+                stmts.add(node.stmt());
+            }
+            if (ireseq.stmt() instanceof IRSeq seq){
+                stmts.addAll(seq.stmts());
+            }else{
+                stmts.add(ireseq.stmt());
+            }
+            return new IRESeq(new IRSeq(stmts), ire);
         }
         return node;
     }
