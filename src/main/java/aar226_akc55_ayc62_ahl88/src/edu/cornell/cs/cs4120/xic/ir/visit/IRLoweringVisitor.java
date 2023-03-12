@@ -1,8 +1,11 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
+import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class IRLoweringVisitor extends IRVisitor {
     private static final int WORD_BYTES = 8;
@@ -63,11 +66,22 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Lower each return expressions then add Return
     private IRNode canon(IRReturn node) {
+//        ArrayList<IRStmt> stmts = new ArrayList<>();
+//        ArrayList<IRExpr> exprs = new ArrayList<>();
+//
+//        for (IRExpr expr : node.rets()) {
+//
+//        }
         return node;
     }
 
     // Lower Move be very careful look at slides
     private IRNode canon(IRMove node) {
+//        IRExpr target = node.target();
+//        IRExpr source = node.source();
+//
+//        if (target instanceof )
+
         return node;
     }
 
@@ -79,7 +93,10 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Lift Statement thats it
     private IRNode canon(IRExp node) {
-        return node;
+        if (node.expr() instanceof IRESeq ire) {
+            return ire.stmt();
+        }
+        return new IRSeq();
     }
 
     // do nothing
@@ -89,7 +106,31 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Lower each Expr
     private IRNode canon(IRCallStmt node) {
-        return node;
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        ArrayList<String> temps_strs = new ArrayList<>();
+
+        for (IRExpr expr : node.args()) {
+            String ti = nxtTemp();
+            if (expr instanceof IRESeq eseq) {
+                stmts.add(eseq.stmt());
+                temps_strs.add(ti);
+                stmts.add(new IRMove(new IRTemp(ti),eseq.expr()));
+            }else{
+                stmts.add(new IRMove(new IRTemp(ti),expr));
+            }
+        }
+
+        String t = nxtTemp();
+
+        List<IRExpr> temps = new ArrayList<>();
+        for (String tmp : temps_strs) {
+            temps.add(new IRTemp(tmp));
+        }
+
+        stmts.add(new IRCallStmt(node.target(), node.n_returns(), temps));
+        stmts.add(new IRMove(new IRTemp(t), new IRTemp("_RV1")));
+
+        return new IRESeq(new IRSeq(stmts), new IRTemp(t));
     }
     // Lower each Expr
     private IRNode canon(IRCall node) {
