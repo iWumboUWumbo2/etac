@@ -66,13 +66,26 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Lower each return expressions then add Return
     private IRNode canon(IRReturn node) {
-//        ArrayList<IRStmt> stmts = new ArrayList<>();
-//        ArrayList<IRExpr> exprs = new ArrayList<>();
-//
-//        for (IRExpr expr : node.rets()) {
-//
-//        }
-        return node;
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        ArrayList<String> temps_strs = new ArrayList<>();
+
+        for (IRExpr expr : node.rets()) {
+            String ti = nxtTemp();
+            if (expr instanceof IRESeq eseq) {
+                stmts.add(eseq.stmt());
+                temps_strs.add(ti);
+                stmts.add(new IRMove(new IRTemp(ti),eseq.expr()));
+            }else{
+                stmts.add(new IRMove(new IRTemp(ti),expr));
+            }
+        }
+        List<IRExpr> temps = new ArrayList<>();
+        for (String tmp : temps_strs) {
+            temps.add(new IRTemp(tmp));
+        }
+
+        stmts.add(new IRReturn(temps));
+        return new IRSeq(stmts);
     }
 
     // Lower Move be very careful look at slides
@@ -91,7 +104,7 @@ public class IRLoweringVisitor extends IRVisitor {
     }
 
 
-    // Lift Statement thats it
+    // Lift Statement that is it
     private IRNode canon(IRExp node) {
         if (node.expr() instanceof IRESeq ire) {
             return ire.stmt();
@@ -132,52 +145,54 @@ public class IRLoweringVisitor extends IRVisitor {
 
         return new IRESeq(new IRSeq(stmts), new IRTemp(t));
     }
-    // Lower each Expr
+    // Lower each Expr we never call this lol?
     private IRNode canon(IRCall node) {
         return node;
     }
 
-    // TODO
-    private boolean doesCommute(IRExpr expr1, IRExpr expr2) {
-        return true;
-    }
-
     // if commute do that otherwise do normal
     private IRNode canon(IRBinOp node) {
-        IRExpr left = node.left();
-        IRExpr right = node.right();
+        return doesBinopCommunte(node) ? commuteBinop(node) : defaultBinop(node);
+    }
 
-        if (!(left instanceof IRESeq) && !(right instanceof IRESeq)) {
-            return node;
+    // to do
+    private boolean doesBinopCommunte(IRBinOp node){
+        return false;
+    }
+
+    private IRNode commuteBinop(IRBinOp node){
+        ArrayList<IRStmt> hoisted = new ArrayList<>();
+        IRExpr e1 = node.left();
+        IRExpr e2 = node.right();
+        if (node.left() instanceof IRESeq ires1){
+            hoisted.add(ires1.stmt());
+            e1 = ires1.expr();
         }
-
-        IRExpr e1, e2;
-        IRStmt s1, s2;
-
-        s1 = s2 = null;
-
-        if (left instanceof IRESeq lseq) {
-            e1 = lseq.expr();
-            s1 = lseq.stmt();
-        } else {
-            e1 = left;
+        if (node.right() instanceof  IRESeq ires2){
+            hoisted.add(ires2.stmt());
+            e2 = ires2.expr();
         }
-
-        if (right instanceof IRESeq rseq) {
-            e2 = rseq.expr();
-            s2 = rseq.stmt();
-        } else {
-            e2 = right;
+        if (hoisted.size() != 0){
+            return new IRESeq(new IRSeq(hoisted),new IRBinOp(node.opType(),e1,e2));
         }
-
-        if (doesCommute(left, right)) {
-            return new IRESeq(new IRSeq(s1, s2), new IRBinOp(node.opType(), e1, e2));
+        return node;
+    }
+    private IRNode defaultBinop(IRBinOp node){
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        String t1 = nxtTemp();
+        if (node.left() instanceof IRESeq ires1){
+            stmts.add(ires1.stmt());
+            stmts.add(new IRMove(new IRTemp(t1), ires1.expr()));
+        }else{
+            stmts.add(new IRMove(new IRTemp(t1), node.left()));
         }
-        else {
-            String t1 = nxtTemp();
-            return new IRESeq(new IRSeq(s1, new IRMove(new IRTemp(t1), e1), s2),
-                    new IRBinOp(node.opType(), new IRTemp(t1), e2));
+        if (node.right() instanceof IRESeq ires2){
+            stmts.add(ires2.stmt());
+            return new IRESeq(new IRSeq(stmts),new IRBinOp(node.opType(),new IRTemp(t1),ires2.expr()));
+        }else{
+            
         }
+        return node;
     }
 
     // canonical
