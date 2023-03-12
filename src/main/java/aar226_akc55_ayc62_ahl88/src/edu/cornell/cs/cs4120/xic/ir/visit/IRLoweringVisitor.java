@@ -3,15 +3,34 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+// Need to think about what to add
+class BasicBlock {
+    public static int id = 0;
+    public boolean marked;
+    public boolean visited;
+
+    public ArrayList<BasicBlock> predecessors;
+    public ArrayList<BasicBlock> neighbors;
+
+    public BasicBlock() {
+        id++;
+        marked = false;
+        visited = false;
+    }
+}
 
 public class IRLoweringVisitor extends IRVisitor {
     private static final int WORD_BYTES = 8;
     private static final String OUT_OF_BOUNDS = "_xi_out_of_bounds";
     private int labelCnt;
     private int tempCnt;
+
+    private ArrayList<BasicBlock> blocks;
+    private ArrayList<BasicBlock> orderedBlocks;
+
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
     }
@@ -24,8 +43,6 @@ public class IRLoweringVisitor extends IRVisitor {
         labelCnt = 0;
         tempCnt = 0;
     }
-
-    private class BasicBlock {} // Need to think about what to add
 
     @Override
     protected IRNode leave(IRNode parent, IRNode n, IRNode n_, IRVisitor v_) {
@@ -50,6 +67,56 @@ public class IRLoweringVisitor extends IRVisitor {
         throw new Error("Why is node not found");
     }
 
+    private boolean hasNoUnmarkedPredecessors(BasicBlock block) {
+        block.visited = true;
+
+        boolean noUnmarkedPredecessor = true;
+
+        for (BasicBlock pred : block.predecessors) {
+            if (!pred.visited) {
+                if (pred.marked) {
+                    noUnmarkedPredecessor &= hasNoUnmarkedPredecessors(pred);
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        block.visited = false;
+
+        return noUnmarkedPredecessor;
+    }
+
+    private BasicBlock selectBlock() {
+        for (BasicBlock block : blocks) {
+            if (hasNoUnmarkedPredecessors(block)) {
+                return block;
+            }
+        }
+        return null;
+    }
+
+    private boolean greedyReordering() {
+        BasicBlock blk = selectBlock();
+
+        if (blk == null) {
+            return true;
+        }
+
+        while (!blk.marked) {
+            blk.marked = true;
+            orderedBlocks.add(blk);
+
+            for (BasicBlock neighbor : blk.neighbors) {
+                if (!neighbor.marked) {
+                    blk = neighbor;
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
 
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
