@@ -1,0 +1,14 @@
+i(): int {
+    return 5
+}
+
+main(args: int[][]){
+    a : int[] = {1,2,3,4}
+    b : int[] = {0,1,2,3};
+    i : int = -1
+    x : int = 1;
+    x = a[i] // length
+    x = a[b[b[a[4%3]]] // in bounds
+    x = b[a[3]] // out of bounds
+    x = b[i()] // out of bounds
+}
