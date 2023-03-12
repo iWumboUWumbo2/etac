@@ -24,7 +24,7 @@ main(args: int[][]) {
 }
 
 foo(m:int, n:int):int {
-    while (m > 0) {
+    while (m < n) {
         x:int[] = "string"
         m = m+n
         n = n + 1
