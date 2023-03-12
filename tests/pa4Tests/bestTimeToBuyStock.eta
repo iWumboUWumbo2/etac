@@ -1,0 +1,25 @@
+maxProfit(prices: int[], size: int): int {
+    maxP:int = 0
+    prev:int = prices[0]
+    counter:int = 0
+
+    while (counter < size) {
+        currProfit:int = prices[counter] - prev
+        if (currProfit > maxP) {
+            maxP = currProfit
+        }
+        if (currProfit <= 0){
+            prev = prices[counter]
+        }
+        counter = counter + 1;
+    }
+    return maxP
+}
+
+main(args: int[][]){
+    a : int[] = {7,1,5,3,6,4} // 5
+    b : int[] = {7,6,4,3,1} // 0
+    c : int[] = {}
+    maxprof : int = maxProfit(a, 6);
+    maxprof = maxProfit(b, 5);
+}
