@@ -73,7 +73,7 @@ public class ArrayAccessExpr extends Expr {
                 else if (e.getType() == Type.TypeCheckingType.INTARRAY)
                     nodeType = new Type(Type.TypeCheckingType.INT);
                 else
-                    nodeType = new Type(Type.TypeCheckingType.INT);
+                    nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
                 return nodeType;
             } else {    // otherwise, return array type
                 nodeType = new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
