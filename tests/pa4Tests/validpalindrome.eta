@@ -1,4 +1,4 @@
-def isPalindrome(s: int[][]): bool {
+isPalindrome(s: int[][]): bool {
     l : int =  0
     r : int = len(s)
 
