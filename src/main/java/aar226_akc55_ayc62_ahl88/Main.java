@@ -9,7 +9,9 @@ import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.lr_parser;
@@ -270,7 +272,9 @@ public class Main {
                 if (filename.endsWith(".eta")) {
                     Program result = (Program) p.parse().value;
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
-                    IRNode ir = result.accept(new IRVisitor(filename.substring(0, filename.length() - 2)));
+//                    filename.substring(0, filename.length() - 2)
+                    IRNode ir = result.accept(new IRVisitor("CompUnit"));
+//                    ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     return ir;
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
@@ -340,6 +344,8 @@ public class Main {
 
             IRSimulator sim = new IRSimulator((IRCompUnit) ir);
             sim.call("_Imain_paai", 0);
+
+            ir.printSExp(printer);
 
             printer.close();
 

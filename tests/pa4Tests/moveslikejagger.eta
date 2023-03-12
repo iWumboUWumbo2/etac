@@ -1,7 +1,7 @@
 use io
 
-a:int
-b:int = 3
+a:int = 0
+b:int = 0
 
 main(args: int[][]) {
   h:int = 3
@@ -20,13 +20,12 @@ main(args: int[][]) {
   c = d[1]
   d[1][2] = 65
   print(c)
-  e[0] = d
 }
 
 foo(m:int, n:int):int {
     while (m > 0) {
         x:int[] = "string"
-        m = m+n
+        m = m-1
         n = n + 1
     }
     return (m+n)

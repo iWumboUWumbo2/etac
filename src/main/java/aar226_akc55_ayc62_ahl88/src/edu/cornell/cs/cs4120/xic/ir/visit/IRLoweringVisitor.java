@@ -53,6 +53,7 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
+//        System.out.println(node);
         ArrayList<IRStmt> flatten = new ArrayList<>();
         for (IRStmt stmt: node.stmts()){
             if (stmt instanceof IRSeq seq){
@@ -192,9 +193,9 @@ public class IRLoweringVisitor extends IRVisitor {
         }
 
         stmts.add(new IRCallStmt(node.target(), node.n_returns(), temps));
-        stmts.add(new IRMove(new IRTemp(t), new IRTemp("_RV1")));
+//        stmts.add(new IRMove(new IRTemp(t), new IRTemp("_RV1")));
 
-        return new IRESeq(new IRSeq(stmts), new IRTemp(t));
+        return new IRSeq(stmts);
     }
     // Lower each Expr we never call this lol?
     private IRNode canon(IRCall node) {
