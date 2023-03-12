@@ -395,8 +395,9 @@ public class Main {
 
         Option dirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
-        Option optOpt   = new Option ("O", false,
+        Option optOpt   = new Option ("O", true,
                 " Disable optimizations.");
+
         Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
 
@@ -436,7 +437,18 @@ public class Main {
 
             if (cmd.hasOption("O")) {
                 System.out.println(opts);
-                opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+
+                switch (Integer.parseInt(cmd.getOptionValue("O"))) {
+                    case 0:
+                        opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+                        break;
+                    case 1:
+                        opts.clearOptimizations(OptimizationTypes.IR_LOWERING);
+                        break;
+                    default:
+                        break;
+                }
+
                 System.out.println(opts);
             }
 
