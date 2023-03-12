@@ -29,8 +29,8 @@ public class IRLoweringVisitor extends IRVisitor {
     private int labelCnt;
     private int tempCnt;
 
-    private ArrayList<BasicBlock> blocks;
-    private ArrayList<BasicBlock> orderedBlocks;
+//    private ArrayList<BasicBlock> blocks;
+//    private ArrayList<BasicBlock> orderedBlocks;
 
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
@@ -88,7 +88,7 @@ public class IRLoweringVisitor extends IRVisitor {
         return noUnmarkedPredecessor;
     }
 
-    private BasicBlock selectBlock() {
+    private BasicBlock selectBlock(ArrayList<BasicBlock> blocks) {
         boolean allMarked = true;
         BasicBlock best = null;
         for (BasicBlock block : blocks) {
@@ -107,8 +107,8 @@ public class IRLoweringVisitor extends IRVisitor {
         }
     }
 
-    private boolean greedyReordering() {
-        BasicBlock blk = selectBlock();
+    private boolean greedyReordering(ArrayList<BasicBlock> unorderedBlocks, ArrayList<BasicBlock> orderedBlocks) {
+        BasicBlock blk = selectBlock(unorderedBlocks);
 
         if (blk == null) {
             return true;
@@ -133,12 +133,12 @@ public class IRLoweringVisitor extends IRVisitor {
         return false;
     }
 
-    private void reorderBlocks(){
+    private ArrayList<BasicBlock> reorderBlocks(ArrayList<BasicBlock> unorderedBlocks){
+        ArrayList<BasicBlock> orderedBlocks = new ArrayList<>();
+        while (!greedyReordering(unorderedBlocks, orderedBlocks))
+            ;
 
-        orderedBlocks = new ArrayList<>();
-        while (!greedyReordering()){
-
-        }
+        return orderedBlocks;
     }
 
     private ArrayList<BasicBlock> createBasicBlocks(IRSeq body){
