@@ -1,5 +1,5 @@
 main(args: int[][]){
-    x : int = 0 < 1
+    x : bool = 0 < 1
     x = 0 <= 1
     x = 0 >= 1
     x = 0 > 1
@@ -9,10 +9,10 @@ main(args: int[][]){
     x = true != false
     x = true & false
     x = false | true
-    x = 0 + 1
-    x = 0 - 1
-    x = 0 * 1
-    x = 0 *>> 1
-    x = 0 / 1
-    x = 0 % 1
+    a : int = 0 + 1
+    a = 0 - 1
+    a = 0 * 1
+    a = 0 *>> 1
+    a = 0 / 1
+    a = 0 % 1
 }

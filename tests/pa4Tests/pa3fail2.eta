@@ -1,5 +1,13 @@
+i(): int {
+    return 5
+}
+b(): bool {
+    return false
+}
+
 main(args: int[][]){
-  x = 0 + 'a'
+  y : int[] = { 72,101,108,108,111 }
+  x : int = 0 + 'a'
   x = 0 - 'a'
   x = 0 * 'a'
   x = 0 *>> 'a'
@@ -9,8 +17,8 @@ main(args: int[][]){
   x = 0 - x
   x = 0 * x
   x = 0 *>> x
-  x = 0 / x
-  x = 0 % x
+  x = 0 / 8
+  //x = 0 % x
   x = 0 + i()
   x = 0 - i()
   x = 0 * i()
@@ -33,8 +41,8 @@ main(args: int[][]){
   x = 0 - (0)
   x = 0 * (0)
   x = 0 *>> (0)
-  x = 0 / (0)
-  x = 0 % (0)
+  //x = 0 / (0)
+  //x = 0 % (0)
   x = 'a' + 1
   x = 'a' - 1
   x = 'a' * 1
@@ -72,132 +80,137 @@ main(args: int[][]){
   x = (0) / 1
   x = (0) % 1
 
-  x = 0 < 'a'
-  x = 0 <= 'a'
-  x = 0 >= 'a'
-  x = 0 > 'a'
-  x = 0 == 'a'
-  x = 0 != 'a'
-  x = 0 < y
-  x = 0 <= y
-  x = 0 >= y
-  x = 0 > y
-  x = 0 == y
-  x = 0 != y
-  x = true == x
-  x = true != x
-  x = true & x
-  x = false | x
-  x = 0 < i()
-  x = 0 <= i()
-  x = 0 >= i()
-  x = 0 > i()
-  x = 0 == i()
-  x = 0 != i()
-  x = true == b()
-  x = true != b()
-  x = true & b()
-  x = false | b()
-  x = 0 < a2[0]
-  x = 0 <= a2[0]
-  x = 0 >= a2[0]
-  x = 0 > a2[0]
-  x = 0 == a2[0]
-  x = 0 != a2[0]
-  x = true == a1[0]
-  x = true != a1[0]
-  x = true & a1[0]
-  x = false | a1[0]
-  x = 0 < -1
-  x = 0 <= -1
-  x = 0 >= -1
-  x = 0 > -1
-  x = 0 == -1
-  x = 0 != -1
-  x = 0 < 0+0
-  x = 0 <= 0+0
-  x = 0 >= 0+0
-  x = 0 > 0+0
-  x = 0 == 0+0
-  x = 0 != 0+0
-  x = 0 < (0)
-  x = 0 <= (0)
-  x = 0 >= (0)
-  x = 0 > (0)
-  x = 0 == (0)
-  x = 0 != (0)
-  x = true == (false)
-  x = true != (false)
-  x = true & (false)
-  x = false | (false)
-  x = 'a' < 1
-  x = 'a' <= 1
-  x = 'a' >= 1
-  x = 'a' > 1
-  x = 'a' == 1
-  x = 'a' != 1
-  x = y < 1
-  x = y <= 1
-  x = y >= 1
-  x = y > 1
-  x = y == 1
-  x = y != 1
-  x = x == false
-  x = x != false
-  x = x & false
-  x = x | true
-  x = i() < 1
-  x = i() <= 1
-  x = i() >= 1
-  x = i() > 1
-  x = i() == 1
-  x = i() != 1
-  x = b() == false
-  x = b() != false
-  x = b() & false
-  x = b() | true
-  x = a2[0] < 1
-  x = a2[0] <= 1
-  x = a2[0] >= 1
-  x = a2[0] > 1
-  x = a2[0] == 1
-  x = a2[0] != 1
-  x = a1[0] == false
-  x = a1[0] != false
-  x = a1[0] & false
-  x = a1[0] | true
-  x = -1 < 1
-  x = -1 <= 1
-  x = -1 >= 1
-  x = -1 > 1
-  x = -1 == 1
-  x = -1 != 1
-  x = 0+0 < 1
-  x = 0+0 <= 1
-  x = 0+0 >= 1
-  x = 0+0 > 1
-  x = 0+0 == 1
-  x = 0+0 != 1
-  x = (0) < 1
-  x = (0) <= 1
-  x = (0) >= 1
-  x = (0) > 1
-  x = (0) == 1
-  x = (0) != 1
-  x = (false) == false
-  x = (false) != false
-  x = (true) & false
-  x = (false) | true
-  x = x + x
-  x = x + {2,3}
-  x = {1} + x
-  x = {1} + {2,3}
-  x = x + (x)
-  x = x + ({2,3})
-  x = {1} + (x)
-  x = {1} + ({2,3})
-  x = (x) + x
-  x = (x) + {2,3}
-  x = ({1}) + x
-  x = ({1}) + {2,3}
+  v : bool = false
+  v = 0 < 'a'
+  v = 0 <= 'a'
+  v = 0 >= 'a'
+  v = 0 > 'a'
+  v = 0 == 'a'
+  v = 0 != 'a'
+  z : int = 3
+  v = 0 < z
+  v = 0 <= z
+  v = 0 >= z
+  v = 0 > z
+  v = 0 == z
+  v = 0 != z
+  v = true == v
+  v = true != v
+  v = true & v
+  v = false | v
+  v = 0 < i()
+  v = 0 <= i()
+  v = 0 >= i()
+  v = 0 > i()
+  v = 0 == i()
+  v = 0 != i()
+  v = true == b()
+  v = true != b()
+  v = true & b()
+  v = false | b()
+  v = 0 < y[0]
+  v = 0 <= y[0]
+  v = 0 >= y[0]
+  v = 0 > y[0]
+  v = 0 == y[0]
+  v = 0 != y[0]
+
+  a1 : bool[] = {true, false, true}
+  v = true == a1[0]
+  v = true != a1[0]
+  v = true & a1[0]
+  v = false | a1[0]
+  v = 0 < -1
+  v = 0 <= -1
+  v = 0 >= -1
+  v = 0 > -1
+  v = 0 == -1
+  v = 0 != -1
+  v = 0 < 0+0
+  v = 0 <= 0+0
+  v = 0 >= 0+0
+  v = 0 > 0+0
+  v = 0 == 0+0
+  v = 0 != 0+0
+  v = 0 < (0)
+  v = 0 <= (0)
+  v = 0 >= (0)
+  v = 0 > (0)
+  v = 0 == (0)
+  v = 0 != (0)
+  v = true == (false)
+  v = true != (false)
+  v = true & (false)
+  v = false | (false)
+  v = 'a' < 1
+  v = 'a' <= 1
+  v = 'a' >= 1
+  v = 'a' > 1
+  v = 'a' == 1
+  v = 'a' != 1
+  v = x < 1
+  v = x <= 1
+  v = x >= 1
+  v = x > 1
+  v = x == 1
+  v = x != 1
+  v = v == false
+  v = v != false
+  v = v & false
+  v = v | true
+  v = i() < 1
+  v = i() <= 1
+  v = i() >= 1
+  v = i() > 1
+  v = i() == 1
+  v = i() != 1
+  v = b() == false
+  v = b() != false
+  v = b() & false
+  v = b() | true
+  v = y[1] < 1
+  v = y[1] <= 1
+  v = y[1] >= 1
+  v = y[1] > 1
+  v = y[1] == 1
+  v = y[1] != 1
+  v = a1[0] == false
+  v = a1[0] != false
+  v = a1[0] & false
+  v = a1[0] | true
+  v = -1 < 1
+  v = -1 <= 1
+  v = -1 >= 1
+  v = -1 > 1
+  v = -1 == 1
+  v = -1 != 1
+  v = 0+0 < 1
+  v = 0+0 <= 1
+  v = 0+0 >= 1
+  v = 0+0 > 1
+  v = 0+0 == 1
+  v = 0+0 != 1
+  v = (0) < 1
+  v = (0) <= 1
+  v = (0) >= 1
+  v = (0) > 1
+  v = (0) == 1
+  v = (0) != 1
+  v = (false) == false
+  v = (false) != false
+  v = (true) & false
+  v = (false) | true
+
+  y = y + y
+  y = y + {2,3}
+  y = {1} + y
+  y = {1} + {2,3}
+  y = y + (y)
+  y = y + ({2,3})
+  y = {1} + (y)
+  y = {1} + ({2,3})
+  y = (y) + y
+  y = (y) + {2,3}
+  y = ({1}) + y
+  y = ({1}) + {2,3}
 }
