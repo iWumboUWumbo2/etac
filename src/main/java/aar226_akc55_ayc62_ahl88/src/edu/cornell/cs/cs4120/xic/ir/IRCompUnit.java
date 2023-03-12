@@ -86,9 +86,13 @@ public class IRCompUnit extends IRNode_c {
             if (newFunc != func) modified = true;
             results.put(newFunc.name(), newFunc);
         }
-
-        if (modified) return v.nodeFactory().IRCompUnit(name, results);
-
+        if (modified){
+            IRCompUnit nxtCompUnit = v.nodeFactory().IRCompUnit(name, results);
+            for (Map.Entry<String,IRData> entry: dataMap.entrySet()){
+                nxtCompUnit.appendData(entry.getValue());
+            }
+            return nxtCompUnit;
+        }
         return this;
     }
 
