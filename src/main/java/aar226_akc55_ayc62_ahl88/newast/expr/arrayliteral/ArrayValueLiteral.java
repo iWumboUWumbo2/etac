@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayList;
 

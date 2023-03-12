@@ -103,7 +103,7 @@ public class IRLoweringVisitor extends IRVisitor {
         boolean allMarked = true;
         BasicBlock best = null;
         for (BasicBlock block : blocks) {
-            if (hasNoUnmarkedPredecessors(block)) {
+            if (!block.marked && hasNoUnmarkedPredecessors(block)) {
                 return block;
             }
             if (!block.marked){
@@ -111,6 +111,7 @@ public class IRLoweringVisitor extends IRVisitor {
                 allMarked = false;
             }
         }
+//        System.out.println(allMarked);
         if (allMarked){
             return null;
         }else{
@@ -146,9 +147,9 @@ public class IRLoweringVisitor extends IRVisitor {
 
     private ArrayList<BasicBlock> reorderBlocks(ArrayList<BasicBlock> unorderedBlocks){
         ArrayList<BasicBlock> orderedBlocks = new ArrayList<>();
-        while (!greedyReordering(unorderedBlocks, orderedBlocks))
-            System.out.println("we fucked");
-            ;
+        while (!greedyReordering(unorderedBlocks, orderedBlocks)) {
+//            System.out.println("we fucked");
+        }
 
         return orderedBlocks;
     }
@@ -374,9 +375,15 @@ public class IRLoweringVisitor extends IRVisitor {
                     String flabel = cjmp.falseLabel();
                     if (tlabel.equals(il.name())){
                         IRBinOp newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
-                        IRCJump newCJump = new IRCJump(newCond, flabel,tlabel);
+                        IRCJump newCJump = new IRCJump(newCond, flabel,null);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
+                    }else if (flabel.equals(il.name())){
+                        IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
+                        curblk.statements.set(curblk.statements.size()-1,newCJump);
+                    }else{
+                        throw new InternalCompilerError("only two edges in jump max");
                     }
+
                 }
             }
             ArrayList<IRStmt> orderedStatements = new ArrayList<>();
