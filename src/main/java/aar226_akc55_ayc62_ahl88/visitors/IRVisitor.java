@@ -670,7 +670,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String abiName = genABIFunc(node.getFunctionSig(), node.getId());
         // CREATE NODE
-        return new IRFuncDecl(abiName, new IRSeq(stmtList));
+        IRFuncDecl ret =  new IRFuncDecl(abiName, new IRSeq(stmtList));
+        ret.functionSig = node.getFunctionSig();
+        return ret;
     }
 
     @Override

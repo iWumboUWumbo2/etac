@@ -348,55 +348,62 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Create Basic Blocks And reorder all the body
     private IRNode canon(IRFuncDecl node) {
-//        if (node.name().equals("_IAck_iii")) {
-//            System.out.println(node.body());
+        return node;
+//        if (node.body() instanceof IRSeq irs){
+//            ArrayList<IRStmt> orderedStatements = new ArrayList<>();
+//            ArrayList<IRStmt> unorderedStatements = new ArrayList<>();
+//            for (int i = 0; i< node.functionSig.inputTypes.size();i++){
+//                orderedStatements.add(irs.stmts().get(i));
+//            }
+//            for (int i = node.functionSig.inputTypes.size();i<irs.stmts().size();i++){
+//                unorderedStatements.add(irs.stmts().get(i));
+//            }
+//            ArrayList<BasicBlock> unorderedBlocks = createBasicBlocksAndGraph(new IRSeq(unorderedStatements));
+//
+//            ArrayList<BasicBlock> orderedBlocks = reorderBlocks(unorderedBlocks);
+//
+//            assert unorderedBlocks.size() == orderedBlocks.size() : "after ordering is different size tf";
+//
+//            for (int i = 0; i< orderedBlocks.size()-1;i++){
+//                BasicBlock curblk = orderedBlocks.get(i);
+//                BasicBlock nxtblk = orderedBlocks.get(i+1);
+//                assert curblk.statements.size() >= 1: "block is empty";
+//                assert nxtblk.statements.size() >= 1: "dest block is empty";
+//                IRStmt lastStmt = curblk.statements.get(curblk.statements.size()-1);
+//                IRStmt firstStmtInNext = nxtblk.statements.get(0);
+//                if (lastStmt instanceof IRJump jmp && firstStmtInNext instanceof IRLabel il){
+//                    String name = ((IRName) jmp.target()).name();
+//                    if (name.equals(il.name())){ // remove jump
+//                        curblk.statements.remove(curblk.statements.size()-1);
+//                    }
+//                }else if (lastStmt instanceof IRCJump cjmp && firstStmtInNext instanceof IRLabel il){
+//                    String tlabel = cjmp.trueLabel();
+//                    String flabel = cjmp.falseLabel();
+//                    if (tlabel.equals(il.name())){
+//                        IRBinOp newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
+//                        IRCJump newCJump = new IRCJump(newCond, flabel,null);
+//                        curblk.statements.set(curblk.statements.size()-1,newCJump);
+//                    }else if (flabel.equals(il.name())){
+//                        IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
+//                        curblk.statements.set(curblk.statements.size()-1,newCJump);
+//                    }else{
+//                        throw new InternalCompilerError("only two edges in jump max");
+//                    }
+//
+//                }
+//            }
+//            for (BasicBlock b: orderedBlocks){
+//                for (IRStmt s: b.statements){
+//                    orderedStatements.add(s);
+//                }
+//            }
+//            IRFuncDecl func = new IRFuncDecl(node.name(),new IRSeq(orderedStatements));
+//            func.functionSig = node.functionSig;
+//            return func;
+//            // 1 5 3 2 6 7
+//        }else{
+//            throw new InternalCompilerError("METHOD BODY NOT SEQ");
 //        }
-        if (node.body() instanceof IRSeq irs){
-            ArrayList<BasicBlock> unorderedBlocks = createBasicBlocksAndGraph(irs);
-
-            ArrayList<BasicBlock> orderedBlocks = reorderBlocks(unorderedBlocks);
-
-            assert unorderedBlocks.size() == orderedBlocks.size() : "after ordering is different size tf";
-
-            for (int i = 0; i< orderedBlocks.size()-1;i++){
-                BasicBlock curblk = orderedBlocks.get(i);
-                BasicBlock nxtblk = orderedBlocks.get(i+1);
-                assert curblk.statements.size() >= 1: "block is empty";
-                assert nxtblk.statements.size() >= 1: "dest block is empty";
-                IRStmt lastStmt = curblk.statements.get(curblk.statements.size()-1);
-                IRStmt firstStmtInNext = nxtblk.statements.get(0);
-                if (lastStmt instanceof IRJump jmp && firstStmtInNext instanceof IRLabel il){
-                    String name = ((IRName) jmp.target()).name();
-                    if (name.equals(il.name())){ // remove jump
-                        curblk.statements.remove(curblk.statements.size()-1);
-                    }
-                }else if (lastStmt instanceof IRCJump cjmp && firstStmtInNext instanceof IRLabel il){
-                    String tlabel = cjmp.trueLabel();
-                    String flabel = cjmp.falseLabel();
-                    if (tlabel.equals(il.name())){
-                        IRBinOp newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
-                        IRCJump newCJump = new IRCJump(newCond, flabel,null);
-                        curblk.statements.set(curblk.statements.size()-1,newCJump);
-                    }else if (flabel.equals(il.name())){
-                        IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
-                        curblk.statements.set(curblk.statements.size()-1,newCJump);
-                    }else{
-                        throw new InternalCompilerError("only two edges in jump max");
-                    }
-
-                }
-            }
-            ArrayList<IRStmt> orderedStatements = new ArrayList<>();
-            for (BasicBlock b: orderedBlocks){
-                for (IRStmt s: b.statements){
-                    orderedStatements.add(s);
-                }
-            }
-            return new IRFuncDecl(node.name(),new IRSeq(orderedStatements));
-            // 1 5 3 2 6 7
-        }else{
-            throw new InternalCompilerError("METHOD BODY NOT SEQ");
-        }
     }
 
 
