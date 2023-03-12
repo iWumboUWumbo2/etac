@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
+import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 
@@ -88,12 +89,22 @@ public class IRLoweringVisitor extends IRVisitor {
     }
 
     private BasicBlock selectBlock() {
+        boolean allMarked = true;
+        BasicBlock best = null;
         for (BasicBlock block : blocks) {
             if (hasNoUnmarkedPredecessors(block)) {
                 return block;
             }
+            if (!block.marked){
+                best = block;
+                allMarked = false;
+            }
         }
-        return null;
+        if (allMarked){
+            return null;
+        }else{
+            return best;
+        }
     }
 
     private boolean greedyReordering() {
@@ -106,18 +117,29 @@ public class IRLoweringVisitor extends IRVisitor {
         while (!blk.marked) {
             blk.marked = true;
             orderedBlocks.add(blk);
-
+            boolean found = false;
             for (BasicBlock neighbor : blk.neighbors) {
                 if (!neighbor.marked) {
                     blk = neighbor;
+                    found = true;
                     break;
                 }
+            }
+            if (!found){
+                break;
             }
         }
 
         return false;
     }
 
+    private void reorderBlocks(){
+
+        orderedBlocks = new ArrayList<>();
+        while (!greedyReordering()){
+
+        }
+    }
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
 //        System.out.println(node);
