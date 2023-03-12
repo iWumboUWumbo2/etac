@@ -22,7 +22,11 @@ foo(num1:int[], num2:int[], v:int[], n1:int, n2:int) : int {
         v[last]=num2[j];
         j = j + 1
     }
-    return n1+n2;
+    n:int = n1+n2;
+    if (n%2 == 1) {
+        return v[n+2]
+    }
+    return (v[n/2]+v[n/2-1])/2
 }
 
 main(args: int[][]) {
