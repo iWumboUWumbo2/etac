@@ -1,4 +1,4 @@
-use io
+// use io
 
 a:int = 0
 b:int = 0
@@ -19,11 +19,11 @@ main(args: int[][]) {
   f = c
   c = d[1]
   d[1][2] = 65
-  print(c)
+//  print(c)
 }
 
 foo(m:int, n:int):int {
-    while (m < n) {
+    while (m > 0) {
         x:int[] = "string"
         m = m-1
         n = n + 1
