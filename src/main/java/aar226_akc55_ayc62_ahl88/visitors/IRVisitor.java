@@ -84,7 +84,10 @@ public class IRVisitor implements Visitor<IRNode>{
                 case HMUL: BigInteger a = BigInteger.valueOf(e1int).multiply(BigInteger.valueOf(e2int));
                             return new IRConst(a.shiftRight(64).longValue());
                 case SUB: return new IRConst(e1int - e2int);
-                case MOD: return new IRConst(e1int % e2int);
+                case MOD: if (e2int != 0) {
+                    return new IRConst(e1int % e2int);
+                }
+                    throw new Error("DIVIDE BY ZERO");
                 case MUL: return new IRConst(e1int * e2int);
                 default: throw new Error("NOT INTEGER ARITHMETIC BINOP");
             }
