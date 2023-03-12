@@ -140,6 +140,18 @@ public class IRLoweringVisitor extends IRVisitor {
 
         }
     }
+
+    private ArrayList<BasicBlock> createBasicBlocks(IRSeq body){
+        ArrayList<BasicBlock> blocks = new ArrayList<>();
+        // loop through each stmt
+
+        // add to current block if not jump / cjump / return
+
+        // if jump/cjump/return stop block push then create new block
+        // a block is just a list of Stmts
+        // if anything left at the end then add to blocks too
+
+    }
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
 //        System.out.println(node);
