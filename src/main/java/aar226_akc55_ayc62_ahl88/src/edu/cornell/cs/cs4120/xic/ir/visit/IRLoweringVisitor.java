@@ -57,6 +57,9 @@ public class IRLoweringVisitor extends IRVisitor {
         ArrayList<IRStmt> flatten = new ArrayList<>();
         for (IRStmt stmt: node.stmts()){
             if (stmt instanceof IRSeq seq){
+//                System.out.println("start");
+//                System.out.println(node);
+//                System.out.println(seq);
                 flatten.addAll(seq.stmts());
             }else{
                 flatten.add(stmt);
@@ -72,9 +75,9 @@ public class IRLoweringVisitor extends IRVisitor {
 
         for (IRExpr expr : node.rets()) {
             String ti = nxtTemp();
+            temps_strs.add(ti);
             if (expr instanceof IRESeq eseq) {
                 stmts.add(eseq.stmt());
-                temps_strs.add(ti);
                 stmts.add(new IRMove(new IRTemp(ti),eseq.expr()));
             }else{
                 stmts.add(new IRMove(new IRTemp(ti),expr));
@@ -152,6 +155,9 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Create Basic Blocks And reorder all the body
     private IRNode canon(IRFuncDecl node) {
+//        if (node.name().equals("_IAck_iii")) {
+//            System.out.println(node.body());
+//        }
         return node;
     }
 
@@ -176,16 +182,14 @@ public class IRLoweringVisitor extends IRVisitor {
 
         for (IRExpr expr : node.args()) {
             String ti = nxtTemp();
+            temps_strs.add(ti);
             if (expr instanceof IRESeq eseq) {
                 stmts.add(eseq.stmt());
-                temps_strs.add(ti);
                 stmts.add(new IRMove(new IRTemp(ti),eseq.expr()));
             }else{
                 stmts.add(new IRMove(new IRTemp(ti),expr));
             }
         }
-
-        String t = nxtTemp();
 
         List<IRExpr> temps = new ArrayList<>();
         for (String tmp : temps_strs) {
@@ -194,7 +198,7 @@ public class IRLoweringVisitor extends IRVisitor {
 
         stmts.add(new IRCallStmt(node.target(), node.n_returns(), temps));
 //        stmts.add(new IRMove(new IRTemp(t), new IRTemp("_RV1")));
-
+//        System.out.println(new IRSeq(stmts));
         return new IRSeq(stmts);
     }
     // Lower each Expr we never call this lol?
