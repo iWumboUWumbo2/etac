@@ -175,10 +175,19 @@ public class IRLoweringVisitor extends IRVisitor {
         return true;
     }
     private BasicBlock chooseBlock(ArrayList<BasicBlock> blocks){
+        boolean allMarked = true;
+        BasicBlock curBlock = null;
         for (BasicBlock b: blocks){
             if (!b.marked && hasNoUnmarkedPredecessors(b,blocks)){
                 return b;
             }
+            if (!b.marked){
+                allMarked = false;
+                curBlock = b;
+            }
+        }
+        if (!allMarked){
+            return curBlock;
         }
         throw new InternalCompilerError("Should only choose block when not all marked");
     }
