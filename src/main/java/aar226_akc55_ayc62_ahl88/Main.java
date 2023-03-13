@@ -459,7 +459,7 @@ public class Main {
                         break;
                 }
 
-                System.out.println(opts);
+//                System.out.println(opts);
             }
 
             if (cmd.hasOption("sourcepath")) {

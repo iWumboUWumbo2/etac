@@ -1,0 +1,15 @@
+(COMPUNIT
+ CompUnit
+ (DATA string_const1
+  (14 72 101 108 108 111 44 32 87 111 114 108 100 33 10 0))
+ (FUNC
+  _Imain_paai
+  (SEQ
+   (MOVE (TEMP args) (TEMP _ARG1))
+   (MOVE (TEMP t0) (NAME string_const1))
+   (MOVE (TEMP tl0) (TEMP t0))
+   (MOVE (TEMP tl1) (ADD (TEMP tl0) (CONST 8)))
+   (CALL_STMT 1 (NAME _Iprint_pai) (TEMP tl1))
+   (MOVE (TEMP c3po) (CONST 167))
+   (MOVE (TEMP r2d2) (TEMP c3po))
+   (RETURN))))

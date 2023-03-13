@@ -228,7 +228,7 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
     \'   { sb.append("\\" + StringEscapeUtils.escapeJava("'"));}
     \\\' { sb.append("\\" + StringEscapeUtils.escapeJava("'")); }
     \\\\ { sb.append(StringEscapeUtils.escapeJava("\\")); }
-    \\n  { System.out.println("backslash n"); sb.append(StringEscapeUtils.escapeJava("\n"));}
+    \\n  { sb.append(StringEscapeUtils.escapeJava("\n"));}
     \\t  { sb.append(StringEscapeUtils.escapeJava("\t"));}
     \\\"  { sb.append("\""); }
 

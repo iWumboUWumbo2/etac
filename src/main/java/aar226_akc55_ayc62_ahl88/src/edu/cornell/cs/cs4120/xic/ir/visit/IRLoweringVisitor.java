@@ -8,24 +8,19 @@ import java.util.*;
 
 // Need to think about what to add
 class BasicBlock {
-    public static int id = 0;
     public boolean marked;
-    public boolean visited;
-
-    public ArrayList<BasicBlock> predecessors;
-    public ArrayList<BasicBlock> successors;
+    public int ind;
+    public ArrayList<Integer> predecessors;
+    public ArrayList<Integer> successors;
     public ArrayList<IRStmt> statements;
+    public ArrayList<String> destLabels;
 
-    public ArrayList<String> destLabels; // we contain this
-
-    public ArrayList<String> originLabels; // we want to go there
-
+    public ArrayList<String> originLabels;
 
 
-    public BasicBlock() {
-        id++;
+    public BasicBlock(int i) {
+        ind = i;
         marked = false;
-        visited = false;
         predecessors = new ArrayList<>();
         successors = new ArrayList<>();
         statements = new ArrayList<>();
@@ -79,22 +74,15 @@ public class IRLoweringVisitor extends IRVisitor {
         throw new Error("Why is node not found");
     }
 
-    private boolean hasNoUnmarkedPredecessors(BasicBlock block) {
-        block.visited = true;
+    private boolean hasNoUnmarkedPredecessors(BasicBlock block,ArrayList<BasicBlock> blocks) {
 
         boolean noUnmarkedPredecessor = true;
-
-        for (BasicBlock pred : block.predecessors) {
-            if (!pred.visited) {
-                if (pred.marked) {
-                    noUnmarkedPredecessor &= hasNoUnmarkedPredecessors(pred);
-                } else {
-                    return false;
-                }
+        for (int i : block.predecessors) {
+            if (!blocks.get(i).marked){
+                noUnmarkedPredecessor = false;
             }
         }
 
-        block.visited = false;
 
         return noUnmarkedPredecessor;
     }
@@ -103,7 +91,7 @@ public class IRLoweringVisitor extends IRVisitor {
         boolean allMarked = true;
         BasicBlock best = null;
         for (BasicBlock block : blocks) {
-            if (!block.marked && hasNoUnmarkedPredecessors(block)) {
+            if (!block.marked && hasNoUnmarkedPredecessors(block,blocks)) {
                 return block;
             }
             if (!block.marked){
@@ -130,9 +118,9 @@ public class IRLoweringVisitor extends IRVisitor {
             blk.marked = true;
             orderedBlocks.add(blk);
             boolean found = false;
-            for (BasicBlock neighbor : blk.successors) {
-                if (!neighbor.marked) {
-                    blk = neighbor;
+            for (int i : blk.successors) {
+                if (!unorderedBlocks.get(i).marked) {
+                    blk = unorderedBlocks.get(i);
                     found = true;
                     break;
                 }
@@ -153,6 +141,55 @@ public class IRLoweringVisitor extends IRVisitor {
 
         return orderedBlocks;
     }
+    private void dfs(BasicBlock b, ArrayList<BasicBlock> res, ArrayList<BasicBlock> unorderedBlocks){
+        b.marked = true;
+//        System.out.println("START");
+        boolean[] visit = new boolean[unorderedBlocks.size()];
+        Stack<Integer> stack = new Stack<>();
+        stack.add(b.ind);
+        while (!stack.isEmpty()){
+//            System.out.println("IM HERE");
+            int curNode = stack.pop();
+            BasicBlock curBlock = unorderedBlocks.get(curNode);
+            curBlock.marked = true;
+            res.add(curBlock);
+            boolean foundAnother = false;
+            for (int succ : curBlock.successors){
+                if (!visit[succ] && !unorderedBlocks.get(succ).marked){
+                    visit[succ] = true;
+                    stack.add(succ);
+                    foundAnother = true;
+                }
+            }
+            if (!foundAnother){
+                break;
+            }
+        }
+    }
+    private boolean allMarked(ArrayList<BasicBlock> blocks){
+        for (BasicBlock b: blocks){
+            if (!b.marked){
+                return false;
+            }
+        }
+        return true;
+    }
+    private BasicBlock chooseBlock(ArrayList<BasicBlock> blocks){
+        for (BasicBlock b: blocks){
+            if (!b.marked && hasNoUnmarkedPredecessors(b,blocks)){
+                return b;
+            }
+        }
+        throw new InternalCompilerError("Should only choose block when not all marked");
+    }
+    private ArrayList<BasicBlock> goodReordering(ArrayList<BasicBlock> unorderedBlocks){
+        ArrayList<BasicBlock> result = new ArrayList<>();
+        while (!allMarked(unorderedBlocks)) {
+            BasicBlock block = chooseBlock(unorderedBlocks);
+            dfs(block,result,unorderedBlocks);
+        }
+        return result;
+    }
 
     private boolean stop(IRStmt stmt){
         return (stmt instanceof IRJump || stmt instanceof IRCJump || stmt instanceof IRReturn);
@@ -162,18 +199,25 @@ public class IRLoweringVisitor extends IRVisitor {
         for (String originLabel : block1.originLabels) {
             for (String destLabel : block2.destLabels) {
                 if (originLabel.equals(destLabel)) {
-                    block1.successors.add(block2);
-                    block2.predecessors.add(block1);
+                    block1.successors.add(block2.ind);
+                    block2.predecessors.add(block1.ind);
                 }
             }
         }
     }
 
     private ArrayList<BasicBlock> createBasicBlocksAndGraph(IRSeq body){
+        int ind = 0;
         ArrayList<BasicBlock> blocks = new ArrayList<>();
-
-        // loop through each stmt
-        BasicBlock curBlock = new BasicBlock();
+        BasicBlock dummy = new BasicBlock(ind);
+        ind++;
+        String lb = nxtLabel();
+        dummy.statements.add(new IRJump(new IRName("dummy_head" + lb)));
+        dummy.successors.add(1);
+        blocks.add(dummy);
+        BasicBlock curBlock = new BasicBlock(ind);
+        curBlock.predecessors.add(0);
+        curBlock.statements.add(new IRLabel("dummy_head" + lb));
         for (IRStmt stmt: body.stmts()){
             curBlock.statements.add(stmt);
             if (stop(stmt)) {
@@ -185,9 +229,9 @@ public class IRLoweringVisitor extends IRVisitor {
                     curBlock.originLabels.add(cjmp.trueLabel());
                     curBlock.originLabels.add(cjmp.falseLabel());
                 }
-
                 blocks.add(curBlock);
-                curBlock = new BasicBlock();
+                ind++;
+                curBlock = new BasicBlock(ind);
             }
             if (stmt instanceof IRLabel label) {
                 curBlock.destLabels.add(label.name());
@@ -198,7 +242,7 @@ public class IRLoweringVisitor extends IRVisitor {
         }
 
         for (int i = 0; i < blocks.size(); i++) {
-            for (int j = i + 1; j < blocks.size(); j++) {
+            for (int j = i; j < blocks.size(); j++) {
                 BasicBlock bi = blocks.get(i), bj = blocks.get(j);
                 compareBlocks(bi, bj);
                 compareBlocks(bj, bi);
@@ -348,62 +392,47 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // Create Basic Blocks And reorder all the body
     private IRNode canon(IRFuncDecl node) {
-        return node;
-//        if (node.body() instanceof IRSeq irs){
-//            ArrayList<IRStmt> orderedStatements = new ArrayList<>();
-//            ArrayList<IRStmt> unorderedStatements = new ArrayList<>();
-//            for (int i = 0; i< node.functionSig.inputTypes.size();i++){
-//                orderedStatements.add(irs.stmts().get(i));
-//            }
-//            for (int i = node.functionSig.inputTypes.size();i<irs.stmts().size();i++){
-//                unorderedStatements.add(irs.stmts().get(i));
-//            }
-//            ArrayList<BasicBlock> unorderedBlocks = createBasicBlocksAndGraph(new IRSeq(unorderedStatements));
-//
-//            ArrayList<BasicBlock> orderedBlocks = reorderBlocks(unorderedBlocks);
-//
-//            assert unorderedBlocks.size() == orderedBlocks.size() : "after ordering is different size tf";
-//
-//            for (int i = 0; i< orderedBlocks.size()-1;i++){
-//                BasicBlock curblk = orderedBlocks.get(i);
-//                BasicBlock nxtblk = orderedBlocks.get(i+1);
-//                assert curblk.statements.size() >= 1: "block is empty";
-//                assert nxtblk.statements.size() >= 1: "dest block is empty";
-//                IRStmt lastStmt = curblk.statements.get(curblk.statements.size()-1);
-//                IRStmt firstStmtInNext = nxtblk.statements.get(0);
-//                if (lastStmt instanceof IRJump jmp && firstStmtInNext instanceof IRLabel il){
-//                    String name = ((IRName) jmp.target()).name();
-//                    if (name.equals(il.name())){ // remove jump
-//                        curblk.statements.remove(curblk.statements.size()-1);
-//                    }
-//                }else if (lastStmt instanceof IRCJump cjmp && firstStmtInNext instanceof IRLabel il){
-//                    String tlabel = cjmp.trueLabel();
-//                    String flabel = cjmp.falseLabel();
-//                    if (tlabel.equals(il.name())){
-//                        IRBinOp newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
-//                        IRCJump newCJump = new IRCJump(newCond, flabel,null);
-//                        curblk.statements.set(curblk.statements.size()-1,newCJump);
-//                    }else if (flabel.equals(il.name())){
-//                        IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
-//                        curblk.statements.set(curblk.statements.size()-1,newCJump);
-//                    }else{
-//                        throw new InternalCompilerError("only two edges in jump max");
-//                    }
-//
-//                }
-//            }
-//            for (BasicBlock b: orderedBlocks){
-//                for (IRStmt s: b.statements){
-//                    orderedStatements.add(s);
-//                }
-//            }
-//            IRFuncDecl func = new IRFuncDecl(node.name(),new IRSeq(orderedStatements));
-//            func.functionSig = node.functionSig;
-//            return func;
-//            // 1 5 3 2 6 7
-//        }else{
-//            throw new InternalCompilerError("METHOD BODY NOT SEQ");
-//        }
+        if (node.body() instanceof IRSeq irs){
+            ArrayList<IRStmt> orderedStatements = new ArrayList<>();
+            ArrayList<BasicBlock> unorderedBlocks = createBasicBlocksAndGraph(irs);
+            ArrayList<BasicBlock> orderedBlocks = goodReordering(unorderedBlocks);
+            assert unorderedBlocks.size() == orderedBlocks.size() : "after ordering is different size tf";
+            for (int i = 0; i< orderedBlocks.size()-1;i++){
+                BasicBlock curblk = orderedBlocks.get(i);
+                BasicBlock nxtblk = orderedBlocks.get(i+1);
+                assert curblk.statements.size() >= 1: "block is empty";
+                assert nxtblk.statements.size() >= 1: "dest block is empty";
+                IRStmt lastStmt = curblk.statements.get(curblk.statements.size()-1);
+                IRStmt firstStmtInNext = nxtblk.statements.get(0);
+                if (lastStmt instanceof IRJump jmp && firstStmtInNext instanceof IRLabel il){
+                    String name = ((IRName) jmp.target()).name();
+                    if (name.equals(il.name())){ // remove jump
+                        curblk.statements.remove(curblk.statements.size()-1);
+                    }
+                }else if (lastStmt instanceof IRCJump cjmp && firstStmtInNext instanceof IRLabel il){
+                    String tlabel = cjmp.trueLabel();
+                    String flabel = cjmp.falseLabel();
+                    if (tlabel.equals(il.name())){
+                        IRBinOp newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
+                        IRCJump newCJump = new IRCJump(newCond, flabel,null);
+                        curblk.statements.set(curblk.statements.size()-1,newCJump);
+                    }else if (flabel.equals(il.name())){
+                        IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
+                        curblk.statements.set(curblk.statements.size()-1,newCJump);
+                    }
+                }
+            }
+            for (BasicBlock b: orderedBlocks){
+                for (IRStmt s: b.statements){
+                    orderedStatements.add(s);
+                }
+            }
+            IRFuncDecl func = new IRFuncDecl(node.name(),new IRSeq(orderedStatements));
+            func.functionSig = node.functionSig;
+            return func;
+        }else{
+            throw new InternalCompilerError("METHOD BODY NOT SEQ");
+        }
     }
 
 
