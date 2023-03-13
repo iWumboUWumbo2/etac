@@ -1,0 +1,128 @@
+(COMPUNIT
+ CompUnit
+ (DATA
+  string_const1
+  (29 80 108 101 97 115 101 32 115 112 101 99 105 102 121 32 116 104 101 32 105
+   110 112 117 116 32 115 105 122 101))
+ (DATA string_const2 (6 65 99 107 40 50 44))
+ (DATA string_const3 (3 41 58 32))
+ (DATA string_const4 (0))
+ (FUNC
+  _Iusage_p
+  (SEQ
+   (MOVE (TEMP t0) (NAME string_const1))
+   (MOVE (TEMP tl1) (ADD (TEMP t0) (CONST 8)))
+   (CALL_STMT 1 (NAME _Iprintln_pai) (TEMP tl1))
+   (RETURN)))
+ (FUNC
+  _Imain_paai
+  (SEQ
+   (MOVE (TEMP args) (TEMP _ARG1))
+   (MOVE (TEMP n) (CONST 11))
+   (SEQ
+    (MOVE (TEMP tl2) (CONST 2))
+    (MOVE (TEMP tl3) (TEMP n))
+    (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl2) (TEMP tl3)))
+   (MOVE (TEMP r) (TEMP _RV1))
+   (MOVE (TEMP t1) (NAME string_const2))
+   (MOVE (TEMP tl5) (ADD (TEMP t1) (CONST 8)))
+   (CALL_STMT 1 (NAME _Iprint_pai) (TEMP tl5))
+   (SEQ
+    (MOVE (TEMP tl6) (TEMP n))
+    (CALL_STMT 1 (NAME _IunparseInt_aii) (TEMP tl6)))
+   (MOVE (TEMP tl6) (TEMP n))
+   (CALL_STMT 1 (NAME _IunparseInt_aii) (TEMP tl6))
+   (MOVE (TEMP tl7) (TEMP _RV1))
+   (CALL_STMT 1 (NAME _Iprint_pai) (TEMP tl7))
+   (MOVE (TEMP t2) (NAME string_const3))
+   (MOVE (TEMP tl9) (ADD (TEMP t2) (CONST 8)))
+   (CALL_STMT 1 (NAME _Iprint_pai) (TEMP tl9))
+   (SEQ
+    (MOVE (TEMP tl10) (TEMP r))
+    (CALL_STMT 1 (NAME _IunparseInt_aii) (TEMP tl10)))
+   (MOVE (TEMP tl10) (TEMP r))
+   (CALL_STMT 1 (NAME _IunparseInt_aii) (TEMP tl10))
+   (MOVE (TEMP tl11) (TEMP _RV1))
+   (CALL_STMT 1 (NAME _Iprint_pai) (TEMP tl11))
+   (MOVE (TEMP t3) (NAME string_const4))
+   (MOVE (TEMP tl13) (ADD (TEMP t3) (CONST 8)))
+   (CALL_STMT 1 (NAME _Iprintln_pai) (TEMP tl13))
+   (RETURN)))
+ (FUNC
+  _IAck_iii
+  (SEQ
+   (MOVE (TEMP m) (TEMP _ARG1))
+   (MOVE (TEMP n) (TEMP _ARG2))
+   (CJUMP (EQ (TEMP m) (CONST 0)) l3 l4)
+   (LABEL l3)
+   (MOVE (TEMP tl16) (ADD (TEMP n) (CONST 1)))
+   (RETURN (TEMP tl16))
+   (JUMP (NAME l5))
+   (LABEL l4)
+   (CJUMP (EQ (TEMP n) (CONST 0)) l0 l1)
+   (LABEL l0)
+   (SEQ
+    (MOVE (TEMP tl19) (SUB (TEMP m) (CONST 1)))
+    (MOVE (TEMP tl20) (CONST 1))
+    (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl19) (TEMP tl20)))
+   (MOVE (TEMP tl21) (TEMP _RV1))
+   (RETURN (TEMP tl21))
+   (JUMP (NAME l2))
+   (LABEL l1)
+   (SEQ
+    (MOVE (TEMP tl29) (SUB (TEMP m) (CONST 1)))
+    (SEQ
+     (MOVE (TEMP tl27) (TEMP m))
+     (SEQ
+      (MOVE (TEMP tl25) (CONST 0))
+      (SEQ
+       (MOVE (TEMP tl23) (CONST 0))
+       (MOVE (TEMP tl24) (CONST 0))
+       (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24)))
+      (MOVE (TEMP tl23) (CONST 0))
+      (MOVE (TEMP tl24) (CONST 0))
+      (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24))
+      (MOVE (TEMP tl26) (TEMP _RV1))
+      (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl25) (TEMP tl26)))
+     (MOVE (TEMP tl25) (CONST 0))
+     (SEQ
+      (MOVE (TEMP tl23) (CONST 0))
+      (MOVE (TEMP tl24) (CONST 0))
+      (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24)))
+     (MOVE (TEMP tl23) (CONST 0))
+     (MOVE (TEMP tl24) (CONST 0))
+     (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24))
+     (MOVE (TEMP tl26) (TEMP _RV1))
+     (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl25) (TEMP tl26))
+     (MOVE (TEMP tl28) (TEMP _RV1))
+     (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl27) (TEMP tl28)))
+    (MOVE (TEMP tl27) (TEMP m))
+    (SEQ
+     (MOVE (TEMP tl25) (CONST 0))
+     (SEQ
+      (MOVE (TEMP tl23) (CONST 0))
+      (MOVE (TEMP tl24) (CONST 0))
+      (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24)))
+     (MOVE (TEMP tl23) (CONST 0))
+     (MOVE (TEMP tl24) (CONST 0))
+     (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24))
+     (MOVE (TEMP tl26) (TEMP _RV1))
+     (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl25) (TEMP tl26)))
+    (MOVE (TEMP tl25) (CONST 0))
+    (SEQ
+     (MOVE (TEMP tl23) (CONST 0))
+     (MOVE (TEMP tl24) (CONST 0))
+     (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24)))
+    (MOVE (TEMP tl23) (CONST 0))
+    (MOVE (TEMP tl24) (CONST 0))
+    (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl23) (TEMP tl24))
+    (MOVE (TEMP tl26) (TEMP _RV1))
+    (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl25) (TEMP tl26))
+    (MOVE (TEMP tl28) (TEMP _RV1))
+    (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl27) (TEMP tl28))
+    (MOVE (TEMP tl30) (TEMP _RV1))
+    (CALL_STMT 1 (NAME _IAck_iii) (TEMP tl29) (TEMP tl30)))
+   (MOVE (TEMP tl31) (TEMP _RV1))
+   (RETURN (TEMP tl31))
+   (LABEL l2)
+   (LABEL l5))))

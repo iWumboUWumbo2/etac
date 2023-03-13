@@ -438,7 +438,7 @@ public class Main {
             }
 
             if (cmd.hasOption("O")) {
-                System.out.println(opts);
+//                System.out.println(opts);
 
                 int level;
                 try {
@@ -459,7 +459,7 @@ public class Main {
                         break;
                 }
 
-                System.out.println(opts);
+//                System.out.println(opts);
             }
 
             if (cmd.hasOption("sourcepath")) {

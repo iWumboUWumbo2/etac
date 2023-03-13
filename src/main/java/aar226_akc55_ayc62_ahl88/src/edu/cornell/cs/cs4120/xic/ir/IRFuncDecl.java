@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
@@ -9,6 +10,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsB
 public class IRFuncDecl extends IRNode_c {
     private String name;
     private IRStmt body;
+    public Type functionSig;
 
     public IRFuncDecl(String name, IRStmt body) {
         this.name = name;
@@ -32,7 +34,11 @@ public class IRFuncDecl extends IRNode_c {
     public IRNode visitChildren(IRVisitor v) {
         IRStmt stmt = (IRStmt) v.visit(this, body);
 
-        if (stmt != body) return v.nodeFactory().IRFuncDecl(name, stmt);
+        if (stmt != body) {
+            IRFuncDecl funcDecl = v.nodeFactory().IRFuncDecl(name, stmt);
+            funcDecl.functionSig = functionSig;
+            return funcDecl;
+        }
 
         return this;
     }

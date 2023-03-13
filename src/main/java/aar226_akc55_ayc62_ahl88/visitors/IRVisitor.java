@@ -28,6 +28,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.naming.Name;
 import java.math.BigInteger;
@@ -378,9 +379,10 @@ public class IRVisitor implements Visitor<IRNode>{
         if (node.getRaw() != null){ // it is a string
             String stringName = nxtString();
             long[] res  = new long[node.getValues().size()+1];
-            res[0] = node.getValues().size();
-            for (int i = 0; i< node.getRaw().length();i++){
-                char c = node.getRaw().charAt(i);
+            String escapeString  = StringEscapeUtils.unescapeJava(node.getRaw());
+            res[0] = escapeString.length();
+            for (int i = 0; i< escapeString.length();i++){
+                char c = escapeString.charAt(i);
                 res[i+1] = (int) c;
             }
             IRData str =  new IRData(stringName,res);
@@ -668,7 +670,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String abiName = genABIFunc(node.getFunctionSig(), node.getId());
         // CREATE NODE
-        return new IRFuncDecl(abiName, new IRSeq(stmtList));
+        IRFuncDecl ret =  new IRFuncDecl(abiName, new IRSeq(stmtList));
+        ret.functionSig = node.getFunctionSig();
+        return ret;
     }
 
     @Override
