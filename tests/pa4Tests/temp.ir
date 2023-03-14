@@ -1,0 +1,148 @@
+(COMPUNIT
+ CompUnit
+ (DATA
+  string_const1
+  (33 76 97 114 103 101 115 116 32 112 114 105 109 101 32 108 101 115 115 32 116
+   104 97 110 32 49 44 48 48 48 32 105 115 32))
+ (FUNC
+  _Igcd_iii
+  (SEQ
+   (MOVE (TEMP a) (TEMP _ARG1))
+   (MOVE (TEMP b) (TEMP _ARG2))
+   (SEQ
+    (SEQ
+     (LABEL l0)
+     (CJUMP (NEQ (TEMP a) (CONST 0)) l1 l2)
+     (LABEL l1)
+     (SEQ
+      (SEQ
+       (CJUMP (LT (TEMP a) (TEMP b)) l3 l4)
+       (LABEL l3)
+       (MOVE (TEMP b) (SUB (TEMP b) (TEMP a)))
+       (JUMP (NAME l5))
+       (LABEL l4)
+       (MOVE (TEMP a) (SUB (TEMP a) (TEMP b)))
+       (LABEL l5)))
+     (JUMP (NAME l0))
+     (LABEL l2))
+    (RETURN (TEMP b)))))
+ (FUNC
+  _Iisprime_bi
+  (SEQ
+   (MOVE (TEMP n) (TEMP _ARG1))
+   (SEQ
+    (MOVE (TEMP i) (CONST 2))
+    (SEQ
+     (LABEL l6)
+     (CJUMP (LEQ (MUL (TEMP i) (TEMP i)) (TEMP n)) l7 l8)
+     (LABEL l7)
+     (SEQ
+      (SEQ
+       (CJUMP
+        (NEQ (ESEQ (CALL_STMT 1 (NAME _Igcd_iii) (TEMP i) (TEMP n)) (TEMP _RV1))
+         (CONST 1))
+        l9
+        l10)
+       (LABEL l9)
+       (SEQ (RETURN (CONST 0)))
+       (LABEL l10))
+      (MOVE (TEMP i) (ADD (TEMP i) (CONST 1))))
+     (JUMP (NAME l6))
+     (LABEL l8))
+    (RETURN (CONST 1)))))
+ (FUNC
+  _Ilargestprime_ii
+  (SEQ
+   (MOVE (TEMP max) (TEMP _ARG1))
+   (SEQ
+    (MOVE (TEMP a) (CONST 1))
+    (MOVE (TEMP largest) (CONST 1))
+    (SEQ
+     (LABEL l11)
+     (CJUMP (LT (TEMP a) (TEMP max)) l12 l13)
+     (LABEL l12)
+     (SEQ
+      (SEQ
+       (CJUMP (ESEQ (CALL_STMT 1 (NAME _Iisprime_bi) (TEMP a)) (TEMP _RV1)) l14
+        l15)
+       (LABEL l14)
+       (MOVE (TEMP largest) (TEMP a))
+       (LABEL l15))
+      (MOVE (TEMP a) (ADD (TEMP a) (CONST 1))))
+     (JUMP (NAME l11))
+     (LABEL l13))
+    (RETURN (TEMP largest)))))
+ (FUNC
+  _Imain_paai
+  (SEQ
+   (MOVE (TEMP args) (TEMP _ARG1))
+   (SEQ
+    (CALL_STMT
+     1
+     (NAME _Iprintln_pai)
+     (ESEQ
+      (SEQ
+       (SEQ
+        (MOVE
+         (TEMP t1)
+         (MEM
+          (SUB
+           (ESEQ (MOVE (TEMP t0) (NAME string_const1))
+            (ADD (TEMP t0) (CONST 8)))
+           (CONST 8))))
+        (MOVE
+         (TEMP t2)
+         (MEM
+          (SUB
+           (ESEQ
+            (CALL_STMT
+             1
+             (NAME _IunparseInt_aii)
+             (ESEQ
+              (CALL_STMT 1 (NAME _Ilargestprime_ii) (CONST 1000)) (TEMP _RV1)))
+            (TEMP _RV1))
+           (CONST 8))))
+        (MOVE (TEMP t3) (ADD (TEMP t1) (TEMP t2)))
+        (SEQ
+         (CALL_STMT 1 (NAME _xi_alloc)
+          (ADD (MUL (TEMP t3) (CONST 8)) (CONST 8)))
+         (MOVE (TEMP t4) (TEMP _RV1)))
+        (MOVE (MEM (TEMP t4)) (TEMP t3))
+        (MOVE (TEMP t4) (ADD (TEMP t4) (CONST 8))))
+       (SEQ
+        (MOVE (TEMP t5) (CONST 0))
+        (LABEL l16)
+        (CJUMP (LT (TEMP t5) (TEMP t1)) l17 l18)
+        (LABEL l17)
+        (MOVE
+         (MEM (ADD (MUL (CONST 8) (TEMP t5)) (TEMP t4)))
+         (MEM
+          (ADD
+           (MUL (CONST 8) (TEMP t5))
+           (ESEQ
+            (MOVE (TEMP t0) (NAME string_const1)) (ADD (TEMP t0) (CONST 8))))))
+        (MOVE (TEMP t5) (ADD (TEMP t5) (CONST 1)))
+        (JUMP (NAME l16))
+        (LABEL l18))
+       (SEQ
+        (MOVE (TEMP t6) (CONST 0))
+        (LABEL l19)
+        (CJUMP (LT (TEMP t6) (TEMP t2)) l20 l21)
+        (LABEL l20)
+        (MOVE
+         (MEM (ADD (MUL (CONST 8) (ADD (TEMP t6) (TEMP t1))) (TEMP t4)))
+         (MEM
+          (ADD
+           (MUL (CONST 8) (TEMP t6))
+           (ESEQ
+            (CALL_STMT
+             1
+             (NAME _IunparseInt_aii)
+             (ESEQ
+              (CALL_STMT 1 (NAME _Ilargestprime_ii) (CONST 1000)) (TEMP _RV1)))
+            (TEMP _RV1)))))
+        (MOVE (TEMP t6) (ADD (TEMP t6) (CONST 1)))
+        (JUMP (NAME l19))
+        (LABEL l21)))
+      (TEMP t4))))
+   (RETURN))))
