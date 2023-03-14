@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class ArrayValueLiteral extends Expr {
     private String raw;
+    private String escape;
     private ArrayList<Expr> values;
 
     public ArrayList<Expr> getValues() {
@@ -25,8 +26,9 @@ public class ArrayValueLiteral extends Expr {
         super(l, c);
         values = new ArrayList<>();
         this.raw = s;
-        for (char ch : s.toCharArray()) {
-            values.add(new IntLiteral(Character.toString(ch), l, c));
+        escape = StringEscapeUtils.unescapeJava(s);
+        for (char ch : escape.toCharArray()) {
+            values.add(new IntLiteral(ch, l, c));
         }
     }
 

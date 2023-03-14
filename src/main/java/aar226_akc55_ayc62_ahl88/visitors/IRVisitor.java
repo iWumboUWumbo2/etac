@@ -385,12 +385,8 @@ public class IRVisitor implements Visitor<IRNode>{
                 char c = escapeString.charAt(i);
                 res[i+1] = (int) c;
             }
-            IRData str =  new IRData(stringName,res);
+            IRData str =  new IRData(stringName,res); // we never use lmao
             string_consts.add(str);
-            String temp = nxtTemp();
-            return new IRESeq(new IRMove(new IRTemp(temp),new IRName(stringName)),
-                    new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(temp),new IRConst(8)));
-
         }
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
