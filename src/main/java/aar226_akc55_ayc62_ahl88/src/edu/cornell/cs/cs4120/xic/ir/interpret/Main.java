@@ -1,20 +1,9 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret;
 
+
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp.OpType;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCallStmt;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRMove;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRName;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRReturn;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRSeq;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.parse.IRLexer;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.parse.IRParser;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
@@ -114,7 +103,7 @@ public class Main {
                         new IRMove(new IRTemp("j"), new IRTemp(arg2)),
                         new IRReturn(
                                 new IRTemp("i"),
-                                new IRBinOp(OpType.MUL, new IRConst(2), new IRTemp("j"))));
+                                new IRBinOp(IRBinOp.OpType.MUL, new IRConst(2), new IRTemp("j"))));
         IRFuncDecl aFunc = new IRFuncDecl("_Ia_t2iiii", aBody);
 
         IRStmt bBody =
@@ -125,9 +114,9 @@ public class Main {
                         new IRMove(new IRTemp("y"), new IRTemp(ret2)),
                         new IRReturn(
                                 new IRBinOp(
-                                        OpType.ADD,
+                                        IRBinOp.OpType.ADD,
                                         new IRTemp("x"),
-                                        new IRBinOp(OpType.MUL, new IRConst(5), new IRTemp("y")))));
+                                        new IRBinOp(IRBinOp.OpType.MUL, new IRConst(5), new IRTemp("y")))));
         IRFuncDecl bFunc = new IRFuncDecl("b", bBody);
 
         IRCompUnit compUnit = new IRCompUnit("test");
