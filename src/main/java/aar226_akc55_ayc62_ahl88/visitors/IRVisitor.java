@@ -116,7 +116,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String head_pointer = nxtTemp();
         // CALL(NAME(malloc), size)
-        IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"), 1L, malloc_size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"), 1L, malloc_size);
 //        IRMove malloc_move = new IRMove(new IRTemp(head_pointer),alloc_call);
         IRSeq malloc_move = new IRSeq(alloc_call,new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
 
@@ -404,7 +404,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // CALL(NAME(malloc), size)
-        IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"),1L, size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"),1L, size);
 
         // reg[t] <- call malloc
         IRMove malloc_move = new IRMove(new IRTemp(t), new IRTemp("_RV1"));
@@ -833,7 +833,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // call alloc and move RV1 into val
-        IRCallStmt alloc_call1 = new IRCallStmt(new IRName("_eta_alloc"),1L, size1);
+        IRCallStmt alloc_call1 = new IRCallStmt(new IRName("_xi_alloc"),1L, size1);
         IRSeq malloc_move1 = new IRSeq(alloc_call1,new IRMove(new IRTemp(tm), new IRTemp("_RV1")));
 
         // move len into -1
@@ -952,6 +952,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String ta = nxtTemp();
         String ti = nxtTemp();
         String lok = nxtLabel();
+        String ler = nxtLabel();
         IRESeq sol = new IRESeq( // 1d array need loop for further
                 new IRSeq(
                         new IRMove(new IRTemp(ta), expr),
@@ -963,7 +964,10 @@ public class IRVisitor implements Visitor<IRNode>{
                                                 new IRBinOp(IRBinOp.OpType.SUB,
                                                         new IRTemp(ta),
                                                         new IRConst(8)))),
-                                lok,OUT_OF_BOUNDS), new IRLabel(lok)),
+                                lok,ler),
+                        new IRLabel(ler),
+                        new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>()),
+                        new IRLabel(lok)),
                 new IRMem(
                         new IRBinOp(IRBinOp.OpType.ADD,
                                 new IRTemp(ta),
