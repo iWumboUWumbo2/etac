@@ -37,7 +37,7 @@ import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
     private static final int WORD_BYTES = 8;
-    private static final String OUT_OF_BOUNDS = "_xi_out_of_bounds ";
+    private static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
     private int labelCnt;
     private int tempCnt;
     private int stringCnt;
@@ -385,12 +385,8 @@ public class IRVisitor implements Visitor<IRNode>{
                 char c = escapeString.charAt(i);
                 res[i+1] = (int) c;
             }
-            IRData str =  new IRData(stringName,res);
+            IRData str =  new IRData(stringName,res); // we never use lmao
             string_consts.add(str);
-            String temp = nxtTemp();
-            return new IRESeq(new IRMove(new IRTemp(temp),new IRName(stringName)),
-                    new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(temp),new IRConst(8)));
-
         }
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
@@ -956,6 +952,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String ta = nxtTemp();
         String ti = nxtTemp();
         String lok = nxtLabel();
+        String ler = nxtLabel();
         IRESeq sol = new IRESeq( // 1d array need loop for further
                 new IRSeq(
                         new IRMove(new IRTemp(ta), expr),
@@ -967,7 +964,10 @@ public class IRVisitor implements Visitor<IRNode>{
                                                 new IRBinOp(IRBinOp.OpType.SUB,
                                                         new IRTemp(ta),
                                                         new IRConst(8)))),
-                                lok,OUT_OF_BOUNDS), new IRLabel(lok)),
+                                lok,ler),
+                        new IRLabel(ler),
+                        new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>()),
+                        new IRLabel(lok)),
                 new IRMem(
                         new IRBinOp(IRBinOp.OpType.ADD,
                                 new IRTemp(ta),

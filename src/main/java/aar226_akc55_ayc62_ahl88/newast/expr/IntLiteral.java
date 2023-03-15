@@ -47,6 +47,14 @@ public class IntLiteral extends Expr{
         }
     }
 
+    public IntLiteral(char inputChar ,int l, int c) {
+        super(l, c);
+        rawChar = Character.toString(inputChar);
+        number = (int) inputChar;
+    }
+
+
+
     @Override
     public Type typeCheck(SymbolTable s) {
         nodeType = new Type(Type.TypeCheckingType.INT);

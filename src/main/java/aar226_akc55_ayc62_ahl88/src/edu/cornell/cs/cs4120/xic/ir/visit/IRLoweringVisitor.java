@@ -1,6 +1,6 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
-import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
+
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
@@ -30,13 +30,9 @@ class BasicBlock {
 }
 
 public class IRLoweringVisitor extends IRVisitor {
-    private static final int WORD_BYTES = 8;
-    private static final String OUT_OF_BOUNDS = "_xi_out_of_bounds";
     private int labelCnt;
     private int tempCnt;
 
-//    private ArrayList<BasicBlock> blocks;
-//    private ArrayList<BasicBlock> orderedBlocks;
 
     private String nxtLabel() {
         return String.format("lb%d", (labelCnt++));
@@ -85,61 +81,6 @@ public class IRLoweringVisitor extends IRVisitor {
 
 
         return noUnmarkedPredecessor;
-    }
-
-    private BasicBlock selectBlock(ArrayList<BasicBlock> blocks) {
-        boolean allMarked = true;
-        BasicBlock best = null;
-        for (BasicBlock block : blocks) {
-            if (!block.marked && hasNoUnmarkedPredecessors(block,blocks)) {
-                return block;
-            }
-            if (!block.marked){
-                best = block;
-                allMarked = false;
-            }
-        }
-//        System.out.println(allMarked);
-        if (allMarked){
-            return null;
-        }else{
-            return best;
-        }
-    }
-
-    private boolean greedyReordering(ArrayList<BasicBlock> unorderedBlocks, ArrayList<BasicBlock> orderedBlocks) {
-        BasicBlock blk = selectBlock(unorderedBlocks);
-
-        if (blk == null) {
-            return true;
-        }
-
-        while (!blk.marked) {
-            blk.marked = true;
-            orderedBlocks.add(blk);
-            boolean found = false;
-            for (int i : blk.successors) {
-                if (!unorderedBlocks.get(i).marked) {
-                    blk = unorderedBlocks.get(i);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found){
-                break;
-            }
-        }
-
-        return false;
-    }
-
-    private ArrayList<BasicBlock> reorderBlocks(ArrayList<BasicBlock> unorderedBlocks){
-        ArrayList<BasicBlock> orderedBlocks = new ArrayList<>();
-        while (!greedyReordering(unorderedBlocks, orderedBlocks)) {
-//            System.out.println("we fucked");
-        }
-
-        return orderedBlocks;
     }
     private void dfs(BasicBlock b, ArrayList<BasicBlock> res, ArrayList<BasicBlock> unorderedBlocks){
         b.marked = true;
@@ -266,9 +207,6 @@ public class IRLoweringVisitor extends IRVisitor {
         ArrayList<IRStmt> flatten = new ArrayList<>();
         for (IRStmt stmt: node.stmts()){
             if (stmt instanceof IRSeq seq){
-//                System.out.println("start");
-//                System.out.println(node);
-//                System.out.println(seq);
                 flatten.addAll(seq.stmts());
             }else{
                 flatten.add(stmt);
@@ -428,6 +366,12 @@ public class IRLoweringVisitor extends IRVisitor {
                     }else if (flabel.equals(il.name())){
                         IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
+                    }else{
+                        System.out.println("yikes somehow need double jump again idk?");
+                        IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
+                        curblk.statements.set(curblk.statements.size()-1,newCJump);
+                        curblk.statements.add(new IRJump(new IRName(flabel)));
+
                     }
                 }
             }
@@ -488,8 +432,6 @@ public class IRLoweringVisitor extends IRVisitor {
         }
 
         stmts.add(new IRCallStmt(node.target(), node.n_returns(), temps));
-//        stmts.add(new IRMove(new IRTemp(t), new IRTemp("_RV1")));
-//        System.out.println(new IRSeq(stmts));
 
         return new IRSeq(stmts);
     }

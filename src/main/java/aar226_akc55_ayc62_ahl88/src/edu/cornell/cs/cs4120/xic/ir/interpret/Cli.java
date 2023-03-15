@@ -1,9 +1,10 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret;
 
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.parse.IRLexer;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.parse.IRParser;
+
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.parse.IRLexer;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.parse.IRParser;
 
 import java.io.FileReader;
 
@@ -14,7 +15,7 @@ public class Cli {
      *  Usage: use the first command line argument to pass a filename
      */
     public static void main(String[] args) {
-        IRCompUnit ircli; 
+        IRCompUnit ircli;
         try (FileReader r = new FileReader(args[0])) {
             IRParser parser = new IRParser(new IRLexer(r), new IRNodeFactory_c());
             try {
