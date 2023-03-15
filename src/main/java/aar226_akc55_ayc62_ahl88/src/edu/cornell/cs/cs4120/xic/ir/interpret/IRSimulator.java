@@ -97,8 +97,8 @@ public class IRSimulator {
         libraryFunctions.add("_IparseInt_t2ibai");
         libraryFunctions.add("_IunparseInt_aii");
         // special declarations
-        libraryFunctions.add("_xi_alloc");
-        libraryFunctions.add("_xi_out_of_bounds");
+        libraryFunctions.add("_eta_alloc");
+        libraryFunctions.add("_eta_out_of_bounds");
         // other declarations
         libraryFunctions.add("_Iassert_pb");
 
@@ -255,8 +255,8 @@ public class IRSimulator {
             } else if (typeInName.charAt(0) == 't') {
                 StringBuilder number = new StringBuilder();
                 for (int i = 1;
-                        i < typeInName.length() && Character.isDigit(typeInName.charAt(i));
-                        i++) {
+                     i < typeInName.length() && Character.isDigit(typeInName.charAt(i));
+                     i++) {
                     number.append(typeInName.charAt(i));
                 }
                 numReturnVals = Integer.parseInt(number.toString());
@@ -305,82 +305,82 @@ public class IRSimulator {
         final List<Long> ret = new ArrayList<>();
         try {
             switch (name) {
-                    // io declarations
+                // io declarations
                 case "_Iprint_pai":
-                    {
-                        long ptr = args[0], size = read(ptr - ws);
-                        for (long i = 0; i < size; ++i) System.out.print((char) read(ptr + i * ws));
-                        break;
-                    }
+                {
+                    long ptr = args[0], size = read(ptr - ws);
+                    for (long i = 0; i < size; ++i) System.out.print((char) read(ptr + i * ws));
+                    break;
+                }
                 case "_Iprintln_pai":
-                    {
-                        long ptr = args[0], size = read(ptr - ws);
-                        for (long i = 0; i < size; ++i) System.out.print((char) read(ptr + i * ws));
-                        System.out.println();
-                        break;
-                    }
+                {
+                    long ptr = args[0], size = read(ptr - ws);
+                    for (long i = 0; i < size; ++i) System.out.print((char) read(ptr + i * ws));
+                    System.out.println();
+                    break;
+                }
                 case "_Ireadln_ai":
-                    {
-                        String line = inReader.readLine();
-                        int len = line.length();
-                        long ptr = malloc((len + 1) * ws);
-                        store(ptr, len);
-                        for (int i = 0; i < len; ++i) store(ptr + (i + 1) * ws, line.charAt(i));
-                        ret.add(ptr + ws);
-                        break;
-                    }
+                {
+                    String line = inReader.readLine();
+                    int len = line.length();
+                    long ptr = malloc((len + 1) * ws);
+                    store(ptr, len);
+                    for (int i = 0; i < len; ++i) store(ptr + (i + 1) * ws, line.charAt(i));
+                    ret.add(ptr + ws);
+                    break;
+                }
                 case "_Igetchar_i":
-                    {
-                        ret.add((long) inReader.read());
-                        break;
-                    }
+                {
+                    ret.add((long) inReader.read());
+                    break;
+                }
                 case "_Ieof_b":
-                    {
-                        ret.add((long) (inReader.ready() ? 0 : 1));
-                        break;
-                    }
-                    // conv declarations
+                {
+                    ret.add((long) (inReader.ready() ? 0 : 1));
+                    break;
+                }
+                // conv declarations
                 case "_IunparseInt_aii":
-                    {
-                        String line = String.valueOf(args[0]);
-                        int len = line.length();
-                        long ptr = malloc((len + 1) * ws);
-                        store(ptr, len);
-                        for (int i = 0; i < len; ++i) store(ptr + (i + 1) * ws, line.charAt(i));
-                        ret.add(ptr + ws);
-                        break;
-                    }
+                {
+                    String line = String.valueOf(args[0]);
+                    int len = line.length();
+                    long ptr = malloc((len + 1) * ws);
+                    store(ptr, len);
+                    for (int i = 0; i < len; ++i) store(ptr + (i + 1) * ws, line.charAt(i));
+                    ret.add(ptr + ws);
+                    break;
+                }
                 case "_IparseInt_t2ibai":
-                    {
-                        StringBuffer buf = new StringBuffer();
-                        long ptr = args[0], size = read(ptr - ws);
-                        for (int i = 0; i < size; ++i) buf.append((char) read(ptr + i * ws));
-                        long result = 0, success = 1;
-                        try {
-                            result = Integer.parseInt(buf.toString());
-                        } catch (NumberFormatException e) {
-                            success = 0;
-                        }
-                        ret.add(result);
-                        ret.add(success);
-                        break;
+                {
+                    StringBuffer buf = new StringBuffer();
+                    long ptr = args[0], size = read(ptr - ws);
+                    for (int i = 0; i < size; ++i) buf.append((char) read(ptr + i * ws));
+                    long result = 0, success = 1;
+                    try {
+                        result = Integer.parseInt(buf.toString());
+                    } catch (NumberFormatException e) {
+                        success = 0;
                     }
-                    // special declarations
-                case "_xi_alloc":
-                    {
-                        ret.add(calloc(args[0]));
-                        break;
-                    }
-                case "_xi_out_of_bounds":
-                    {
-                        throw new OutOfBoundTrap("Out of bounds!");
-                    }
-                    // other declarations
+                    ret.add(result);
+                    ret.add(success);
+                    break;
+                }
+                // special declarations
+                case "_eta_alloc":
+                {
+                    ret.add(calloc(args[0]));
+                    break;
+                }
+                case "_eta_out_of_bounds":
+                {
+                    throw new OutOfBoundTrap("Out of bounds!");
+                }
+                // other declarations
                 case "_Iassert_pb":
-                    {
-                        if (args[0] != 1) throw new Trap("Assertion error!");
-                        break;
-                    }
+                {
+                    if (args[0] != 1) throw new Trap("Assertion error!");
+                    break;
+                }
                 default:
                     throw new InternalCompilerError("Unsupported library function: " + name);
             }

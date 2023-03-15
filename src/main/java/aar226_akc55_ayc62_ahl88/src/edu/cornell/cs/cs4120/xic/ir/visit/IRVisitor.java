@@ -21,20 +21,26 @@ public abstract class IRVisitor implements Copy<IRVisitor> {
     public IRNode visit(IRNode parent, IRNode n) {
         if (n == null) return null;
 
-        /* Allow the visitor implementation to hijack traversal of n */
+        // Allow the visitor implementation to hijack traversal of n
         IRNode overrideValue = override(parent, n);
         if (overrideValue != null) return overrideValue;
 
-        IRVisitor v_ = enter(parent, n);
-        if (v_ == null) throw new InternalCompilerError("IRVisitor.enter() returned null!");
+        // Possibly establish a new visitor for handling this node and its descendants
+        IRVisitor v2 = enter(parent, n);
+        if (v2 == null) throw new InternalCompilerError("IRVisitor.enter() returned null!");
 
-        IRNode n_ = n.visitChildren(v_);
-        if (n_ == null) throw new InternalCompilerError("IRVisitor.visitChildren() returned null!");
+        // Construct a node in which the children have been visited and
+        // possibly replaced.
+        IRNode n2 = n.visitChildren(v2);
+        if (n2 == null) throw new InternalCompilerError("IRVisitor.visitChildren() returned null!");
 
-        n_ = leave(parent, n, n_, v_);
-        if (n_ == null) throw new InternalCompilerError("IRVisitor.leave() returned null!");
+        // Complete the work of visiting this node, possibly building an
+        // entirely new node that should replace the original one. What this
+        // does is dependent on the particular visitor.
+        IRNode n3 = leave(parent, n, n2, v2);
+        if (n3 == null) throw new InternalCompilerError("IRVisitor.leave() returned null!");
 
-        return n_;
+        return n3;
     }
 
     /** Recursively traverse the IR subtree rooted at {@code n} */
@@ -62,19 +68,19 @@ public abstract class IRVisitor implements Copy<IRVisitor> {
     }
 
     /**
-     * Called after finishing traversal of the subtree rooted at {@code n}. When {@link
-     * #enter(IRNode, IRNode)} creates a new visitor to be used on the subtree, the old visitor
-     * still receives the call to {@code leave()} -- that is, {@code leave()} always executed the
-     * same number of times as {@link #enter(IRNode, IRNode)}. This node provides the final
-     * opportunity of placing an updated node in the output AST.
+     * This method typically does the "real work" of a visitor, which can be
+     * done by calling a method on the node. It is called after finishing
+     * traversal of the subtree rooted at {@code n}, so it receives an input
+     * node in which the children have already been visited and possibly replaced.
      *
      * @param parent The parent AST node of {@code n} or {@code null} when it is the root.
      * @param n The original node in the input AST
-     * @param n_ The node returned by {@link IRNode#visitChildren(IRVisitor)}
-     * @param v_ The new node visitor created by {@link #enter(IRNode, IRNode)}, or {@code this}.
+     * @param n2 The node returned by {@link IRNode#visitChildren(IRVisitor)}, which should
+     *    look like n except that the children have been visited.
+     * @param v2 The new node visitor created by {@link #enter(IRNode, IRNode)}, or {@code this}.
      */
-    protected IRNode leave(IRNode parent, IRNode n, IRNode n_, IRVisitor v_) {
-        return n_;
+    protected IRNode leave(IRNode parent, IRNode n, IRNode n2, IRVisitor v2) {
+        return n2;
     }
 
     /**
@@ -85,7 +91,7 @@ public abstract class IRVisitor implements Copy<IRVisitor> {
      * @return a clone of v if v == this, or v otherwise
      */
     protected <V extends IRVisitor> V copyIfNeeded(V v) {
-        if (v == this) return aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.Copy.Util.copy(v);
+        if (v == this) return Copy.Util.copy(v);
         return v;
     }
 

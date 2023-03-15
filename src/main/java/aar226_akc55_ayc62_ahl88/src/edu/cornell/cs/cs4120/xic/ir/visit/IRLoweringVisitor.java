@@ -30,7 +30,6 @@ class BasicBlock {
 }
 
 public class IRLoweringVisitor extends IRVisitor {
-    private static final String OUT_OF_BOUNDS = "_xi_out_of_bounds";
     private int labelCnt;
     private int tempCnt;
 
