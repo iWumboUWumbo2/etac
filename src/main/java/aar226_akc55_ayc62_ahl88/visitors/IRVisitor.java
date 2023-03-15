@@ -37,7 +37,7 @@ import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
     private static final int WORD_BYTES = 8;
-    private static final String OUT_OF_BOUNDS = "_eta_out_of_bounds ";
+    private static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
     private int labelCnt;
     private int tempCnt;
     private int stringCnt;
@@ -116,7 +116,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String head_pointer = nxtTemp();
         // CALL(NAME(malloc), size)
-        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"), 1L, malloc_size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"), 1L, malloc_size);
 //        IRMove malloc_move = new IRMove(new IRTemp(head_pointer),alloc_call);
         IRSeq malloc_move = new IRSeq(alloc_call,new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
 
@@ -404,7 +404,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // CALL(NAME(malloc), size)
-        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"),1L, size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"),1L, size);
 
         // reg[t] <- call malloc
         IRMove malloc_move = new IRMove(new IRTemp(t), new IRTemp("_RV1"));
@@ -833,7 +833,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // call alloc and move RV1 into val
-        IRCallStmt alloc_call1 = new IRCallStmt(new IRName("_xi_alloc"),1L, size1);
+        IRCallStmt alloc_call1 = new IRCallStmt(new IRName("_eta_alloc"),1L, size1);
         IRSeq malloc_move1 = new IRSeq(alloc_call1,new IRMove(new IRTemp(tm), new IRTemp("_RV1")));
 
         // move len into -1
