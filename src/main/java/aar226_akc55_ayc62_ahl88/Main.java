@@ -395,13 +395,14 @@ public class Main {
 
         Option dirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
-        Option optOpt   = new Option ("O", true,
+//        Option optOpt   = new Option ("O", true,
+//                " Disable optimizations.");
+        Option optOpt   = new Option ("O", false,
                 " Disable optimizations.");
-
         Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
 
-        optOpt.setOptionalArg(true);
+//        optOpt.setOptionalArg(true);
 
         options.addOption(helpOpt);
         options.addOption(lexOpt);
@@ -418,7 +419,8 @@ public class Main {
         HelpFormatter formatter = new HelpFormatter();
 
         opts = new Optimizations();
-        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+//        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING);
 
         isOutputDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
         outputDirectory = inputDirectory = libpathDirectory = Paths.get("").toAbsolutePath().toString();
@@ -438,26 +440,27 @@ public class Main {
             }
 
             if (cmd.hasOption("O")) {
+                opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING);
 //                System.out.println(opts);
 
-                int level;
-                try {
-                    level = Integer.parseInt(cmd.getOptionValue("O"));
-                }
-                catch (Exception e) {
-                    level = 3;
-                }
-
-                switch (level) {
-                    case 0:
-                        opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
-                        break;
-                    case 1:
-                        opts.clearOptimizations(OptimizationTypes.IR_LOWERING);
-                        break;
-                    default:
-                        break;
-                }
+//                int level;
+//                try {
+//                    level = Integer.parseInt(cmd.getOptionValue("O"));
+//                }
+//                catch (Exception e) {
+//                    level = 3;
+//                }
+//
+//                switch (level) {
+//                    case 0:
+//                        opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+//                        break;
+//                    case 1:
+//                        opts.clearOptimizations(OptimizationTypes.IR_LOWERING);
+//                        break;
+//                    default:
+//                        break;
+//                }
 
 //                System.out.println(opts);
             }
