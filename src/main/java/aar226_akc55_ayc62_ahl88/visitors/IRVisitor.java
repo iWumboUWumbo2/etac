@@ -967,7 +967,8 @@ public class IRVisitor implements Visitor<IRNode>{
                                 lok,ler),
                         new IRLabel(ler),
                         new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>()),
-                        new IRLabel(lok)),
+                        new IRLabel(lok)
+                ),
                 new IRMem(
                         new IRBinOp(IRBinOp.OpType.ADD,
                                 new IRTemp(ta),
