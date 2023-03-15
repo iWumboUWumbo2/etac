@@ -32,8 +32,8 @@ main(args : int[][]) {
     c : int[] = {2,3,8}
     d : int[] = {4,6,9}
 
-    c : int[] = {1,3,5,7,9,11}
-    d : int[] = {2,4,6,8,10}
+    e : int[] = {1,3,5,7,9,11}
+    f : int[] = {2,4,6,8,10}
 
     x : int[] = mergeTwoLists(a,b); //1,1,2,2,3,4
     y : int[] = mergeTwoLists(c,d); //2,3,4,6,8,9
