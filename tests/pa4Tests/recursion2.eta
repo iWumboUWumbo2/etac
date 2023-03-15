@@ -1,4 +1,4 @@
-deleteFirst(list : int[]){
+deleteFirst(list : int[]) : int[] {
     counter : int = 1
     temp : int[] = {};
     while (counter < length(list)) {

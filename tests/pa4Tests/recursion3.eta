@@ -1,0 +1,38 @@
+deleteFirst(list : int[]) : int[] {
+    counter : int = 1
+    temp : int[] = {};
+    while (counter < length(list)) {
+        temp = temp + {list[counter]};
+    }
+    return temp
+}
+
+deleteLast(list : int[]) : int[]{
+    counter : int = 0
+    temp : int[] = {};
+    while (counter < length(list)-1) {
+        temp = temp + {list[counter]};
+    }
+    return temp
+}
+
+reorderList(list : int[], first : bool) : int[] {
+    if (length(list) == 1) {
+        return list
+    }
+
+    if (first) {
+        return {list[0]} + reorderList(deleteFirst(list), false);
+    } else {
+        return {list[length(list) - 1]} + reorderList(deleteLast(list), false);
+    }
+}
+
+main(args: int[][]){
+    //L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
+    a : int[] = {1,2,3,4,5};
+    b : int[] = {1,2,3,4};
+
+    c : int[] = reorderList(a, true);
+    d : int[] = reorderList(b, true);
+}
