@@ -6,8 +6,19 @@ $gradle clean
 #rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java
 #rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
 #jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/etalex.flex
-jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex &&
-java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup &&
-java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup &&
+if [ "$1" = "l" ]; then
+  # run command for "a"
+  jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex
+elif [ "$1" = "p" ]; then
+  # run command for "b"
+  java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup &&
+  java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup
+elif [ "$1" = "lp" ]; then
+  # run command for "b"
+  jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parseLex.flex &&
+  java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eta.cup &&
+  java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/eti.cup
+fi
+
 $gradle --no-daemon -b build.gradle shadowJar
 
