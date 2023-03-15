@@ -276,6 +276,15 @@ public class Main {
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
 //                    filename.substring(0, filename.length() - 2)
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
+//                    {
+//                        StringWriter out = new StringWriter();
+//                        PrintWriter pw = new PrintWriter(out);
+//
+//                        CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
+//                        ir.printSExp(printer);
+//                        printer.close();
+//                        writeOutput(filename, out.toString(), "irnoLower");
+//                    }
                     // IR constant-folding checker demo
                     {
                         CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
@@ -358,7 +367,6 @@ public class Main {
 
             IRSimulator sim = new IRSimulator((IRCompUnit) ir);
             sim.call("_Imain_paai", 0);
-
             ir.printSExp(printer);
 
             printer.close();

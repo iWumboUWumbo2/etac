@@ -89,7 +89,6 @@ public class IRLoweringVisitor extends IRVisitor {
         Stack<Integer> stack = new Stack<>();
         stack.add(b.ind);
         while (!stack.isEmpty()){
-//            System.out.println("IM HERE");
             int curNode = stack.pop();
             BasicBlock curBlock = unorderedBlocks.get(curNode);
             curBlock.marked = true;
@@ -100,6 +99,7 @@ public class IRLoweringVisitor extends IRVisitor {
                     visit[succ] = true;
                     stack.add(succ);
                     foundAnother = true;
+                    break;
                 }
             }
             if (!foundAnother){
@@ -124,7 +124,9 @@ public class IRLoweringVisitor extends IRVisitor {
             }
             if (!b.marked){
                 allMarked = false;
-                curBlock = b;
+                if (curBlock == null){
+                    curBlock = b;
+                }
             }
         }
         if (!allMarked){
@@ -198,7 +200,6 @@ public class IRLoweringVisitor extends IRVisitor {
                 compareBlocks(bj, bi);
             }
         }
-
         return blocks;
     }
     // Lower each statment then flatten all sequences
@@ -371,9 +372,15 @@ public class IRLoweringVisitor extends IRVisitor {
                         IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
                         curblk.statements.add(new IRJump(new IRName(flabel)));
-
                     }
                 }
+            }
+            BasicBlock lastBlock = orderedBlocks.get(orderedBlocks.size()-1);
+            IRStmt lastStmt = lastBlock.statements.get(lastBlock.statements.size()-1);
+            if (lastStmt instanceof IRCJump cjmp){
+                IRCJump newCJump = new IRCJump(cjmp.cond(), cjmp.trueLabel(),null);
+                lastBlock.statements.set(lastBlock.statements.size()-1,newCJump);
+                lastBlock.statements.add(new IRJump(new IRName(cjmp.falseLabel())));
             }
             for (BasicBlock b: orderedBlocks){
                 for (IRStmt s: b.statements){
