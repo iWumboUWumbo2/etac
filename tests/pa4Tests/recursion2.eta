@@ -8,7 +8,7 @@ deleteFirst(list : int[]) : int[] {
     return temp
 }
 
-listToInt(list : int): int[] {
+listToInt(list : int[]): int {
 	if (length(list) == 0) {
         return 0
 	}
@@ -16,10 +16,10 @@ listToInt(list : int): int[] {
 }
 
 
-int_to_linked_list(num: int) {
+int_to_linked_list(num: int) : int[] {
     res : int[] = {num % 10}
     num = num / 10 //should be int divide here
-    while (num > 0)[
+    while (num > 0) {
         res = res + {num % 10}
         num = num / 10 //should be int divide here
     }
@@ -33,14 +33,14 @@ addTwoNumbers(l1: int[], l2: int[]):int[] {
 }
 
 main (args : int[][]) {
-    a : int = [2,4,3]
-    b : int = [5,6,4]
-    c : int = [9,9,9,9,9,9,9]
-    d : int = [9,9,9,9]
-    e : int = [0]
-    f : int = [1]
+    a : int[] = {2,4,3}
+    b : int[] = {5,6,4}
+    c : int[] = {9,9,9,9,9,9,9}
+    d : int[] = {9,9,9,9}
+    e : int[] = {0}
+    f : int[] = {1}
 
-    f : int = addTwoNumbers(a,b); // 342 + 465 = 807 = [7,0,8]
-    g : int = addTwoNumbers(c,d) // [8,9,9,9,0,0,0,1]
-    h : int = addTwoNumbers(e,f); // [1]
+    g : int[] = addTwoNumbers(a,b); // 342 + 465 = 807 = [7,0,8]
+    h : int[] = addTwoNumbers(c,d) // [8,9,9,9,0,0,0,1]
+    i : int[] = addTwoNumbers(e,f); // [1]
 }
