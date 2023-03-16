@@ -1,3 +1,5 @@
+use io
+use conv
 isPalindrome(s: int[]): bool {
     l : int =  0
     r : int = length(s) - 1
@@ -14,13 +16,13 @@ isPalindrome(s: int[]): bool {
 }
 
 main(args: int[][]){
-    a : int[] = "abababababababa"; // true
-    b: int[]= "amanaplanacanalpanama"; // true
-    c : int[] = " " //true
     d : int[] = "raceacar" // false
-
-    e : bool = isPalindrome(a);
-    f : bool = isPalindrome(b);
-    g : bool = isPalindrome(c);
     h : bool = isPalindrome(d);
+    if (h){
+        println("YES")
+        println(d)
+    }else{
+        println("NO")
+        println(d)
+    }
 }

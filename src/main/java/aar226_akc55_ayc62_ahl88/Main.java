@@ -11,6 +11,8 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.runtime.Symbol;
@@ -274,7 +276,28 @@ public class Main {
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
 //                    filename.substring(0, filename.length() - 2)
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
+//                    {
+//                        StringWriter out = new StringWriter();
+//                        PrintWriter pw = new PrintWriter(out);
+//
+//                        CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
+//                        ir.printSExp(printer);
+//                        printer.close();
+//                        writeOutput(filename, out.toString(), "irnoLower");
+//                    }
+                    // IR constant-folding checker demo
+                    {
+                        CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
+                        System.out.print("Constant-folded?: ");
+                        System.out.println(cv.visit(ir));
+                    }
+
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
+                    {
+                        CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
+                        System.out.print("Canonical?: ");
+                        System.out.println(cv.visit(ir));
+                    }
                     return ir;
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
@@ -344,7 +367,6 @@ public class Main {
 
             IRSimulator sim = new IRSimulator((IRCompUnit) ir);
             sim.call("_Imain_paai", 0);
-
             ir.printSExp(printer);
 
             printer.close();
@@ -395,13 +417,14 @@ public class Main {
 
         Option dirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
-        Option optOpt   = new Option ("O", true,
+//        Option optOpt   = new Option ("O", true,
+//                " Disable optimizations.");
+        Option optOpt   = new Option ("O", false,
                 " Disable optimizations.");
-
         Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
 
-        optOpt.setOptionalArg(true);
+//        optOpt.setOptionalArg(true);
 
         options.addOption(helpOpt);
         options.addOption(lexOpt);
@@ -418,7 +441,8 @@ public class Main {
         HelpFormatter formatter = new HelpFormatter();
 
         opts = new Optimizations();
-        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+//        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
+        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING);
 
         isOutputDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
         outputDirectory = inputDirectory = libpathDirectory = Paths.get("").toAbsolutePath().toString();
@@ -438,28 +462,7 @@ public class Main {
             }
 
             if (cmd.hasOption("O")) {
-//                System.out.println(opts);
-
-                int level;
-                try {
-                    level = Integer.parseInt(cmd.getOptionValue("O"));
-                }
-                catch (Exception e) {
-                    level = 3;
-                }
-
-                switch (level) {
-                    case 0:
-                        opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
-                        break;
-                    case 1:
-                        opts.clearOptimizations(OptimizationTypes.IR_LOWERING);
-                        break;
-                    default:
-                        break;
-                }
-
-//                System.out.println(opts);
+                opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING);
             }
 
             if (cmd.hasOption("sourcepath")) {
