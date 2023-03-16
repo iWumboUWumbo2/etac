@@ -3,6 +3,7 @@ deleteFirst(list : int[]) : int[] {
     temp : int[] = {};
     while (counter < length(list)) {
         temp = temp + {list[counter]};
+        counter = counter + 1;
     }
     return temp
 }
@@ -17,10 +18,10 @@ listToInt(list : int): int[] {
 
 int_to_linked_list(num: int) {
     res : int[] = {num % 10}
-    num = num // 10
+    num = num / 10 //should be int divide here
     while (num > 0)[
         res = res + {num % 10}
-        num = num // 10
+        num = num / 10 //should be int divide here
     }
     return res;
 }
