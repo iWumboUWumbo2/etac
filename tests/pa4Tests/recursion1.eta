@@ -1,3 +1,5 @@
+use io
+use conv
 deleteFirst(list : int[]) : int[] {
     counter : int = 1
     temp : int[] = {};
@@ -16,7 +18,6 @@ mergeTwoLists(list1 : int[], list2 : int[]) : int[] {
     if(length(list2) == 0) {
         return list1;
     }
-
     if (list1[0] < list2[0]) {
         return {list1[0]} + mergeTwoLists(deleteFirst(list1),list2);
     }
