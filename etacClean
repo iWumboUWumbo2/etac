@@ -4,7 +4,6 @@ find $DIR -name "*.lexed" -exec rm -r {} \;
 find $DIR -name "*.parsed" -exec rm -r {} \;
 find $DIR -name "*.typed" -exec rm -r {} \;
 find $DIR -name "*.ir" -exec rm -r {} \;
-find $DIR -name "*.irnoLower" -exec rm -r {} \;
 #rm  -r $DIR/*.lexed
 #rm  -r $DIR/*.parsed
 #rm  -r $DIR/*.typed
