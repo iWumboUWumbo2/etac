@@ -45,10 +45,25 @@ main (args : int[][]) {
 
     g : int[] = addTwoNumbers(a,b); // 342 + 465 = 807 = [7,0,8]
     h : int[] = addTwoNumbers(c,d) // [8,9,9,9,0,0,0,1]
-    i : int[] = addTwoNumbers(e,f); // [1]
+    lk : int[] = addTwoNumbers(e,f); // [1]
 
-    println(f);
-    println(g);
-    println(h);
+    i:int = 0;
+    while (i < length(g)){
+        print(unparseInt(g[i]) + " ")
+        i = i+1
+    }
+    println("");
+    i = 0;
+    while (i < length(h)){
+        print(unparseInt(h[i]) + " ")
+        i = i+1
+    }
+    println("");
+    i = 0;
+    while (i < length(lk)){
+        print(unparseInt(lk[i]) + " ")
+        i = i+1
+    }
+    println("");
 
 }
