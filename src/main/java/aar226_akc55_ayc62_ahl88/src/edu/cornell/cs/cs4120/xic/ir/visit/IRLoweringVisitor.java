@@ -193,18 +193,18 @@ public class IRLoweringVisitor extends IRVisitor {
                     blocks.add(curBlock);
                     ind++;
                     curBlock = new BasicBlock(ind);
-                    if (stmt instanceof IRLabel il){
-                        preBlock.successors.add(ind);
+                    if (stmt instanceof IRLabel il){ // in case of fall through Label add a jump on purpose
+                        preBlock.successors.add(ind); // to maintain correctness
                         curBlock.predecessors.add(preBlock.ind);
                         curBlock.destLabels.add(il.name());
                         curBlock.statements.add(il);
                         preBlock.statements.add(new IRJump(new IRName(il.name())));
                     }
-                }else if (stmt instanceof IRLabel il){
+                }else if (stmt instanceof IRLabel il){ // prev block was empty so we just continue this block
                     curBlock.statements.add(il);
                     curBlock.destLabels.add(il.name());
                 }else{
-                    throw new InternalCompilerError("BRUH");
+                    throw new InternalCompilerError("BRUH"); // pls try to get
                 }
             }else{
                 curBlock.statements.add(stmt);
