@@ -1,22 +1,55 @@
+use io
+use conv
+
+print_int(i : int) {
+    println(unparseInt(i));
+}
+
+print_bool(b : bool) {
+    if (b) {
+        println("true");
+    }
+    else {
+        println("false");
+    }
+}
+
 main(args: int[][]) {
   a:int = 2+2;
+  print_int(a);
   a = -14;
+  print_int(a);
   a = -9223372036854775808;
+  print_int(a);
   a = 4294967296 *>> 4294967296
+  print_int(a);
   //a = 3/0
   a = 3/2
+  print_int(a);
   a = 3 - 5
+  print_int(a);
   a = 6%4
+  print_int(a);
   a = 69*69
+  print_int(a);
 
   b:bool = 2 < 1;
+  print_bool(b);
   b = 2 <= 1;
+  print_bool(b);
   b = 2 > 1;
+  print_bool(b);
   b = 2 >= 1;
+  print_bool(b);
   b = 2 == 2;
+  print_bool(b);
 
   b = "peepee" == "poopoo"; // shouldn't const fold
+  print_bool(b);
   b = true | false;
+  print_bool(b);
   b = true & false;
+  print_bool(b);
   b = !true;
+  print_bool(b);
 }

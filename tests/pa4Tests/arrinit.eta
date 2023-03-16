@@ -1,7 +1,12 @@
+use io
+use conv
+
 main(args: int[][]) {
     a:int = 3;
     x:int[1][1];
     y:int[a]
     z:int[a][2];
     d:int[][];
+
+    print(unparseInt(r));
 }
