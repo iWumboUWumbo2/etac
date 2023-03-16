@@ -1,3 +1,6 @@
+use io
+use conv
+
 deleteFirst(list : int[]) : int[] {
     counter : int = 1
     temp : int[] = {};
@@ -42,4 +45,8 @@ main (args : int[][]) {
     f : int = addTwoNumbers(a,b); // 342 + 465 = 807 = [7,0,8]
     g : int = addTwoNumbers(c,d) // [8,9,9,9,0,0,0,1]
     h : int = addTwoNumbers(e,f); // [1]
+
+    println(f);
+    println(g);
+    println(h);
 }

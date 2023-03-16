@@ -1,3 +1,6 @@
+use io
+use conv
+
 deleteFirst(list : int[]) : int[] {
     counter : int = 1
     temp : int[] = {};
@@ -35,4 +38,7 @@ main(args: int[][]){
 
     c : int[] = reorderList(a, true);
     d : int[] = reorderList(b, true);
+
+    println(c);
+    println(d);
 }
