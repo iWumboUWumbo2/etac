@@ -3,6 +3,7 @@ deleteFirst(list : int[]) : int[] {
     temp : int[] = {};
     while (counter < length(list)) {
         temp = temp + {list[counter]};
+        counter = counter + 1;
     }
     return temp
 }
