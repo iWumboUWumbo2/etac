@@ -100,10 +100,15 @@ public class IRVisitor implements Visitor<IRNode>{
         String size1 = nxtTemp();
         String size2 = nxtTemp();
         String size3 = nxtTemp();
+
+        String savedire1 = nxtTemp();
+        String savedire2 = nxtTemp();
+        IRMove calc1 = new IRMove(new IRTemp(savedire1),ire1);
+        IRMove calc2 = new IRMove(new IRTemp(savedire2),ire2);
         IRMove get_size1 = new IRMove(new IRTemp(size1), new IRMem( //store size1
-                new IRBinOp(IRBinOp.OpType.SUB, ire1, new IRConst(WORD_BYTES))));
+                new IRBinOp(IRBinOp.OpType.SUB, new IRTemp(savedire1), new IRConst(WORD_BYTES))));
         IRMove get_size2 = new IRMove(new IRTemp(size2), new IRMem( // store size2
-                new IRBinOp(IRBinOp.OpType.SUB, ire2, new IRConst(WORD_BYTES))));
+                new IRBinOp(IRBinOp.OpType.SUB,new IRTemp(savedire2), new IRConst(WORD_BYTES))));
         IRMove get_size3 = new IRMove(new IRTemp(size3), // size3 <= size1 + size2
                 new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(size1), new IRTemp(size2)));
 
@@ -116,7 +121,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String head_pointer = nxtTemp();
         // CALL(NAME(malloc), size)
-        IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"), 1L, malloc_size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"), 1L, malloc_size);
 //        IRMove malloc_move = new IRMove(new IRTemp(head_pointer),alloc_call);
         IRSeq malloc_move = new IRSeq(alloc_call,new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
 
@@ -127,7 +132,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRBinOp add_8 = new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(head_pointer), new IRConst(WORD_BYTES));
         IRMove inc_pointer_to_head = new IRMove(new IRTemp(head_pointer),add_8);
         // do all the top level shit first
-        IRSeq top_level_Order = new IRSeq(get_size1,get_size2,get_size3,malloc_move,move_len,inc_pointer_to_head);
+        IRSeq top_level_Order = new IRSeq(calc1,calc2,get_size1,get_size2,get_size3,malloc_move,move_len,inc_pointer_to_head);
 
         /* START LOOP 1 */
         // now time to recrusively alloc
@@ -152,7 +157,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRMem rightMem = new IRMem(
                 new IRBinOp(IRBinOp.OpType.ADD,
                         new IRBinOp(IRBinOp.OpType.MUL,new IRConst(WORD_BYTES),new IRTemp(counter)),
-                        ire1)
+                        new IRTemp(savedire1))
         );
 
         IRMove load_element = new IRMove(leftMem, rightMem);
@@ -189,7 +194,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRMem rightMem2 = new IRMem(
                 new IRBinOp(IRBinOp.OpType.ADD,
                         new IRBinOp(IRBinOp.OpType.MUL,new IRConst(WORD_BYTES),new IRTemp(counter2)),
-                        ire2)
+                        new IRTemp(savedire2))
         );
 
         IRMove load_element2 = new IRMove(leftMem2, rightMem2);
@@ -404,7 +409,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // CALL(NAME(malloc), size)
-        IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"),1L, size);
+        IRCallStmt alloc_call = new IRCallStmt(new IRName("_xi_alloc"),1L, size);
 
         // reg[t] <- call malloc
         IRMove malloc_move = new IRMove(new IRTemp(t), new IRTemp("_RV1"));
@@ -833,7 +838,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         // call alloc and move RV1 into val
-        IRCallStmt alloc_call1 = new IRCallStmt(new IRName("_eta_alloc"),1L, size1);
+        IRCallStmt alloc_call1 = new IRCallStmt(new IRName("_xi_alloc"),1L, size1);
         IRSeq malloc_move1 = new IRSeq(alloc_call1,new IRMove(new IRTemp(tm), new IRTemp("_RV1")));
 
         // move len into -1

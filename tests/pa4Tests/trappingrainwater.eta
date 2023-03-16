@@ -1,3 +1,5 @@
+use io
+use conv
 trap(height:int[]): int {
     leftToRight:int[length(height)]
     rightToLeft:int[length(height)]
@@ -55,5 +57,7 @@ main(args:int[][]){
     b : int[] = {4,2,0,3,2,5}
 
     c : int = trap(a)
+    println(unparseInt(c));
     d : int = trap(b)
+    println(unparseInt(d));
 }
