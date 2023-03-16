@@ -247,50 +247,6 @@ public class IRLoweringVisitor extends IRVisitor {
         return blocks;
 
     }
-//    private ArrayList<BasicBlock> createBasicBlocksAndGraph(IRSeq body){
-//        int ind = 0;
-//        ArrayList<BasicBlock> blocks = new ArrayList<>();
-//        BasicBlock dummy = new BasicBlock(ind);
-//        ind++;
-//        String lb = nxtLabel();
-//        dummy.statements.add(new IRJump(new IRName("dummy_head" + lb)));
-//        dummy.successors.add(1);
-//        blocks.add(dummy);
-//        BasicBlock curBlock = new BasicBlock(ind);
-//        curBlock.predecessors.add(0);
-//        curBlock.statements.add(new IRLabel("dummy_head" + lb));
-//        for (IRStmt stmt: body.stmts()){
-//            curBlock.statements.add(stmt);
-//            if (stop(stmt)) {
-//                if (stmt instanceof IRJump jmp) {
-//                    String destName = ((IRName) jmp.target()).name();
-//                    curBlock.originLabels.add(destName);
-//                }
-//                else if (stmt instanceof IRCJump cjmp) {
-//                    curBlock.originLabels.add(cjmp.trueLabel());
-//                    curBlock.originLabels.add(cjmp.falseLabel());
-//                }
-//                blocks.add(curBlock);
-//                ind++;
-//                curBlock = new BasicBlock(ind);
-//            }
-//            if (stmt instanceof IRLabel label) {
-//                curBlock.destLabels.add(label.name());
-//            }
-//        }
-//        if (curBlock.statements.size() != 0) {
-//            blocks.add(curBlock);
-//        }
-//
-//        for (int i = 0; i < blocks.size(); i++) {
-//            for (int j = i; j < blocks.size(); j++) {
-//                BasicBlock bi = blocks.get(i), bj = blocks.get(j);
-//                compareBlocks(bi, bj);
-//                compareBlocks(bj, bi);
-//            }
-//        }
-//        return blocks;
-//    }
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
 //        System.out.println(node);
@@ -509,6 +465,9 @@ public class IRLoweringVisitor extends IRVisitor {
                 }
             }
             orderedBlocks = cleanBlocks;
+//            for (BasicBlock b: orderedBlocks){
+//                System.out.println(b.statements);
+//            }
 //            for (BasicBlock b: orderedBlocks){
 //                for (IRStmt s: b.statements){
 //                        orderedStatements.add(s);
