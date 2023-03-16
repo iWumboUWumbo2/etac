@@ -1,3 +1,5 @@
+use io
+use conv
 // Requires: the array a of length n>0 is in ascending sorted order.
 // Ensures: If x is in the array, return valid index i such that a[i]=x.
 //          Otherwise, return an arbitrary index in 0..n-1.
@@ -16,4 +18,8 @@ binary_search(a: int[], x: int) : int {
         else r = m
     }
     return l
+}
+
+main(args:int[][]) {
+    println(unparseInt(binary_search({1,2,3,5,6,7,8}, 5)));
 }

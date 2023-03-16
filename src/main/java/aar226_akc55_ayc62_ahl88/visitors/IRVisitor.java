@@ -767,8 +767,8 @@ public class IRVisitor implements Visitor<IRNode>{
             IRStmt first = booleanAsControlFlow(e1,lt,l1);
             IRStmt second = booleanAsControlFlow(e2,lt,lf);
             return new IRSeq(first,new IRLabel(l1),second);
-        }else if (e instanceof NotUnop){ // C[!e, t, f]  = C[e, f, t]
-            return booleanAsControlFlow(e,lf,lt);
+        }else if (e instanceof NotUnop nt){ // C[!e, t, f]  = C[e, f, t]
+            return booleanAsControlFlow(nt.getE(),lf,lt);
         }
         IRExpr cond = e.accept(this);         // C[e, t, f]  = CJUMP(E[e], t, f)
         return new IRCJump(cond, lt, lf);
