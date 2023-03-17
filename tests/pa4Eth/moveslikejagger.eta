@@ -1,0 +1,33 @@
+use io
+use conv
+
+a:int = 0
+b:int = 0
+
+main(args: int[][]) {
+  h:int = 3
+  i:bool = true
+  c:int[] = "asdf"
+  j:int[3][5]
+  d:int[][] = {"pee", "peeee", "poo"}
+  e:int[][][] = {{}}
+  f:int[] = {}
+
+  a = foo(a, b)
+  c[a] = foo(b, c[a])
+  a, b, c[a+b], i = 1, 2, 3, false
+
+  f = c
+  c = d[1]
+  d[1][2] = 65
+  println(c)
+}
+
+foo(m:int, n:int):int {
+    while (m > 0) {
+        x:int[] = "string"
+        m = m-1
+        n = n + 1
+    }
+    return (m+n)
+}

@@ -518,7 +518,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     @Override
     public IRStmt visit(DeclAssignStmt node) {
-//        if (node.getDecl() instanceof UnderScore){
+//        if (node.getDecl() instanceof UnderScore){ a:int[] = 4, a = 4, a[4] = 4 _ = 4 _ = foo()
 //        }
         // might need to do call stmt
         IRExpr right = node.getExpression().accept(this);
