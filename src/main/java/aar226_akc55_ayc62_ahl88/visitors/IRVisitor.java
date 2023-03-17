@@ -280,8 +280,11 @@ public class IRVisitor implements Visitor<IRNode>{
         if (constantFold && ire1.isConstant() && ire2.isConstant()) {
             long e1int = ire1.constant();
             long e2int = ire2.constant();
-
-            return new IRConst(e1int == e2int ? 1 : 0);
+            return switch (op) {
+                case EQ -> new IRConst(e1int == e2int ? 1 : 0);
+                case NEQ -> new IRConst(e1int != e2int ? 1 : 0);
+                default -> throw new Error("NOT EQUIVALENCE COMPARISON BINOP");
+            };
         }
         return new IRBinOp(op, ire1, ire2);
     }
