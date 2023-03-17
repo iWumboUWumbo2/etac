@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 
+import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
@@ -17,6 +18,7 @@ class BasicBlock {
     public ArrayList<String> destLabels;
 
     public ArrayList<String> originLabels;
+
 
 
     public BasicBlock(int i) {
@@ -47,9 +49,9 @@ public class IRLoweringVisitor extends IRVisitor {
         super(inf);
         labelCnt = 0;
         tempCnt = 0;
-        labelToBlock = new HashMap<>();
+        labelToNumber= new HashMap<>();
     }
-    private HashMap<String,BasicBlock> labelToBlock;
+    private HashMap<String,Long> labelToNumber;
 
     @Override
     protected IRNode leave(IRNode parent, IRNode n, IRNode n_, IRVisitor v_) {
@@ -169,6 +171,7 @@ public class IRLoweringVisitor extends IRVisitor {
         ind++;
         String lb = nxtLabel();
         dummy.statements.add(new IRJump(new IRName("dummy_head" + lb)));
+        labelToNumber.put("dummy_head" + lb,1L);
         dummy.successors.add(1);
         blocks.add(dummy);
         BasicBlock curBlock = new BasicBlock(ind);
@@ -178,12 +181,27 @@ public class IRLoweringVisitor extends IRVisitor {
             if (stop(stmt)) {
                 if (stmt instanceof IRJump jmp) {
                     String destName = ((IRName) jmp.target()).name();
+                    if (labelToNumber.containsKey(destName)) {
+                        labelToNumber.put(destName, labelToNumber.get(destName) + 1);
+                    }else{
+                        labelToNumber.put(destName,1L);
+                    }
                     curBlock.originLabels.add(destName);
                     curBlock.statements.add(stmt);
                 }
                 else if (stmt instanceof IRCJump cjmp) {
                     curBlock.originLabels.add(cjmp.trueLabel());
+                    if (labelToNumber.containsKey(cjmp.trueLabel())) {
+                        labelToNumber.put(cjmp.trueLabel(), labelToNumber.get(cjmp.trueLabel()) + 1);
+                    }else{
+                        labelToNumber.put(cjmp.trueLabel(),1L);
+                    }
                     curBlock.originLabels.add(cjmp.falseLabel());
+                    if (labelToNumber.containsKey(cjmp.falseLabel())) {
+                        labelToNumber.put(cjmp.falseLabel(), labelToNumber.get(cjmp.falseLabel()) + 1);
+                    }else{
+                        labelToNumber.put(cjmp.falseLabel(),1L);
+                    }
                     curBlock.statements.add(stmt);
                 }else if (stmt instanceof IRReturn irr){
                     curBlock.statements.add(irr);
@@ -199,6 +217,11 @@ public class IRLoweringVisitor extends IRVisitor {
                         curBlock.destLabels.add(il.name());
                         curBlock.statements.add(il);
                         preBlock.statements.add(new IRJump(new IRName(il.name())));
+                        if (labelToNumber.containsKey(il.name())) {
+                            labelToNumber.put(il.name(), labelToNumber.get(il.name()) + 1);
+                        }else{
+                            labelToNumber.put(il.name(),1L);
+                        }
                     }
                 }else if (stmt instanceof IRLabel il){ // prev block was empty so we just continue this block
                     curBlock.statements.add(il);
@@ -224,50 +247,6 @@ public class IRLoweringVisitor extends IRVisitor {
         return blocks;
 
     }
-//    private ArrayList<BasicBlock> createBasicBlocksAndGraph(IRSeq body){
-//        int ind = 0;
-//        ArrayList<BasicBlock> blocks = new ArrayList<>();
-//        BasicBlock dummy = new BasicBlock(ind);
-//        ind++;
-//        String lb = nxtLabel();
-//        dummy.statements.add(new IRJump(new IRName("dummy_head" + lb)));
-//        dummy.successors.add(1);
-//        blocks.add(dummy);
-//        BasicBlock curBlock = new BasicBlock(ind);
-//        curBlock.predecessors.add(0);
-//        curBlock.statements.add(new IRLabel("dummy_head" + lb));
-//        for (IRStmt stmt: body.stmts()){
-//            curBlock.statements.add(stmt);
-//            if (stop(stmt)) {
-//                if (stmt instanceof IRJump jmp) {
-//                    String destName = ((IRName) jmp.target()).name();
-//                    curBlock.originLabels.add(destName);
-//                }
-//                else if (stmt instanceof IRCJump cjmp) {
-//                    curBlock.originLabels.add(cjmp.trueLabel());
-//                    curBlock.originLabels.add(cjmp.falseLabel());
-//                }
-//                blocks.add(curBlock);
-//                ind++;
-//                curBlock = new BasicBlock(ind);
-//            }
-//            if (stmt instanceof IRLabel label) {
-//                curBlock.destLabels.add(label.name());
-//            }
-//        }
-//        if (curBlock.statements.size() != 0) {
-//            blocks.add(curBlock);
-//        }
-//
-//        for (int i = 0; i < blocks.size(); i++) {
-//            for (int j = i; j < blocks.size(); j++) {
-//                BasicBlock bi = blocks.get(i), bj = blocks.get(j);
-//                compareBlocks(bi, bj);
-//                compareBlocks(bj, bi);
-//            }
-//        }
-//        return blocks;
-//    }
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
 //        System.out.println(node);
@@ -425,6 +404,7 @@ public class IRLoweringVisitor extends IRVisitor {
                 if (lastStmt instanceof IRJump jmp && firstStmtInNext instanceof IRLabel il){
                     String name = ((IRName) jmp.target()).name();
                     if (name.equals(il.name())){ // remove jump
+                        labelToNumber.put(name, labelToNumber.get(name)-1);
                         curblk.statements.remove(curblk.statements.size()-1);
                     }
                 }else if (lastStmt instanceof IRCJump cjmp && firstStmtInNext instanceof IRLabel il){
@@ -433,9 +413,11 @@ public class IRLoweringVisitor extends IRVisitor {
                     if (tlabel.equals(il.name())){
                         IRBinOp newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
                         IRCJump newCJump = new IRCJump(newCond, flabel,null);
+                        labelToNumber.put(tlabel, labelToNumber.get(tlabel)-1);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
                     }else if (flabel.equals(il.name())){
                         IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
+                        labelToNumber.put(flabel, labelToNumber.get(flabel)-1);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
                     }else{
 //                        System.out.println("yikes somehow need double jump again idk?");
@@ -452,11 +434,45 @@ public class IRLoweringVisitor extends IRVisitor {
                 lastBlock.statements.set(lastBlock.statements.size()-1,newCJump);
                 lastBlock.statements.add(new IRJump(new IRName(cjmp.falseLabel())));
             }
+            for (HashMap.Entry<String, Long> entry : labelToNumber.entrySet()) {
+                Long value = entry.getValue();
+                assert value >= 0L: "Labels can't become negative";
+                // ...
+            }
+            int del = 0;
             for (BasicBlock b: orderedBlocks){
+                ArrayList<IRStmt> nxtBlockStmt = new ArrayList<>();
                 for (IRStmt s: b.statements){
-                    orderedStatements.add(s);
+                    if (s instanceof IRLabel ir){
+                        if (labelToNumber.get(ir.name()) > 0){
+                            orderedStatements.add(s);
+                            nxtBlockStmt.add(s);
+                        }else{
+                            del++;
+                        }
+                    }else {
+                        orderedStatements.add(s);
+                        nxtBlockStmt.add(s);
+                    }
+                }
+                b.statements = nxtBlockStmt;
+            }
+//            System.out.println(del);
+            ArrayList<BasicBlock> cleanBlocks = new ArrayList<>();
+            for (BasicBlock b: orderedBlocks){
+                if (b.statements.size() > 0){
+                    cleanBlocks.add(b);
                 }
             }
+            orderedBlocks = cleanBlocks;
+//            for (BasicBlock b: orderedBlocks){
+//                System.out.println(b.statements);
+//            }
+//            for (BasicBlock b: orderedBlocks){
+//                for (IRStmt s: b.statements){
+//                        orderedStatements.add(s);
+//                }
+//            }
             IRFuncDecl func = new IRFuncDecl(node.name(),new IRSeq(orderedStatements));
             func.functionSig = node.functionSig;
             return func;

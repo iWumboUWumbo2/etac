@@ -51,7 +51,7 @@ import org.apache.commons.text.*;
             return true;
         }
         if (ch == 92 || ch == 10 || ch == 39 ||
-        ch == 9 || ch == 8 || ch == 82 || ch == 12){
+        ch == 9 || ch == 8 || ch == 12){
             return true;
         }
         return false;

@@ -49,19 +49,19 @@ main (args : int[][]) {
 
     i:int = 0;
     while (i < length(g)){
-        print(unparseInt(g[i]) + " ")
+        print(unparseInt(g[i]) + ",")
         i = i+1
     }
     println("");
     i = 0;
     while (i < length(h)){
-        print(unparseInt(h[i]) + " ")
+        print(unparseInt(h[i]) + ",")
         i = i+1
     }
     println("");
     i = 0;
     while (i < length(lk)){
-        print(unparseInt(lk[i]) + " ")
+        print(unparseInt(lk[i]) + ",")
         i = i+1
     }
     println("");

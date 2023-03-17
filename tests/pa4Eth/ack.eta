@@ -7,9 +7,9 @@ usage() {
 
 main(args:int[][]) {
     n: int = 11
-    r: int = Ack(3, n)
+    r: int = Ack(2, n)
     
-    print("Ack(3,")
+    print("Ack(2,")
     print(unparseInt(n))
     print("): ")
     print(unparseInt(r))

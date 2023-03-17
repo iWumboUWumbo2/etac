@@ -1,0 +1,45 @@
+use io
+use conv
+
+foo(num1:int[], num2:int[], v:int[], n1:int, n2:int) : int {
+    i:int, j:int, last:int = 0, 0, -1;
+    while(i<n1 & j<n2) {
+        if(num1[i]<=num2[j]) {
+            last = last + 1;
+            v[last]=num1[i];
+            i = i + 1;
+        } else {
+            last = last + 1;
+            v[last]=num2[j];
+            j = j + 1;
+        }
+    }
+
+    while(i<n1) {
+        last = last + 1;
+        v[last]=num1[i];
+        i = i + 1
+    }
+    while(j<n2) {
+        last = last + 1;
+        v[last]=num2[j];
+        j = j + 1
+    }
+    n:int = n1+n2;
+    if (n%2 == 1) {
+        return v[n+2]
+    }
+    return (v[n/2]+v[n/2-1])/2
+}
+
+main(args: int[][]) {
+    n1:int, n2:int = 5, 5;
+    n3:int = n1+n2;
+    v:int[n3];
+    num1:int[] = {1, 2, 3, 4, 5};
+    num2:int[] = {1, 2, 3, 4, 5};
+
+    result:int = foo(num1, num2, v, length(num1), length(num2));
+    println("array median is: "+ unparseInt(result))
+}
+
