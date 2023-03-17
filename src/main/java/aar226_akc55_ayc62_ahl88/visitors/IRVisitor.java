@@ -904,7 +904,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String name = "_" + d.getIdentifier();
 
         if (e == null) {
-            if (e.getNodeType().isArray()) {
+            if (d.type.getType() == Type.TypeCheckingType.INTARRAY) {
                 irdata = new IRData(name, new long[]{0});
                 return irdata;
             }
