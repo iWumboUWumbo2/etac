@@ -540,7 +540,8 @@ public class IRLoweringVisitor extends IRVisitor {
 
     // to do
     private boolean doesBinopCommunte(IRBinOp node){
-        return false;
+        IRExpr right = node.right();
+        return !(right instanceof IRESeq); // can commute if right side not eseq
     }
 
     private IRNode commuteBinop(IRBinOp node){
