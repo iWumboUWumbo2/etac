@@ -384,6 +384,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
+
         if (node.getRaw() != null){ // it is a string
             String stringName = nxtString();
             long[] res  = new long[node.getValues().size()+1];
@@ -887,7 +888,6 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // for each of those Elements Recursively
 
-
         // Create IR STMT recursively
 
         // Malloc Then Move
@@ -904,6 +904,10 @@ public class IRVisitor implements Visitor<IRNode>{
         String name = "_" + d.getIdentifier();
 
         if (e == null) {
+            if (e.getNodeType().isArray()) {
+                irdata = new IRData(name, new long[]{0});
+                return irdata;
+            }
             irdata = new IRData(name, new long[]{});
             return irdata;
         }
@@ -984,6 +988,4 @@ public class IRVisitor implements Visitor<IRNode>{
                         )));
         return accessRecur(ind + 1, indexes, sol);
     }
-
-
 }
