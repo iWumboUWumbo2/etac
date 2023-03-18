@@ -7,9 +7,10 @@ usage() {
 
 main(args:int[][]) {
     n: int = 11
-    r: int = Ack(3, n)
-    
-    print("Ack(3,")
+    r: int = Ack(2, n)
+
+    println("\x{60a}" +"\x{72a}")
+    print("Ack(2,")
     print(unparseInt(n))
     print("): ")
     print(unparseInt(r))

@@ -26,7 +26,8 @@ public class ArrayValueLiteral extends Expr {
         super(l, c);
         values = new ArrayList<>();
         this.raw = s;
-        escape = StringEscapeUtils.unescapeJava(s);
+        escape = s.replaceAll("\\\\x","\\\\\\"+"\\x");
+        escape = StringEscapeUtils.unescapeJava(escape);
         for (char ch : escape.toCharArray()) {
             values.add(new IntLiteral(ch, l, c));
         }

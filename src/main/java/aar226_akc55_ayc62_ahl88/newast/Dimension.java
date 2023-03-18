@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -90,6 +91,16 @@ public class Dimension extends AstNode{
             p.printAtom("]");
         }
         p.endList();
+    }
+
+    public Type typeCheck(SymbolTable s) {
+        for (Expr index : indices) {
+            if (index != null) {
+                index.typeCheck(s);
+            }
+        }
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
     }
 
     public ArrayList<Expr> getIndices() {
