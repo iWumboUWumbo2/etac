@@ -120,7 +120,6 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRConst(WORD_BYTES));
 
         String head_pointer = nxtTemp();
-        // CALL(NAME(malloc), size)
         IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"), 1L, malloc_size);
 //        IRMove malloc_move = new IRMove(new IRTemp(head_pointer),alloc_call);
         IRSeq malloc_move = new IRSeq(alloc_call,new IRMove(new IRTemp(head_pointer), new IRTemp("_RV1")));
