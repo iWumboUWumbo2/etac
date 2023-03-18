@@ -24,7 +24,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-import org.apache.commons.text.StringEscapeUtils;
 
 public class Main {
     private static String outputDirectory;
@@ -40,8 +39,8 @@ public class Main {
     // Write the lexed string into the corresponding file name
     private static void writeOutput(String filename, String output, String extension) {
         Path path = (isOutputDirSpecified)
-                        ? Paths.get(outputDirectory, filename)
-                        : Paths.get(filename);
+                ? Paths.get(outputDirectory, filename)
+                : Paths.get(filename);
 
         String pathname = path.toString();
         pathname = pathname.substring(0, pathname.length() - 3) + extension;
@@ -91,11 +90,7 @@ public class Main {
                 out = "id " +  out;
                 break;
             case (sym.CHARACTER_LITERAL):
-                if (out.length() != 1){
-                    out = "character " + out;
-                }else {
-                    out = "character " + StringEscapeUtils.escapeJava(out);
-                }
+                out = "character " +  out;
                 break;
             case (sym.STRING_LITERAL):
                 out = "string " + out;

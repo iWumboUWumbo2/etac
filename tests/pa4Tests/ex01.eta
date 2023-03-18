@@ -1,6 +1,5 @@
-use io
-
 main(args: int[][]) {
     a:int[] = {}
-    b:int = a[0]
+    n:int = 4;
+    bd:int[n+6]
 }

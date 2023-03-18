@@ -34,8 +34,7 @@ public class IntLiteral extends Expr{
     public IntLiteral(String inputChar ,int l, int c) {
         super(l, c);
         rawChar = inputChar;
-
-        String escapeForm  = inputChar;
+        String escapeForm  = StringEscapeUtils.unescapeJava(inputChar);
 //        System.out.println(escapeForm.length());
         if (escapeForm.length() > 1) { // hex representation
             int first = inputChar.indexOf("{");
@@ -81,11 +80,7 @@ public class IntLiteral extends Expr{
             }
         }
         else {
-            if (rawChar.length() == 1){
-                p.printAtom("'"+ StringEscapeUtils.escapeJava(toString())+ "'");
-            }else {
-                p.printAtom("'" + toString() + "'");
-            }
+            p.printAtom("'"+ toString()+ "'");
         }
     }
 

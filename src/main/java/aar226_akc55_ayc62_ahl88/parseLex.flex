@@ -172,10 +172,10 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
 }
 <CHARACTER> {
     \"\'   { yybegin(YYINITIAL);
-          return symbol(sym.CHARACTER_LITERAL, "\"");
+          return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\""));
       }
     \\\"\'   { yybegin(YYINITIAL);
-          return symbol(sym.CHARACTER_LITERAL, "\"");
+          return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\""));
       }
     [^\n\r\'\\]\' {
         yybegin(YYINITIAL);
@@ -185,21 +185,21 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
       }
     \\n\' {
           yybegin(YYINITIAL);
-          return symbol(sym.CHARACTER_LITERAL, "\n");
+          return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\n"));
       }
     \\t\' {
               yybegin(YYINITIAL);
-              return symbol(sym.CHARACTER_LITERAL, "\t");
+              return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\t"));
           }
 
     \\\\\' {
               yybegin(YYINITIAL);
-              return symbol(sym.CHARACTER_LITERAL, "\\");
+              return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("\\"));
           }
 
     \\\'\' {
              yybegin(YYINITIAL);
-             return symbol(sym.CHARACTER_LITERAL, "'");
+             return symbol(sym.CHARACTER_LITERAL, StringEscapeUtils.escapeJava("'"));
          }
     \\x\{{Hex}\}\'     {
                 yybegin(YYINITIAL);
