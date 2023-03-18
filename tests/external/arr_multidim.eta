@@ -1,0 +1,15 @@
+use io
+use conv
+main(args: int[][]) {
+	a1: int[11][][][]
+	a2: int[22][][]
+	a3: int[33][]
+	a4: int[44]
+	a1[10] = a2
+	a1[10][20] = a3
+	a1[10][20][1] = a4
+	a1[10][20][1][40] = 1234567890
+	println(unparseInt(length(a1[10][20][1])))
+	println(unparseInt(a1[10][20][1][43]))
+	println(unparseInt(a1[10][20][1][40]))
+}

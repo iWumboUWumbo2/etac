@@ -1,0 +1,10 @@
+use io
+use conv
+main(a:int[][]) {
+	x:int,y:int = f()
+	println(unparseInt(x))
+	println(unparseInt(y))
+}
+f():int,int{
+	return -1,-1
+}

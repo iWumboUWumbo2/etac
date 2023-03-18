@@ -1,0 +1,17 @@
+use io
+use conv
+g : int = 3;
+b1 : bool = true;
+main (a : int[][]) {
+	println(unparseInt(g))
+	printBool(b1)
+}
+
+printBool(b:bool){
+  if(b){
+    println("true")
+  }
+  else{
+    println("false")
+  }
+}

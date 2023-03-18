@@ -1,0 +1,29 @@
+use io
+use conv
+x : int = 0
+main(args: int[][]) {
+	a : int, b : int, c : int = foo()
+	println(unparseInt(a))
+	println(unparseInt(b))
+	println(unparseInt(c))
+}
+
+foo():int,int,int{
+	return f1(),f2(),f3()
+}
+
+f1():int{
+	x = x + 1
+	return x
+}
+
+f2():int{
+	x = x + 1
+	return x
+}
+
+f3():int{
+	_ = f1()
+	x = x + 1
+	return x
+}

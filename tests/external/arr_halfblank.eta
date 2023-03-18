@@ -1,0 +1,6 @@
+use io
+use conv
+main(args: int[][]) {
+	a:int[] = [1][1][][]
+	println("ok")
+}

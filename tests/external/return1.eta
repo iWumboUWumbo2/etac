@@ -1,0 +1,9 @@
+use io
+use conv
+main(a:int[][]) {
+	x:int = f()
+	print(unparseInt(x))
+}
+f():int{
+	return 123
+}

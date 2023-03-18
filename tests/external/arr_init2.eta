@@ -1,0 +1,24 @@
+use io
+use conv
+main(args: int[][]) {
+	a : int[][] = {{inc(0)},{inc(1),inc(1)}}
+	print2dArr(a)
+}
+
+inc(n:int):int{
+	println("hoho "+unparseInt(n))
+	return n + 1
+}
+
+print2dArr(a:int[][]){
+	i : int = 0
+	while(i<length(a)){
+		j : int = 0
+		while(j<length(a[i])){
+			print(unparseInt(a[i][j])+" ")
+			j = j + 1
+		}
+		println("")
+		i = i + 1
+	}
+}

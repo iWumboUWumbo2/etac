@@ -1,0 +1,16 @@
+use io
+use conv
+main(args: int[][]) {
+	foo()
+	bar()
+	bar()
+}
+
+foo(){
+	println("I'AM SO TIRED")
+}
+
+bar(){
+	println("I'AM SO TIREDDD")
+	return
+}

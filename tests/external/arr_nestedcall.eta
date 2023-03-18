@@ -1,0 +1,22 @@
+use io
+use conv
+main(args: int[][]) {
+	a: int[10]
+	// add5(a,1) = 1, a[1] -> 5, a[5] = a[]
+	// set a[5] to 1005
+	a[a[add5(a,1)]] = a[a[add5(a,1)]]+1000
+	printArr(a)
+	// set a[5] to 2010
+	a[a[add5(a,1)]] = a[a[add5(a,1)]]+1000
+}
+add5(a:int[],i:int):int{
+	a[i]=a[i]+5
+	return i
+}
+printArr(arr:int[]){
+	i : int = 0
+	while(i<length(arr)){
+		print(unparseInt(arr[i])+" ")
+		i = i + 1
+	}
+}

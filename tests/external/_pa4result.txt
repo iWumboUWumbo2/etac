@@ -1,0 +1,138 @@
+cd ~/shared/etacompiler/app/testscripts; \
+java getEta /home/student/shared/etacompiler/app/testingFiles/pa4Files/ethScript
+cd ..;\
+eth -compilerpath ~/shared/etacompiler/app -testpath ~/shared/etacompiler/app/testingFiles/pa4Files/ ~/shared/etacompiler/app/testingFiles/pa4Files/ethScript
+Testpath "/home/student/shared/etacompiler/app/testingFiles/pa4Files/" specified.
+Test script: ethScript
+  etac-build: make[1]: Entering directory '/home/student/shared/etacompiler/app'
+====================== Compiling JFlex ======================
+jflex src/main/java/ojo2_etacompiler/lex/lexer.flex
+Reading "src/main/java/ojo2_etacompiler/lex/lexer.flex"
+Constructing NFA : 438 states in NFA
+Converting NFA to DFA : 
+...............................................................................................................................
+139 states before minimization, 84 states in minimized DFA
+Old file "src/main/java/ojo2_etacompiler/lex/EtaLexer.java" saved as "src/main/java/ojo2_etacompiler/lex/EtaLexer.java~"
+Writing code to "src/main/java/ojo2_etacompiler/lex/EtaLexer.java"
+====================== Generating Parser ======================
+java -jar deps/libs/main/java_cup.jar src/main/java/ojo2_etacompiler/parse/grammar.cup
+------- CUP v0.11b 20150326 Parser Generation Summary -------
+  0 errors and 0 warnings
+  45 terminals, 47 non-terminals, and 149 productions declared, 
+  producing 249 unique parse states.
+  0 terminals declared but not used.
+  0 non-terminals declared but not used.
+  0 productions never reduced.
+  0 conflicts detected (0 expected).
+  Code written to "parser.java", and "sym.java".
+---------------------------------------------------- (CUP v0.11b 20150326)
+mv sym.java src/main/java/ojo2_etacompiler/parse/
+mv parser.java src/main/java/ojo2_etacompiler/parse/
+====================== Compiling to Jar ======================
+gradle build	
+> Task :app:compileJava UP-TO-DATE
+> Task :app:processResources NO-SOURCE
+> Task :app:classes UP-TO-DATE
+> Task :app:jar UP-TO-DATE
+> Task :app:assemble UP-TO-DATE
+> Task :app:shadowJar UP-TO-DATE
+> Task :app:compileTestJava UP-TO-DATE
+> Task :app:processTestResources NO-SOURCE
+> Task :app:testClasses UP-TO-DATE
+> Task :app:test UP-TO-DATE
+> Task :app:check UP-TO-DATE
+> Task :app:build UP-TO-DATE
+
+BUILD SUCCESSFUL in 1s
+5 actionable tasks: 5 up-to-date
+# make pa2
+# make pa3
+make[1]: Leaving directory '/home/student/shared/etacompiler/app'
+OK
+  Test collection: etac (Test --irgen)
+    _arr_outofbound1.eta: OK
+    _arr_outofbound2.eta: OK
+    _arr_outofbound3.eta: Mismatch detected at line 1 of file _arr_outofbound3.ir.nml
+expected: _eta_out_of_bounds called
+found   : -4414593733453509281
+    _arr_outofbound4.eta: OK
+    _arr_outofbound5.eta: Mismatch detected at line 1 of file _arr_outofbound5.ir.nml
+expected: _eta_out_of_bounds called
+found   : -2150292611672553852
+    ack.eta: OK
+    arr2d.eta: OK
+    arr_alias.eta: OK
+    arr_concat.eta: OK
+    arr_double.eta: OK
+    arr_empty.eta: Extra line in file arr_empty.ir.nml: 
+    arr_halfblank.eta: File arr_halfblank.ir does not exist in directory .
+    [Compiler's standard output:
+    Syntax error beginning at /home/student/shared/etacompiler/arr_halfblank.eta:4:12 error: syntax error at token 4:12 [
+]
+    arr_init1.eta: OK
+    arr_init2.eta: OK
+    arr_init3.eta: OK
+    arr_length.eta: Mismatch detected at line 1 of file arr_length.ir.nml
+expected: 3
+found   : 2
+    arr_length2.eta: Mismatch detected at line 1 of file arr_length2.ir.nml
+expected: 3
+found   : 16
+    arr_multidim.eta: OK
+    arr_nestedcall.eta: Extra line in file arr_nestedcall.ir.nml: _eta_out_of_bounds called
+    arr_print.eta: OK
+    arr_ret1.eta: OK
+    array1.eta: OK
+    array2.eta: OK
+    array3.eta: OK
+    binary.eta: OK
+    bool.eta: OK
+    call.eta: Mismatch detected at line 1 of file call.ir.nml
+expected: 0
+found   : incmul 3
+    call3.eta: File call3.irsol.nml does not exist in directory /home/student/shared/etacompiler/app/testingFiles/pa4Files
+    callbasic.eta: Mismatch detected at line 1 of file callbasic.ir.nml
+expected: 1
+found   : incmul 3
+    char.eta: OK
+    commute1.eta: OK
+    commute2.eta: OK
+    commute3.eta: OK
+    even_or_odd.eta: OK
+    ex01.eta: OK
+    fib.eta: OK
+    frac.eta: OK
+    funcall1.eta: OK
+    funcall2.eta: OK
+    funcall3.eta: OK
+    global1.eta: OK
+    global2.eta: OK
+    heap.eta: OK
+    hello.eta: OK
+    helloWorld.eta: OK
+    if.eta: OK
+    int1.eta: OK
+    int2.eta: OK
+    int3.eta: OK
+    lib.eta: OK
+    moves.eta: OK
+    print.eta: OK
+    procdure.eta: OK
+    recursion.eta: OK
+    recursion2.eta: OK
+    ret_tuple.eta: OK
+    return1.eta: OK
+    return2.eta: OK
+    scope.eta: OK
+    shortcir.eta: OK
+    sideeffect.eta: OK
+    sideeffect2.eta: OK
+    stack.eta: OK
+    wildcard.eta: OK
+    wildcard2.eta: OK
+  etac (Test --irgen): 55 out of 65 tests succeeded.
+Number of IRs: 63
+Number of canonical IRs: 63
+Number of constant-folded IRs: 63
+Number of correct IRs: 55
+ethScript: 56 out of 66 tests succeeded.

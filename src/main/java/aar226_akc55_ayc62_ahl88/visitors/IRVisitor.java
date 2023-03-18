@@ -831,8 +831,10 @@ public class IRVisitor implements Visitor<IRNode>{
         String tn = nxtTemp();
         String tm = nxtTemp();
 
+        String noDup = nxtTemp();
+        IRMove tempNoDup = new IRMove(new IRTemp(noDup),irExp);
         // reg[l] <- length
-        IRMove length_to_l1 = new IRMove(new IRTemp(tn), irExp);
+        IRMove length_to_l1 = new IRMove(new IRTemp(tn), new IRTemp(noDup));
 
         // 8*n+8
         IRBinOp size1 = new IRBinOp(IRBinOp.OpType.ADD,
@@ -852,7 +854,7 @@ public class IRVisitor implements Visitor<IRNode>{
         IRBinOp add_8 = new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(tm), new IRConst(WORD_BYTES));
         IRMove inc_pointer_to_head = new IRMove(curHead,add_8);
         // do all the top level shit first
-        IRSeq top_level_Order = new IRSeq(length_to_l1,malloc_move1,move_len,inc_pointer_to_head);
+        IRSeq top_level_Order = new IRSeq(tempNoDup,length_to_l1,malloc_move1,move_len,inc_pointer_to_head);
 
 
         // now time to recrusively alloc
@@ -860,7 +862,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String l1 = nxtLabel();
         String le = nxtLabel();
         String counter = nxtTemp();
-        IRBinOp guard = new IRBinOp(IRBinOp.OpType.LT,new IRTemp(counter), irExp);
+        IRBinOp guard = new IRBinOp(IRBinOp.OpType.LT,new IRTemp(counter), new IRTemp(noDup));
         // set counter = 0;
         IRMove set0Coutner = new IRMove(new IRTemp(counter), new IRConst(0));
         IRLabel whileHead = new IRLabel(lh);

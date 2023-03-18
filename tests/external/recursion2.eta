@@ -1,0 +1,14 @@
+use io
+use conv
+main(args: int[][]) {
+	aaa(5)
+}
+
+aaa(x:int){
+	if (x<=0){
+		return
+	}
+	println(unparseInt(x))
+	aaa(x-1)
+	println(unparseInt(x))
+}

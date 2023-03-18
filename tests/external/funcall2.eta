@@ -1,0 +1,7 @@
+use io
+main(a:int[][]) {
+  f()
+}
+f() {
+	println("test pass")
+}

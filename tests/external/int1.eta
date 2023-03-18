@@ -1,0 +1,21 @@
+use io
+use conv
+main(args: int[][]) {
+	println(unparseInt(1 + 1))
+	println(unparseInt(1 - 1))
+	println(unparseInt(1 * 1))
+	println(unparseInt(528280977408 *>> 4294967296))
+	println(unparseInt(10 / 2))
+	println(unparseInt(5 % 2))
+	printBool(5 > 3)
+	printBool(-1 > -3)
+}
+
+printBool(b:bool){
+  if(b){
+    println("true")
+  }
+  else{
+    println("false")
+  }
+}

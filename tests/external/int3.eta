@@ -1,0 +1,25 @@
+use io
+use conv
+main(args: int[][]) {
+	println(unparseInt(f(1) + f(1)))
+	println(unparseInt(f(1) - f(1)))
+	println(unparseInt(f(1) * f(1)))
+	println(unparseInt(f(528280977408) *>> f(4294967296)))
+	println(unparseInt(f(10 )/ f(2)))
+	println(unparseInt(f(5) % f(2)))
+	printBool(f(5) > f(3))
+	printBool(f(-1) > f(-3))
+}
+
+f(x:int):int{
+	return x
+}
+
+printBool(b:bool){
+  if(b){
+    println("true")
+  }
+  else{
+    println("false")
+  }
+}
