@@ -1,16 +1,1 @@
-a:int = '\x{92}'
-a:int="\x{92}"
-a:int='\x{127}'
-a:int='\\'
-a:int="\\"
-a:int="ab\\cd"
-a:int="ab\nd"
-a:int="\x{1F602}"
-a:int='\x{1F602}'
-a:int="😂"
-a:int='😂'
-a:int='\n'
-a:int="\n"
-a:int='\x{0A}'
-a:int="\x{0A}"
-a:int='\x{0}'
+a:int = '\x{602}'

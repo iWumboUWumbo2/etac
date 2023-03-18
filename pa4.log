@@ -1,0 +1,3498 @@
+commit 4a7bd4b3b1c85887df69260c7127b90dc0a6fc55
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 17 21:22:01 2023 -0400
+
+    updated types typecheck dims and fixed chars need future fix
+
+commit fa204f73e8b8adcdf7c88190e4a59691f2bfb464
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 17 00:29:57 2023 -0400
+
+    updated irlower
+
+commit 1e8af9f884cee3d5bc10e75cdddc279b0c6fc3f4
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Thu Mar 16 23:51:57 2023 -0400
+
+    fixed????? global array decl pt 2
+
+commit f59b9b6cfff3e4aba9698b1e6eef4eba3ac9e54f
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Thu Mar 16 23:39:46 2023 -0400
+
+    fixed????? global array decl
+
+commit 137b8dcdeb1aca20b3213df9b3e6a81ac1fee394
+Merge: 40a3624 63ff9d0
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Thu Mar 16 21:42:29 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 40a3624564ed41522719222e36c43ce0e9064ef0
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Thu Mar 16 21:42:07 2023 -0400
+
+    fixed neq bug
+
+commit 63ff9d04427c4d0a11fac44e8e1cc0026a68f35e
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 16 21:18:56 2023 -0400
+
+    eth working auto grader Yay
+
+commit 7d2f28d77c222995524f937840794d5d697b42cf
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 16 12:34:00 2023 -0400
+
+    fixed lex bug R lol
+
+commit 92ca0ac8f7594b93a90eb3c3590ea3a02eb598eb
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 16 11:50:25 2023 -0400
+
+    updated recursion files
+
+commit 505f9ae927a7daa9bf06ec7032618209504fef84
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Mar 16 11:50:09 2023 -0400
+
+    added example tests
+
+commit 612c9f31b98a5dceaa1fe4479598efc013ccf91e
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 16 11:34:27 2023 -0400
+
+    added blocks back
+
+commit 8860c66df058bd4178a6480efb32b18863f2ee7b
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 16 10:36:23 2023 -0400
+
+    rmeove redundant blocks and labels
+
+commit f127198d4fa0a1ca424ee25b05e2b6af463a3ae3
+Merge: a5ae746 20eac33
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 15 22:08:20 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit a5ae74622636d5c1d6e91249c7d14e589c566892
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 15 22:08:15 2023 -0400
+
+    updated recursion tc
+
+commit 20eac337b4a565b424f400d1effc941b3d8d502c
+Merge: 07aa55c 37a4820
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Wed Mar 15 22:02:51 2023 -0400
+
+    fix merge conflict
+
+commit 07aa55cad86fd80f10aef22f00ad927b257c5723
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Wed Mar 15 21:59:24 2023 -0400
+
+    fix tests
+
+commit 37a4820a2db69b792da70cd32f324bae63f060b4
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Wed Mar 15 20:44:16 2023 -0400
+
+    fixed test
+
+commit 95dbba2ca49b3810d0353ccec9c012bf4ce5e333
+Merge: bf8eaf5 9c91063
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Wed Mar 15 20:35:35 2023 -0400
+
+    Merge remote-tracking branch 'origin/main'
+
+commit bf8eaf5e880062256d947e7f837d0a5cfef2d080
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Wed Mar 15 20:35:26 2023 -0400
+
+    fixed recursion1.eta and replaced xi alloc with eta alloc
+
+commit 9c910632039c0c81d2ada1e97538f4c3a5605fef
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Wed Mar 15 20:13:04 2023 -0400
+
+    fixed tests
+
+commit 3056d8e57117c4d1565c00bbcd5e5bfe2fec35b9
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 15 20:02:33 2023 -0400
+
+    comments on changes for blocks
+
+commit 38fedb930bfaa542d5d6cf8f41e3854cc73c1db9
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 15 20:00:29 2023 -0400
+
+    New way of doing blocks
+
+commit 98caa0563836cde04083ad50668b8e3ebe0d097d
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 15 20:00:18 2023 -0400
+
+    Fixed Plus Arrays
+
+commit 072742db144f69bb28f7bb2fa89f816c43b75925
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Wed Mar 15 18:28:34 2023 -0400
+
+    Dont need to rebuild lexer and parser everytime for local build.
+
+commit 58c9b07ef7d48aace89df0967de4784d717230dc
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 15 18:11:56 2023 -0400
+
+    fixed recursion files. Angela didnt do this. It was Alan
+
+commit 6354dbb1be98946385980e251280eddbfebeeadd
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 15 14:36:37 2023 -0400
+
+    better reordering
+
+commit 4b110f42b81c67a432fb8861ac957fa0980e4b16
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 15 12:58:37 2023 -0400
+
+    updated constant folding and main
+
+commit 80633f11a9f3011b5f54de72ef8890da985cb19a
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Wed Mar 15 11:23:37 2023 -0400
+
+    remove opt arg from O and removed O from optimization
+
+commit 708b6e4f0ea4fdfd9cb521cd536275eab8f78599
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Wed Mar 15 00:10:51 2023 -0400
+
+    updated tests
+
+commit 4e94601bdb6df7ebe8d2eb8326980d85428f246d
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 23:56:47 2023 -0400
+
+    back to eta
+
+commit a557ebc9eeffb7f001df913a90657981305744f5
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Tue Mar 14 23:32:08 2023 -0400
+
+    added recursion test
+
+commit 7887ffb9c9a3f49a7470a74c18d666ef0a887863
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Tue Mar 14 23:07:32 2023 -0400
+
+    added recursion test
+
+commit 27e9fb50184510d7abbd695b25368e2f2b801a8d
+Merge: 6d0dd97 d827468
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Mar 14 22:52:37 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 6d0dd970d37ed7a2832374305ce0da457bbc54dd
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Mar 14 22:52:35 2023 -0400
+
+    arrmedian working test
+
+commit d827468b663a66c41b4a3fa43046c39e861a904d
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 21:56:34 2023 -0400
+
+    fixed out of bounds
+
+commit 8d3d2378d63d2341ec6a527cb6c69c658bc99d4f
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 21:15:04 2023 -0400
+
+    back to eta
+
+commit 6cfb325ac40f6558457ee803036c5347c09be9b1
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 21:03:49 2023 -0400
+
+    back to xi lol
+
+commit 14eb2fe1cd7bdf6bfb2daf39e3a1dd0cc255a943
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Mar 14 20:25:17 2023 -0400
+
+    _xi -> _eta
+
+commit 534152f5f1678a2b1b9cff71860419f39d7380a5
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 16:28:51 2023 -0400
+
+    string weird is fixed now
+
+commit b3a094c0854b676d43d24bbcea3fb5c2b6889c03
+Merge: df3ad7f 37c8ebb
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 16:13:14 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit df3ad7f3e5d3627b06a19b013b3cc664f2cb77b5
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 16:13:08 2023 -0400
+
+    added edge case for CJUMPS
+
+commit 2ed3fce31d425924b0d515a13185c614be8f6afe
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 14 16:13:02 2023 -0400
+
+    added edge case for CJUMPS
+
+commit 37c8ebb98ea076130b4693e11e064d667700ce5a
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon Mar 13 15:32:11 2023 -0400
+
+    fib test
+
+commit 860012f54285af753893d5214ee38306b124c5ba
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 23:02:58 2023 -0400
+
+    added catch to choose block
+
+commit 20ca3beab4bffc01552c47248bbd3a846524eb69
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 23:02:47 2023 -0400
+
+    added catch to choose block
+
+commit 740845788326df085b1de864d6317e01f83bb22c
+Merge: f7978f7 759de6b
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 22:28:11 2023 -0400
+
+    Merge branch 'basicBlock'
+
+commit 759de6bd919be505b6e634fc65aac503f2dc73ff
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 22:27:58 2023 -0400
+
+    all tests good now
+
+commit cada0d2345d2cedcf21c5da11d97d1e3c227efc5
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 22:27:51 2023 -0400
+
+    all tests good now
+
+commit 3ba8e93972ba103f78c7d0bc625c92582a4b366f
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 18:27:56 2023 -0400
+
+    idk man reordering scuffed
+
+commit 05f984e424d6487789eb4711477debb2e0eeff8d
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 18:03:03 2023 -0400
+
+    61 63 blocks still suss
+
+commit 2ac589c5f594a9bcd127cbb9775faeac678e92ec
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 17:40:58 2023 -0400
+
+    we fucked infinite loop in graph
+
+commit ec35e14ca4670e296418d98c863a7100f21a610f
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Mar 12 17:11:14 2023 -0400
+
+    made shit no global
+
+commit f7978f71806ec8040ce27443b7293b6889851a1a
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 16:31:12 2023 -0400
+
+    arrmedian test
+
+commit 3499b9699c803e2872915ce5573934736aa8c472
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 16:21:08 2023 -0400
+
+    added stub for create basic block
+
+commit 9967e2f5e5d5fce4ccb940ed6c6a33ab3cbcf09a
+Merge: 90d5d35 865c41f
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 16:18:04 2023 -0400
+
+    Merge branch 'exprsInBrackets'
+
+commit eb0b450dbf5891915d37902645f48b230fa77333
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 16:15:45 2023 -0400
+
+    finished func
+
+commit 865c41fafd79299f888824e8961069f9f515ceb3
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 16:15:08 2023 -0400
+
+    etac clean
+
+commit 90d5d3534effc88644a1810f81de3682c358c440
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 16:08:22 2023 -0400
+
+    tests and fix type checking in arracc
+
+commit e844f49b9be040209a02cb3df81a22d384b52350
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 16:02:20 2023 -0400
+
+    fixed trappingrainwater.eta
+
+commit a0ba8e56514e44fce98514bfc98ebf4086fdba72
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Mar 12 16:00:39 2023 -0400
+
+    basic block wip
+
+commit ec3119ce70317433d53c1f1b717763a2209aa3cd
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 15:59:04 2023 -0400
+
+    added exprs to cup
+
+commit 5d16cca7ed9a494b1fce55fcc5cff1d2773968e9
+Merge: b9293ec 5cae846
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 15:43:29 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit b9293ecfc59fb61e4778481514827702534f9265
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 15:43:25 2023 -0400
+
+    fixed array init ir decl
+
+commit 5cae8469e98144b9b5594e8011160180003effdb
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 15:39:47 2023 -0400
+
+    holy shit debugging is hard lowering
+
+commit 21cd8355c829fa696baa9fb8bb71a27c17cedd1c
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 15:38:52 2023 -0400
+
+    leetcode #3
+
+commit a799fd14c94a0cc465ab948dd27d80b6cd788179
+Merge: 4d64110 0409eb9
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Mar 12 14:14:14 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 4d64110f435225553f681b57f4d5874543b9038b
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Mar 12 14:13:57 2023 -0400
+
+    -O doesnt require arg
+
+commit 0409eb9ae88a4db69daab2e32e15a5e83c3133e8
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 14:03:13 2023 -0400
+
+    leetcode #2
+
+commit 21f1c8c486dc1dff3a57bec563a0b40d8cd8536c
+Merge: 08912db 1b93d51
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 13:31:59 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 08912dbcd6abf7a1583e67a0863d6a3bafd26635
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 13:30:53 2023 -0400
+
+    fix validpalindrome.eta
+
+commit 1b93d512e59310a6d01209718e9dbbf554f46f3b
+Merge: 04ccaf3 86eb20a
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 13:29:38 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 04ccaf3fa6dcbf7614b380bb61444071c1e5fea0
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 13:29:35 2023 -0400
+
+    tests
+
+commit 86eb20ac521ab11dbb82778eb01c073739bd84a5
+Merge: 30e4ccc 64da563
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 13:29:10 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 30e4ccc863e3a4a40d9ba7bde4f7f45a01907dc0
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 13:29:06 2023 -0400
+
+    added xi out of bounds
+
+commit 64da563891918663847fe47e7a9e73141c72fcaf
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 13:24:33 2023 -0400
+
+    fix validpalindrome.eta
+
+commit 8da23325fd02414f9dcb3a4079b7b459d7d0075c
+Merge: fe73221 24a6335
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 13:20:39 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit fe7322175354f27807a0f35ab8b917307e5c5bbe
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 13:20:33 2023 -0400
+
+    leetcode test #1
+
+commit 24a63353c21cd35bf618bd50d015a785a432d6d1
+Merge: c05f89c fb281e7
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Mar 12 13:15:11 2023 -0400
+
+    Merge remote-tracking branch 'origin/main'
+
+commit c05f89c9fb255a949ecb48ce5da467bf1a9571e2
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Mar 12 13:15:06 2023 -0400
+
+    Added optimization selection
+
+commit fb281e70d95e86ae0ad36a377cb0ee0be0344d45
+Merge: e0db26d b1075ed
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 13:09:48 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit e0db26d84651082b0e32877db7d4742ad318fed1
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 12 13:09:37 2023 -0400
+
+    out of bounds tests
+
+commit b1075ede668d50c2c31e135676f0a5424ad8c1aa
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 13:04:07 2023 -0400
+
+    fixed bugs for IRCALL seq still nested
+
+commit 3fc51a8de79dc5e53602fa076477bba4dc19c121
+Merge: beae51e dbd7f01
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 12:50:50 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit beae51e25b0198b823b496ee306f70cad4ee08f0
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 12 12:50:46 2023 -0400
+
+    move test
+
+commit dbd7f011365ae4ee3e753f8c47ecd3e4c47e62af
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 12 10:26:30 2023 -0400
+
+    updated some changes to comp unit and lowering
+
+commit ba907bd4871048429e83fd9d6bd1228658b3f907
+Merge: e30c4d5 34d1e9f
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 21:58:26 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit e30c4d5e6b4c29c3cecb7d391282abca390cc937
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 21:58:22 2023 -0500
+
+    move test
+
+commit 34d1e9f0d600d32de483e33a7d9fbd7a1be72998
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 21:56:16 2023 -0500
+
+    finished move draft
+
+commit 38cfaabe19edf3e31fbb72046115089814124e8c
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 21:19:59 2023 -0500
+
+    added binop and returns
+
+commit f91ff77bd83e7ffa1c69e044955ff6fa5050c692
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 21:03:07 2023 -0500
+
+    Did IR binop
+
+commit f2e3fc75dd2ae2c349afa2f133af9165d0506ec0
+Merge: 0beb076 f46cfd3
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 20:12:25 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+
+commit 0beb0768fe03786b34db3b783c0a2b9741257ad6
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 20:12:12 2023 -0500
+
+    Lowering ir call
+
+commit f46cfd394f88a662ffaa30817d94ab2fde3d449d
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 20:06:51 2023 -0500
+
+    changed call to call stmt
+
+commit 54e03ed40fd9234f6637466a243fc58343ba9e17
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 19:11:03 2023 -0500
+
+    edit pa3fail3, 4 tests
+
+commit 037994859bfae1d8465e122249a21df8f5bf439b
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 19:03:54 2023 -0500
+
+    edit pa3fail1, 2 for divide by zero errors
+
+commit a6ff5ec71219f6c7a91e1812dee4564de15db6ab
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 19:01:46 2023 -0500
+
+    modify intoutbinop (mod)
+
+commit 0d183cf136d64efb5d2fd1a993f189b58b602280
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 18:29:20 2023 -0500
+
+    clean up
+
+commit d2245546d1647b85c5dd0ca4a13a21438377ae81
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 18:19:20 2023 -0500
+
+    pa3 failed tests
+
+commit 6170fc7aedd3694ddf247ece2761060978898e5e
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 17:49:49 2023 -0500
+
+    fixed integer comparison
+
+commit e2c564c4c774007b37722c15840e7194c8a1ad7a
+Merge: cea100d 8ab57ea
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 17:18:09 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit cea100d745ce35052de6bdce9a8756fab92cb7b0
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 17:18:06 2023 -0500
+
+    high mult test
+
+commit 8ab57ea2088ecfd677ea3471fa59e82573ab833a
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 17:15:06 2023 -0500
+
+    added throw for ir
+
+commit d7968c9603d2e0ba5a7c1c65a3e7dd3f3209a117
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 17:11:18 2023 -0500
+
+    Lowering ir mem, cjumo, jump, eseq
+
+commit 91d12835fdb1c8bb5fa35d1282fee92f718a7e24
+Merge: 931988b 974fbef
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 17:05:55 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 931988bcb74da92d31e53ac9b9c83fa6b2abeed1
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 17:05:53 2023 -0500
+
+    constant folding
+
+commit 974fbef68b54afa37104fedc150b19ec383bada7
+Merge: 3c1aa57 8ec49e7
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 17:04:23 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 3c1aa57295961b50a145492f9a4da448a08c7063
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 17:04:17 2023 -0500
+
+    intoutbinop constant fold
+
+commit 8ec49e7bc2a0512569e4a197071c5a27e7121063
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 16:43:10 2023 -0500
+
+    Fixed CLI again
+
+commit 442a4314d6477fb1c5fcdcebd64f6f118de57f99
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 15:55:44 2023 -0500
+
+    fixed adding arrays
+
+commit c034ecbd95e46ee8ac00db32548c3b6ac1c7995b
+Merge: 4a15d87 e82be9c
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 15:47:32 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+    
+    # Conflicts:
+    #       etacClean
+
+commit 4a15d8726448317bfa02bed4de83e179880774b0
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 15:47:16 2023 -0500
+
+    Fixed CLI
+
+commit e82be9ca458b29a9714e9c57673fd3fb4968b9a9
+Merge: 42ccf6a 463c66b
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 15:38:45 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 42ccf6a6be7d257ca1c7340f295b51cda3ef96cd
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 11 15:38:42 2023 -0500
+
+    constant folding
+
+commit 463c66bbc2c698faeaa745370bf8dee37965593e
+Merge: 2f5f100 94983db
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 15:38:05 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 2f5f10022ede1996e8062b978bc52a955449a175
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 15:38:01 2023 -0500
+
+    constant folding
+
+commit 94983db457f3c33aaa2edcb8ff2f5f39fbf92191
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 15:03:51 2023 -0500
+
+    changed chars to ints through cast
+
+commit 6be4dbc30b92eb946023cf5a9293c86df118dc47
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 14:44:02 2023 -0500
+
+    Print IR to file
+
+commit b06474a7c39efc6d25d888837754f42fc0b39bd2
+Merge: 3cbdffe 6f52252
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 13:49:48 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 3cbdffedbda101710a997aee9664e434aa843614
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 11 13:49:44 2023 -0500
+
+    etac win
+
+commit 6f522521f5c9b9263c26369ba62848856b6b50cd
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 10:54:13 2023 -0500
+
+    only prints to console atm
+
+commit 877e82f226397d4e96ebfa48fafea168f3ac977e
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 11 10:28:32 2023 -0500
+
+    added string logic
+
+commit 8e111dd4d652dcfa1aa70ca0fa7f52f76dc2f15e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 09:50:30 2023 -0500
+
+    Removed prints
+
+commit 2acae45002bbc7bac6c4db7883cd0908f445b26a
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 11 01:55:30 2023 -0500
+
+    Add optimization as an option
+
+commit 695c48cb59e20ec52eceea88e2e130d6dc6d9b35
+Merge: 2518432 9663798
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Fri Mar 10 21:32:05 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+
+commit 2518432b0a49250aef5c96edf0a12b468ee7ac94
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Fri Mar 10 21:31:55 2023 -0500
+
+    Add optimization as an option
+
+commit 9663798260af7c8c38c358c2e903f60ade70569d
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 21:29:12 2023 -0500
+
+    add stubs for lowering
+
+commit 4bf09bb2d8abfca72cb105be82ce5bfbcb48a126
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Fri Mar 10 17:45:36 2023 -0500
+
+    cli machine broke
+
+commit 77abf7446b77606f1ee19ed31401650a3f2934cc
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 16:55:57 2023 -0500
+
+    added arrays
+
+commit 669bd7e5b458e54d3733a990366afbe86c18246d
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 13:48:12 2023 -0500
+
+    fixed pa3 pa2 and change globals to mem
+
+commit 528bc723beb85daa6cd54713ae9048b0f36085e7
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 12:53:28 2023 -0500
+
+    replace >>* with *>>
+
+commit 0fb248c2edef08c07eb290f4b49a3f58a4d558c4
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 11:58:39 2023 -0500
+
+    added more clean code
+
+commit 1730800a5c1431e622ca1b116069e483b165e759
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 11:54:40 2023 -0500
+
+    clean code
+
+commit 1f0579ae68246a425864375f0e9fc52f8d05317b
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 11:34:15 2023 -0500
+
+    added condition to add underscore to globals
+
+commit 2e6ad795cad18af61450f82a5dbbb0f5b279058e
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 10:26:54 2023 -0500
+
+    added global decls to mapping ids fix later
+
+commit e33dedebd5fecea3292ab0ccea7af24200af6c05
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 10 08:10:49 2023 -0500
+
+    made sure our thing built
+
+commit e77cf5fafb876357807bdab4d2432d4fbd94b30e
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Fri Mar 10 00:30:56 2023 -0500
+
+    remove duplicate code in MultiDeclAssignStmt.java
+
+commit d6dcc328306014335e93f6fd60b2fe159600f96b
+Merge: 0111245 0636500
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Fri Mar 10 00:21:28 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 01112458f0b707bfa1733a290470fbdc04caf42b
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Fri Mar 10 00:21:23 2023 -0500
+
+    globdecl ir visitor
+
+commit 0636500664ef8efe7cc0452ee4e3a7fad3e23c8d
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Mar 9 23:23:07 2023 -0500
+
+    IRCompUnit visit. Have to fix compUnit name
+
+commit c0a5fa529b836e8cdac1d5d427579e2a8074f878
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 14:11:46 2023 -0500
+
+    added lowering stub
+
+commit e52d937d07e4bb6e8dcc4b1a9209b56bb10b2e9b
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 13:45:44 2023 -0500
+
+    added comment for globals
+
+commit 0c68b0f82617ece44cb214e9cb693db5a276d4a6
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 13:45:24 2023 -0500
+
+    refactored multi decl
+
+commit 829e36134c1c03cf60913d896d8902020e5f4cf8
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 13:42:40 2023 -0500
+
+    first try at multi Decl
+
+commit 1f10204022830c8e4d079c86174222b31dbef162
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 11:50:46 2023 -0500
+
+    added comments
+
+commit 08e0da0aba2b2504ad60741566d9d489301a621d
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 11:48:07 2023 -0500
+
+    added decl to call initarray now
+
+commit 46904437da5f184db8bef4e9992eab1ee93bbaa7
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 11:44:59 2023 -0500
+
+    create init array kinda scuffed
+
+commit f2b828edf17e466d57c609cf4c9fcb5ccad8962b
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 10:37:55 2023 -0500
+
+    added array access logic
+
+commit f45eeb34d35a0fcc73c8708b079cf61051694da0
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 09:48:56 2023 -0500
+
+    added visit Method
+
+commit fea538b1dab50131995ad8e772b22ac575001a99
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 9 00:03:48 2023 -0500
+
+    Put comments for TODOS
+
+commit 66efeff8a3a0352ab2035deb8473b19c37e9049a
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 22:36:52 2023 -0500
+
+    we fucked
+
+commit ae5557cd6449c7c719f4850f141c2e2ef1a9929a
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 22:33:11 2023 -0500
+
+    added stub for arrayDecl
+
+commit 7f7bbed9c223352774e0f292eef73152a5447d3c
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 22:28:07 2023 -0500
+
+    updated decls
+
+commit ad6686d9926461b076ab46d2d934fe0c5eeb23ae
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 8 18:31:50 2023 -0500
+
+    plus
+
+commit 74a6be31a0ce2244b2481e05a292ade85ac5e553
+Merge: 9676180 0b073fb
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 8 18:01:39 2023 -0500
+
+    plus
+
+commit 9676180ad3d5c01f4f8463fa4dd39ca84887416f
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 8 17:56:45 2023 -0500
+
+    plus
+
+commit 0b073fbcd5e4a08bda29f633ca91760d6b476851
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 17:56:21 2023 -0500
+
+    change allocate a tiny bit
+
+commit 94cde32610bdd91706f534887d5cba9a2fc5a092
+Merge: e124db3 c24e2e2
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 17:31:42 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit e124db34e749dae450f219a7896eaa5c9e646db1
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 17:30:26 2023 -0500
+
+    added assign stmt
+
+commit c24e2e21af8f8aa17311a93c647bb04931906864
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Wed Mar 8 17:28:24 2023 -0500
+
+    plus
+
+commit 5f53036b38942605d4ae3ba85d9b456307aaa71b
+Merge: 612b751 e2cc8ad
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Wed Mar 8 16:46:50 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 612b75115db947b11d017b689e14d9d821a704f8
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Wed Mar 8 16:46:46 2023 -0500
+
+    plus
+
+commit e2cc8adcc9c74a2f5855e2718984e45fe3ff6e81
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 16:44:05 2023 -0500
+
+    Added ArrayAccessExpr recursion
+
+commit b806b6f74aba030ae6e662f01e99294428deb642
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 16:10:33 2023 -0500
+
+    added function call component
+
+commit ba1c78157dc21f61fd2504b77f54fabc948eaeab
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 10:43:37 2023 -0500
+
+    removed type from visitor
+
+commit 525626bfc6c1905638e5ccdc144c94776093ee77
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 8 10:16:19 2023 -0500
+
+    chnaged type headers in ir visitor and classes
+
+commit df7f5e3dd768cc178d9a8b5c1b479aeabbfab4e1
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 7 16:53:41 2023 -0500
+
+    updated decl assign and no assign array init still in progr
+
+commit aa8848a443844b12de56f214875ba7bfb98e3ccf
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 7 15:57:46 2023 -0500
+
+    added basic dec;s
+
+commit 280220cfd11693d55d4c28542bf94cd9dfedd5dd
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 7 15:50:26 2023 -0500
+
+    did ID node
+
+commit 765d65315e53ca2b0ef160388c9b8c236f14511b
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 7 15:43:34 2023 -0500
+
+    added function call expr
+
+commit 58d9f57ee8ab639b56ae93437a228ff9f1b0cdf9
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Mar 7 13:44:07 2023 -0500
+
+    added decl without recursive Malloc done
+
+commit 1e77784a143ec2f9ad310225a17d24e3fd92e4ee
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Mar 5 18:02:34 2023 -0500
+
+    Added Optimizations class and built skeleton
+
+commit 1114ba830e2fc0119fcc63d9968355a185ce5fbb
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 5 17:53:45 2023 -0500
+
+    array value literal
+
+commit 6ab66dfc63c9b3bcd8d5ccfc47df408d5367dc6f
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 16:51:17 2023 -0500
+
+    updated procedure function sig
+
+commit 1b5e8251cba734fde71d38dce5234aa2f5c83c33
+Merge: 668469b 3c34f56
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 16:27:39 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 668469b4c7dd03cf2724741969ac642f4b41e028
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 16:27:34 2023 -0500
+
+    length IRVisitor
+
+commit 3c34f56eaa279afc5eef5db8d12d653c243149e1
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 16:27:18 2023 -0500
+
+    added procedure
+
+commit 8f889a6e42efe6ef45a2ffa7d2548690449f5a8a
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 16:15:58 2023 -0500
+
+    length IRVisitor
+
+commit 44bb7fa7cb99f16f99fe88b084139e8011ab9eac
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 16:09:55 2023 -0500
+
+    added function ABI
+
+commit 543eb2471105870b456f052eb0f8e8ecf3799aa8
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 15:53:09 2023 -0500
+
+    block IRVisitor
+
+commit 3a971259b1a0a4f98c9f16b72b7ef75d65066663
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 15:30:10 2023 -0500
+
+    length IRVisitor
+
+commit 13c61a3d4950cff2d124adc3d7b3cde6b5bcab2f
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 14:47:14 2023 -0500
+
+    inteneg
+
+commit 5b13a02032f968544793a9d84dc3a20521d956a6
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 14:24:52 2023 -0500
+
+    added logical binops
+
+commit 808492eebac3a922b676d1723f7cd1a2f94817c9
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 13:54:18 2023 -0500
+
+    added return
+
+commit 38e12da1faa68240b469e237a0b33b84d148a893
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 13:47:58 2023 -0500
+
+    added while node
+
+commit 9b3c074fcb01e40708871c05b79a6d726df0685d
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 13:27:59 2023 -0500
+
+    finished if else
+
+commit 376f401df4f900adeed250f441605cfb1c9cb719
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 13:17:34 2023 -0500
+
+    added if only
+
+commit 7ad7f8a5a6a2caf2a8bd06d9d190965ab745bde7
+Merge: ef1e8f5 a6aa1ed
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 5 13:13:37 2023 -0500
+
+    asdf
+
+commit ef1e8f50b2f67b02d53c6769b4acf1698b5ce70b
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 5 13:07:25 2023 -0500
+
+    add getop functionality
+
+commit a6aa1edb3aaa32e165443f36785a4d3f85790960
+Merge: 417c8a2 6c3c700
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 13:01:48 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 417c8a21cc7c493a4f0fa8f83af5f71f8368b79b
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 13:01:45 2023 -0500
+
+    added boolean as conditional
+
+commit 6c3c7006df000343e885dcc9506b1013233a47d8
+Merge: a5f82b3 6e3b25b
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 12:47:58 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit a5f82b3b1d4b0e7ba2e51f26042b3f19fbb3333f
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 12:47:50 2023 -0500
+
+    ir visitor integercomparisionbinop
+
+commit 6e3b25bc5084d435534271c26acb754952a5e1b6
+Merge: 351a5b9 76f3c16
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 5 12:45:58 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 351a5b92a31baa14832bb0346d7e40620bb6f3e7
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Mar 5 12:45:56 2023 -0500
+
+    plus binop
+
+commit 76f3c16525d67829bffa65bf05c7f056ef01fbdd
+Merge: 28d31c2 016f287
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 12:38:40 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into main
+
+commit 28d31c2002d44a76f1cdb5ec8836b5d6576aa889
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Mar 5 12:38:35 2023 -0500
+
+    ir visitor intoutbinop
+
+commit 016f287345d7ec2f5c7f109b359f65edf41e84df
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Mar 5 12:17:38 2023 -0500
+
+    added stubs for IRvist
+
+commit dc5a178b90d0c46c7fa4b47019b6793fa324931e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 21:24:59 2023 -0500
+
+    Added public IRNode accept(IRVisitor visitor)
+
+commit 6b66e675b33005b81770ff49f8b0df0794857e46
+Merge: b3e62e4 04a96bf
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 21:08:47 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 04a96bf99389e634e1120cd81e5fb3177b5b38e5
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 4 17:38:54 2023 -0500
+
+    added nodeTypes
+
+commit 12421aac8337c1897d967cfa0a84d43434c72359
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 4 17:35:32 2023 -0500
+
+    typecheck exprs mod
+
+commit aab4561b3433c90b435e4982774133a381c148c9
+Merge: bed840d 7eeddc7
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 4 17:15:34 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit bed840d3b4c335b81bee827d8a8a1ad263c9dee4
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 4 17:15:32 2023 -0500
+
+    nodetypes
+
+commit 7eeddc74a0bbc7bfc2d3ffb9901f1ab7aa242cff
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 4 17:13:36 2023 -0500
+
+     added nodeTypes
+
+commit a6ba1ddd0b72da468deaf878aab683d541ff6058
+Merge: 4f21187 83cfe19
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 4 17:01:23 2023 -0500
+
+    nodeType
+
+commit 4f211877b843c025ad429142c70ca1584cc6e385
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Mar 4 17:01:04 2023 -0500
+
+    nodeType
+
+commit 83cfe19b4a0fe9dd675fee468ea6be1d690af870
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Mar 4 17:00:26 2023 -0500
+
+    expr typecheck mod
+
+commit 5d21524bb7d6100afd6b710776c0881e372cf602
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 4 16:50:24 2023 -0500
+
+    only node Type now
+
+commit e508a029f42a6bae2d03ce26f73158a4f345d161
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 4 16:39:20 2023 -0500
+
+    now need to update type of each node
+
+commit b3e62e4af9668fe6e5b80cfcce5a787385bb2a27
+Merge: 3de1fd0 f19395e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 15:36:51 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit f19395e9bc1dd6e2deabdc60e5a2fc7312a07bef
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 4 15:36:31 2023 -0500
+
+    added back visitor stubs and made type no longer inherit from ast node
+
+commit 3de1fd09ea0614558e3e46075aee47cf0af941ee
+Merge: eef65c4 03fcfa8
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 14:06:20 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 03fcfa859e3cf881d74b5803df5eca31a9dab18c
+Merge: 2848957 c5e2b94
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 4 14:04:45 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 28489572aebebe3b8ea8a755273a7bf67821aa63
+Merge: c69d774 271feb6
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Mar 4 14:04:41 2023 -0500
+
+    Merge branch 'biggel'
+
+commit c5e2b94208b380cf490ec925a582a71e8cfdc4df
+Merge: c69d774 271feb6
+Author: Arun A Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 14:04:33 2023 -0500
+
+    Merge pull request #6 from aar226/biggel
+    
+    Biggel
+
+commit eef65c4bba1c678a98f9802d187b33977ba097e1
+Merge: c69d774 271feb6
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 13:46:29 2023 -0500
+
+    Merge remote-tracking branch 'origin/biggel'
+
+commit 271feb6632d798fa5114c92d73eb18c9308b0e07
+Merge: 80dc390 4e3bce2
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 13:44:11 2023 -0500
+
+    Merge branch 'biggel' of github.coecis.cornell.edu:aar226/etac into biggel
+
+commit 80dc390cc1cff1a708d1355fc855e85e80885d29
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Mar 4 13:43:50 2023 -0500
+
+    Add IR bullshit
+
+commit c69d7749554fde1946ee393c531ed0b2192a3067
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Mar 3 14:47:09 2023 -0500
+
+    removed print for ifonly
+
+commit 4e3bce27333747beb174e2517da6bea052ec201c
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 2 20:55:55 2023 -0500
+
+    tested new CLI
+
+commit 0bc2931f62fa2d0355a864859a0cca0d7566dc1d
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Mar 2 20:38:50 2023 -0500
+
+    Need to check for etaerror in eti file in typecheck
+
+commit f0feeb3cf4dbefc76fe32fb7a426aa797026688c
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Mar 2 20:33:51 2023 -0500
+
+    Jankery
+
+commit a0fe854546d3959d77d24aa1ad45b7c4a8994420
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Mar 2 16:47:59 2023 -0500
+
+    Removed extraneous prints and verified Big Gela's code works
+
+commit a0fb755d64060820619036bf9a2403e2aaee8dd2
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Mar 2 15:28:18 2023 -0500
+
+    hello
+
+commit 2c5706ecfd44ca05306573f105ceef0488dd990d
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 2 10:49:51 2023 -0500
+
+    removed prints
+
+commit 04a8b86c2be934dff5d48863abe9a4478a328ea6
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 2 00:30:56 2023 -0500
+
+    added logic so multiple function same file fail
+
+commit b16a8c5e791940fe0bfdf8a53beb501e6a68c514
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Mar 2 00:20:51 2023 -0500
+
+    updated int literal
+
+commit ffdf98d679881fb8798bc9435efaa79d93ef4afc
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 1 20:13:34 2023 -0500
+
+    run tests on vm
+
+commit d3b78a445d4a229965e6bdf3a4c37f696979edf6
+Merge: 8eb030d 046de64
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 1 17:58:19 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 8eb030d11da6de8e47f7fbde7ef067a9f09007c7
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 1 17:58:17 2023 -0500
+
+    fix unknown and cast unknown
+
+commit 046de6435684f2715e55825f146839ed79f7dda8
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 17:51:20 2023 -0500
+
+    added solutions to tests and moved lexing and parsing tests
+
+commit da82fe269aa5891c937df5757a2da38e182f0112
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 17:40:33 2023 -0500
+
+    removed prints
+
+commit e15f838b7711f3cb4151804d8f4db681514b4d3f
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 17:29:56 2023 -0500
+
+    added eth script
+
+commit 92292796fb91c8ad32258437bb4a9d382468e911
+Merge: 51ae6e7 0a034ad
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 17:24:20 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 51ae6e73ff998c24138d8c216794e65eb44cc256
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 17:24:16 2023 -0500
+
+    function duplication fails again
+
+commit 0a034adaa15b0a69ffdd2a28eca38afb5ca9fae8
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Wed Mar 1 17:23:48 2023 -0500
+
+    changed error statements
+
+commit ee6d9b9f33e60933b20267dd4ab618f6a88a4e62
+Merge: b5fa7d2 bd0f147
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 1 16:47:06 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit b5fa7d2d9db2c1fa90044cbcf3550d39bf050245
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 1 16:47:02 2023 -0500
+
+    multi globa decl fail test
+
+commit bd0f1478a43be37363257922e3f2c91692c3b27e
+Merge: 2ab219b da89e71
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 16:43:26 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 2ab219bb8993d783d1e8e63fe273c9bb108b633b
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 16:43:22 2023 -0500
+
+    introduced duplicates allowed accross eti
+
+commit da89e7150a5416e9cfab4da05cd93c511bf17ed7
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Mar 1 15:48:38 2023 -0500
+
+    func access test case
+
+commit b48294d91f4583a21702088a2a88d2c393dbc478
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Mar 1 14:45:05 2023 -0500
+
+    removed comments changed catch for lex and parse
+
+commit 82bcef78cc3d0de2469e0fad18e2f7a26dac1c92
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 28 23:52:48 2023 -0500
+
+    faulty interface test
+
+commit 1a62abcb9d7e36b8eed8600fbdf55f901bce4c5b
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 28 23:49:07 2023 -0500
+
+    interface multiple same function declaration test
+
+commit 132a7509c872c73537ece8fae9692ba8d359ce8d
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 28 18:09:14 2023 -0500
+
+    allowed array assignment to unknown type and added test cases
+
+commit 7e1ff3b67b7bddc852bbf8eb42f198ded22afd19
+Merge: edee789 06429d7
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 28 17:14:34 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit edee78937d75d36b49ab318712c2c283d35e3b48
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 28 17:14:31 2023 -0500
+
+    test cases
+
+commit 06429d71b3a8bf3e8446de5557a6a12e46dcb438
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 28 10:30:35 2023 -0500
+
+    Improved interface error msg
+
+commit 6b96574b98bf19237ee56b50c8f4e1ab6f1185e4
+Merge: 06acade e61ae3e
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 26 22:25:21 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 06acade6438ef257121aa1cf1c398f705fbaf9df
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 26 22:25:18 2023 -0500
+
+    test cases
+
+commit e61ae3ed90f6f52edc067d8a7c83714563a24781
+Merge: 1231a58 7e1cce4
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 26 22:14:27 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+
+commit 1231a5814afff8d8ee4944cfac8d076973531c3b
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 26 22:14:13 2023 -0500
+
+    Good Error msgs
+
+commit 7e1cce47cf8ee59318270b3d9af365d7cf4fcfc1
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 26 20:42:51 2023 -0500
+
+    pased all p2 tests
+
+commit 1c249656070e35c1d90eb18b46246cbd397ad6e0
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 26 20:15:41 2023 -0500
+
+    updated functions to work for left side
+
+commit 09846ca80ee3bd6bd407086dea92437c4f17174b
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 26 18:50:46 2023 -0500
+
+    Made errors for shit that should never happen
+
+commit e4dee33b69ac7f111dd316fe342e7c345d4fbe2c
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 26 18:41:12 2023 -0500
+
+    added Lexical, Syntax, and Semantic errors
+
+commit b1dc9128187f06b44bee89f8eb761a55926e38d9
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 25 23:23:49 2023 -0500
+
+    everything works if you uncomment three lines in main
+
+commit e0abb6543ac4459d16f7b63e1764b4db75b83a9d
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 25 23:07:23 2023 -0500
+
+    removed all random prints
+
+commit 924ecc711d4afd081db48ab7b017ca4e7b908fb4
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 25 22:53:19 2023 -0500
+
+    added errors and main
+
+commit 8a425c5c110a9a13bc587cd02f5514c09cfbebe3
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 25 20:14:16 2023 -0500
+
+    fixed error printing line and column for multi decl stmt
+
+commit 419b4d453c9d88950bda07cae11a3c2afbf9dfe3
+Merge: 6b6ecdd 3a54ddb
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 25 12:46:51 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 6b6ecdd8fa08408bb1c7ea0cedb81af9709ae84f
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 25 12:46:46 2023 -0500
+
+    debugged pa3 tests up to ex07
+
+commit 3a54ddbf94c1aa84cf1b78363dae8031a7ca8580
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 25 12:30:32 2023 -0500
+
+    cli should be update with libpath
+
+commit 6e3b0fa32f855a6cb68b4d06f7d6548c9d12e5bc
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 25 10:33:04 2023 -0500
+
+    modify sameType to avoid null ptr exceptions
+
+commit a1e39d84f876f0e7d9506b583a31ae6b7bea8f17
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 25 10:05:02 2023 -0500
+
+    updated array Value Literal
+
+commit a5f63c51b427fb6096f6483dc215a8d37dcca902
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 25 09:56:45 2023 -0500
+
+    added helpers to type
+
+commit f3a491813ebf84535e9fe03dc062f48e6667ec3c
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Fri Feb 24 22:53:33 2023 -0500
+
+    pa3 test file
+
+commit 99be803841449d07bf35b7a85c5c3384def99ced
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Fri Feb 24 22:49:29 2023 -0500
+
+    Fixed null ptr exception in Type and fixed arraylit return
+
+commit 053429eeee82fc1498d292977abf69b4b7e9cb31
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 21:33:06 2023 -0500
+
+    added context function trying to match procedure
+
+commit 8786083a480271956c5485548335c046f231c1a9
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 17:56:36 2023 -0500
+
+    implemented CLI basic working without use
+
+commit 2a77e79e74e9f23d3a6a19acc1fea650d49c7d2a
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 17:16:10 2023 -0500
+
+    updated program and top level nodes
+
+commit a644b931bf3dc85d1de768b5c5e0ea3305c40e56
+Merge: 654dcce 2c834a7
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 16:28:46 2023 -0500
+
+    Merge branch 'stmtType'
+
+commit 2c834a7d3b0204226b1c969385a620c314fc5a6c
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 16:17:15 2023 -0500
+
+    filled in semantic exception
+
+commit 654dcce13cfc9c310d3e19f8680f52856d651d7b
+Merge: 11475d4 3a4be6e
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 16:15:24 2023 -0500
+
+    Merge branch 'expr_type_check'
+
+commit 11475d4e0961c1c3054bae751cfd85b5acbb73c8
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 16:12:45 2023 -0500
+
+    brought back symbol table
+
+commit 3a4be6eb15fdfd12953a1cb136f3f01fb1ea2e03
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 16:07:02 2023 -0500
+
+    updated expr branch
+
+commit 2c2fe92e0cb66735b577c9a95112e299154f3ad0
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 14:00:59 2023 -0500
+
+    added rest of cases fixed most
+
+commit 12a099b46add01cc19551a1b8a4d767a77b7b814
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 12:02:10 2023 -0500
+
+    reformated error messages updated tests
+
+commit 10d931b0745e3b28799216c2efe965a2d5e18808
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 11:04:43 2023 -0500
+
+    edited global errors and added tests
+
+commit e305b378ae38a3011dccac923056390fc418eb0e
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 24 10:55:18 2023 -0500
+
+    reverted main to working pa2 and changed global
+
+commit 0d8ac97abf76dd1fdade232eee32c44efcf9363c
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 23 23:36:09 2023 -0500
+
+    tried to add use and interface methods
+
+commit b612725fbc21f00ba6fde5c28d1f272800141721
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 23 22:58:33 2023 -0500
+
+    updated use node
+
+commit ec39a67a8f5e561c7f9a0f3e71dbebd3aa0ea961
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Feb 23 21:21:50 2023 -0500
+
+    shit's prob fucked. will fix l8r
+
+commit 584890ae415eaf82f0b3d7721bb84dc3dc46711c
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Feb 23 16:24:34 2023 -0500
+
+    added unknown
+
+commit 63854e86266903b54c8e979d658af1dc4d4b04c0
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Feb 23 13:52:41 2023 -0500
+
+    decls have been type checked
+
+commit 9efc1c426a45828289aebfc5f4f7385163af8c29
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 23 11:03:44 2023 -0500
+
+    updated decls types and decl statements
+
+commit 8f0a2fb6fde0b0292f398f2f4012dd0f88503a3d
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Feb 23 10:29:32 2023 -0500
+
+    update type and array type checking
+
+commit bfe0c7b8e2f545328ef3a1274ba2b99d2234e9d5
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 23 10:09:06 2023 -0500
+
+    changed compare types
+
+commit 64c35cbf9088d064b9b12450c8d1ce7bb1ab0e24
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Feb 23 09:24:06 2023 -0500
+
+    changed some array operations
+
+commit 6150d324236171d694742c2d1dbaf3987249056b
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 22 23:55:13 2023 -0500
+
+    added comments
+
+commit 2c38dae9198f25c945f628338ee270c2a9e0d663
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 22 23:53:23 2023 -0500
+
+    added new types
+
+commit 8b7a868e62c226a6659e32314de71955962629e1
+Merge: 4503d11 51319eb
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 22 22:02:17 2023 -0500
+
+    Merge branch 'stmtType' of github.coecis.cornell.edu:aar226/etac into stmtType
+
+commit 4503d11472d137ea120efb3bde02e43397752bcd
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 22 22:02:02 2023 -0500
+
+    updated block Type Check
+
+commit 51319ebb8236800e46b4c491899b4e5bd8048cc0
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Wed Feb 22 21:54:33 2023 -0500
+
+    Refactored the code 一点 so it looks cleaner
+
+commit b8afda920ac7c930ab82dbab1f2a2320e3452a86
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 22 21:50:07 2023 -0500
+
+    fixed compareType
+
+commit 182d07eaed239330a1ef837c049463574f16724d
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 22 21:28:16 2023 -0500
+
+    updated procedure call
+
+commit d70667c33b7e4f56b404c3d06b39d4fc2e0049b9
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 21 21:51:07 2023 -0500
+
+    Added an equality check in Dimension and created the compareType function
+
+commit 1fc8e68ad1cadd9dc924b31a738721e99b6432ba
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 18:06:28 2023 -0500
+
+    arrayaccessExpr typecheck add multidim
+
+commit feb6f3554069fffd904112d59eb17f96de60cbc9
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:52:28 2023 -0500
+
+    arrayaccessExpr typecheck
+
+commit 367f18262dfbfa83a831f3cddfbc57262e4a168c
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 17:51:49 2023 -0500
+
+    funccal and length type checking
+
+commit edd9e83d04408a60d6c730fd05857fcbd135fb82
+Merge: f0d8748 618e5a0
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 17:39:52 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit f0d874842bfc92c17e150f21a6d5aafcfeb3ad20
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 17:39:23 2023 -0500
+
+    id
+
+commit 751d14db53c6441496e17dee04858d4f2746b3a4
+Merge: a84ced8 13069bc
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 17:33:04 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit a84ced8698de95fa1f85b2fc24d86cbea1f52027
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 17:32:47 2023 -0500
+
+    Revert "removed old ast refactored boolean exprs"
+    
+    This reverts commit 8ecae62f14d9695a0359a4b807b92144314ad15e.
+
+commit 5fe0f375b41aa8cb83da1b8fc970d246077e7553
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 17:29:38 2023 -0500
+
+    added Return
+
+commit 618e5a0791f4bbcc237df22ceccc3dbc638b943e
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:23:55 2023 -0500
+
+    intunop typecheck
+
+commit 0dafc3af33f3df030c37e872b396e3d9b2f3612b
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:22:06 2023 -0500
+
+    clean up
+
+commit c57637db9c64240f9f6bd6d54b492504215191d9
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:17:49 2023 -0500
+
+    booluop typecheck
+
+commit f569dbbc600b57f8a20c9d2bef85fe620cd3d8b8
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:11:27 2023 -0500
+
+    cleanup
+
+commit 14a8c84667349d3c7b07d72ffb08d70acf979c2c
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:09:42 2023 -0500
+
+    refactor divide, times, minus, mod, high mult
+
+commit ad0359c6da98dca63326f475b578382b7a71939a
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:09:19 2023 -0500
+
+    refactor divide, times, minus, mod, high mult
+
+commit 58cd90c64e3b0d2341969f1ba08d1b10d93260c5
+Merge: 8c42797 49d8420
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 17:06:32 2023 -0500
+
+    Merge branch 'stmtType' of github.coecis.cornell.edu:aar226/etac into stmtType
+
+commit 8c4279734549cf77676f593c25adfff39367f92c
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 17:06:00 2023 -0500
+
+    added if only stmt and while
+
+commit 49d84201fd39e1233288ed5ffd14404442dff92e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 21 17:05:20 2023 -0500
+
+    Added IfElse, While, and Stmt
+
+commit ee46e2e0dfa79106519e3953410e2b370249dc3f
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:05:13 2023 -0500
+
+    and or typecheck refactor
+
+commit 759b941bb8760c07f0536a54eb87542487b9a28a
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 17:00:38 2023 -0500
+
+    and or typecheck refactor
+
+commit 47caa90030b93a1efee7eda829cc23655a2681e4
+Merge: 2450d2f 4544ba7
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:56:30 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 2450d2f40e5347d92bc4d934e61defa1aa0fcc92
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:56:26 2023 -0500
+
+    geq, gt, lt, leq typecheck refactor
+
+commit 4544ba7d7c8cf122460ce54dd33fcd28b8488604
+Merge: 3783baa 8718cb7
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 16:55:25 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 3783baa0de40f319d6dbad0fc3155d777e678a21
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 16:55:20 2023 -0500
+
+    Id typchecking
+
+commit 61ee0991d09bb33befb534d5aa84c9f63bf60d76
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 16:53:31 2023 -0500
+
+    added isR
+
+commit 8718cb79ddad266f77558f4a60dd8e8f2f825023
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:53:02 2023 -0500
+
+    =,!= typecheck refactor
+
+commit e6c4580890116aa7af964d5facb7e3f491b77e92
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:33:04 2023 -0500
+
+    cleanup
+
+commit 45fddeb0c4188671ba88482b79d706c4bd02280b
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:28:58 2023 -0500
+
+    = and != typecheck
+
+commit e48fe301702f87329a417eecd78c18d909e44b40
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 16:22:13 2023 -0500
+
+    updated if Only
+
+commit a1439825a5eb75585d82b55dd467bdc916a49dbe
+Merge: 7fa2b58 9af7c5d
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 16:20:33 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 7fa2b583b826f98dbf77cf1e808bb4023509edcf
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 16:20:28 2023 -0500
+
+    deez nuts
+
+commit 9af7c5d0c9254ffd6a29792d7d57a7294576b648
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:14:55 2023 -0500
+
+    added typecheck to geq,gt,leq,lt,or
+
+commit ad494e57978f5b0025bd02848bb5e77f543caabb
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:05:47 2023 -0500
+
+    andBinop typecheck
+
+commit 8dd0306740aaea6e6a4e4d3bb39aa56f8115e3f1
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:04:09 2023 -0500
+
+    fixed boolliteral
+
+commit ef45c847c3c22a583fccbc67b3f7238cf12e7818
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 16:02:41 2023 -0500
+
+    addded more complicated error handling
+
+commit c96e84af143c0f73033cb77439015e580516378c
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:59:15 2023 -0500
+
+    fix divide
+
+commit fc5f13c09a0b2700879ebfd4bb1cc28d69b57d51
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 15:58:19 2023 -0500
+
+    minor changes
+
+commit 5bc7ed011b2a0a55a6c504544b5b284f5d5ef1b1
+Merge: 0a00d37 4ce84d4
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 15:57:07 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 0a00d3706472fec5dd0ed8392663eee4382b7630
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 15:57:03 2023 -0500
+
+    changes
+
+commit 4ce84d4709e2b325b84f552c36a6bb5417f6d296
+Merge: 3f6ddf6 3b88090
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:56:43 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 3f6ddf6865b0533f02d001ddc5b026f75475f8a2
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:56:24 2023 -0500
+
+    merge conflicts
+
+commit 3b88090e817966634b2d96e24d1d27a67e51e601
+Merge: 82297cd 00367b6
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 15:53:05 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 82297cd133b1815379c96bd0d1e9c05da04d5433
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 15:53:03 2023 -0500
+
+    added new typechecking
+
+commit 13069bc8a4fc786f52ce2f1da0c306dc5556314a
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 21 15:51:28 2023 -0500
+
+    fixed if else, added while
+
+commit 00367b67c0bb4f569a7f23901131ad97d6f19d3d
+Merge: 73999e2 cc2176e
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:51:20 2023 -0500
+
+    merge conflicts
+
+commit abf25ef995a23c3e9fce5e70573372fa9fa5d520
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 21 15:45:34 2023 -0500
+
+    added if else
+
+commit 73999e20a85508a6d5aabd6b3d5bb431b36f0dc4
+Merge: 7852caa 6d8a433
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:42:38 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 7852caaeee2ab6d84f5c3f3f0ea8847a116e8b7e
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:42:33 2023 -0500
+
+    start himult
+
+commit 1917f873ee3215695290aea6badd7dd2bedd4414
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 15:42:19 2023 -0500
+
+    updated IfONly
+
+commit 0e2fe3643ae310db8932019d2a841825e14b7ceb
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:42:15 2023 -0500
+
+    add override
+
+commit ab530531884d1898dc935592697cd3a71bc15fa8
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:41:32 2023 -0500
+
+    add tct getter
+
+commit 98c06bedb797a53ae412f285a2f00817c9316ea6
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:40:50 2023 -0500
+
+    divide fix
+
+commit 6d8a433bfb0b25a0c03823964045585188182012
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 15:40:28 2023 -0500
+
+    changed expr
+
+commit cc2176e633eb0f8fba8600a2ad019ca8c9e8dce6
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 15:27:50 2023 -0500
+
+    added default constructor to Type
+
+commit 0c70339c78abb155eaf284d6daf3ee9bab20c863
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:24:09 2023 -0500
+
+    bool + broken divide
+
+commit 8430406733e1a38ef3353cf754c999e89abb47e4
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 15:22:28 2023 -0500
+
+    updated types so its public
+
+commit 4df1e00bfbdf73ad755acc1f476178768c00f862
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 15:14:31 2023 -0500
+
+    added typeCheck to expr and stmt instead
+
+commit cb5c96c89f0057154f41b6db3da190fd53abe34b
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 15:12:05 2023 -0500
+
+    added abstract function typeCheck
+
+commit 0ff2ac4cade8faac23237f5444e44554b556befe
+Merge: 75987e5 f6f8f13
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:08:14 2023 -0500
+
+    Merge branch 'expr_type_check' of github.coecis.cornell.edu:aar226/etac into expr_type_check
+
+commit 75987e50aeeeac200d9e6ea1895246bb5e376028
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Tue Feb 21 15:08:08 2023 -0500
+
+    bool + divide not fixed
+
+commit f6f8f1311ff310f55662d5a2bfacb483f7f2b0e8
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 15:06:58 2023 -0500
+
+    commit to ur mom
+
+commit 3f67ab9711a1cf6f5b17c8df7c7da2f230cfbae6
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 21 14:52:20 2023 -0500
+
+    ur mom
+
+commit a4130ccab42fa5214683085f18b7d6137f5d1126
+Merge: 0fa08b0 2168a60
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 21 13:08:17 2023 -0500
+
+    Merge branch 'autism' of github.coecis.cornell.edu:aar226/etac into exprs
+
+commit 0fa08b0bb3525bb8b8cfe4ce48cdbead52863516
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 13:03:31 2023 -0500
+
+    create public getters for Type
+
+commit 1621847e26aa9058d73b3bbf89d9fe53e72cb1bd
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 12:57:19 2023 -0500
+
+    added Symbol Table HashStack Basically
+
+commit 2168a606b97c739ffbece68c5495d39a38b703c0
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 21 12:55:42 2023 -0500
+
+    binop expr get deez nuts
+
+commit 9fa83cbf29f9233f3d93199ef2b92139b19ec5c0
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 11:50:29 2023 -0500
+
+    added Javadoc BoilerPlate
+
+commit 6bcf2767bd310a108d5a64f6a1bd237074a275c4
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 11:48:45 2023 -0500
+
+    added boilerplate to TypeChecker Visitor
+
+commit 6e0843e3c49630caaaaa87547f9f36cbbdaec2fd
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 11:23:06 2023 -0500
+
+    added Stmt stubs for visitor
+
+commit b00c83d469ed702b5c23443e85eb7ea6d57cd841
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 11:20:54 2023 -0500
+
+    added visitor stubs for exprs
+
+commit c5ca648782d3b321894658c6bf0a35206fddd9cd
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 21 10:20:20 2023 -0500
+
+    moved plus binop to extend binop rather than intOut
+
+commit 8ecae62f14d9695a0359a4b807b92144314ad15e
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 20 19:32:50 2023 -0500
+
+    removed old ast refactored boolean exprs
+
+commit 5c632a14d9163d9ec2b7938c974aece4bf0cf18d
+Merge: 7a03ac6 b52a37b
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 21:35:59 2023 -0500
+
+    Merge branch 'new_ast'
+
+commit b52a37b11bd7cfe83970e7f5cf11a2d0d687e1f0
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 21:31:43 2023 -0500
+
+    updated names of etac files
+
+commit 627a6f4f91258c3d5f29b0605a749bda973bcc03
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 21:22:57 2023 -0500
+
+    added global removed old cup
+
+commit ac11da869ae302f9a1f66d1189dda281d5b02cf2
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 18:24:16 2023 -0500
+
+    integrated new eti2 cup
+
+commit dd2bb5573593d15861523c7f986f695ade60e514
+Merge: 9396a9e d8f69b2
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 18:00:24 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit 9396a9e8eb1e61d63b4a3b4ca100324c1355bff8
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 17:58:18 2023 -0500
+
+    finished eta2
+
+commit d8f69b2945819144dc5ece36d90eaa29cca11699
+Merge: 80f3531 7895104
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 19 16:06:57 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit 80f3531968e1349fd03714617daf4f42e991e126
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 19 16:06:24 2023 -0500
+
+    Added javadocs for statements
+
+commit 7895104d864478f1f6881d89742705548c257dcd
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 16:03:30 2023 -0500
+
+    use file
+
+commit de8ee8ad381800f5ae5a46d253c8ff878e4f27e2
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 15:58:03 2023 -0500
+
+    underscores
+
+commit 3f288e513500ad27bf8a1136bf9b0f5714647ac6
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 15:50:47 2023 -0500
+
+    eta2cup patches
+
+commit 7c736e0232036c8a2884c3c828df8cf639e1c250
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 15:50:27 2023 -0500
+
+    globdecl change value to expr
+
+commit 80a9ffc9e912a95e5627b01a1908167b7b18d971
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 15:21:35 2023 -0500
+
+    patched method
+
+commit 0a7f99dc8f07aa90a431302c686bedda3d3b5a3a
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 15:15:54 2023 -0500
+
+    started etacup2
+
+commit 5677e7ed16504aa7fbf1df5f762458394561dcc5
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 15:12:32 2023 -0500
+
+    started etacup2
+
+commit 2c1ffade8596b70f3e02c65604c4e200bb8018c5
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 14:40:56 2023 -0500
+
+    disallow a:int,b:int in decl
+
+commit 0ac0d39df6d8a06fba75045817444ebe80cca977
+Merge: e5e8c31 6adf45a
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 14:15:11 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit e5e8c311f49bbda0e095601d55770b4908c45b2e
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 14:15:08 2023 -0500
+
+    added docs
+
+commit 6adf45a3467b88959078bde2242ab4ad20fe374b
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 19 14:14:04 2023 -0500
+
+    Added javadocs for statements
+
+commit e76fc58cf255145024665906a29f4f4b2a95bdfd
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 19 14:12:14 2023 -0500
+
+    added docs
+
+commit b01a8fc8b19582e144d99d9db1d1e7f169dd72f6
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 19 14:07:56 2023 -0500
+
+    change declartion to abstract class
+
+commit e4a4b24457ffbdbc5daa021b6d365ab8b8c33433
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 19 14:01:10 2023 -0500
+
+    commented out multi decl no init, added decl stmt
+
+commit c68636ce861ce4a6ce3ee1ade0161d282adc5ef3
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 19 13:47:39 2023 -0500
+
+    array access decl class
+
+commit ec4446dc1f3b5c724f97dd88e304625dcfcdf282
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 19 13:22:39 2023 -0500
+
+    definitions folder
+
+commit b97474d318873d4da15f5d78a8129ab49d232095
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 11:51:46 2023 -0500
+
+    moved declarations to own folder and now inherits from astNode
+
+commit c09577e23da8d76240cd1524e90e28cc82c3ba04
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 11:49:56 2023 -0500
+
+    copied over decls types and dimensions
+
+commit dce393e7ac4735f1a79fb672f61ee927bf58bff9
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 19 09:01:40 2023 -0500
+
+    added number to regular char
+
+commit 4f264703e7359e45267a52c89fe7ae891d288aa1
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 18:07:24 2023 -0500
+
+    added Procedure
+
+commit 762dc4ce891e0d640ea4d822de7370df178e7b72
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 18:04:11 2023 -0500
+
+    moved imports to newast
+
+commit eb84d22569b8daf6c0732247d7fc7640157615bc
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 18:02:01 2023 -0500
+
+    fixed imports and while
+
+commit 278627a7ac9f34a3359054fc9f1cfdc8aa26df2c
+Merge: e32fa6b d2d63e2
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 17:57:13 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit e32fa6ba8fd9d20b22de5bf81b075a51b01d91b7
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 17:57:02 2023 -0500
+
+    while
+
+commit d2d63e28783a767518c95251b11b649b06a51a01
+Merge: 217c7c9 634efa7
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 17:55:11 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit 217c7c96b4fe62c2a95be6664cb48a5b196bea24
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 17:55:07 2023 -0500
+
+    removed overrides
+
+commit 634efa759d448e750dd76e8233008dca57f2fc9d
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 18 17:54:55 2023 -0500
+
+    Added tests
+
+commit b107940f82b88e82bf1085c344816afe8d0cdca3
+Merge: 418d692 d8cdec5
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 17:53:43 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit d8cdec53f6cf86a5c8d7d12b542bd5708b3ec8e8
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 17:53:31 2023 -0500
+
+    added ID and printer
+
+commit 418d6920541713984938849540e0e390eb315a7c
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 17:53:28 2023 -0500
+
+    while
+
+commit d466c97cc22fa27a45fd340583bbe5ba86539db4
+Merge: 145c0fa a52c528
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 18 17:43:55 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit 145c0fa80eeca8ff56bd8edf2635bd690ceee7fb
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 18 17:43:52 2023 -0500
+
+    javadoc comments
+
+commit a52c528c9e3606f2a88d0986a8ec0afe1763fe32
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 17:41:47 2023 -0500
+
+    added Block and Return AST nodes
+
+commit 4ce7366c6b9d0c529732c71df20d257255f37fd3
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 17:27:21 2023 -0500
+
+    added stub for stmt
+
+commit 0378b285edb1a17dc568286c1613d5e0567c6f77
+Merge: c8db664 02b5fb3
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 17:20:25 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit c8db66422f29f47a1a1715bc5cad9cb8884b9ffc
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 17:20:20 2023 -0500
+
+    added Literal Classes
+
+commit 02b5fb3a475c97203b8017697732a6a8e66d83c1
+Merge: fafec6e d8e414a
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 18 16:50:55 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit fafec6e4f7282586ff1dcfa6ae22c9dbd4b7d176
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sat Feb 18 16:50:53 2023 -0500
+
+    javadoc for funccal and length
+
+commit d8e414a7068f3a22a9b2c23b32a780e970e0775c
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 16:48:40 2023 -0500
+
+    added array Access Ast
+
+commit ef7543ed56eba616e9f2911d93450dc0e496dc98
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 16:07:05 2023 -0500
+
+    updated Length and FunctionCall
+
+commit fb76bd286a305f263032ee044a58194517121c2d
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:57:25 2023 -0500
+
+    unop pretty Print
+
+commit 1b1003e1947b62d9981b00b63c92ec7298a5cc72
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:53:58 2023 -0500
+
+    updated Binary Expressions
+
+commit 008f3c64bd9a3677f0864b30f2c600270a50da96
+Merge: f051a03 b90752e
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:51:41 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit f051a03c2959341682d5b57a8fd2069dc2bfcdfc
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:51:26 2023 -0500
+
+    added docs
+
+commit b90752e63f45ef2063c50cab28ad05936d53f615
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:43:36 2023 -0500
+
+    added comments for future type Checking
+
+commit a6f07993f46efde454ed269f010219bd04c92e7b
+Merge: 9adb468 5199f51
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 18 15:41:38 2023 -0500
+
+    Merge remote-tracking branch 'origin/new_ast' into new_ast
+
+commit 9adb468dbd8ffd4d089c2c2a9645c2e7b699b81e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 18 15:41:27 2023 -0500
+
+    hopefully finished unop
+
+commit 5199f518d6bb360dfb8568b457954af84b5d819b
+Merge: 635f3a7 ddcb627
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:39:48 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit 635f3a74f4f21da295aa3d597621cc0c9a6815f8
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:39:44 2023 -0500
+
+    put back pretty printing
+
+commit ddcb627bb329592073f51beffb4b11431f11ed34
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:29:31 2023 -0500
+
+    other binops
+
+commit 5dd245cb604bc14108a00d585668417615a22cae
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:28:36 2023 -0500
+
+    or binop
+
+commit f675c75bc34454a948150b41e008ae10f19fedd7
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:28:09 2023 -0500
+
+    neq binop
+
+commit e80fdf39c1e8ea248df40e892d8d28e73027e85e
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:27:27 2023 -0500
+
+    lt binop
+
+commit cb9711cc1664e6e71f2fc85608e970a674668e5f
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:26:56 2023 -0500
+
+    leq binop
+
+commit 17b08b6fdf4258cd792b42051849b2cff2b499fa
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:26:19 2023 -0500
+
+    geq binop
+
+commit 472035904cfb2a7b467183ff618d183f7aa359d0
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:26:09 2023 -0500
+
+    gt binop
+
+commit 4b33c6fa14342d53f45c9ed1a97627dcb97e4192
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:24:37 2023 -0500
+
+    equals binop
+
+commit b63ef1703b73f8edbe884589faca145282366597
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:23:27 2023 -0500
+
+    andbinop
+
+commit 7c655ec4de4bd6b0d39083b85a390fa1453e7d39
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 18 15:19:23 2023 -0500
+
+    andbinop
+
+commit cc61ca11a5ca01d9d023f96d82020860eaff2e9c
+Merge: 90c5c69 169a975
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:15:34 2023 -0500
+
+    Merge branch 'new_ast' of github.coecis.cornell.edu:aar226/etac into new_ast
+
+commit 90c5c696af590eb97b10ec2e445fb657973a768c
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:15:29 2023 -0500
+
+    finished inbops refactoring
+
+commit 169a9750b10bd3933aead83127d333d073a54062
+Merge: 1c20141 b42658d
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 18 15:13:48 2023 -0500
+
+    Merge remote-tracking branch 'origin/new_ast' into new_ast
+
+commit 1c201418b6855c15d1f819edefb6a17fc5b95c6b
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 18 15:13:19 2023 -0500
+
+    forgot to extend
+
+commit b42658d37b7275b5d30d71917b786dbbf4c325bd
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 18 15:12:55 2023 -0500
+
+    added line numbers to top level nodes
+
+commit 94dc3598071e70904e850b1db4c27b92e15d8872
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 18 14:40:24 2023 -0500
+
+    new ast
+
+commit 7a03ac6aae59ab72a2d6393b2b7f3e201fe7598c
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 16 21:41:02 2023 -0500
+
+    removed old lexer and removed print statments
+
+commit da19acaa1771f566c474a97f837c0b926a0e30ce
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 16 21:37:39 2023 -0500
+
+    added global tag
+
+commit f2af063d043de3a7ddd299a04bafca5000dfdb05
+Merge: 6818d39 9aa92f8
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Feb 16 14:28:59 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 6818d39ed536ea2ec773e5795e0e89943ca8f768
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Feb 16 14:27:42 2023 -0500
+
+    new ast
+
+commit 9aa92f879cde370be9618c171ea4a778e283f9db
+Merge: a462bf3 b9b11a6
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 15 21:28:19 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit a462bf32b87b454021ba658b25f082a59e313d64
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 15 21:28:15 2023 -0500
+
+    put deps back
+
+commit b9b11a654cffda3503230178e1749a005bc4d080
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Wed Feb 15 20:20:32 2023 -0500
+
+    Corrected description for parse cl arg
+
+commit 46e6c88c779c65285067b60b407d6254805e7be1
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Wed Feb 15 20:03:49 2023 -0500
+
+    Corrected description for sourcepath cl arg
+
+commit 2cd173fc15c2ef29fd197304c4e0989a34ff16c9
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 13:23:52 2023 -0500
+
+    it works ?
+
+commit 62780c6650997b20a3764f197e89085ca393e0ab
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 12:51:56 2023 -0500
+
+    acc multi decl test
+
+commit 12059006866ac82d64ae298bbc249ba9fe731b6e
+Author: Andrew <akc55@cornell.edu>
+Date:   Wed Feb 15 10:45:42 2023 -0500
+
+    added Multi Global Decl
+
+commit 9222ed6c33e3668cc700925731ac1c1b7d1eb85e
+Merge: f9675cc 8215c4a
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 00:46:49 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit f9675ccbe97b2d371b804f21087475753b70d6bd
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Wed Feb 15 00:46:44 2023 -0500
+
+    pretty printing for arr type vs arr expr
+
+commit 8215c4a3d8a42e807f5b013f3de33ce55af0a547
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 23:42:22 2023 -0500
+
+    back to gradle
+
+commit 1c5c9d86b8f3699e51e02dc7a680631c2d228166
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 22:47:16 2023 -0500
+
+    back to gradle7
+
+commit 59af3fe0a8fe845c732d2451af1ce61e67dc681b
+Merge: 7da4e6d daf3474
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 22:43:40 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 7da4e6da7fa5d52edc0b3131be832f19e0f97845
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 22:43:26 2023 -0500
+
+    removed gradle alias
+
+commit daf3474f19f906856a370679448f0246bd277266
+Merge: 382ea05 5a0e690
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 14 22:18:13 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 382ea053d71cbdca0ea3e911ebc55f9473966e61
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Tue Feb 14 22:18:08 2023 -0500
+
+    more test cases and system.out print error
+
+commit 5a0e690ca3d6103085bad4ae6f6321afcc0cdeac
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 21:46:16 2023 -0500
+
+    updated test 22
+
+commit 8468e5b86fcb1078e61903fefbd106f77be85736
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 21:36:27 2023 -0500
+
+    updated so error lines show
+
+commit 26a89d1518e190e159cc1f979f94bee99bcae5bb
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 21:11:19 2023 -0500
+
+    down to 1 warning
+
+commit 3a2a9323be2d2bd431b956c13b8e5e0c9efb6189
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 20:51:55 2023 -0500
+
+    changed MIN VAL to a special LEX
+
+commit 7cca11f08138e6071aa60df765432d9d78b3a509
+Merge: f65d7fb 18eed4c
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 14 17:26:26 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+
+commit f65d7fb4aff23cb4e55972cf9051d95f89eed52f
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 14 17:26:13 2023 -0500
+
+    Added tests
+
+commit 18eed4c5082af77cee012b8dd510c793122ec23e
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 17:16:45 2023 -0500
+
+    back to gradle 7
+
+commit d83709c6f204e0f4e65e7f47e371228650071c8d
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 17:13:30 2023 -0500
+
+    updated build files
+
+commit 6fa7e04fca2126dd87f13425f7e009759103eed1
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 17:06:52 2023 -0500
+
+    added gradle7
+
+commit 0042f010dc9ac1dc9404324beab207645469c435
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 16:57:52 2023 -0500
+
+    removed some deps
+
+commit 158544d0ae5a789d14ef875e16add603119a6d2c
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 16:14:05 2023 -0500
+
+    fixed pretty and passes all basic
+
+commit 1ce6533f24107a6890547e12e366c79f7e674841
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 13:23:13 2023 -0500
+
+    removed duplicate files
+
+commit 67c14fe57ac2ec203823ae6f0fbd679a743d197b
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 11:36:56 2023 -0500
+
+    created clean file
+
+commit 60178234d1249743c6ea1a2a60b9c716bdb9c900
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 11:13:41 2023 -0500
+
+    seperated eti and eta cup and main
+
+commit 69e4641ce0ae80abbca907294e76fd8bf6a4964c
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 11:06:32 2023 -0500
+
+    cup finished with basics
+
+commit 13c34d40cdd29aef037cd13d526b4c68d8117107
+Author: Andrew <akc55@cornell.edu>
+Date:   Tue Feb 14 10:06:12 2023 -0500
+
+     changed pretty printing still needs work for arrays
+
+commit 9c9137b6f3b78f45034a55b4b66d8b58f50483e9
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Tue Feb 14 04:00:30 2023 -0500
+
+    parse to file added
+
+commit 2393ad9005374f576a0debac6913df4d417ebaee
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 23:58:26 2023 -0500
+
+    added so brackets can have identifiers
+
+commit af047b769e0315b800ae688e5dfa955d29110958
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 21:51:40 2023 -0500
+
+    removed prints
+
+commit 994082fc0cc5809e67838cfe9cb7d51cb03fd2ed
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 21:50:47 2023 -0500
+
+    updated array reassignment
+
+commit 8fd670fc29cf25efc0302e56e4ee280cd589c706
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 20:40:34 2023 -0500
+
+    array assign
+
+commit d9048e7fcc328404da97bebed0a70012bffc1a2a
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 19:24:14 2023 -0500
+
+    fixed ArrayAccess
+
+commit 6a365b76b050f3eb143936e6f6a1cbda9ba7348c
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon Feb 13 18:54:29 2023 -0500
+
+    asdf
+
+commit ef78f077b443bee6f0746fb00409c060c795b8a8
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon Feb 13 18:51:25 2023 -0500
+
+    its broken
+
+commit 3bf5d3bf7e6dbdb9daf23193120c5cffca8f05db
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 17:41:37 2023 -0500
+
+    tried to fix multi
+
+commit ab2397beed26cebaf65ad9e903d7a7307c99b880
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 16:31:57 2023 -0500
+
+    created return and reassign
+
+commit 5edd2f2ee6120b365a9762fb8ee503d774ac2b37
+Merge: 9a8914b b7190d1
+Author: Alan Li <ahl88@cornell.edu>
+Date:   Mon Feb 13 15:05:06 2023 -0500
+
+    Merge pull request #5 from aar226/tests
+    
+    Tests
+
+commit b7190d1ac2250bb79c80b849d475ef37566d48df
+Merge: 0f6d072 9a8914b
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 15:01:31 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac into tests
+
+commit 0f6d072261ad8c8ecfd5c956d57cb697e3dbd2e4
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 15:01:09 2023 -0500
+
+    decls
+
+commit 45c3c0ac51a705108461202288882f1282813df5
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 14:34:38 2023 -0500
+
+    decls
+
+commit 9a8914bc4c2e336e583f5a78b1fe3322b9c31873
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon Feb 13 14:34:19 2023 -0500
+
+    last line semi not working
+
+commit d87f12040402fac9c840c84baa95d7c53b37d1e7
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 14:24:58 2023 -0500
+
+    function calls
+
+commit f9742239bc83709d1854c59ca2e08828315ad53a
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 14:15:16 2023 -0500
+
+    multiple returns
+
+commit 82472aa71055b19aeddd51fdc4f7202be62c6c74
+Merge: 5295126 6bc3dd0
+Author: Alan Li <ahl88@cornell.edu>
+Date:   Mon Feb 13 14:03:59 2023 -0500
+
+    Merge pull request #4 from aar226/tests
+    
+    Tests
+
+commit 6bc3dd05089114045b710effc8bf545cf99bfc50
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 14:02:46 2023 -0500
+
+    nested while
+
+commit 6a9cdabc5cac3e1cba4a974c9327fe30b5a65a07
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Mon Feb 13 13:58:34 2023 -0500
+
+    nested if
+
+commit 5295126c4fff83408a7356533d1e1de42627c5d6
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon Feb 13 13:49:10 2023 -0500
+
+    function calls and
+
+commit ae7033ac92b3ffc6a9c334cc5afb144ac543aa3f
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 12:52:49 2023 -0500
+
+    empty statment works
+
+commit 922e3e9a628201aee8411b1d064b8b8ad1a03a38
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 12:47:11 2023 -0500
+
+    statements work
+
+commit f73f178ceb28e023796efad2b13011ab11e4978d
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 13 00:24:06 2023 -0500
+
+    fixed bad array instantiation
+
+commit 83ba0afae926126c493370083b67be4f7f9d20b4
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 20:43:31 2023 -0500
+
+    Added tests
+
+commit a18a3f4274b1c7e7c9b728d5137769dd54902d0f
+Merge: adcaa6e 2ec97a8
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 20:43:09 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+
+commit 2ec97a8d068e32e8f53081d439be9068d220250e
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 12 20:42:48 2023 -0500
+
+    ast updates
+
+commit adcaa6e11fbf5cc807398301214d000a67dc98cc
+Merge: fb59ec0 941b1f3
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 19:04:46 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 941b1f36d8f67eeb966cc2bbecc35240b8fb07f6
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 12 18:57:58 2023 -0500
+
+    assters
+
+commit fb59ec09524bc3bc72e94b75437b658964d0102e
+Merge: 266115b 208914e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 18:13:00 2023 -0500
+
+    Merge remote-tracking branch 'origin/main'
+    
+    # Conflicts:
+    #       .idea/workspace.xml
+    #       src/main/java/aar226_akc55_ayc62_ahl88/ast/Definition.java
+
+commit 208914e654f918d577f1e3154f9b54639f45aee5
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 18:04:05 2023 -0500
+
+    pretty can be used
+
+commit 266115bd0174f4b1643ea6f1f33329776acdbdda
+Merge: cda12ce 1fff113
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 17:55:09 2023 -0500
+
+    wtf
+
+commit 1fff11308943c0a0ba7ec6b4f9f1e9c19143ce54
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 17:54:23 2023 -0500
+
+    changed def back to interface
+
+commit cda12ce2548e07082d04501f4d5f44323a9b5f0c
+Merge: 4f5f54b 1fbf71f
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 17:53:23 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit 1fbf71fe93b95b2cc22793f918207bf1b9804a4c
+Merge: 44e895c 3e06ad2
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 12 17:52:34 2023 -0500
+
+    pretty printer
+
+commit 4f5f54b0babf5c03e6fef4e6d7127c633591b617
+Merge: c7704a6 3e06ad2
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 17:51:54 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit c7704a6adb8603e897e0be4e6a4f2f6dcd83d11c
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 17:48:14 2023 -0500
+
+    fuck workspace.xml
+
+commit 44e895c03f87ab8816d4d58641cbf56622ab0dd6
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 12 17:47:53 2023 -0500
+
+    pretty print changes
+
+commit 3e06ad2cf1a008979c9bd9de2088b2d65c169aa3
+Merge: 96fbdcd 413780b
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 17:46:49 2023 -0500
+
+    finished merge with INT LITERAL
+
+commit 96fbdcd12f98ec6b4b23481bd254fceeefdb0f4f
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 17:32:14 2023 -0500
+
+    updated AST and INT LITERAL
+
+commit 413780baacd781fb1f5219347098f221cc0495b4
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 17:22:34 2023 -0500
+
+    im pooooooshing
+
+commit 71082351a2484e32a4cce3da0aae20f25d268f19
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Sun Feb 12 17:21:10 2023 -0500
+
+    added arg and unop
+
+commit a75488eed8e76781be03eda290b8603aeefaea17
+Merge: 3d2ba8e 749e94d
+Author: Alan Li <ahl88@cornell.edu>
+Date:   Sun Feb 12 16:07:39 2023 -0500
+
+    Merge pull request #3 from aar226/tests
+    
+    Tests
+
+commit 749e94d729b18054c243fefdb460e940544e89de
+Author: Alan Li <ahl88@cornell.edu>
+Date:   Sun Feb 12 16:07:20 2023 -0500
+
+    Delete Lexer.java~
+
+commit 222a8e6dfe9a8d0c24a01544a46591d6be92fa22
+Merge: f4e6684 3d2ba8e
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 12 16:05:40 2023 -0500
+
+    fix merge
+
+commit 3d2ba8e56e35f35488f500c215b1eaaa80ad7725
+Merge: 941ce2b 72c847f
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 15:52:42 2023 -0500
+
+    merged bracket decl
+
+commit 72c847f73e46159fd70a2d98052ca50d9821f2f8
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 12 15:35:34 2023 -0500
+
+    emptybracket decl version
+
+commit 5b4f48b2ad946d9231284774f50dc182d17b3c5c
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 12 15:21:11 2023 -0500
+
+    Fixed windows build script
+
+commit 941ce2b8742e200643867c7fa0b7a9a56d1b337c
+Merge: aab29c3 a326c81
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 14:44:26 2023 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit aab29c3b0ab5b86600ebd2be2b1a8f9522729159
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 14:44:21 2023 -0500
+
+    updated LIterals and implemented Value
+
+commit a326c81058d35fe81ab23bb60e90b577ab6c61dc
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 12 10:35:47 2023 -0500
+
+    Added build scripts
+
+commit 41ad3ce3e4f6793665cb35096578a1c6feac9e18
+Merge: a1791c6 4e060ea
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 12 10:04:58 2023 -0500
+
+    Merge branch 'cupProgram' of github.coecis.cornell.edu:aar226/etac into cupProgram
+
+commit a1791c6a516841eb06ff3bd28174900468e62b48
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sun Feb 12 10:03:19 2023 -0500
+
+    Added build scripts
+
+commit 4e060eabcdb65e4b7247463774d024aa3dbdfc9d
+Merge: 8a9f707 96dbac0
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 12 09:58:55 2023 -0500
+
+    added merged classes
+
+commit 96dbac0361ccb60d424568568b4db00f32dfca9d
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 12 01:21:27 2023 -0500
+
+    push AstNode.java
+
+commit 8a9f7079ecc5e5d1a5c5d2f38de94e632add9630
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 11 18:56:01 2023 -0500
+
+    Function headers work
+
+commit 5cd4da1089c689289539eb7901fdcb3bbc480488
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 11 15:27:27 2023 -0500
+
+    started new branch for AST Program
+
+commit 601498e71ce2a6e8b7dec8fb7097a77ca22ee15e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sat Feb 11 14:54:27 2023 -0500
+
+    push AstNode.java
+
+commit f4e66847ba7338284c3463aec86ad7caef351360
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 11 14:26:54 2023 -0500
+
+    add tests
+
+commit 606140a50b39d90ad1e8d21d548a23067dc6b77f
+Author: Andrew <akc55@cornell.edu>
+Date:   Sat Feb 11 13:50:59 2023 -0500
+
+    updated lex file
+
+commit b617aca227826944dbec46075b7d388703933ac5
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 11 13:23:48 2023 -0500
+
+    added more tests
+
+commit 801fa0fe7c7593e74dedb14c98f8b446aa1890fd
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 11 13:07:44 2023 -0500
+
+    added test precedence
+
+commit 713a96e1085b68b1fb0b6494402779f74f1407ec
+Author: alanli2001 <alanli2001@users.noreply.github.com>
+Date:   Sat Feb 11 12:49:32 2023 -0500
+
+    add tests
+
+commit 95ba4dc6fa2723c0953a1a417eddd796bd96736e
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 10 21:22:23 2023 -0500
+
+    updated AST PARSER WORKS FOR EXPR
+
+commit fd5eb599927b533c38a75f42d6b5055daa388422
+Merge: 7ed66af a79ec0c
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 10 16:28:42 2023 -0500
+
+    Merge branch 'cuppers' of github.coecis.cornell.edu:aar226/etac
+
+commit 7ed66af6e437188fead3f7d572abbf5d3f77f089
+Author: Andrew <akc55@cornell.edu>
+Date:   Fri Feb 10 00:43:16 2023 -0500
+
+    finished lexer Parser not gets read success
+
+commit a79ec0cedfae771a940043c7ecd3770da950bfac
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Feb 9 17:51:08 2023 -0500
+
+    scaterrebrain
+
+commit 7ae44bb040ea0636b7ec4784d4077fd9594d258e
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Feb 9 17:47:52 2023 -0500
+
+    something
+
+commit ef05dcf02ea509170b87efae90b7782d413a4c3f
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Feb 9 17:37:57 2023 -0500
+
+    vardecl cupper
+
+commit 95437a2bc744c850389e7e4efa90454cbbe15d9c
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 9 16:14:00 2023 -0500
+
+    intellij doesn't yell anymore
+
+commit 11aa523a52c4bf747c477475bb53abb8e4ee5dca
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 9 14:28:32 2023 -0500
+
+    added p2 starter code
+
+commit 2676eff6d88d41ba31dd540c879f5afd85d85210
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 9 13:09:17 2023 -0500
+
+    turned gradle offline again
+
+commit 6a5778eb52668f9672c44627f44df4552dd31453
+Author: Andrew <akc55@cornell.edu>
+Date:   Thu Feb 9 13:05:36 2023 -0500
+
+    updated deps and lex build system
+
+commit 319620a0a6ac5a61fc2eb38b257121ec4b927996
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Thu Feb 9 01:30:59 2023 -0500
+
+    starter code for cuppers
+
+commit 58621c0346eae27f7b895b68ff2996a74be3e0f5
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Thu Feb 9 00:02:00 2023 -0500
+
+    its cupping time
+
+commit 8c895574f6a707be6077bae02b787d9dd0eed4d7
+Author: alanli2001 <ahl88@cornell.edu>
+Date:   Wed Feb 8 21:37:41 2023 -0500
+
+    Added some AST classes
+
+commit 093fffb78580669b80d23f1205e4c72f94ae5100
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 6 16:21:02 2023 -0500
+
+    more fixes to emojis
+
+commit 013f8c8bcbe24f00e917c9e8cb0de20ae1272c93
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 6 15:12:04 2023 -0500
+
+    moved unicode to printing escape
+
+commit 72893a2b2d8b2256cc75ccefb9986621e3b36f1d
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon Feb 6 11:41:54 2023 -0500
+
+    updated etac executable and jflex file for emojis
+
+commit 12a6eec28d93ef40ebcc28dcc2d328ba7e56bea8
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 5 22:09:29 2023 -0500
+
+    offline work + more tests
+
+commit 074567af84cef3135073bd8fe94ddfeb03b816dd
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 5 20:13:17 2023 -0500
+
+    offline working
+
+commit e0388844f0b91d8be2992438685ebf28132cfae6
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun Feb 5 17:52:21 2023 -0500
+
+    update build files
+
+commit 285473728013204d76e308511e07afd12ebf1ea4
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 5 17:05:01 2023 -0500
+
+    bug fix
+
+commit 7e8c5263bf263b8220acee4fa6335a55ee2a438d
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 5 16:49:31 2023 -0500
+
+    Added tests
+
+commit bdd444b8e549297b68cd80ffc9b427a21c269152
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 5 16:28:46 2023 -0500
+
+    Added build scripts
+
+commit d3f4dd171f5270d9e719bfcc3aeee7ea5b2fc99e
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun Feb 5 15:11:04 2023 -0500
+
+    migrate to gradle

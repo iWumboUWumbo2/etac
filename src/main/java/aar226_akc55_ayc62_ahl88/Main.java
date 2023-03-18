@@ -91,7 +91,11 @@ public class Main {
                 out = "id " +  out;
                 break;
             case (sym.CHARACTER_LITERAL):
-                out = "character " +  StringEscapeUtils.escapeJava(out);
+                if (out.length() != 1){
+                    out = "character " + out;
+                }else {
+                    out = "character " + StringEscapeUtils.escapeJava(out);
+                }
                 break;
             case (sym.STRING_LITERAL):
                 out = "string " + out;
