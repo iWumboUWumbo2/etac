@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class Main {
     private static String outputDirectory;
@@ -90,7 +91,7 @@ public class Main {
                 out = "id " +  out;
                 break;
             case (sym.CHARACTER_LITERAL):
-                out = "character " +  out;
+                out = "character " +  StringEscapeUtils.escapeJava(out);
                 break;
             case (sym.STRING_LITERAL):
                 out = "string " + out;
