@@ -457,22 +457,12 @@ public class IRLoweringVisitor extends IRVisitor {
                 }
                 b.statements = nxtBlockStmt;
             }
-//            System.out.println(del);
             ArrayList<BasicBlock> cleanBlocks = new ArrayList<>();
             for (BasicBlock b: orderedBlocks){
                 if (b.statements.size() > 0){
                     cleanBlocks.add(b);
                 }
             }
-            orderedBlocks = cleanBlocks;
-//            for (BasicBlock b: orderedBlocks){
-//                System.out.println(b.statements);
-//            }
-//            for (BasicBlock b: orderedBlocks){
-//                for (IRStmt s: b.statements){
-//                        orderedStatements.add(s);
-//                }
-//            }
             IRFuncDecl func = new IRFuncDecl(node.name(),new IRSeq(orderedStatements));
             func.functionSig = node.functionSig;
             return func;

@@ -521,8 +521,6 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     @Override
     public IRStmt visit(DeclAssignStmt node) {
-//        if (node.getDecl() instanceof UnderScore){ a:int[] = 4, a = 4, a[4] = 4 _ = 4 _ = foo()
-//        }
         // might need to do call stmt
         IRExpr right = node.getExpression().accept(this);
         IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
@@ -885,16 +883,6 @@ public class IRVisitor implements Visitor<IRNode>{
         IRSeq loopComponent = new IRSeq(set0Coutner,whileHead,loopCheck,whileBody,recur,inc,go_back_to_head,afterLoop);
 
         return new IRSeq(top_level_Order,loopComponent);
-        // malloc 4
-
-        // for each of those Elements Recursively
-
-        // Create IR STMT recursively
-
-        // Malloc Then Move
-
-        // Go through all elements and Malloc and Move Again
-
     }
 
     private IRData initSingleGlobal(Globdecl node){
@@ -924,23 +912,9 @@ public class IRVisitor implements Visitor<IRNode>{
             throw new InternalCompilerError("Unable to global assign this type.");
         }
         return irdata;
-        // Check if right side is null or not for initalized Value
-        // FOLLOW ABI For Naming Conventions
-        // Put Data into Single Global Decl
-        // Return IR DATA
     }
 
     private ArrayList<IRData> initMultiGlobal(MultiGlobalDecl node){
-
-        // Make sure each one lines up correctly
-
-        // FOLLOW ABI For Naming Conventions
-
-        // PUT DATA INTO Building GLOBAL DECLS
-
-        // Return Multiple Global Decls
-
-        // HELP ANGELA After finishing This.
 
         ArrayList<AnnotatedTypeDecl> decls = node.getDecls();
         ArrayList<Expr> exprs = node.getExpressions();

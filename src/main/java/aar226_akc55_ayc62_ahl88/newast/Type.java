@@ -87,23 +87,17 @@ public class Type implements Printer {
 //        outputTypes = new ArrayList<>();
     }
     public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
-//        super(-1,-1);
         line = -1;
         col = -1;
-//        System.out.println("ONLY THE FUNC TYPE");
         this.tct = Type.TypeCheckingType.FUNC;
         inputTypes = inTy;
         outputTypes = outTy;
-//        dimensions = new Dimension(0, getLine(), getColumn());
     }
     public Type(TypeCheckingType tct, Dimension d){
-//        super(-1,-1);
         line = -1;
         col = -1;
         this.tct = tct;
         dimensions = d;
-//        inputTypes = new ArrayList<>();
-//        outputTypes = new ArrayList<>();
     }
 
     public boolean isArray() {
