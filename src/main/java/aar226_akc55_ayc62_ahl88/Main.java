@@ -26,6 +26,12 @@ import java.util.ArrayList;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 public class Main {
+    enum Target {
+        LINUX,
+        WINDOWS,
+        MACOS
+    }
+
     private static String outputDirectory;
     private static String inputDirectory;
     public static String libpathDirectory;
@@ -35,6 +41,8 @@ public class Main {
     public static boolean isLibpathDirSpecified;
 
     public static Optimizations opts;
+
+    private static Target target;
 
     // Write the lexed string into the corresponding file name
     private static void writeOutput(String filename, String output, String extension) {
@@ -424,6 +432,9 @@ public class Main {
         Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
 
+        Option targetOpt = new Option("target", true,
+                "Specify the operating system for which to generate code.");
+
 //        optOpt.setOptionalArg(true);
 
         options.addOption(helpOpt);
@@ -438,6 +449,8 @@ public class Main {
         options.addOption(dirOpt);
         options.addOption(irrunOpt);
 
+        options.addOption(targetOpt);
+
         HelpFormatter formatter = new HelpFormatter();
 
         opts = new Optimizations();
@@ -446,6 +459,7 @@ public class Main {
 
         isOutputDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
         outputDirectory = inputDirectory = libpathDirectory = Paths.get("").toAbsolutePath().toString();
+        target = Target.LINUX;
 
 //        System.out.println(outputDirectory);
 
@@ -473,6 +487,15 @@ public class Main {
             if (cmd.hasOption("libpath")) {
                 libpathDirectory = cmd.getOptionValue("libpath");
                 isLibpathDirSpecified = true;
+            }
+
+            if (cmd.hasOption("target")) {
+                target = switch (cmd.getOptionValue("target").toLowerCase()) {
+                    case "linux" -> Target.LINUX;
+                    case "windows" -> Target.WINDOWS;
+                    case "macos" -> Target.MACOS;
+                    default -> throw new IllegalStateException("Unexpected value: " + cmd.getOptionValue("target"));
+                };
             }
 
             if (cmd.hasOption("lex")) {
