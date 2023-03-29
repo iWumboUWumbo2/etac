@@ -2,12 +2,9 @@ package aar226_akc55_ayc62_ahl88;
 
 import aar226_akc55_ayc62_ahl88.Errors.EtaError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
-import aar226_akc55_ayc62_ahl88.newast.AstNode;
 import aar226_akc55_ayc62_ahl88.newast.Program;
-import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
@@ -32,11 +29,13 @@ public class Main {
         MACOS
     }
 
-    private static String outputDirectory;
+    private static String outputAsmDirectory;
+    private static String outputDiagnosticDirectory;
     private static String inputDirectory;
     public static String libpathDirectory;
 
-    private static boolean isOutputDirSpecified;
+    private static boolean isOutputAsmDirSpecified;
+    private static boolean isOutputDiagnosticDirSpecified;
     private static boolean isInputDirSpecified;
     public static boolean isLibpathDirSpecified;
 
@@ -45,10 +44,20 @@ public class Main {
     private static Target target;
 
     // Write the lexed string into the corresponding file name
-    private static void writeOutput(String filename, String output, String extension) {
-        Path path = (isOutputDirSpecified)
-                ? Paths.get(outputDirectory, filename)
-                : Paths.get(filename);
+    private static void writeOutputGeneric(String filename, String output, String extension, boolean isAsm) {
+        Path path;
+        Path path1 = Paths.get(filename);
+
+        if (!isAsm) {
+            path = (isOutputDiagnosticDirSpecified)
+                    ? Paths.get(outputDiagnosticDirectory, filename)
+                    : path1;
+        }
+        else {
+            path = (isOutputAsmDirSpecified)
+                    ? Paths.get(outputAsmDirectory, filename)
+                    : path1;
+        }
 
         String pathname = path.toString();
         pathname = pathname.substring(0, pathname.length() - 3) + extension;
@@ -80,6 +89,14 @@ public class Main {
         catch (IOException e) {
             System.out.println("An error occurred when writing to the file " + filename);
         }
+    }
+
+    private static void writeOutput(String filename, String output, String extension) {
+        writeOutputGeneric(filename, output, extension, false);
+    }
+
+    private static void writeOutputAsm(String filename, String output, String extension) {
+        writeOutputGeneric(filename, output, extension, true);
     }
 
     private static String prettyOut(Symbol s){
@@ -391,6 +408,24 @@ public class Main {
         }
     }
 
+    private static void asmGenFile(String filename, boolean shouldWrite) {
+//        String zhenFilename = getZhenFilename(filename);
+//
+//        try {
+//            // DO SHIT
+//
+//            if (shouldWrite) {
+//                writeOutputAsm(filename, out.toString(), "s");
+//            }
+//        }
+//        catch (EtaError e) {
+//            e.printError(zhenFilename);
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+    }
+
     public static void main(String[] args) throws java.io.IOException {
         ArrayList<String> filenames = new ArrayList<>();
         for (int i = args.length - 1; i >= 0; i--) {
@@ -416,6 +451,8 @@ public class Main {
                 "Generate output from semantic analysis.");
         Option irgenOpt = new Option (null, "irgen", false,
                 "Generate intermediate code.");
+        Option irrunOpt = new Option (null, "irrun", false,
+                "Generate and interpret intermediate code.");
 
 
         Option sourcepathOpt   = new Option ("sourcepath", true,
@@ -423,14 +460,12 @@ public class Main {
         Option libpathOpt = new Option ("libpath", true,
                 "Specify where to find library interface files.");
 
-        Option dirOpt   = new Option ("D", true,
+        Option diagDirOpt   = new Option ("D", true,
                 "Specify where to place generated diagnostic files.");
-//        Option optOpt   = new Option ("O", true,
-//                " Disable optimizations.");
+        Option asmDirOpt   = new Option ("d", true,
+                "Specify where to place generated assembly output files.");
         Option optOpt   = new Option ("O", false,
                 " Disable optimizations.");
-        Option irrunOpt = new Option (null, "irrun", false,
-                "Generate and interpret intermediate code.");
 
         Option targetOpt = new Option("target", true,
                 "Specify the operating system for which to generate code.");
@@ -442,13 +477,15 @@ public class Main {
         options.addOption(parseOpt);
         options.addOption(typeOpt);
         options.addOption(irgenOpt);
+        options.addOption(irrunOpt);
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
-        options.addOption(optOpt);
-        options.addOption(dirOpt);
-        options.addOption(irrunOpt);
 
+        options.addOption(diagDirOpt);
+        options.addOption(asmDirOpt);
+
+        options.addOption(optOpt);
         options.addOption(targetOpt);
 
         HelpFormatter formatter = new HelpFormatter();
@@ -457,8 +494,9 @@ public class Main {
 //        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
         opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING);
 
-        isOutputDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
-        outputDirectory = inputDirectory = libpathDirectory = Paths.get("").toAbsolutePath().toString();
+        isOutputAsmDirSpecified = isOutputDiagnosticDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
+        outputAsmDirectory = outputDiagnosticDirectory = inputDirectory = libpathDirectory =
+                Paths.get("").toAbsolutePath().toString();
         target = Target.LINUX;
 
 //        System.out.println(outputDirectory);
@@ -471,8 +509,13 @@ public class Main {
             }
 
             if (cmd.hasOption("D")) {
-                outputDirectory = cmd.getOptionValue("D");
-                isOutputDirSpecified = true;
+                outputDiagnosticDirectory = cmd.getOptionValue("D");
+                isOutputDiagnosticDirSpecified = true;
+            }
+
+            if (cmd.hasOption("d")) {
+                outputAsmDirectory = cmd.getOptionValue("d");
+                isOutputAsmDirSpecified = true;
             }
 
             if (cmd.hasOption("O")) {
@@ -528,6 +571,10 @@ public class Main {
                 for (String filename : filenames) {
                     irrunFile(filename, true);
                 }
+            }
+
+            for (String filename : filenames) {
+                asmGenFile(filename, true);
             }
 
         }
