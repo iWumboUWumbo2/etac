@@ -226,6 +226,11 @@ public class IRLoweringVisitor extends IRVisitor {
                 }else if (stmt instanceof IRLabel il){ // prev block was empty so we just continue this block
                     curBlock.statements.add(il);
                     curBlock.destLabels.add(il.name());
+                    if (labelToNumber.containsKey(il.name())) {
+                        labelToNumber.put(il.name(), labelToNumber.get(il.name()) + 1);
+                    }else{
+                        labelToNumber.put(il.name(),1L);
+                    }
                 }else{
                     throw new InternalCompilerError("BRUH"); // pls try to get
                 }

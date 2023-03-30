@@ -1,0 +1,10 @@
+use io
+use conv
+main(args: int[][]){
+    if (true) println("true") else println("false")
+    println("printed")
+}
+
+//output
+//true
+//printed
