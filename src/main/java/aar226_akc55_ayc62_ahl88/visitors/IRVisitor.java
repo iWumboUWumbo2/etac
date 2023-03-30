@@ -532,7 +532,23 @@ public class IRVisitor implements Visitor<IRNode>{
                     return new IRMove(new IRTemp(atd.identifier.toString()),exec);
                 }else{
                     IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
-                    return initArrayDecl(0,atd.type.dimensions,iden); // passed in temp x
+                    ArrayList<String> dimTemps = new ArrayList<>();
+                    ArrayList<IRStmt> dimValues = new ArrayList<>();
+                    for (Expr curExpr: atd.type.dimensions.indices){
+                        if (curExpr != null) {
+                            String tempVal = nxtTemp();
+                            IRExpr irExp = curExpr.accept(this);
+                            IRMove saveExpr = new IRMove(new IRTemp(tempVal), irExp);
+                            dimValues.add(saveExpr);
+                            dimTemps.add(tempVal);
+                        }else{
+                            dimTemps.add(null);
+                        }
+                    }
+                    ArrayList<IRStmt> initSequence = new ArrayList<>();
+                    initSequence.addAll(dimValues); // add a[foo(2,b)] add the side effects from the foos
+                    initSequence.add(initArrayDecl(0,dimTemps, iden)); // actually allocate
+                    return new IRSeq(initSequence); // passed in temp x
 //                    throw new InternalCompilerError("Gotta create init array malloc thing");
                 }
             }else if (atd.type.isBasic()){
@@ -612,7 +628,23 @@ public class IRVisitor implements Visitor<IRNode>{
                         order.add(new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp)));
                     }else{
                         IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
-                        order.add(initArrayDecl(0,atd.type.dimensions,iden)); // passed in temp x
+                        ArrayList<String> dimTemps = new ArrayList<>();
+                        ArrayList<IRStmt> dimValues = new ArrayList<>();
+                        for (Expr curExpr: atd.type.dimensions.indices){
+                            if (curExpr != null) {
+                                String tempVal = nxtTemp();
+                                IRExpr irExp = curExpr.accept(this);
+                                IRMove saveExpr = new IRMove(new IRTemp(tempVal), irExp);
+                                dimValues.add(saveExpr);
+                                dimTemps.add(tempVal);
+                            }else{
+                                dimTemps.add(null);
+                            }
+                        }
+                        ArrayList<IRStmt> initSequence = new ArrayList<>();
+                        initSequence.addAll(dimValues); // add a[foo(2,b)] add the side effects from the foos
+                        initSequence.add(initArrayDecl(0,dimTemps, iden)); // actually allocate
+                        order.add(new IRSeq(initSequence)); // passed in temp x
 //                            throw new InternalCompilerError("Gotta create init array malloc thing");
                     }
                 }else if (atd.type.isBasic()){
@@ -690,7 +722,23 @@ public class IRVisitor implements Visitor<IRNode>{
                 return new IRMove(new IRTemp(node.identifier.toString()),new IRConst(0));
             }else{
                 IRExpr iden = node.getIdentifier().accept(this); // x:int[e1][e2][e3]
-                return initArrayDecl(0, node.type.dimensions,iden); // passed in temp x
+                ArrayList<String> dimTemps = new ArrayList<>();
+                ArrayList<IRStmt> dimValues = new ArrayList<>();
+                for (Expr curExpr: node.type.dimensions.indices){
+                    if (curExpr != null) {
+                        String tempVal = nxtTemp();
+                        IRExpr irExp = curExpr.accept(this);
+                        IRMove saveExpr = new IRMove(new IRTemp(tempVal), irExp);
+                        dimValues.add(saveExpr);
+                        dimTemps.add(tempVal);
+                    }else{
+                        dimTemps.add(null);
+                    }
+                }
+                ArrayList<IRStmt> initSequence = new ArrayList<>();
+                initSequence.addAll(dimValues); // add a[foo(2,b)] add the side effects from the foos
+                initSequence.add(initArrayDecl(0,dimTemps, iden)); // actually allocate
+                return new IRSeq(initSequence); // passed in temp x
             }
         }else if (node.type.isBasic()){
             return new IRMove(new IRTemp(node.identifier.toString()),new IRConst(0));
@@ -812,9 +860,9 @@ public class IRVisitor implements Visitor<IRNode>{
             throw new Error("WE SHOULD NOT BE IN GENTYPE");
         }
     }
-    private IRStmt initArrayDecl(int ind, Dimension d, IRExpr curHead){ // this is for a:int[4][3][] etc
+    private IRStmt initArrayDecl(int ind, ArrayList<String> temps, IRExpr curHead){ // this is for a:int[4][3][] etc
         // a:int[e1][e2][][]
-        if (ind == d.getDim() || d.getIndices().get(ind) == null){
+        if (ind == temps.size() || temps.get(ind) == null){
 //            System.out.println(ind);
 //            System.out.println(d.getDim());
 //            System.out.println(ind == d.getDim());
@@ -822,14 +870,15 @@ public class IRVisitor implements Visitor<IRNode>{
             return new IRMove(curHead,new IRConst(0)); // base case x: int[] x <- random val
         }
 
-        Expr curExp = d.getIndices().get(ind);
-        IRExpr irExp = curExp.accept(this);
+//        Expr curExp = d.getIndices().get(ind);
+//        IRExpr irExp = curExp.accept(this);
+
 
         String tn = nxtTemp();
         String tm = nxtTemp();
 
         String noDup = nxtTemp();
-        IRMove tempNoDup = new IRMove(new IRTemp(noDup),irExp);
+        IRMove tempNoDup = new IRMove(new IRTemp(noDup),new IRTemp(temps.get(ind)));
         // reg[l] <- length
         IRMove length_to_l1 = new IRMove(new IRTemp(tn), new IRTemp(noDup));
 
@@ -873,7 +922,7 @@ public class IRVisitor implements Visitor<IRNode>{
                     new IRTemp(counter),
                     new IRConst(WORD_BYTES))));
         // if we were at int[4][5] we now are in the "5" after recur executes after 5 it will be in "nothing" which means base case
-        IRStmt recur = initArrayDecl(ind+1, d, memHead);
+        IRStmt recur = initArrayDecl(ind+1, temps, memHead);
         // increment counter
         IRMove inc = new IRMove(new IRTemp(counter),new IRBinOp(IRBinOp.OpType.ADD,new IRTemp(counter), new IRConst(1)));
         // jump back to loop head

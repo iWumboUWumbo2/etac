@@ -1,0 +1,7 @@
+use io
+use conv
+
+main(args: int[][]) {
+while (false) println("true")
+    println("done")
+}
