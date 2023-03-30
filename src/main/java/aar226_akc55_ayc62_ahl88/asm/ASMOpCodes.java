@@ -1,7 +1,6 @@
 package aar226_akc55_ayc62_ahl88.asm;
 
-public class OpCodes {
-    public enum BinOp {
+public enum ASMOpCodes{
         // 0 arg
 
         // 1 arg
@@ -16,10 +15,4 @@ public class OpCodes {
         RET, // when you finish executing function do ret.
 
         // 2 arg
-
-    }
-
-    public enum Jump {
-
-    }
 }
