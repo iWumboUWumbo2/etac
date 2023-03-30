@@ -601,8 +601,7 @@ public class IRVisitor implements Visitor<IRNode>{
         ArrayList<Expr> exprs = node.getExpressions();
         ArrayList<IRStmt> order =new ArrayList<>();
         ArrayList<String> tempNames = new ArrayList<>();
-        if (exprs.get(0) instanceof FunctionCallExpr) {
-            assert (right.size() == 1);
+        if (exprs.get(0) instanceof FunctionCallExpr && exprs.size() == 1) {
             order.add(new IRExp(right.get(0)));
             for (int i = 0; i < node.getDecls().size(); i++) {
                 String tempName = nxtTemp();
