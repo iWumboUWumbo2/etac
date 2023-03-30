@@ -226,10 +226,8 @@ public class IRLoweringVisitor extends IRVisitor {
                 }else if (stmt instanceof IRLabel il){ // prev block was empty so we just continue this block
                     curBlock.statements.add(il);
                     curBlock.destLabels.add(il.name());
-                    if (labelToNumber.containsKey(il.name())) {
-                        labelToNumber.put(il.name(), labelToNumber.get(il.name()) + 1);
-                    }else{
-                        labelToNumber.put(il.name(),1L);
+                    if (!labelToNumber.containsKey(il.name())) {
+                        labelToNumber.put(il.name(),0L);
                     }
                 }else{
                     throw new InternalCompilerError("BRUH"); // pls try to get
@@ -400,10 +398,6 @@ public class IRLoweringVisitor extends IRVisitor {
                 BasicBlock nxtblk = orderedBlocks.get(i+1);
                 assert curblk.statements.size() >= 1: "block is empty";
                 assert nxtblk.statements.size() >= 1: "dest block is empty";
-//                System.out.println(i);
-//                System.out.println(i+1);
-//                System.out.println(curblk.statements);
-//                System.out.println(nxtblk.statements);
                 IRStmt lastStmt = curblk.statements.get(curblk.statements.size()-1);
                 IRStmt firstStmtInNext = nxtblk.statements.get(0);
                 if (lastStmt instanceof IRJump jmp && firstStmtInNext instanceof IRLabel il){
