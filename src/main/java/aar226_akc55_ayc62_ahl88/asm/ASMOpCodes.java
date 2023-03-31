@@ -19,6 +19,8 @@ public enum ASMOpCodes{
         DEC, // decrement single operand
         NOT, //inverts bits, not this -> !
         IDIV, // (rdx.rax) / divisor, stores quotient in rax, stores remainder in rdx
+        POP,
+        PUSH,
 
         // 2 arg
         MOV, //MOOOOOVE data from src to dest
