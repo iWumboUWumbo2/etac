@@ -49,7 +49,10 @@ import java.util.ArrayList;
  */
 
 public class ASMVisitor {
-
+    private int tempCnt;
+    private String nxtTemp() {
+        return String.format("_ASMReg_t%d", (tempCnt++));
+    }
     public ArrayList<ASMInstruction> visit(IRLabel label) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
         instructions.add(new ASMLabel(label.name()));
@@ -101,6 +104,10 @@ public class ASMVisitor {
             //test t, t
             //jnz l
         } else if (condition instanceof IRMem c) {
+            ASMTemp tempForMem = new ASMTemp(nxtTemp());
+            // accept mem for this temp
+            // add move instruction
+            // do temp test and ASM Jump no Equal
             return null;
         }else{
             throw new InternalCompilerError("CJUMP guard has another type");
