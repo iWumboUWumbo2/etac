@@ -1,9 +1,14 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.*;
-import aar226_akc55_ayc62_ahl88.asm.jumps.ASMJumpNotEqual;
-import aar226_akc55_ayc62_ahl88.asm.tstcmp.ASMTest;
-import aar226_akc55_ayc62_ahl88.asm.jumps.ASMJumpAlways;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
@@ -50,63 +55,72 @@ import java.util.ArrayList;
 
 public class ASMVisitor {
     private int tempCnt;
+
+
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
     }
-    public ArrayList<ASMInstruction> visit(IRLabel label) {
+    public ArrayList<ASMInstruction> visit(IRLabel node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-        instructions.add(new ASMLabel(label.name()));
+        instructions.add(new ASMLabel(node.name()));
         return instructions;
     }
 
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
         if (jump.target() instanceof IRName) {
-            instructions.add(new ASMJumpAlways(new ASMName(jump.label())));
+            instructions.add(new ASMJumpAlways(new ASMNameExpr(jump.label())));
         }
         return instructions;
     }
 
-    public ArrayList<ASMInstruction> visit(IRCompUnit compunit) {
+    public ArrayList<ASMInstruction> visit(IRCompUnit node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
 
-        for (IRData data : compunit.dataMap().values()) {
+        for (IRData data : node.dataMap().values()) {
             ASMLabel data_label = new ASMLabel(data.name());
-            ASMData data_instr = new ASMData(getType(data.name()), new ASMConst(data.data()));
+            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
         }
 
-        for (IRFuncDecl func : compunit.functions().values()) {
+        for (IRFuncDecl func : node.functions().values()) {
             instructions.addAll(visit(func));
         }
 
         return instructions;
     }
 
-    public ArrayList<ASMInstruction> visit(IRFuncDecl func_decl) {
+    public ArrayList<ASMInstruction> visit(IRFuncDecl node) {
         return null;
     }
 
-    public ArrayList<ASMInstruction> visit(IRCJump cjump) {
+    public ArrayList<ASMInstruction> visit(IRCallStmt node){
+        return null;
+    }
+    public ArrayList<ASMInstruction> visit(IRMove node){
+        return null;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRCJump node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
 
-        IRExpr condition = cjump.cond();
+        IRExpr condition = node.cond();
 
         if (condition instanceof IRBinOp c) {
             // create function for IRBINOP
             // DO A CMP instead
-            return null;
+            return cJumpBinop(c);
         } else if (condition instanceof IRConst c) {
             if (c.value() != 0L){ // jump
-                instructions.add(new ASMJumpAlways(new ASMName(cjump.trueLabel())));
+                instructions.add(new ASMJumpAlways(new ASMNameExpr(node.trueLabel())));
             }
         } else if (condition instanceof IRTemp c) {
-            ASMTemp tempName = tempToASM(c);
+            ASMTempExpr tempName = tempToASM(c);
             instructions.add(new ASMTest(tempName,tempName));
-            instructions.add(new ASMJumpNotEqual(new ASMName(cjump.trueLabel())));
+            instructions.add(new ASMJumpNotEqual(new ASMNameExpr(node.trueLabel())));
             //test t, t
             //jnz l
         } else if (condition instanceof IRMem c) {
-            ASMTemp tempForMem = new ASMTemp(nxtTemp());
+            ASMTempExpr tempForMem = new ASMTempExpr(nxtTemp());
             // accept mem for this temp
             // add move instruction
             // do temp test and ASM Jump no Equal
@@ -132,8 +146,13 @@ public class ASMVisitor {
     }
 
     // converts an IR TEMP to an ASM TEMP
-    private ASMTemp tempToASM(IRTemp t) {
-        return new ASMTemp(t.name());
+    private ASMTempExpr tempToASM(IRTemp t) {
+        return new ASMTempExpr(t.name());
+    }
+
+    // change te parameters if needed
+    private ArrayList<ASMInstruction> cJumpBinop(IRBinOp binop){
+        return null;
     }
 
 }
