@@ -62,14 +62,6 @@ public class ASMVisitor {
         return instructions;
     }
 
-    private ASMDirectives getType(String name) {
-        String type = name.split("_")[0];
-        if (type.equals("i") || type.equals("b")) {
-            return ASMDirectives.QUAD;
-        }
-        return ASMDirectives.ZERO;
-    }
-
     public ArrayList<ASMInstruction> visit(IRCompUnit compunit) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
 
@@ -97,12 +89,37 @@ public class ASMVisitor {
         if (condition instanceof IRBinOp c) {
             return null;
         } else if (condition instanceof IRConst c) {
-            return null;
+            if (c.value() != 0L){ // jump
+                instructions.add(new JumpAlways(new ASMName(cjump.trueLabel())));
+            }
         } else if (condition instanceof IRTemp c) {
-            return null;
+            ASMTemp tempName = tempToASM(c);
+            //test t, t
+            //jnz l
+
         } else if (condition instanceof IRMem c) {
             return null;
         }
         return instructions;
     }
+
+
+
+    //
+    //
+    //
+    //
+    private ASMDirectives getType(String name) {
+        String type = name.split("_")[0];
+        if (type.equals("i") || type.equals("b")) {
+            return ASMDirectives.QUAD;
+        }
+        return ASMDirectives.ZERO;
+    }
+
+    // converts an IR TEMP to an ASM TEMP
+    private ASMTemp tempToASM(IRTemp t) {
+        return new ASMTemp(t.name());
+    }
+
 }
