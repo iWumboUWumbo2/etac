@@ -1,8 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.*;
-import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
-import aar226_akc55_ayc62_ahl88.asm.jumps.JumpAlways;
+import aar226_akc55_ayc62_ahl88.asm.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class ASMVisitor {
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
         if (jump.target() instanceof IRName) {
-            instructions.add(new JumpAlways(new ASMName(jump.label())));
+            instructions.add(new ASMJumpAlways(new ASMName(jump.label())));
         }
         return instructions;
     }
@@ -90,7 +89,7 @@ public class ASMVisitor {
             return null;
         } else if (condition instanceof IRConst c) {
             if (c.value() != 0L){ // jump
-                instructions.add(new JumpAlways(new ASMName(cjump.trueLabel())));
+                instructions.add(new ASMJumpAlways(new ASMName(cjump.trueLabel())));
             }
         } else if (condition instanceof IRTemp c) {
             ASMTemp tempName = tempToASM(c);

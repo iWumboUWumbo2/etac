@@ -4,8 +4,8 @@ import aar226_akc55_ayc62_ahl88.asm.ASMArg1;
 import aar226_akc55_ayc62_ahl88.asm.ASMExpr;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 
-public class IDiv extends ASMArg1 {
-    public IDiv(ASMExpr divisor){
+public class ASMIDiv extends ASMArg1 {
+    public ASMIDiv(ASMExpr divisor){
         super(ASMOpCodes.IDIV, divisor);
     }
 }
