@@ -2,6 +2,7 @@ package aar226_akc55_ayc62_ahl88.asm;
 
 public enum ASMOpCodes{
         // 0 arg
+        RET, // when you finish executing function do ret.
 
         // 1 arg
         JMP, // jump always
@@ -13,7 +14,6 @@ public enum ASMOpCodes{
         JGE, // jump if greater equal a >= b
         JR,
         CALL, // call it when you call a function call stmt
-        RET, // when you finish executing function do ret.
         LABEL,
         INC, // increment single operand
         DEC, // decrement single operand
