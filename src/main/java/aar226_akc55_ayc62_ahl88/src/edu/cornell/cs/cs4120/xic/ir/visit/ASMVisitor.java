@@ -1,8 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.*;
-import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
-import aar226_akc55_ayc62_ahl88.asm.jumps.JumpNotEqual;
+import aar226_akc55_ayc62_ahl88.asm.jumps.ASMJumpNotEqual;
 import aar226_akc55_ayc62_ahl88.asm.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -98,7 +97,7 @@ public class ASMVisitor {
         } else if (condition instanceof IRTemp c) {
             ASMTemp tempName = tempToASM(c);
             instructions.add(new ASMTest(tempName,tempName));
-            instructions.add(new JumpNotEqual(new ASMName(cjump.trueLabel())));
+            instructions.add(new ASMJumpNotEqual(new ASMName(cjump.trueLabel())));
             //test t, t
             //jnz l
         } else if (condition instanceof IRMem c) {
