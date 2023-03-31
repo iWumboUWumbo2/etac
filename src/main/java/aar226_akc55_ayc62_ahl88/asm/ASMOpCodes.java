@@ -16,3 +16,4 @@ public enum ASMOpCodes{
 
         // 2 arg
 }
+

@@ -1,5 +1,11 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
+import aar226_akc55_ayc62_ahl88.asm.*;
+import aar226_akc55_ayc62_ahl88.asm.OpCodes;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+
+import java.util.ArrayList;
+
 /**
  * NOTES:
  * - branches: use cmp then corresponding jump
@@ -40,4 +46,64 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
  */
 
 public class ASMVisitor {
+
+    public ArrayList<ASMInstruction> visit(IRLabel label) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        instructions.add(new ASMLabel(label.name()));
+        return instructions;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRJump jump) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        if (jump.target() instanceof IRName) {
+            instructions.add(new ASMInstruction(OpCodes.Jump.JR, new ASMName(((IRName) jump.target()).name())));
+        }
+        return instructions;
+    }
+
+    private ASMDirectives getType(String name) {
+        String type = name.split("_")[0];
+        if (type.equals("i") || type.equals("b")) {
+            return ASMDirectives.QUAD;
+        }
+        return ASMDirectives.ZERO;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRCompUnit compunit) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+
+        for (IRData data : compunit.dataMap().values()) {
+            ASMLabel data_label = new ASMLabel(data.name());
+            ASMData data_instr = new ASMData(getType(data.name()), new ASMConst(data.data()));
+        }
+
+        for (IRFuncDecl func : compunit.functions().values()) {
+            instructions.addAll(visit(func));
+        }
+
+        return instructions;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRCJump cjump) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+
+        IRExpr condition = cjump.cond();
+
+        if (condition instanceof IRBinOp c) {
+            return null;
+        } else if (condition instanceof IRConst c) {
+            return null;
+        } else if (condition instanceof IRCall c) {
+            return null;
+        } else if (condition instanceof IRTemp c) {
+            return null;
+        } else if (condition instanceof IRMem c) {
+            return null;
+        } else {
+            return null;
+        }
+
+        return instructions;
+    }
+
 }
