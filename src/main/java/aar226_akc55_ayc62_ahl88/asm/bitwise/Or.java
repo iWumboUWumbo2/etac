@@ -1,4 +1,4 @@
-package aar226_akc55_ayc62_ahl88.asm.boolop;
+package aar226_akc55_ayc62_ahl88.asm.bitwise;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMArg2;
 import aar226_akc55_ayc62_ahl88.asm.ASMExpr;
