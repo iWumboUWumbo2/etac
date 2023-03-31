@@ -35,5 +35,8 @@ public enum ASMOpCodes{
         SHL, //shift left
         SHR, // shift right
         SAR, // shift arithmetic right, preserve sign bit
+
+        TEST,
+        CMP
 }
 
