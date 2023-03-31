@@ -3,7 +3,10 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 import aar226_akc55_ayc62_ahl88.asm.*;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.jumps.JumpAlways;
+import aar226_akc55_ayc62_ahl88.asm.jumps.JumpNotEqual;
+import aar226_akc55_ayc62_ahl88.asm.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.util.ArrayList;
 
@@ -94,11 +97,14 @@ public class ASMVisitor {
             }
         } else if (condition instanceof IRTemp c) {
             ASMTemp tempName = tempToASM(c);
+            instructions.add(new ASMTest(tempName,tempName));
+            instructions.add(new JumpNotEqual(new ASMName(cjump.trueLabel())));
             //test t, t
             //jnz l
-
         } else if (condition instanceof IRMem c) {
             return null;
+        }else{
+            throw new InternalCompilerError("CJUMP guard has another type");
         }
         return instructions;
     }
