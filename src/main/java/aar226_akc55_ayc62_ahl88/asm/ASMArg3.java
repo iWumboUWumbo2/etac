@@ -1,6 +1,6 @@
 package aar226_akc55_ayc62_ahl88.asm;
 
-public class ASMArg3 extends ASMInstruction{
+public abstract class ASMArg3 extends ASMInstruction{
     ASMExpr a1;
     ASMExpr a2;
     ASMExpr a3;
