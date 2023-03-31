@@ -11,9 +11,10 @@ public enum ASMOpCodes{
         JLE, // jump if less than equal a <= b
         JG, //jump if greater a > b
         JGE, // jump if greater equal a >= b
+        JR,
         CALL, // call it when you call a function call stmt
         RET, // when you finish executing function do ret.
-
+        LABEL,
         // 2 arg
 }
 
