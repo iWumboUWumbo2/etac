@@ -15,6 +15,23 @@ public enum ASMOpCodes{
         CALL, // call it when you call a function call stmt
         RET, // when you finish executing function do ret.
         LABEL,
+        INC, // increment single operand
+        DEC, // decrement single operand
+        NOT, //inverts bits, not this -> !
+        IDIV, // (rdx.rax) / divisor, stores quotient in rax, stores remainder in rdx
+
         // 2 arg
+        MOV, //MOOOOOVE data from src to dest
+        ADD,
+        SUB,
+        IMUL, // Can be 3 args
+
+        AND, //bitwise and
+        OR, //bitwise or
+        XOR, //bitwise xor
+
+        SHL, //shift left
+        SHR, // shift right
+        SAR, // shift arithmetic right, preserve sign bit
 }
 
