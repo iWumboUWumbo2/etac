@@ -92,6 +92,8 @@ public class ASMVisitor {
         IRExpr condition = cjump.cond();
 
         if (condition instanceof IRBinOp c) {
+            // create function for IRBINOP
+            // DO A CMP instead
             return null;
         } else if (condition instanceof IRConst c) {
             if (c.value() != 0L){ // jump
