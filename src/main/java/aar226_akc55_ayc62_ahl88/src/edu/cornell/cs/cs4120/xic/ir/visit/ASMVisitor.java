@@ -269,10 +269,6 @@ public class ASMVisitor {
         return returnInstructions;
     }
 
-    public ArrayList<ASMInstruction> visit(IRReturn node, HashSet<String> hashSet) {
-        return null;
-    }
-
     // TODO: 4/1/2023
     // move
     // TODO: 4/1/2023
