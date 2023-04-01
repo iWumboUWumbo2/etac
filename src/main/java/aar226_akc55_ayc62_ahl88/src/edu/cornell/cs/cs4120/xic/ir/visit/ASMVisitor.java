@@ -1,22 +1,21 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.*;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMExpr;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMmovabs;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMCmp;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * NOTES:
@@ -134,7 +133,7 @@ public class ASMVisitor {
 
         for (IRData data : node.dataMap().values()) {
             ASMLabel data_label = new ASMLabel(data.name());
-            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
+//            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
         }
 
         for (IRFuncDecl func : node.functions().values()) {
@@ -145,11 +144,59 @@ public class ASMVisitor {
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-        ASMArg2 instruction = new ASMmovabs(new ASMTempExpr(nxtTemp()),new ASMConstExpr(new long[] {x.value()}));
+        ASMArg2 instruction = new ASMMovabs(new ASMTempExpr(nxtTemp()),new ASMConstExpr(x.value()));
         instructions.add(instruction);
         return instructions;
     }
     public ArrayList<ASMInstruction> visit(IRFuncDecl node) {
+        ArrayList<ASMInstruction> result = new ArrayList<>();
+
+        // create new Starting label for this Function
+        result.add(new ASMLabel(node.name()));
+
+        // push rbp
+        // mov rbp rsp
+        result.add(new ASMPush(new ASMRegisterExpr("rbp")));
+        result.add(new ASMMov(new ASMRegisterExpr("rbp"),new ASMRegisterExpr("rsp")));
+
+        // need to calculate number of temporaries used
+        // sub rsp, 8*l
+        HashSet<String> asmTempNames = new HashSet<>();
+
+
+        // foo(1,2,3,4,5,6,7....) -> rdi, rsi, rdx, rcx, r8, r9, stack
+        int numParams = node.functionSig.inputTypes.size();
+        ArrayList<ASMInstruction> bodyInstructions = new ArrayList<>();
+        for (int i = 1; i<=numParams;i++){
+
+            // Move arg into argI. argI <- RDI
+            ASMExpr ARGI = switch (i) {
+                case 1 -> new ASMRegisterExpr("rdi");
+                case 2 -> new ASMRegisterExpr("rsi");
+                case 3 -> new ASMRegisterExpr("rdx");
+                case 4 -> new ASMRegisterExpr("rcx");
+                case 5 -> new ASMRegisterExpr("r8");
+                case 6 -> new ASMRegisterExpr("r9");
+                default ->
+                        new ASMMemExpr(
+                                new ASMBinOpAddExpr(
+                                        new ASMRegisterExpr("rbp"),
+                                        new ASMConstExpr(8L * (i - 7 + 2))));
+            };
+            String tempName = nxtTemp();
+            asmTempNames.add(tempName);
+            // can't do [stack location] <- [stack location2]
+            // need intermediate rax <- [stack location2]
+            // then [stack location] <- temp rax
+            if (i>=7){
+                bodyInstructions.add(new ASMMov(new ASMRegisterExpr("rax"),ARGI));
+                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),new ASMRegisterExpr("rax")));
+            }
+            // just do MOV [stack location] <- register
+            else{
+                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
+            }
+        }
         return null;
     }
     public ArrayList<ASMInstruction> visit(IRJump jump) {
