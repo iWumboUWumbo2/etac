@@ -144,7 +144,9 @@ public class ASMVisitor {
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-        ASMArg2 instruction = new ASMMovabs(new ASMTempExpr(nxtTemp()),new ASMConstExpr(x.value()));
+        boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
+        ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(nxtTemp()),new ASMConstExpr(x.value()))
+                : new ASMMovabs(new ASMTempExpr(nxtTemp()),new ASMConstExpr(x.value()));
         instructions.add(instruction);
         return instructions;
     }
