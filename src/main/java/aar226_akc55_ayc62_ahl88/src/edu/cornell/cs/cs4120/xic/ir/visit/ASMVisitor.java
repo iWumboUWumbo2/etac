@@ -161,8 +161,7 @@ public class ASMVisitor {
 
     private ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-        // we need new temp function
-        ASMArg2 instruction = new ASMmovabs(new ASMTempExpr("blan"),new ASMConstExpr(new long[] {x.value()}));
+        ASMArg2 instruction = new ASMmovabs(new ASMTempExpr(nxtTemp()),new ASMConstExpr(new long[] {x.value()}));
         instructions.add(instruction);
         return instructions;
     }
