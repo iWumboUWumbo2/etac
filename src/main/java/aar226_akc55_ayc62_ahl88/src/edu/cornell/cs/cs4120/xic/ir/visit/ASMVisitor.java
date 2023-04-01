@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -156,13 +157,14 @@ public class ASMVisitor {
         // create new Starting label for this Function
         result.add(new ASMLabel(node.name()));
 
+        // enter at Botoom
         // push rbp
         // mov rbp rsp
-        result.add(new ASMPush(new ASMRegisterExpr("rbp")));
-        result.add(new ASMMov(new ASMRegisterExpr("rbp"),new ASMRegisterExpr("rsp")));
+        // sub rsp, 8*l
+//        result.add(new ASMPush(new ASMRegisterExpr("rbp")));
+//        result.add(new ASMMov(new ASMRegisterExpr("rbp"),new ASMRegisterExpr("rsp")));
 
         // need to calculate number of temporaries used
-        // sub rsp, 8*l
         HashSet<String> asmTempNames = new HashSet<>();
 
 
@@ -185,7 +187,7 @@ public class ASMVisitor {
                                         new ASMRegisterExpr("rbp"),
                                         new ASMConstExpr(8L * (i - 7 + 2))));
             };
-            String tempName = nxtTemp();
+            String tempName = "_ARG" + i;
             asmTempNames.add(tempName);
             // can't do [stack location] <- [stack location2]
             // need intermediate rax <- [stack location2]
@@ -199,7 +201,18 @@ public class ASMVisitor {
                 bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
             }
         }
-        return null;
+        if (node.body() instanceof  IRSeq seq){
+            for (IRStmt stmt: seq.stmts()){
+                bodyInstructions.addAll(stmt.accept(this,asmTempNames));
+            }
+        }else{
+            throw new InternalCompilerError("body isn't a seq");
+        }
+        // add enter at begin.
+        // enter 8*L, 0
+        ASMEnter begin = new ASMEnter(new ASMConstExpr(8L*asmTempNames.size()),new ASMConstExpr(0));
+        bodyInstructions.add(0,begin);
+        return bodyInstructions;
     }
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
