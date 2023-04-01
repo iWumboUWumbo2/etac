@@ -239,12 +239,14 @@ public class ASMVisitor {
         return instructions;
     }
 
+    public ArrayList<ASMInstruction> visit(IRReturn node, HashSet<String> hashSet) {
+        return null;
+    }
+
     // TODO: 4/1/2023
     // move
     // TODO: 4/1/2023
     // temp
-    // TODO: 4/1/2023
-    // seq
     // TODO: 4/1/2023
     // mem
     // TODO: 4/1/2023
