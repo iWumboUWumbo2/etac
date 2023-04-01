@@ -2,11 +2,15 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.*;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMExpr;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMmovabs;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMCmp;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -65,7 +69,6 @@ public class ASMVisitor {
         instructions.add(new ASMLabel(node.name()));
         return instructions;
     }
-
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
         if (jump.target() instanceof IRName) {
@@ -73,7 +76,6 @@ public class ASMVisitor {
         }
         return instructions;
     }
-
     public ArrayList<ASMInstruction> visit(IRCompUnit node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
 
@@ -88,18 +90,15 @@ public class ASMVisitor {
 
         return instructions;
     }
-
     public ArrayList<ASMInstruction> visit(IRFuncDecl node) {
         return null;
     }
-
     public ArrayList<ASMInstruction> visit(IRCallStmt node){
         return null;
     }
     public ArrayList<ASMInstruction> visit(IRMove node){
         return null;
     }
-
     public ArrayList<ASMInstruction> visit(IRCJump node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
 
@@ -130,13 +129,6 @@ public class ASMVisitor {
         }
         return instructions;
     }
-
-
-
-    //
-    //
-    //
-    //
     private ASMDirectives getType(String name) {
         String type = name.split("_")[0];
         if (type.equals("i") || type.equals("b")) {
@@ -152,7 +144,28 @@ public class ASMVisitor {
 
     // change te parameters if needed
     private ArrayList<ASMInstruction> cJumpBinop(IRBinOp binop){
-        return null;
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+//        switch (binop.opType()) {
+//            case EQ:
+//            case NEQ:
+//            case LT:
+//            case ULT:
+//            case GT:
+//            case LEQ:
+//            case GEQ:
+////                ASMArg2 instr1 = new ASMCmp(binop.left(), binop.right());
+//
+//        }
+        return instructions;
     }
+
+    private ArrayList<ASMInstruction> visit (IRConst x) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        // we need new temp function
+        ASMArg2 instruction = new ASMmovabs(new ASMTempExpr("blan"),new ASMConstExpr(new long[] {x.value()}));
+        instructions.add(instruction);
+        return instructions;
+    }
+
 
 }

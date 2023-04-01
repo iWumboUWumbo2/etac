@@ -24,6 +24,7 @@ public enum ASMOpCodes{
 
         // 2 arg
         MOV, //MOOOOOVE data from src to dest
+        MOVABS,
         ADD,
         SUB,
         IMUL, // Can be 3 args
