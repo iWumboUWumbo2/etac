@@ -18,6 +18,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -62,6 +63,10 @@ import java.util.HashSet;
 public class ASMVisitor {
     private int tempCnt;
 
+    private HashMap<String,HashSet<String>> functionToTemps;
+
+    private String curFunction;
+
 
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
@@ -93,9 +98,7 @@ public class ASMVisitor {
 //        }
         return instructions;
     }
-    public ArrayList<ASMInstruction> visit(IRCallStmt node){
-        return null;
-    }
+
     public ArrayList<ASMInstruction> visit(IRData node){
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
 
@@ -115,6 +118,7 @@ public class ASMVisitor {
                 instructions.add(new ASMJumpAlways(new ASMNameExpr(node.trueLabel())));
             }
         } else if (condition instanceof IRTemp c) {
+            functionToTemps.get(curFunction).add(c.name());
             ASMTempExpr tempName = tempToASM(c);
             instructions.add(new ASMTest(tempName,tempName));
             instructions.add(new ASMJumpNotEqual(new ASMNameExpr(node.trueLabel())));
@@ -140,6 +144,8 @@ public class ASMVisitor {
         }
 
         for (IRFuncDecl func : node.functions().values()) {
+            curFunction = func.name();
+            functionToTemps.put(func.name(),new HashSet<>());
             instructions.addAll(visit(func));
         }
 
@@ -167,7 +173,6 @@ public class ASMVisitor {
 //        result.add(new ASMMov(new ASMRegisterExpr("rbp"),new ASMRegisterExpr("rsp")));
 
         // need to calculate number of temporaries used
-        HashSet<String> asmTempNames = new HashSet<>();
 
 
         // foo(1,2,3,4,5,6,7....) -> rdi, rsi, rdx, rcx, r8, r9, stack
@@ -176,7 +181,7 @@ public class ASMVisitor {
         ArrayList<ASMInstruction> bodyInstructions = new ArrayList<>();
 
         if (numReturns > 2){
-            asmTempNames.add("_ARG0");
+            functionToTemps.get(curFunction).add("_ARG0");
             bodyInstructions.add(new ASMMov(
                     new ASMTempExpr("_ARG0"),
                     new ASMRegisterExpr("rdi")
@@ -202,7 +207,7 @@ public class ASMVisitor {
                                         new ASMConstExpr(8L * (i - 7 + 2))));
             };
             String tempName = "_ARG" + i;
-            asmTempNames.add(tempName);
+            functionToTemps.get(curFunction).add(tempName);
             // can't do [stack location] <- [stack location2]
             // need intermediate rax <- [stack location2]
             // then [stack location] <- temp rax
@@ -217,19 +222,19 @@ public class ASMVisitor {
         }
         if (node.body() instanceof  IRSeq seq){
             for (IRStmt stmt: seq.stmts()){
-                bodyInstructions.addAll(stmt.accept(this,asmTempNames));
+                bodyInstructions.addAll(stmt.accept(this));
             }
         }else{
             throw new InternalCompilerError("body isn't a seq");
         }
         // add enter at begin.
         // enter 8*L, 0
-        ASMEnter begin = new ASMEnter(new ASMConstExpr(8L*asmTempNames.size()),new ASMConstExpr(0));
+        ASMEnter begin = new ASMEnter(new ASMConstExpr(8L*functionToTemps.get(curFunction).size()),new ASMConstExpr(0));
         bodyInstructions.add(0,begin);
         return bodyInstructions;
     }
     public ArrayList<ASMInstruction> visit(IRJump jump) {
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
         if (jump.target() instanceof IRName) {
             instructions.add(new ASMJumpAlways(new ASMNameExpr(jump.label())));
         }
@@ -244,21 +249,23 @@ public class ASMVisitor {
         return null;
     }
 
-    public ArrayList<ASMInstruction> visit(IRSeq node, HashSet<String> hset){
+    public ArrayList<ASMInstruction> visit(IRSeq node){
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
         for (IRStmt stmt : node.stmts()) {
-            ArrayList<ASMInstruction> stmtInstrs = stmt.accept(this, hset);
+            ArrayList<ASMInstruction> stmtInstrs = stmt.accept(this);
             instructions.addAll(stmtInstrs);
         }
         return instructions;
     }
-    public ArrayList<ASMInstruction> visit(IRReturn node, HashSet<String> hset) {
+    public ArrayList<ASMInstruction> visit(IRReturn node) {
         //
         ArrayList<ASMInstruction> returnInstructions = new ArrayList<>();
         int returnSize = node.rets().size();
+
         for (int i = 1; i <= returnSize; i++) {
-            //
             // execute expression
+        }
+        for (int i = 1; i <= returnSize; i++) {
             // move expression to Return Location
         }
 
@@ -268,6 +275,15 @@ public class ASMVisitor {
         returnInstructions.add(new ASMRet());
         return returnInstructions;
     }
+    public ArrayList<ASMInstruction> visit(IRCallStmt node) {
+        return null;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRExp irExp) {
+        System.out.println("don't have irExp");
+        return new ArrayList<>();
+    }
+
 
     // TODO: 4/1/2023
     // move

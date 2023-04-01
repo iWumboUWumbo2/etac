@@ -1,0 +1,16 @@
+single():int{
+    return 1
+}
+double():int,int{
+    return 9,10;
+}
+triple():int,int,int{
+    return 1,2,3;
+}
+quad():int,int,int,int{
+    return 1,1+single(),1+single()+single(),1;
+}
+
+
+main(args:int[][]){
+}

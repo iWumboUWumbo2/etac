@@ -81,7 +81,7 @@ public class IRSeq extends IRStmt {
     }
 
     @Override
-    public ArrayList<ASMInstruction> accept(ASMVisitor v, HashSet<String> hs) {
+    public ArrayList<ASMInstruction> accept(ASMVisitor v) {
         return v.visit(this);
     }
 }

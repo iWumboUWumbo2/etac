@@ -71,7 +71,7 @@ public class IRReturn extends IRStmt {
     }
 
     @Override
-    public ArrayList<ASMInstruction> accept(ASMVisitor v, HashSet<String> hs) {
-        return v.visit(this, hs);
+    public ArrayList<ASMInstruction> accept(ASMVisitor v) {
+        return v.visit(this);
     }
 }

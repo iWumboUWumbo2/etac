@@ -8,5 +8,5 @@ import java.util.HashSet;
 
 /** An intermediate representation for statements */
 public abstract class IRStmt extends IRNode_c {
-    public abstract ArrayList<ASMInstruction> accept(ASMVisitor v, HashSet<String> hs);
+    public abstract ArrayList<ASMInstruction> accept(ASMVisitor v);
 }

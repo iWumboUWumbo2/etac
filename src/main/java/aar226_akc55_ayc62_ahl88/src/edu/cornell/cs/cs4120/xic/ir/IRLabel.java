@@ -1,7 +1,12 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /** An intermediate representation for naming a memory address */
 public class IRLabel extends IRStmt {
@@ -33,5 +38,10 @@ public class IRLabel extends IRStmt {
         p.printAtom("LABEL");
         p.printAtom(name);
         p.endList();
+    }
+
+    @Override
+    public ArrayList<ASMInstruction> accept(ASMVisitor v) {
+        return v.visit(this);
     }
 }
