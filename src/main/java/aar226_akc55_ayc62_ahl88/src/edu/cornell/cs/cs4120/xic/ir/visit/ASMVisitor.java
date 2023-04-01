@@ -94,6 +94,11 @@ public class ASMVisitor {
     public ArrayList<ASMInstruction> visit(IRCallStmt node){
         return null;
     }
+    public ArrayList<ASMInstruction> visit(IRData node){
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+
+        return instructions;
+    }
     public ArrayList<ASMInstruction> visit(IRCJump node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
 
