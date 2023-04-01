@@ -64,39 +64,34 @@ public class ASMVisitor {
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
     }
-    public ArrayList<ASMInstruction> visit(IRLabel node) {
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-        instructions.add(new ASMLabel(node.name()));
-        return instructions;
-    }
-    public ArrayList<ASMInstruction> visit(IRJump jump) {
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-        if (jump.target() instanceof IRName) {
-            instructions.add(new ASMJumpAlways(new ASMNameExpr(jump.label())));
+    private ASMDirectives getType(String name) {
+        String type = name.split("_")[0];
+        if (type.equals("i") || type.equals("b")) {
+            return ASMDirectives.QUAD;
         }
-        return instructions;
+        return ASMDirectives.ZERO;
     }
-    public ArrayList<ASMInstruction> visit(IRCompUnit node) {
+    // converts an IR TEMP to an ASM TEMP
+    private ASMTempExpr tempToASM(IRTemp t) {
+        return new ASMTempExpr(t.name());
+    }
+    // change te parameters if needed
+    private ArrayList<ASMInstruction> cJumpBinop(IRBinOp binop){
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-
-        for (IRData data : node.dataMap().values()) {
-            ASMLabel data_label = new ASMLabel(data.name());
-            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
-        }
-
-        for (IRFuncDecl func : node.functions().values()) {
-            instructions.addAll(visit(func));
-        }
-
+//        switch (binop.opType()) {
+//            case EQ:
+//            case NEQ:
+//            case LT:
+//            case ULT:
+//            case GT:
+//            case LEQ:
+//            case GEQ:
+////                ASMArg2 instr1 = new ASMCmp(binop.left(), binop.right());
+//
+//        }
         return instructions;
-    }
-    public ArrayList<ASMInstruction> visit(IRFuncDecl node) {
-        return null;
     }
     public ArrayList<ASMInstruction> visit(IRCallStmt node){
-        return null;
-    }
-    public ArrayList<ASMInstruction> visit(IRMove node){
         return null;
     }
     public ArrayList<ASMInstruction> visit(IRCJump node) {
@@ -129,42 +124,43 @@ public class ASMVisitor {
         }
         return instructions;
     }
-    private ASMDirectives getType(String name) {
-        String type = name.split("_")[0];
-        if (type.equals("i") || type.equals("b")) {
-            return ASMDirectives.QUAD;
-        }
-        return ASMDirectives.ZERO;
-    }
-
-    // converts an IR TEMP to an ASM TEMP
-    private ASMTempExpr tempToASM(IRTemp t) {
-        return new ASMTempExpr(t.name());
-    }
-
-    // change te parameters if needed
-    private ArrayList<ASMInstruction> cJumpBinop(IRBinOp binop){
+    public ArrayList<ASMInstruction> visit(IRCompUnit node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-//        switch (binop.opType()) {
-//            case EQ:
-//            case NEQ:
-//            case LT:
-//            case ULT:
-//            case GT:
-//            case LEQ:
-//            case GEQ:
-////                ASMArg2 instr1 = new ASMCmp(binop.left(), binop.right());
-//
-//        }
+
+        for (IRData data : node.dataMap().values()) {
+            ASMLabel data_label = new ASMLabel(data.name());
+            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
+        }
+
+        for (IRFuncDecl func : node.functions().values()) {
+            instructions.addAll(visit(func));
+        }
+
         return instructions;
     }
-
-    private ArrayList<ASMInstruction> visit (IRConst x) {
+    public ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
         ASMArg2 instruction = new ASMmovabs(new ASMTempExpr(nxtTemp()),new ASMConstExpr(new long[] {x.value()}));
         instructions.add(instruction);
         return instructions;
     }
-
+    public ArrayList<ASMInstruction> visit(IRFuncDecl node) {
+        return null;
+    }
+    public ArrayList<ASMInstruction> visit(IRJump jump) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        if (jump.target() instanceof IRName) {
+            instructions.add(new ASMJumpAlways(new ASMNameExpr(jump.label())));
+        }
+        return instructions;
+    }
+    public ArrayList<ASMInstruction> visit(IRLabel node) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        instructions.add(new ASMLabel(node.name()));
+        return instructions;
+    }
+    public ArrayList<ASMInstruction> visit(IRMove node){
+        return null;
+    }
 
 }
