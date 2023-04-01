@@ -1,0 +1,171 @@
+Index: src/main/java/aar226_akc55_ayc62_ahl88/src/edu/cornell/cs/cs4120/xic/ir/visit/ASMVisitor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;\n\nimport aar226_akc55_ayc62_ahl88.asm.*;\nimport aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;\nimport aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;\nimport aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;\nimport aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;\nimport aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;\nimport aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;\nimport aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;\nimport aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;\nimport aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;\nimport aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;\n\nimport java.util.ArrayList;\n\n/**\n * NOTES:\n * - branches: use cmp then corresponding jump\n * - multireturn: store first argument in rax, push rest on stack\n * - function args: rdi, rsi, rdx, rcx, r8, r9, push rest on stack\n * - callee saved: rbx, rbp, and r12–r15\n * - caller saved: everything else\n *\n * THINGS WE NEEEEEEEEEEEDDDDDDDDD\n * - ir compunit ->\n *      add glob mem locations\n *      call visit to all functions\n * - ir func decl ->\n *      create new label at the top for function name\n *      follow abi for args and register alloc\n *      call visit on each statement\n *      flatten arraylist we get back\n *      follow abi for correct func exit\n * - jump -> jr <label name>\n * - cjump ->\n *      two args: cmp <t1> <t2>; j<flag> <label name>\n *      if instance of IRConst and is boolliteral: true -> jr / false -> nothing\n * - move ->\n *      mooooooooooooove\n *      contains expr: used for dynamic tiling\n *      tiling\n * - mem\n * - binop\n * - call stmt ->\n *      init function call follow abi for function call (store func args correctly)\n *      jump to function\n *      clean accroding to ABI spec (be careful about multireturns and stack dead space)\n *      pop from function\n * - IR Label -> ASM label\n *\n *\n * Generic ASM Class will be called ASMNode\n */\n\npublic class ASMVisitor {\n    private int tempCnt;\n\n\n    private String nxtTemp() {\n        return String.format(\"_ASMReg_t%d\", (tempCnt++));\n    }\n    public ArrayList<ASMInstruction> visit(IRLabel node) {\n        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();\n        instructions.add(new ASMLabel(node.name()));\n        return instructions;\n    }\n\n    public ArrayList<ASMInstruction> visit(IRJump jump) {\n        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();\n        if (jump.target() instanceof IRName) {\n            instructions.add(new ASMJumpAlways(new ASMNameExpr(jump.label())));\n        }\n        return instructions;\n    }\n\n    public ArrayList<ASMInstruction> visit(IRCompUnit node) {\n        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();\n\n        for (IRData data : node.dataMap().values()) {\n            ASMLabel data_label = new ASMLabel(data.name());\n            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));\n        }\n\n        for (IRFuncDecl func : node.functions().values()) {\n            instructions.addAll(visit(func));\n        }\n\n        return instructions;\n    }\n\n    public ArrayList<ASMInstruction> visit(IRFuncDecl node) {\n        return null;\n    }\n\n    public ArrayList<ASMInstruction> visit(IRCallStmt node){\n        return null;\n    }\n    public ArrayList<ASMInstruction> visit(IRMove node){\n        return null;\n    }\n\n    public ArrayList<ASMInstruction> visit(IRCJump node) {\n        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();\n\n        IRExpr condition = node.cond();\n\n        if (condition instanceof IRBinOp c) {\n            // create function for IRBINOP\n            // DO A CMP instead\n            return cJumpBinop(c);\n        } else if (condition instanceof IRConst c) {\n            if (c.value() != 0L){ // jump\n                instructions.add(new ASMJumpAlways(new ASMNameExpr(node.trueLabel())));\n            }\n        } else if (condition instanceof IRTemp c) {\n            ASMTempExpr tempName = tempToASM(c);\n            instructions.add(new ASMTest(tempName,tempName));\n            instructions.add(new ASMJumpNotEqual(new ASMNameExpr(node.trueLabel())));\n            //test t, t\n            //jnz l\n        } else if (condition instanceof IRMem c) {\n            ASMTempExpr tempForMem = new ASMTempExpr(nxtTemp());\n            // accept mem for this temp\n            // add move instruction\n            // do temp test and ASM Jump no Equal\n            return null;\n        }else{\n            throw new InternalCompilerError(\"CJUMP guard has another type\");\n        }\n        return instructions;\n    }\n\n\n\n    //\n    //\n    //\n    //\n    private ASMDirectives getType(String name) {\n        String type = name.split(\"_\")[0];\n        if (type.equals(\"i\") || type.equals(\"b\")) {\n            return ASMDirectives.QUAD;\n        }\n        return ASMDirectives.ZERO;\n    }\n\n    // converts an IR TEMP to an ASM TEMP\n    private ASMTempExpr tempToASM(IRTemp t) {\n        return new ASMTempExpr(t.name());\n    }\n\n    // change te parameters if needed\n    private ArrayList<ASMInstruction> cJumpBinop(IRBinOp binop){\n        return null;\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/aar226_akc55_ayc62_ahl88/src/edu/cornell/cs/cs4120/xic/ir/visit/ASMVisitor.java b/src/main/java/aar226_akc55_ayc62_ahl88/src/edu/cornell/cs/cs4120/xic/ir/visit/ASMVisitor.java
+--- a/src/main/java/aar226_akc55_ayc62_ahl88/src/edu/cornell/cs/cs4120/xic/ir/visit/ASMVisitor.java	
++++ b/src/main/java/aar226_akc55_ayc62_ahl88/src/edu/cornell/cs/cs4120/xic/ir/visit/ASMVisitor.java	
+@@ -1,18 +1,20 @@
+ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
+ 
+ import aar226_akc55_ayc62_ahl88.asm.*;
+-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;
+-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
+-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
++import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
+ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
+ import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
++import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
++import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
+ import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
+ import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
+ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+ import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
+ 
+ import java.util.ArrayList;
++import java.util.HashSet;
++import java.util.TreeSet;
+ 
+ /**
+  * NOTES:
+@@ -79,7 +81,7 @@
+ 
+         for (IRData data : node.dataMap().values()) {
+             ASMLabel data_label = new ASMLabel(data.name());
+-            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
++//            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
+         }
+ 
+         for (IRFuncDecl func : node.functions().values()) {
+@@ -90,7 +92,55 @@
+     }
+ 
+     public ArrayList<ASMInstruction> visit(IRFuncDecl node) {
+-        return null;
++        ArrayList<ASMInstruction> result = new ArrayList<>();
++
++        // create new Starting label for this Function
++        result.add(new ASMLabel(node.name()));
++
++        // push rbp
++        // mov rbp rsp
++        result.add(new ASMPush(new ASMRegisterExpr("rbp")));
++        result.add(new ASMMov(new ASMRegisterExpr("rbp"),new ASMRegisterExpr("rsp")));
++
++        // need to calculate number of temporaries used
++        // sub rsp, 8*l
++        HashSet<String> asmTempNames = new HashSet<>();
++
++        // foo(1,2,3,4,5,6,7....) -> rdi, rsi, rdx, rcx, r8, r9, stack
++        int numParams = node.functionSig.inputTypes.size();
++        ArrayList<ASMInstruction> bodyInstructions = new ArrayList<>();
++        for (int i = 1; i<=numParams;i++){
++            // Move arg into argI. argI <- RDI
++            ASMExpr ARGI = switch (i) {
++                case 1 -> new ASMRegisterExpr("rdi");
++                case 2 -> new ASMRegisterExpr("rsi");
++                case 3 -> new ASMRegisterExpr("rdx");
++                case 4 -> new ASMRegisterExpr("rcx");
++                case 5 -> new ASMRegisterExpr("r8");
++                case 6 -> new ASMRegisterExpr("r9");
++                default ->
++                    new ASMMemExpr(
++                        new ASMBinOpAddExpr(
++                            new ASMRegisterExpr("rbp"),
++                            new ASMConstExpr(8L * (i - 7 + 2))));
++            };
++            String tempName = nxtTemp();
++            asmTempNames.add(tempName);
++            // can't do [stack location] <- [stack location2]
++            // need intermediate rax <- [stack location2]
++            // then [stack location] <- temp rax
++            if (i>=7){
++                bodyInstructions.add(new ASMMov(new ASMRegisterExpr("rax"),ARGI));
++                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),new ASMRegisterExpr("rax")));
++            }
++            // just do MOV [stack location] <- register
++            else{
++                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
++            }
++        }
++
++
++            return null;
+     }
+ 
+     public ArrayList<ASMInstruction> visit(IRCallStmt node){
+Index: src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMConstExpr.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package aar226_akc55_ayc62_ahl88.asm.Expressions;\n\npublic class ASMConstExpr extends ASMExpr {\n    public ASMConstExpr(long[] data) {\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMConstExpr.java b/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMConstExpr.java
+--- a/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMConstExpr.java	
++++ b/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMConstExpr.java	
+@@ -1,6 +1,13 @@
+ package aar226_akc55_ayc62_ahl88.asm.Expressions;
+ 
+ public class ASMConstExpr extends ASMExpr {
+-    public ASMConstExpr(long[] data) {
++
++    private long value;
++    public ASMConstExpr(long val) {
++        value = val;
++    }
++
++    public long getValue() {
++        return value;
+     }
+ }
+Index: src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMRegisterExpr.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package aar226_akc55_ayc62_ahl88.asm.Expressions;\n\npublic class ASMRegisterExpr {\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMRegisterExpr.java b/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMRegisterExpr.java
+--- a/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMRegisterExpr.java	
++++ b/src/main/java/aar226_akc55_ayc62_ahl88/asm/Expressions/ASMRegisterExpr.java	
+@@ -1,4 +1,13 @@
+ package aar226_akc55_ayc62_ahl88.asm.Expressions;
+ 
+-public class ASMRegisterExpr {
++public class ASMRegisterExpr extends ASMExpr{
++
++    private String regName;
++    public ASMRegisterExpr(String name){
++        regName = name;
++    }
++
++    public String getRegName() {
++        return regName;
++    }
+ }
+Index: src/main/java/aar226_akc55_ayc62_ahl88/asm/Instructions/mov/ASMmov.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/aar226_akc55_ayc62_ahl88/asm/Instructions/mov/ASMmov.java b/src/main/java/aar226_akc55_ayc62_ahl88/asm/Instructions/mov/ASMMov.java
+rename from src/main/java/aar226_akc55_ayc62_ahl88/asm/Instructions/mov/ASMmov.java
+rename to src/main/java/aar226_akc55_ayc62_ahl88/asm/Instructions/mov/ASMMov.java
+--- a/src/main/java/aar226_akc55_ayc62_ahl88/asm/Instructions/mov/ASMmov.java	
++++ b/src/main/java/aar226_akc55_ayc62_ahl88/asm/Instructions/mov/ASMMov.java	
+@@ -4,8 +4,8 @@
+ import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMExpr;
+ import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
+ 
+-public class ASMmov extends ASMArg2 {
+-    public ASMmov(ASMExpr left, ASMExpr right) {
++public class ASMMov extends ASMArg2 {
++    public ASMMov(ASMExpr left, ASMExpr right) {
+         super(ASMOpCodes.MOV, left, right);
+     }
+ }

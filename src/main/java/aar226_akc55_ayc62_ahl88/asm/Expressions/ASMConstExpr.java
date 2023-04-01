@@ -1,6 +1,13 @@
 package aar226_akc55_ayc62_ahl88.asm.Expressions;
 
 public class ASMConstExpr extends ASMExpr {
-    public ASMConstExpr(long[] data) {
+
+    private long value;
+    public ASMConstExpr(long val) {
+        value = val;
+    }
+
+    public long getValue() {
+        return value;
     }
 }
