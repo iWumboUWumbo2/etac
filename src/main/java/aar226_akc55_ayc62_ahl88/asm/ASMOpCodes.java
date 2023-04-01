@@ -3,7 +3,7 @@ package aar226_akc55_ayc62_ahl88.asm;
 public enum ASMOpCodes{
         // 0 arg
         RET, // when you finish executing function do ret.
-
+        LEAVE,
         // 1 arg
         JMP, // jump always
         JE, // jump if equal a == b
@@ -23,6 +23,7 @@ public enum ASMOpCodes{
         PUSH,
 
         // 2 arg
+        ENTER,
         MOV, //MOOOOOVE data from src to dest
         MOVABS,
         ADD,
