@@ -217,10 +217,10 @@ public class ASMVisitor {
         return null;
     }
 
-    public ArrayList<ASMInstruction> visit(IRSeq node){
+    public ArrayList<ASMInstruction> visit(IRSeq node, HashSet<String> hset){
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
         for (IRStmt stmt : node.stmts()) {
-            ArrayList<ASMInstruction> stmtInstrs = stmt.accept(this, new HashSet<String>() {});
+            ArrayList<ASMInstruction> stmtInstrs = stmt.accept(this, hset);
             instructions.addAll(stmtInstrs);
         }
         return instructions;
