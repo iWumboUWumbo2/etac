@@ -10,6 +10,8 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -157,10 +159,10 @@ public class ASMVisitor {
         // create new Starting label for this Function
         result.add(new ASMLabel(node.name()));
 
-        // enter at Botoom
-        // push rbp
-        // mov rbp rsp
-        // sub rsp, 8*l
+//        enter at Botoom
+//        push rbp
+//        mov rbp rsp
+//        sub rsp, 8*l
 //        result.add(new ASMPush(new ASMRegisterExpr("rbp")));
 //        result.add(new ASMMov(new ASMRegisterExpr("rbp"),new ASMRegisterExpr("rsp")));
 
@@ -170,8 +172,20 @@ public class ASMVisitor {
 
         // foo(1,2,3,4,5,6,7....) -> rdi, rsi, rdx, rcx, r8, r9, stack
         int numParams = node.functionSig.inputTypes.size();
+        int numReturns = node.functionSig.outputTypes.size();
         ArrayList<ASMInstruction> bodyInstructions = new ArrayList<>();
-        for (int i = 1; i<=numParams;i++){
+
+        if (numReturns > 2){
+            asmTempNames.add("_ARG0");
+            bodyInstructions.add(new ASMMov(
+                    new ASMTempExpr("_ARG0"),
+                    new ASMRegisterExpr("rdi")
+            ));
+        }
+
+        int start = numReturns > 2 ? 2: 1;
+        int end   = numParams > 2 ? numParams +1: numParams;
+        for (int i = start; i<=end;i++){
 
             // Move arg into argI. argI <- RDI
             ASMExpr ARGI = switch (i) {
@@ -238,6 +252,22 @@ public class ASMVisitor {
         }
         return instructions;
     }
+    public ArrayList<ASMInstruction> visit(IRReturn node, HashSet<String> hset) {
+        //
+        ArrayList<ASMInstruction> returnInstructions = new ArrayList<>();
+        int returnSize = node.rets().size();
+        for (int i = 1; i <= returnSize; i++) {
+            //
+            // execute expression
+            // move expression to Return Location
+        }
+
+        // leave
+        // ret
+        returnInstructions.add(new ASMLeave());
+        returnInstructions.add(new ASMRet());
+        return returnInstructions;
+    }
 
     // TODO: 4/1/2023
     // move
@@ -251,4 +281,6 @@ public class ASMVisitor {
     // call_stmt
     // TODO: 4/1/2023
     // name
+    // TODO: 4/1/2023
+    // RETURN
 }
