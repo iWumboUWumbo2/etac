@@ -217,4 +217,25 @@ public class ASMVisitor {
         return null;
     }
 
+    public ArrayList<ASMInstruction> visit(IRSeq node){
+        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        for (IRStmt stmt : node.stmts()) {
+            ArrayList<ASMInstruction> stmtInstrs = stmt.accept(this, new HashSet<String>() {});
+            instructions.addAll(stmtInstrs);
+        }
+        return instructions;
+    }
+
+    // TODO: 4/1/2023
+    // move
+    // TODO: 4/1/2023
+    // temp
+    // TODO: 4/1/2023
+    // seq
+    // TODO: 4/1/2023
+    // mem
+    // TODO: 4/1/2023
+    // call_stmt
+    // TODO: 4/1/2023
+    // name
 }
