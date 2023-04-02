@@ -262,11 +262,43 @@ public class ASMVisitor {
         ArrayList<ASMInstruction> returnInstructions = new ArrayList<>();
         int returnSize = node.rets().size();
 
-        for (int i = 1; i <= returnSize; i++) {
-            // execute expression
+        ArrayList<String> tempNames = new ArrayList<>();
+        //in case returns stop being temporaries in the future.
+        for (IRExpr e: node.rets()){
+             if (e instanceof IRTemp t){
+                tempNames.add(t.name());
+             }else{
+                 System.out.println("return is not a temp? " + e);
+                 String nxtName = nxtTemp();
+                 tempNames.add(nxtName);
+                 ASMTempExpr tmp = new ASMTempExpr(nxtName);
+                 throw new InternalCompilerError("return has an element that isn't a temp");
+             }
         }
-        for (int i = 1; i <= returnSize; i++) {
+
+        functionToTemps.get(curFunction).addAll(tempNames);
+        // looping in reverse so rax can be used temporarily until the end
+        for (int i = returnSize; i >= 1; i--) {
             // move expression to Return Location
+            // Move ret into reti. reti <- RDI
+            ASMExpr retI = switch (i) {
+                case 1 -> new ASMRegisterExpr("rax");
+                case 2 -> new ASMRegisterExpr("rdx");
+                default -> new ASMMemExpr(
+                        new ASMBinOpAddExpr(
+                                new ASMRegisterExpr("_ARG0"),
+                                new ASMConstExpr(8L*(i-3))));
+            };
+
+            if (i >2){
+                // just in case we just put everything on the stack lol need intermediate
+                // rax <- [origin]
+                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rax"),new ASMTempExpr(tempNames.get(i))));
+                // [dest] <- rax
+                returnInstructions.add(new ASMMov(retI,new ASMRegisterExpr("rax")));
+            }else{
+                returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i))));
+            }
         }
 
         // leave
