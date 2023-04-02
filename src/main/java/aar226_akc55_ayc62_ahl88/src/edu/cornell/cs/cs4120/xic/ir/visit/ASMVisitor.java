@@ -245,7 +245,15 @@ public class ASMVisitor {
         instructions.add(new ASMLabel(node.name()));
         return instructions;
     }
+    // Always use these three rax, rcx, and rdx
     public ArrayList<ASMInstruction> visit(IRMove node){
+        IRExpr dest = node.target();
+        IRExpr source = node.source();
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
+        if (dest instanceof IRTemp t1 && source instanceof IRTemp t2){ // random case for testing atm
+//            instructions.add(new ASMMov())
+        }
+
         return null;
     }
 
@@ -278,7 +286,7 @@ public class ASMVisitor {
 
         functionToTemps.get(curFunction).addAll(tempNames);
         // looping in reverse so rax can be used temporarily until the end
-        for (int i = returnSize; i >= 1; i--) {
+        for (int i = 1; i <= returnSize; i++) {
             // move expression to Return Location
             // Move ret into reti. reti <- RDI
             ASMExpr retI = switch (i) {
@@ -292,10 +300,10 @@ public class ASMVisitor {
 
             if (i >2){
                 // just in case we just put everything on the stack lol need intermediate
-                // rax <- [origin]
-                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rax"),new ASMTempExpr(tempNames.get(i))));
-                // [dest] <- rax
-                returnInstructions.add(new ASMMov(retI,new ASMRegisterExpr("rax")));
+                // rcx <- [origin]
+                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rcx"),new ASMTempExpr(tempNames.get(i))));
+                // [dest] <- rcx
+                returnInstructions.add(new ASMMov(retI,new ASMRegisterExpr("rcx")));
             }else{
                 returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i))));
             }
