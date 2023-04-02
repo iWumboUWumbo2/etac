@@ -1,10 +1,14 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
+
+import java.util.ArrayList;
 
 /** An IR function declaration */
 public class IRFuncDecl extends IRNode_c {
@@ -69,5 +73,9 @@ public class IRFuncDecl extends IRNode_c {
         p.printAtom(name);
         body.printSExp(p);
         p.endList();
+    }
+
+    public ArrayList<ASMInstruction> accept(ASMVisitor v) {
+        return v.visit(this);
     }
 }

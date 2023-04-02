@@ -324,6 +324,47 @@ public class ASMVisitor {
         return new ArrayList<>();
     }
 
+    public ArrayList<ASMInstruction> visit(IRTemp irTemp) {
+        return null;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRName irName) {
+        return null;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRMem irMem) {
+        return null;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRBinOp irBinOp) {
+        return null;
+    }
+
+    public ArrayList<ASMInstruction> visit(IRESeq ireSeq) {
+        System.out.println("don't have ireSeq");
+        return new ArrayList<>();
+    }
+
+    public ArrayList<ASMInstruction> visit(IRCall irCall) {
+        System.out.println("don't have irCall");
+        return new ArrayList<>();
+    }
+
+    private ArrayList<ASMInstruction> visitExpression(IRExpr expr) {
+        if (expr instanceof IRBinOp bop)
+            return visit(bop);
+        else if (expr instanceof IRCallStmt call)
+            return visit(call);
+        else if (expr instanceof IRConst cnst)
+            return visit(cnst);
+        else if (expr instanceof IRMem mem)
+            return visit(mem);
+        else if (expr instanceof IRName name)
+            return visit(name);
+        else if (expr instanceof IRTemp tmp)
+            return visit(tmp);
+        else throw new InternalCompilerError("Invalid expression for visitExpression");
+    }
 
     // TODO: 4/1/2023
     // move

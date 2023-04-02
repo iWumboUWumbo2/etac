@@ -1,12 +1,21 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
+import java.util.ArrayList;
+
 /** An intermediate representation for a memory location MEM(e) */
 public class IRMem extends IRExpr_c {
+    @Override
+    public ArrayList<ASMInstruction> accept(ASMVisitor v) {
+        return v.visit(this);
+    }
+
     public enum MemType {
         NORMAL,
         IMMUTABLE;
