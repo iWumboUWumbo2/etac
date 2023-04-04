@@ -1,0 +1,23 @@
+main(args : int[][]) {
+    x : int = 5
+    z : int = 4;
+
+    if (x == z) { // JE
+        x = x + 1;
+    }
+    if (x != z) { // JNE
+        x = x + 1;
+    }
+    if (x < z) { // JL
+        x = x + 1;
+    }
+    if (x <= z) { // JLE
+        x = x + 1;
+    }
+    if (x > z) { // JG
+        x = x + 1;
+    }
+    if (x >= z) { // JGE
+        x = x + 1;
+    }
+}
