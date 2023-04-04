@@ -1,0 +1,26 @@
+single() : int {
+    return 1
+}
+
+main(args : int[][]) {
+    x : int = 5
+    y : bool = true;
+    z : int = 4;
+
+    if (x < y) {
+        // This statment does not do anything
+        if (x > y) {
+            x = x + 1;
+        } else {
+            y = y;
+        }
+
+        if (y) {
+            x = x + single()
+        } else {
+            if (x >= z) {
+                z = single() + z;
+            }
+        }
+    }
+}
