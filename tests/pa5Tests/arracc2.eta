@@ -1,0 +1,20 @@
+single():int{
+    return 1
+}
+
+array() : int {
+    y : int[] = {1,2,3,4}
+    return y
+}
+
+main(args : int[][]) {
+    x : int[] = {1,2,3};
+
+    a : int = x[1];
+    a = x[single()];
+    a = x[single() + single()];
+    a = array()[1];
+    a = array()[single() * single()];
+
+    x[single() / single()] = array()[single()];
+}
