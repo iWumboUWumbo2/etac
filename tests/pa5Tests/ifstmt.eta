@@ -7,9 +7,9 @@ main(args : int[][]) {
     y : bool = true;
     z : int = 4;
 
-    if (x < y) {
+    if (x < z) {
         // This statment does not do anything
-        if (x > y) {
+        if (x > z) {
             x = x + 1;
         } else {
             y = y;
