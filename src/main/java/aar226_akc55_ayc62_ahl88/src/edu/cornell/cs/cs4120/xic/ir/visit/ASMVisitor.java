@@ -61,9 +61,9 @@ import java.util.HashSet;
  */
 
 public class ASMVisitor {
-    private int tempCnt;
+    private int tempCnt = 0;
 
-    private HashMap<String,HashSet<String>> functionToTemps;
+    private HashMap<String,HashSet<String>> functionToTemps = new HashMap<>();
 
     private String curFunction;
 
@@ -146,7 +146,9 @@ public class ASMVisitor {
         for (IRFuncDecl func : node.functions().values()) {
             curFunction = func.name();
             functionToTemps.put(func.name(),new HashSet<>());
-            instructions.addAll(visit(func));
+            ArrayList<ASMInstruction> functionInstructions = visit(func);
+            replaceTemps(functionInstructions,curFunction);
+            instructions.addAll(functionInstructions);
         }
 
         return instructions;
@@ -230,8 +232,9 @@ public class ASMVisitor {
         // add enter at begin.
         // enter 8*L, 0
         ASMEnter begin = new ASMEnter(new ASMConstExpr(8L*functionToTemps.get(curFunction).size()),new ASMConstExpr(0));
-        bodyInstructions.add(0,begin);
-        return bodyInstructions;
+        result.add(begin);
+        result.addAll(bodyInstructions);
+        return result;
     }
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
@@ -251,10 +254,23 @@ public class ASMVisitor {
         IRExpr source = node.source();
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         if (dest instanceof IRTemp t1 && source instanceof IRTemp t2){ // random case for testing atm
-//            instructions.add(new ASMMov())
+            // super redudant :((
+            // move rax <- t2.name
+            functionToTemps.get(curFunction).add(t1.name());
+            functionToTemps.get(curFunction).add(t2.name());
+            instructions.add(new ASMMov(new ASMRegisterExpr("rax"),new ASMTempExpr(t2.name())));
+            //move t1.name <- rax
+            instructions.add(new ASMMov(new ASMTempExpr(t1.name()),new ASMRegisterExpr("rax")));
+        }else if (dest instanceof IRTemp t1 && source instanceof IRConst x){
+            functionToTemps.get(curFunction).add(t1.name());
+            boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
+            ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()))
+                    : new ASMMovabs(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()));
+        }else{
+            throw new InternalCompilerError("TODO Other moves");
         }
 
-        return null;
+        return instructions;
     }
 
     public ArrayList<ASMInstruction> visit(IRSeq node){
@@ -301,11 +317,11 @@ public class ASMVisitor {
             if (i >2){
                 // just in case we just put everything on the stack lol need intermediate
                 // rcx <- [origin]
-                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rcx"),new ASMTempExpr(tempNames.get(i))));
+                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rcx"),new ASMTempExpr(tempNames.get(i-1)))); // check this
                 // [dest] <- rcx
                 returnInstructions.add(new ASMMov(retI,new ASMRegisterExpr("rcx")));
             }else{
-                returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i))));
+                returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i-1))));
             }
         }
 
@@ -364,6 +380,19 @@ public class ASMVisitor {
         else if (expr instanceof IRTemp tmp)
             return visit(tmp);
         else throw new InternalCompilerError("Invalid expression for visitExpression");
+    }
+
+    private void replaceTemps(ArrayList<ASMInstruction> instructions, String functionName){
+        functionToTemps.get(functionName);
+        int index = 1;
+        HashMap<String, Integer> tempToStack = new HashMap<>();
+        for (String temp: functionToTemps.get(functionName)){
+            tempToStack.put(temp,index*8);
+            index++;
+        }
+        for (ASMInstruction instr: instructions){
+            instr.createPrint(tempToStack);
+        }
     }
 
     // TODO: 4/1/2023

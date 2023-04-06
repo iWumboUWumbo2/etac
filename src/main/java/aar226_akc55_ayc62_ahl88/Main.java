@@ -2,12 +2,15 @@ package aar226_akc55_ayc62_ahl88;
 
 import aar226_akc55_ayc62_ahl88.Errors.EtaError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
@@ -313,15 +316,15 @@ public class Main {
                     // IR constant-folding checker demo
                     {
                         CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
-                        System.out.print("Constant-folded?: ");
-                        System.out.println(cv.visit(ir));
+//                        System.out.print("Constant-folded?: ");
+//                        System.out.println(cv.visit(ir));
                     }
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     {
                         CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
-                        System.out.print("Canonical?: ");
-                        System.out.println(cv.visit(ir));
+//                        System.out.print("Canonical?: ");
+//                        System.out.println(cv.visit(ir));
                     }
                     return ir;
                 } else if (filename.endsWith(".eti")) {
@@ -408,22 +411,37 @@ public class Main {
         }
     }
 
+    private static final String INDENT_SFILE = "    ";
     private static void asmGenFile(String filename, boolean shouldWrite) {
-//        String zhenFilename = getZhenFilename(filename);
-//
-//        try {
-//            // DO SHIT
-//
-//            if (shouldWrite) {
-//                writeOutputAsm(filename, out.toString(), "s");
-//            }
-//        }
-//        catch (EtaError e) {
-//            e.printError(zhenFilename);
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        String zhenFilename = getZhenFilename(filename);
+
+        try {
+            // DO SHIT
+            IRNode ir = irbuild(zhenFilename);
+            ArrayList<ASMInstruction> res = new ASMVisitor().visit((IRCompUnit) ir);
+            StringWriter out = new StringWriter();
+            out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");
+            out.write(INDENT_SFILE+".intel_syntax noprefix\n");
+            out.write(INDENT_SFILE+".text\n");
+            out.write(INDENT_SFILE+".globl  _Imain_paai\n");
+            out.write(INDENT_SFILE+".type	_Imain_paai, @function\n");
+            for (ASMInstruction instr: res){
+                if (!(instr instanceof ASMLabel)){
+                    out.write(INDENT_SFILE + instr + '\n');
+                }else{
+                    out.write(instr+"\n");
+                }
+            }
+            if (shouldWrite) {
+                writeOutputAsm(filename, out.toString(), "s");
+            }
+        }
+        catch (EtaError e) {
+            e.printError(zhenFilename);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) throws java.io.IOException {

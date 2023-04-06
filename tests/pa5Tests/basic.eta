@@ -1,0 +1,7 @@
+
+main(args:int[][]){
+}
+
+square(num:int):int {
+    return num;
+}

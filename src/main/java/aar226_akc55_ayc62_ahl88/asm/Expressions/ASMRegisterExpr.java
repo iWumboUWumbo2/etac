@@ -5,4 +5,8 @@ public class ASMRegisterExpr extends ASMExpr{
     public ASMRegisterExpr (String name) {
         this.registerName = name;
     }
+
+    public String getRegisterName() {
+        return registerName;
+    }
 }
