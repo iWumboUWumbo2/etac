@@ -5,7 +5,7 @@ import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 
 import java.util.HashMap;
 
-public abstract class ASMArg1 extends ASMInstruction {
+public class ASMArg1 extends ASMInstruction {
 
     private ASMExpr left;
     private String leftPrint;

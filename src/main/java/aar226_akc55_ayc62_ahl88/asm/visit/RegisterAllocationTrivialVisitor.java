@@ -39,15 +39,37 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     // JUMPS, INC, DEC, NOT, IDIV, POP, PUSH,
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg1 node) {
+        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
         ArrayList<ASMInstruction> res = new ArrayList<>();
         if (node instanceof ASMCall call){
             throw new InternalCompilerError("call TODO");
         }else{
             ASMExpr argument = node.getLeft();
             if (argument instanceof ASMTempExpr temp){ // migrate temp to stack?
-                throw new InternalCompilerError("TEMP TODO");
+                String curReg = availReg.get(availReg.size()-1);
+                availReg.remove(availReg.size()-1);
+                // add the move
+                ASMMemExpr stackLoc = tempToStack(temp);
+                ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                res.add(new ASMMov(usedReg,stackLoc)); // fake reg on stack now moved to real
+                res.add(new ASMArg1(node.getOpCode(),usedReg)); // original instruction with real reg
             }else if (argument instanceof ASMMemExpr mem){ // see if inside mem is temp
-                throw new InternalCompilerError("MEM TODO");
+                ArrayList<ASMExpr> expressions = flattenMem(mem);
+                HashMap<String, String> tempToReg= new HashMap<>();
+                for (ASMExpr expr: expressions){
+                    if (expr instanceof ASMTempExpr temp){
+                        // get stack mapping for reg
+                        String curReg = availReg.get(availReg.size()-1);
+                        availReg.remove(availReg.size()-1);
+                        // add the move
+                        ASMMemExpr stackLoc = tempToStack(temp);
+                        ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                        res.add(new ASMMov(usedReg,stackLoc));
+                        tempToReg.put(temp.getName(),curReg);
+                    }
+                }
+                ASMExpr tempMem = tempsToRegs(mem,tempToReg);
+                res.add(new ASMArg1(node.getOpCode(),tempMem));
             }else{ // no change instruction Jumps
                 res.add(node);
             }
