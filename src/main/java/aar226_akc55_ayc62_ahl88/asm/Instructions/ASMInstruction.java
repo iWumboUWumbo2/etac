@@ -1,10 +1,7 @@
 package aar226_akc55_ayc62_ahl88.asm.Instructions;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMExpr;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMRegisterExpr;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 
 import java.util.HashMap;
 
@@ -66,5 +63,9 @@ public abstract class ASMInstruction {
         }else{
             throw new Error("TODO");
         }
+    }
+
+    public ASMOpCodes getOpCode() {
+        return opCode;
     }
 }

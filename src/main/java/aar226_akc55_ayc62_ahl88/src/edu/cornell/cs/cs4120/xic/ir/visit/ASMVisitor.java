@@ -266,6 +266,7 @@ public class ASMVisitor {
             boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
             ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()))
                     : new ASMMovabs(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()));
+            instructions.add(instruction);
         }else{
             throw new InternalCompilerError("TODO Other moves");
         }
@@ -299,7 +300,6 @@ public class ASMVisitor {
                  throw new InternalCompilerError("return has an element that isn't a temp");
              }
         }
-
         functionToTemps.get(curFunction).addAll(tempNames);
         // looping in reverse so rax can be used temporarily until the end
         for (int i = 1; i <= returnSize; i++) {
@@ -315,6 +315,11 @@ public class ASMVisitor {
             };
 
             if (i >2){
+                if (i == 3){
+                    returnInstructions.add(new ASMMov(new ASMRegisterExpr("rsi"),
+                            new ASMTempExpr("_ARG0")));
+                }
+                System.out.println("greater than 3");
                 // just in case we just put everything on the stack lol need intermediate
                 // rcx <- [origin]
                 returnInstructions.add(new ASMMov(new ASMRegisterExpr("rcx"),new ASMTempExpr(tempNames.get(i-1)))); // check this
@@ -332,6 +337,8 @@ public class ASMVisitor {
         return returnInstructions;
     }
     public ArrayList<ASMInstruction> visit(IRCallStmt node) {
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
+
         return null;
     }
 
@@ -392,6 +399,7 @@ public class ASMVisitor {
         }
         for (ASMInstruction instr: instructions){
             instr.createPrint(tempToStack);
+            System.out.println(instr);
         }
     }
 

@@ -7,7 +7,7 @@ import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
 
 import java.util.HashMap;
 
-public abstract class ASMArg2 extends ASMInstruction {
+public class ASMArg2 extends ASMInstruction {
 
     private ASMExpr left;
     private ASMExpr right;

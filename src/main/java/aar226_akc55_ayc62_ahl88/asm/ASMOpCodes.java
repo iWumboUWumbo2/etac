@@ -14,7 +14,6 @@ public enum ASMOpCodes{
         JGE, // jump if greater equal a >= b
         JR,
         CALL, // call it when you call a function call stmt
-        LABEL,
         INC, // increment single operand
         DEC, // decrement single operand
         NOT, //inverts bits, not this -> !
@@ -39,6 +38,9 @@ public enum ASMOpCodes{
         SAR, // shift arithmetic right, preserve sign bit
 
         TEST,
-        CMP
+        CMP,
+
+        // EXTRA
+        LABEL
 }
 

@@ -2,6 +2,6 @@
 main(args:int[][]){
 }
 
-square(num:int):int {
-    return num;
+square(num:int):int,int,int {
+    return num,num,num;
 }
