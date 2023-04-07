@@ -10,4 +10,8 @@ public class ASMMemExpr extends ASMExpr{
         }
         this.mem = mem;
     }
+
+    public ASMExpr getMem() {
+        return mem;
+    }
 }

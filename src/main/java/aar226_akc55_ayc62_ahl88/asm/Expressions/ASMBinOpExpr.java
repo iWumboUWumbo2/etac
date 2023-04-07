@@ -7,4 +7,12 @@ public abstract class ASMBinOpExpr extends ASMExpr{
         left = arg1;
         right = arg2;
     }
+
+    public ASMExpr getRight() {
+        return right;
+    }
+
+    public ASMExpr getLeft() {
+        return left;
+    }
 }
