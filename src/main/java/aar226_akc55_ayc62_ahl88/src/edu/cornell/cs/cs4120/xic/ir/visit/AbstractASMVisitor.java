@@ -216,14 +216,15 @@ public class AbstractASMVisitor {
             // can't do [stack location] <- [stack location2]
             // need intermediate rax <- [stack location2]
             // then [stack location] <- temp rax
-            if (i>=7){
-                bodyInstructions.add(new ASMMov(new ASMRegisterExpr("rax"),ARGI));
-                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),new ASMRegisterExpr("rax")));
-            }
-            // just do MOV [stack location] <- register
-            else{
-                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
-            }
+//            if (i>=7){
+//                bodyInstructions.add(new ASMMov(new ASMRegisterExpr("rax"),ARGI));
+//                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),new ASMRegisterExpr("rax")));
+//            }
+//            // just do MOV [stack location] <- register
+//            else{
+//                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
+//            }
+            bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
         }
         if (node.body() instanceof  IRSeq seq){
             for (IRStmt stmt: seq.stmts()){
@@ -257,13 +258,9 @@ public class AbstractASMVisitor {
         IRExpr source = node.source();
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         if (dest instanceof IRTemp t1 && source instanceof IRTemp t2){ // random case for testing atm
-            // super redudant :((
-            // move rax <- t2.name
             functionToTemps.get(curFunction).add(t1.name());
             functionToTemps.get(curFunction).add(t2.name());
-            instructions.add(new ASMMov(new ASMRegisterExpr("rax"),new ASMTempExpr(t2.name())));
-            //move t1.name <- rax
-            instructions.add(new ASMMov(new ASMTempExpr(t1.name()),new ASMRegisterExpr("rax")));
+            instructions.add(new ASMMov(new ASMTempExpr(t1.name()),new ASMTempExpr(t2.name())));
         }else if (dest instanceof IRTemp t1 && source instanceof IRConst x){
             functionToTemps.get(curFunction).add(t1.name());
             boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
@@ -300,6 +297,7 @@ public class AbstractASMVisitor {
                  String nxtName = nxtTemp();
                  tempNames.add(nxtName);
                  ASMTempExpr tmp = new ASMTempExpr(nxtName);
+                 // need to translate
                  throw new InternalCompilerError("return has an element that isn't a temp");
              }
         }
@@ -313,24 +311,10 @@ public class AbstractASMVisitor {
                 case 2 -> new ASMRegisterExpr("rdx");
                 default -> new ASMMemExpr(
                         new ASMBinOpAddExpr(
-                                new ASMRegisterExpr("_ARG0"),
+                                new ASMTempExpr("_ARG0"),
                                 new ASMConstExpr(8L*(i-3))));
             };
-
-            if (i >2){
-                if (i == 3){
-                    returnInstructions.add(new ASMMov(new ASMRegisterExpr("rsi"),
-                            new ASMTempExpr("_ARG0")));
-                }
-                System.out.println("greater than 3");
-                // just in case we just put everything on the stack lol need intermediate
-                // rcx <- [origin]
-                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rcx"),new ASMTempExpr(tempNames.get(i-1)))); // check this
-                // [dest] <- rcx
-                returnInstructions.add(new ASMMov(retI,new ASMRegisterExpr("rcx")));
-            }else{
-                returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i-1))));
-            }
+            returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i-1))));
         }
 
         // leave

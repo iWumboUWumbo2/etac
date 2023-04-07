@@ -21,7 +21,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     HashMap<String,HashMap<String,Long>> functionToTempsToStackOffset = new HashMap<>();
 
     String currentFunction;
-    
+
     public ArrayList<ASMInstruction> visit(ASMCompUnit compUnit){
         ArrayList<ASMInstruction> total = new ArrayList<>();
         for (Map.Entry<String, long[]> global: compUnit.getGlobals().entrySet()){
@@ -108,7 +108,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         ASMExpr right = node.getRight();
 
         ArrayList<ASMInstruction> res = new ArrayList<>();
-
+        ArrayList<ASMInstruction> postInstruction = new ArrayList<>();
         ASMOpCodes opCodes = node.getOpCode();
         ASMExpr curDest = null; // replace Left with curDest
         ASMExpr curSrc = null;  // replace Right with curSrc
@@ -127,6 +127,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             ASMMemExpr stackLoc = tempToStack(temp);
             ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
             res.add(new ASMMov(usedReg,stackLoc));
+            postInstruction.add(new ASMMov(stackLoc,usedReg));
             curDest = usedReg;
         }else if (left instanceof ASMMemExpr mem){ // Mem
             // find the memory locations of the temps inside of mem pass in current avail Regs
@@ -231,6 +232,14 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         }
         ASMArg2 reBuild = new ASMArg2(opCodes, curDest, curSrc);
         res.add(reBuild);
+        res.addAll(postInstruction);
+//        System.out.println("Before");
+//        System.out.println(node);
+//        System.out.println("AFTER");
+//        for (ASMInstruction instr: res){
+//            System.out.println(instr);
+//
+//        }
         return res;
     }
 

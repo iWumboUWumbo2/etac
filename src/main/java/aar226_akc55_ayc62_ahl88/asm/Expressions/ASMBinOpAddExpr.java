@@ -8,7 +8,8 @@ public class ASMBinOpAddExpr extends ASMBinOpExpr{
     @Override
     public String toString() {
         if (getRight() instanceof ASMConstExpr cons && cons.getValue() <0){
-            return getLeft().toString() + getRight().toString();
+            long abs = Math.abs(cons.getValue());
+            return getLeft().toString() + " - " + Long.toString(abs);
         }
         return getLeft() + " + " + getRight();
     }
