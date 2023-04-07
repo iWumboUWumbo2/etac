@@ -85,7 +85,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
             res.add(new ASMMov(usedReg,stackLoc));
             curDest = usedReg;
-        }else if (left instanceof ASMMemExpr mem){
+        }else if (left instanceof ASMMemExpr mem){ // Mem
             // find the memory locations of the temps inside of mem pass in current avail Regs
             ArrayList<ASMExpr> expressions = flattenMem(mem);
             HashMap<String, String> tempToReg= new HashMap<>();
@@ -108,34 +108,87 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 
         // need intermediate steps cause both can't be mem
         // need extra reg
-
-        if (!(left instanceof ASMRegisterExpr)){ // left is mem
+        if (!(left instanceof ASMMemExpr)){ // left is mem
             if (right instanceof ASMTempExpr temp) {
                 // Move temp into reg2 cause temp is a stack location
+                String curReg = availReg.get(availReg.size()-1);
+                availReg.remove(availReg.size()-1);
+                // add the move
+                ASMMemExpr stackLoc = tempToStack(temp);
+                ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                res.add(new ASMMov(usedReg,stackLoc));
+                curSrc = usedReg;
                 // use reg 2 for right
             } else if (right instanceof ASMMemExpr mem) {
                 // Move the temp in mem (if exist) into reg2 cause temp is a stack location
                 // Move the tempSecond in mem (if exist) into reg3 cause temp is a stack location
+                ArrayList<ASMExpr> expressions = flattenMem(mem);
+                HashMap<String, String> tempToReg= new HashMap<>();
+                for (ASMExpr expr: expressions){
+                    if (expr instanceof ASMTempExpr temp){
+                        // get stack mapping for reg
+                        String curReg = availReg.get(availReg.size()-1);
+                        availReg.remove(availReg.size()-1);
+                        // add the move
+                        ASMMemExpr stackLoc = tempToStack(temp);
+                        ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                        res.add(new ASMMov(usedReg,stackLoc));
+                        tempToReg.put(temp.getName(),curReg);
+                    }
+                }
+                ASMExpr tempMem = tempsToRegs(mem,tempToReg);
+                String curReg = availReg.get(availReg.size()-1);
+                availReg.remove(availReg.size()-1);
+                // add the move
+                ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                res.add(new ASMMov(usedReg,tempMem));
+                curSrc = usedReg;
             } else if (right instanceof ASMConstExpr num) {
                 // Need an extra move if number is greater or less than max/min int
+                curSrc = isIMMTooBig(num,res,availReg); // adds extra instruction
             } else { // ASM Register
                 curSrc = right;
             }
         }else{ // left is reg
             if (right instanceof ASMTempExpr temp) {
+                // get the stack location through mapping
+                String curReg = availReg.get(availReg.size()-1);
+                availReg.remove(availReg.size()-1);
+                // add the move
+                ASMMemExpr stackLoc = tempToStack(temp);
+                ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                res.add(new ASMMov(usedReg,stackLoc));
+                curSrc = usedReg;
                 // Move temp into reg2 cause temp is a stack location
                 // use reg 2 for right
-            } else if (right instanceof ASMMemExpr mem) {
+            } else if (right instanceof ASMMemExpr mem) { // can leave right side as mem
+                ArrayList<ASMExpr> expressions = flattenMem(mem);
+                HashMap<String, String> tempToReg= new HashMap<>();
+                for (ASMExpr expr: expressions){
+                    if (expr instanceof ASMTempExpr temp){
+                        // get stack mapping for reg
+                        String curReg = availReg.get(availReg.size()-1);
+                        availReg.remove(availReg.size()-1);
+                        // add the move
+                        ASMMemExpr stackLoc = tempToStack(temp);
+                        ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                        res.add(new ASMMov(usedReg,stackLoc));
+                        tempToReg.put(temp.getName(),curReg);
+                    }
+                }
+                curSrc = tempsToRegs(mem,tempToReg);
                 // Move the temp in mem (if exist) into reg2 cause temp is a stack location
                 // Move the tempSecond in mem (if exist) into reg3 cause temp is a stack location
             } else if (right instanceof ASMConstExpr num) {
                 // Need an extra move if number is greater or less than max/min int
+                curSrc = isIMMTooBig(num,res,availReg);
             } else { // ASM Register
                 curSrc = right;
             }
         }
         ASMArg2 reBuild = new ASMArg2(opCodes, curDest, curSrc);
-        return null;
+        res.add(reBuild);
+        return res;
     }
 
     // imul dest, v1, v2 // dest = v1 * v2;
@@ -175,6 +228,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     }
 
 
+    /**
+     * Check if Expression has any Temps
+     * @param expr
+     * @param temps
+     */
     private void checkExprForTemp(ASMExpr expr, HashSet<String> temps){
         if (expr == null){
             return;
