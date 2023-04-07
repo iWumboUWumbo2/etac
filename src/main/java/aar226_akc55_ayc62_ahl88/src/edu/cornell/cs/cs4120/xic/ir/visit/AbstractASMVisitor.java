@@ -5,9 +5,14 @@ import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMAdd;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMSub;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPop;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
@@ -314,6 +319,21 @@ public class AbstractASMVisitor {
                                 new ASMTempExpr("_ARG0"),
                                 new ASMConstExpr(8L*(i-3))));
             };
+//
+//            if (i >2){
+//                if (i == 3){
+//                    returnInstructions.add(new ASMMov(new ASMRegisterExpr("rsi"),
+//                            new ASMTempExpr("_ARG0")));
+//                }
+//                System.out.println("greater than 3");
+//                // just in case we just put everything on the stack lol need intermediate
+//                // rcx <- [origin]
+//                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rcx"),new ASMTempExpr(tempNames.get(i-1)))); // check this
+//                // [dest] <- rcx
+//                returnInstructions.add(new ASMMov(retI,new ASMRegisterExpr("rcx")));
+//            }else{
+//                returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i-1))));
+//            }
             returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i-1))));
         }
 
@@ -325,8 +345,80 @@ public class AbstractASMVisitor {
     }
     public ArrayList<ASMInstruction> visit(IRCallStmt node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
+        int argSiz = node.args().size();
+        ArrayList<String> tempNames = new ArrayList<>();
+        //in case returns stop being temporaries in the future.
+        // Will have to revisit translation too if we change iRCALLSTMT
+        // Move the Push translations to later
+        for (IRExpr e: node.args()){
+            if (e instanceof IRTemp t){
+                tempNames.add(t.name());
+            }else{
+                System.out.println("call is not a temp? " + e);
+                String nxtName = nxtTemp();
+                tempNames.add(nxtName);
+                ASMTempExpr tmp = new ASMTempExpr(nxtName);
+                // need to translate
+                throw new InternalCompilerError("return has an element that isn't a temp");
+            }
+        }
+        functionToTemps.get(curFunction).addAll(tempNames);
+        // add extra stack space for returns
+        if (node.n_returns() >2){
+            instructions.add(new ASMSub(
+                    new ASMRegisterExpr("rsp"),
+                    new ASMConstExpr(8* (node.n_returns()-2))));
+            instructions.add(new ASMMov(
+                    new ASMRegisterExpr("rdi"),
+                    new ASMRegisterExpr("rsp")));
+        }
+        // pushes for Arguments
+        if (argSiz >= 6){
+            int end = node.n_returns() > 2 ? 6 : 7;
+            int ind = tempNames.size();
+            while (ind >= end){
+                instructions.add(new ASMPush(new ASMTempExpr(tempNames.get(ind-1))));
+                ind--;
+            }
+        }
+        int start = node.n_returns() > 2 ? Math.min(argSiz+1,6): Math.min(argSiz,6);
+        int end = node.n_returns() > 2 ? 2 : 1;
+        for (int i = start; i >= end; i--) {
+            // move expression from temp to required register
+            // Move ret into reti. reti <- RDI
+            ASMExpr argI = switch (i) {
+                case 1 -> new ASMRegisterExpr("rdi");
+                case 2 -> new ASMRegisterExpr("rsi");
+                case 3 -> new ASMRegisterExpr("rdx");
+                case 4 -> new ASMRegisterExpr("rcx");
+                case 5 -> new ASMRegisterExpr("r8");
+                case 6 -> new ASMRegisterExpr("r9");
+                default -> throw new InternalCompilerError("should not be in default for Function Call");
+            };
+            int loc = node.n_returns() > 2? i-2: i-1;
+            String tempName = tempNames.get(loc);
+            instructions.add(new ASMMov(argI,new ASMTempExpr(tempName)));
+        }
+        IRName functionName = (IRName) node.target();
+        // Align by 16 bytes I have no idea how
+        instructions.add(new ASMCall(new ASMNameExpr(functionName.name())));
 
-        return null;
+        if (argSiz > 6){
+            instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
+                    new ASMConstExpr(8L*(argSiz-5))));
+        }
+        String ret = "_RV";
+        for (int i = 1; i<= node.n_returns();i++){
+            ASMTempExpr temp = new ASMTempExpr(ret+i);
+            if (i == 1){
+                instructions.add(new ASMMov(temp,new ASMRegisterExpr("rax")));
+            }else if (i == 2){
+                instructions.add(new ASMMov(temp,new ASMRegisterExpr("rdx")));
+            }else{
+                instructions.add(new ASMPop(temp));
+            }
+        }
+        return instructions;
     }
 
     public ArrayList<ASMInstruction> visit(IRExp irExp) {

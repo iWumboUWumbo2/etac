@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.ASMAnd;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
@@ -64,7 +65,9 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
         ArrayList<ASMInstruction> res = new ArrayList<>();
         if (node instanceof ASMCall call){
-            throw new InternalCompilerError("call TODO");
+            // align stack if needed unalign after too
+            res.add(new ASMAnd(new ASMRegisterExpr("rsp"),new ASMConstExpr(-16)));
+            res.add(call);
         }else{
             ASMExpr argument = node.getLeft();
             if (argument instanceof ASMTempExpr temp){ // migrate temp to stack?
@@ -92,7 +95,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                 }
                 ASMExpr tempMem = tempsToRegs(mem,tempToReg);
                 res.add(new ASMArg1(node.getOpCode(),tempMem));
-            }else{ // no change instruction Jumps
+            }else if (argument instanceof ASMConstExpr cons){
+                throw new InternalCompilerError("TODO CONST 1 ARG");
+            }
+
+            else{ // no change instruction Jumps
                 res.add(node);
             }
         }
@@ -190,6 +197,10 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             } else if (right instanceof ASMConstExpr num) {
                 // Need an extra move if number is greater or less than max/min int
                 curSrc = isIMMTooBig(num,res,availReg); // adds extra instruction
+                boolean isInt = num.getValue() <= Integer.MAX_VALUE && num.getValue() >= Integer.MIN_VALUE;
+                if (!isInt){
+                    opCodes = ASMOpCodes.MOV;
+                }
             } else { // ASM Register
                 curSrc = right;
             }
@@ -226,6 +237,10 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             } else if (right instanceof ASMConstExpr num) {
                 // Need an extra move if number is greater or less than max/min int
                 curSrc = isIMMTooBig(num,res,availReg);
+                boolean isInt = num.getValue() <= Integer.MAX_VALUE && num.getValue() >= Integer.MIN_VALUE;
+                if (!isInt){
+                    opCodes = ASMOpCodes.MOV;
+                }
             } else { // ASM Register
                 curSrc = right;
             }

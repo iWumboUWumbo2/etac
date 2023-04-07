@@ -1,7 +1,6 @@
-
+use io;
+use conv;
 main(args:int[][]){
-}
-
-square(num:int):int,int,int {
-    return num,num,num;
+    println(unparseInt(123456789988888));
+    println(unparseInt(98372));
 }
