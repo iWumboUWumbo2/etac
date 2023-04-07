@@ -14,4 +14,9 @@ public class ASMMemExpr extends ASMExpr{
     public ASMExpr getMem() {
         return mem;
     }
+
+    @Override
+    public String toString() {
+        return "QWORD PTR [ " + mem.toString() +" ]";
+    }
 }

@@ -8,7 +8,6 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
@@ -60,7 +59,7 @@ import java.util.HashSet;
  * Generic ASM Class will be called ASMNode
  */
 
-public class ASMVisitor {
+public class AbstractASMVisitor {
     private int tempCnt = 0;
 
     private HashMap<String,HashSet<String>> functionToTemps = new HashMap<>();
@@ -135,23 +134,27 @@ public class ASMVisitor {
         }
         return instructions;
     }
-    public ArrayList<ASMInstruction> visit(IRCompUnit node) {
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-
+    public ASMCompUnit visit(IRCompUnit node) {
+        HashMap<String, long[]> globals = new HashMap<>();
+        HashMap<String, ArrayList<ASMInstruction>> functionToInstructionList = new HashMap<>();
+        HashMap<String, HashSet<String>> functionToTempsMapping = new HashMap<>();
         for (IRData data : node.dataMap().values()) {
             ASMLabel data_label = new ASMLabel(data.name());
 //            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
+            // add to ASMCOMP UNIT GLOBAL
         }
 
         for (IRFuncDecl func : node.functions().values()) {
             curFunction = func.name();
             functionToTemps.put(func.name(),new HashSet<>());
             ArrayList<ASMInstruction> functionInstructions = visit(func);
-            replaceTemps(functionInstructions,curFunction);
-            instructions.addAll(functionInstructions);
+            functionToTempsMapping.put(curFunction,functionToTemps.get(curFunction));
+            functionToInstructionList.put(curFunction,functionInstructions);
+//            replaceTemps(functionInstructions,curFunction);
+//            instructions.addAll(functionInstructions);
         }
 
-        return instructions;
+        return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping);
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();

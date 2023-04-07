@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.asm.visit;
 
+import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
@@ -9,10 +10,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<ASMInstruction>>{
 
@@ -23,11 +21,35 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     HashMap<String,HashMap<String,Long>> functionToTempsToStackOffset = new HashMap<>();
 
     String currentFunction;
+    
+    public ArrayList<ASMInstruction> visit(ASMCompUnit compUnit){
+        ArrayList<ASMInstruction> total = new ArrayList<>();
+        for (Map.Entry<String, long[]> global: compUnit.getGlobals().entrySet()){
+            System.out.println("doing Global");
+        }
+        for (Map.Entry<String, ArrayList<ASMInstruction>> function: compUnit.getFunctionToInstructionList().entrySet()){
+            currentFunction = function.getKey();
+            functionToTempsToStackOffset.put(currentFunction,new HashMap<>());
+            functionToTemps.put(currentFunction,new HashSet<>());
+            ASMEnter newEnter = createEnterAndBuildMapping(function.getValue());
+            ArrayList<ASMInstruction> functionResult = new ArrayList<>();
+            for (ASMInstruction instr: function.getValue()){
+                if (!(instr instanceof ASMEnter)) {
+                    functionResult.addAll(instr.accept(this));
+                }else{
+                    functionResult.add(newEnter);
+                }
+            }
+            total.addAll(functionResult);
+        }
+        return total;
+    }
     @Override
     public ArrayList<ASMInstruction> visit(ASMLabel node) {
-        return null;
+        ArrayList<ASMInstruction> result = new ArrayList<>();
+        result.add(node);
+        return result;
     }
-
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg0 node) { // leave, ret
         ArrayList<ASMInstruction> res = new ArrayList<>();
@@ -93,7 +115,6 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         if (node instanceof ASMEnter enter){
             throw new InternalCompilerError("enter TODO replace this enter with function One");
         }
-
 
         if (left instanceof ASMRegisterExpr reg){// known register Return
             curDest = left;

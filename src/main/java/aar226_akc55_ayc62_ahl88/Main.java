@@ -2,6 +2,7 @@ package aar226_akc55_ayc62_ahl88;
 
 import aar226_akc55_ayc62_ahl88.Errors.EtaError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.newast.Program;
@@ -10,7 +11,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ASMVisitor;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
@@ -418,23 +419,24 @@ public class Main {
         try {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
-            ArrayList<ASMInstruction> res = new ASMVisitor().visit((IRCompUnit) ir);
-            StringWriter out = new StringWriter();
-            out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");
-            out.write(INDENT_SFILE+".intel_syntax noprefix\n");
-            out.write(INDENT_SFILE+".text\n");
-            out.write(INDENT_SFILE+".globl  _Imain_paai\n");
-            out.write(INDENT_SFILE+".type	_Imain_paai, @function\n");
-            for (ASMInstruction instr: res){
-                if (!(instr instanceof ASMLabel)){
-                    out.write(INDENT_SFILE + instr + '\n');
-                }else{
-                    out.write(instr+"\n");
-                }
-            }
-            if (shouldWrite) {
-                writeOutputAsm(filename, out.toString(), "s");
-            }
+            ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
+            System.out.println(comp.toString());
+//            StringWriter out = new StringWriter();
+//            out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");
+//            out.write(INDENT_SFILE+".intel_syntax noprefix\n");
+//            out.write(INDENT_SFILE+".text\n");
+//            out.write(INDENT_SFILE+".globl  _Imain_paai\n");
+//            out.write(INDENT_SFILE+".type	_Imain_paai, @function\n");
+//            for (ASMInstruction instr: res){
+//                if (!(instr instanceof ASMLabel)){
+//                    out.write(INDENT_SFILE + instr + '\n');
+//                }else{
+//                    out.write(instr+"\n");
+//                }
+//            }
+//            if (shouldWrite) {
+//                writeOutputAsm(filename, out.toString(), "s");
+//            }
         }
         catch (EtaError e) {
             e.printError(zhenFilename);

@@ -9,4 +9,9 @@ public class ASMRegisterExpr extends ASMExpr{
     public String getRegisterName() {
         return registerName;
     }
+
+    @Override
+    public String toString() {
+        return registerName;
+    }
 }

@@ -5,4 +5,9 @@ public class ASMNameExpr extends ASMExpr {
     public ASMNameExpr(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

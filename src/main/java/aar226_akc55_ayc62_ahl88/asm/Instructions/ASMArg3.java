@@ -2,10 +2,12 @@ package aar226_akc55_ayc62_ahl88.asm.Instructions;
 
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMExpr;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
+import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class ASMArg3 extends ASMInstruction {
+public class ASMArg3 extends ASMInstruction {
     private ASMExpr a1;
     private ASMExpr a2;
     private ASMExpr a3;
@@ -26,6 +28,7 @@ public abstract class ASMArg3 extends ASMInstruction {
         a2Print = exprASMToString(a2, location);
         a3Print = exprASMToString(a3, location);
     }
+
     public ASMExpr getA1() {
         return a1;
     }
@@ -40,6 +43,10 @@ public abstract class ASMArg3 extends ASMInstruction {
 
     @Override
     public String toString(){
-        return opCodeToString() +a1Print + ", "+a2Print + ", "+a3Print;
+        return opCodeToString() +a1 + ", "+a2 + ", "+a3;
+    }
+    @Override
+    public ArrayList<ASMInstruction> accept(RegisterAllocationTrivialVisitor regVisitor) {
+        return regVisitor.visit(this);
     }
 }

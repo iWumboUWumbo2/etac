@@ -10,4 +10,9 @@ public class ASMConstExpr extends ASMExpr {
     public long getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return Long.toString(value);
+    }
 }

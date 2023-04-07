@@ -2,7 +2,10 @@ package aar226_akc55_ayc62_ahl88.asm.Instructions;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
+import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public abstract class ASMInstruction {
@@ -68,4 +71,5 @@ public abstract class ASMInstruction {
     public ASMOpCodes getOpCode() {
         return opCode;
     }
+    public abstract ArrayList<ASMInstruction> accept(RegisterAllocationTrivialVisitor regVisitor);
 }
