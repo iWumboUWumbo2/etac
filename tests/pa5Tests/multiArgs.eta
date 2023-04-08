@@ -1,13 +1,13 @@
 use io
 use conv
 main(args:int[][]){
-    a:int,b:int,c:int= square(100,900,50,40,50,60);
+    a:int,b:int,c:int,d:int= square(100,900,500123,20,90,1123);
     println(unparseInt(a));
     println(unparseInt(b));
     println(unparseInt(c));
-    //println(unparseInt(d));
+    println(unparseInt(d));
 }
 
-square(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int):int,int,int{
-    return n1,n2,n3;
+square(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int):int,int,int,int{
+    return n1,n2,n3,n4;
 }

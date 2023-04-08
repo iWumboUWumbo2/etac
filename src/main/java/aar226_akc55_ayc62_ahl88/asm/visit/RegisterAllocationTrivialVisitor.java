@@ -42,9 +42,9 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                     functionResult.addAll(instr.accept(this));
                 }else{
                     functionResult.add(newEnter);
-                    functionResult.add(new ASMPush(new ASMRegisterExpr("r12")));
-                    functionResult.add(new ASMPush(new ASMRegisterExpr("r13")));
-                    functionResult.add(new ASMPush(new ASMRegisterExpr("r14")));
+//                    functionResult.add(new ASMPush(new ASMRegisterExpr("r12")));
+//                    functionResult.add(new ASMPush(new ASMRegisterExpr("r13")));
+//                    functionResult.add(new ASMPush(new ASMRegisterExpr("r14")));
                 }
             }
             total.addAll(functionResult);
@@ -61,9 +61,9 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     public ArrayList<ASMInstruction> visit(ASMArg0 node) { // leave, ret
         ArrayList<ASMInstruction> res = new ArrayList<>();
         if (node instanceof ASMLeave){
-            res.add(new ASMPop(new ASMRegisterExpr("r14")));
-            res.add(new ASMPop(new ASMRegisterExpr("r13")));
-            res.add(new ASMPop(new ASMRegisterExpr("r12")));
+//            res.add(new ASMPop(new ASMRegisterExpr("r14")));
+//            res.add(new ASMPop(new ASMRegisterExpr("r13")));
+//            res.add(new ASMPop(new ASMRegisterExpr("r12")));
         }
         res.add(node);
         return res;
@@ -77,7 +77,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         ArrayList<String> availReg = new ArrayList<>(Arrays.asList("r12", "r13","r14"));
         ArrayList<ASMInstruction> res = new ArrayList<>();
         if (node instanceof ASMCall call){
-            // align stack if needed unalign after too
+            // align stack if needed unalign after too dont know how to undo
             res.add(new ASMAnd(new ASMRegisterExpr("rsp"),new ASMConstExpr(-16))); // possible to revert idk?
             res.add(call);
         }else{
@@ -90,6 +90,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                 ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
                 res.add(new ASMMov(usedReg,stackLoc)); // fake reg on stack now moved to real
                 res.add(new ASMArg1(node.getOpCode(),usedReg)); // original instruction with real reg
+                res.add(new ASMMov(stackLoc,usedReg)); // move the real reg back to the stack location
             }else if (argument instanceof ASMMemExpr mem){ // see if inside mem is temp
                 ArrayList<ASMExpr> expressions = flattenMem(mem);
                 HashMap<String, String> tempToReg= new HashMap<>();

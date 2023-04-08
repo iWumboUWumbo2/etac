@@ -503,3 +503,28 @@ public class AbstractASMVisitor {
     // TODO: 4/1/2023
     // RETURN
 }
+
+//    int index = numParams;
+//            while (index < seq.stmts().size()){
+//        IRStmt stmt = seq.stmts().get(index);
+//        bodyInstructions.addAll(stmt.accept(this));
+//        if (stmt instanceof IRCallStmt call){
+//        int rvMoves = Math.toIntExact(call.n_returns());
+//        for (int i = 1; i <= rvMoves;i++){
+//        int getInd = (rvMoves + i-1);
+//        IRMove nameAndArg = (IRMove) body.stmts().get(getInd);
+//        IRTemp name = (IRTemp) nameAndArg.target();
+//        ASMTempExpr retName = new ASMTempExpr(name.name());
+//        if (i == 1){
+//        bodyInstructions.add(new ASMMov(retName,new ASMRegisterExpr("rax")));
+//        }else if (i == 2){
+//        bodyInstructions.add(new ASMMov(retName,new ASMRegisterExpr("rdx")));
+//        }else{
+//        bodyInstructions.add(new ASMPop(retName));
+//        }
+//        }
+//        index += rvMoves+1;
+//        }else{
+//        index++;
+//        }
+//        }
