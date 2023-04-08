@@ -391,18 +391,21 @@ public class AbstractASMVisitor {
         }
         int start = node.n_returns() > 2 ? Math.min(argSiz+1,6): Math.min(argSiz,6);
         int end = node.n_returns() > 2 ? 2 : 1;
+        String[] args = new String[]{"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
         for (int i = start; i >= end; i--) {
             // move expression from temp to required register
             // Move ret into reti. reti <- RDI
-            ASMExpr argI = switch (i) {
-                case 1 -> new ASMRegisterExpr("rdi");
-                case 2 -> new ASMRegisterExpr("rsi");
-                case 3 -> new ASMRegisterExpr("rdx");
-                case 4 -> new ASMRegisterExpr("rcx");
-                case 5 -> new ASMRegisterExpr("r8");
-                case 6 -> new ASMRegisterExpr("r9");
-                default -> throw new InternalCompilerError("should not be in default for Function Call");
-            };
+//            ASMExpr argI = switch (i) {
+//                case 1 -> new ASMRegisterExpr("rdi");
+//                case 2 -> new ASMRegisterExpr("rsi");
+//                case 3 -> new ASMRegisterExpr("rdx");
+//                case 4 -> new ASMRegisterExpr("rcx");
+//                case 5 -> new ASMRegisterExpr("r8");
+//                case 6 -> new ASMRegisterExpr("r9");
+//                default -> throw new InternalCompilerError("should not be in default for Function Call");
+//            };
+            if (i > 6) throw new InternalCompilerError("should not be in default for Function Call");
+            ASMExpr argI = new ASMRegisterExpr(args[i - 1]);
             int loc = node.n_returns() > 2? i-2: i-1;
             String tempName = tempNames.get(loc);
             instructions.add(new ASMMov(argI,new ASMTempExpr(tempName)));

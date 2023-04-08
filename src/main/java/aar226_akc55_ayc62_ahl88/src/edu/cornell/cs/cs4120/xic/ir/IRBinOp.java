@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCons
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /** An intermediate representation for a binary operation OP(left, right) */
 public class IRBinOp extends IRExpr_c {
@@ -157,6 +158,16 @@ public class IRBinOp extends IRExpr_c {
         left.printSExp(p);
         right.printSExp(p);
         p.endList();
+    }
+
+    public ArrayList<IRExpr> flatten(OpType op) {
+        if (type != op) {
+            return new ArrayList<>(Collections.singletonList(this));
+        }
+
+        ArrayList<IRExpr> exps = new ArrayList<>(((IRBinOp) left).flatten(op));
+        exps.addAll(((IRBinOp) right).flatten(op));
+        return exps;
     }
 
     //    public IRExpr negate() {

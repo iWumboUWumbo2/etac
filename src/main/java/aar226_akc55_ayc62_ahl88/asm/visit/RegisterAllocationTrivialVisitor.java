@@ -61,9 +61,9 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     public ArrayList<ASMInstruction> visit(ASMArg0 node) { // leave, ret
         ArrayList<ASMInstruction> res = new ArrayList<>();
         if (node instanceof ASMLeave){
-//            res.add(new ASMPop(new ASMRegisterExpr("r14")));
-//            res.add(new ASMPop(new ASMRegisterExpr("r13")));
-//            res.add(new ASMPop(new ASMRegisterExpr("r12")));
+            res.add(new ASMPop(new ASMRegisterExpr("r14")));
+            res.add(new ASMPop(new ASMRegisterExpr("r13")));
+            res.add(new ASMPop(new ASMRegisterExpr("r12")));
         }
         res.add(node);
         return res;
@@ -337,6 +337,36 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 
     }
 
+    private void stackAlignment(Map.Entry<String,ArrayList<ASMInstruction>> function) {
+        ArrayList<ASMInstruction> alignedFunction = new ArrayList<>(function.getValue());
+        String functionName = function.getKey();
+        int tempCount = functionToTemps.get(functionName).size();
+
+        ASMInstruction first = alignedFunction.get(0);
+
+        ASMArg1 arg1 = null;
+        int i = 1;
+        for (; i < alignedFunction.size(); i++) {
+            if (alignedFunction.get(i) instanceof ASMArg1 arg) {
+                arg1 = arg;
+                break;
+            }
+        }
+
+        if (arg1 == null)
+            throw new InternalCompilerError("call func not found");
+
+        int paramCount = 0;//((ASMArg1) arg1.get())
+        int returnCount = 0; // Add to ASMArg1
+        int reqStackSpace = Math.max(returnCount - 2, 0) + Math.max(paramCount - (returnCount > 2 ? 5 : 6), 0);
+        int stackSize = 1 + 1 + 5 + tempCount + reqStackSpace;
+
+        if ((stackSize & 1) != 0) {
+            alignedFunction.add(0, new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+        }
+        alignedFunction.add(new ASMArg2(ASMOpCodes.ADD, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+        function.setValue(alignedFunction);
+    }
 
     /**
      * Returns a list of all the ASM expressions inside the memory operand.
