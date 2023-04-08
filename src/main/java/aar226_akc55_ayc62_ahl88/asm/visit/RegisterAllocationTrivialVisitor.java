@@ -7,8 +7,11 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.ASMAnd;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPop;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.util.*;
@@ -39,6 +42,9 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                     functionResult.addAll(instr.accept(this));
                 }else{
                     functionResult.add(newEnter);
+                    functionResult.add(new ASMPush(new ASMRegisterExpr("r12")));
+                    functionResult.add(new ASMPush(new ASMRegisterExpr("r13")));
+                    functionResult.add(new ASMPush(new ASMRegisterExpr("r14")));
                 }
             }
             total.addAll(functionResult);
@@ -54,6 +60,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg0 node) { // leave, ret
         ArrayList<ASMInstruction> res = new ArrayList<>();
+        if (node instanceof ASMLeave){
+            res.add(new ASMPop(new ASMRegisterExpr("r14")));
+            res.add(new ASMPop(new ASMRegisterExpr("r13")));
+            res.add(new ASMPop(new ASMRegisterExpr("r12")));
+        }
         res.add(node);
         return res;
     }
@@ -62,11 +73,12 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     // JUMPS, INC, DEC, NOT, IDIV, POP, PUSH,
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg1 node) {
-        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+//        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("r12", "r13","r14"));
         ArrayList<ASMInstruction> res = new ArrayList<>();
         if (node instanceof ASMCall call){
             // align stack if needed unalign after too
-            res.add(new ASMAnd(new ASMRegisterExpr("rsp"),new ASMConstExpr(-16)));
+            res.add(new ASMAnd(new ASMRegisterExpr("rsp"),new ASMConstExpr(-16))); // possible to revert idk?
             res.add(call);
         }else{
             ASMExpr argument = node.getLeft();
@@ -110,7 +122,8 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //    r64, r/m64 ADD,SUB,AND,OR,XOR,SHL,SHR,SAR,TEST,CMP,
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg2 node) {
-        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+//        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("r12", "r13","r14"));
         ASMExpr left = node.getLeft();
         ASMExpr right = node.getRight();
 
@@ -253,7 +266,6 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //        System.out.println("AFTER");
 //        for (ASMInstruction instr: res){
 //            System.out.println(instr);
-//
 //        }
         return res;
     }
