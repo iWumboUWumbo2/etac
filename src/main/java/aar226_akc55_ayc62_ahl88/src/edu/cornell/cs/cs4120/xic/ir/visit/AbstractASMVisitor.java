@@ -184,22 +184,28 @@ public class AbstractASMVisitor {
 
         // need to calculate number of temporaries used
 
-
+        ArrayList<String> temps = new ArrayList<>();
         // foo(1,2,3,4,5,6,7....) -> rdi, rsi, rdx, rcx, r8, r9, stack
         int numParams = node.functionSig.inputTypes.size();
         int numReturns = node.functionSig.outputTypes.size();
+        IRSeq body = (IRSeq) node.body();
+        for (int i = 0; i< numParams;i++){
+            IRMove nameAndArg = (IRMove) body.stmts().get(i);
+            IRTemp name = (IRTemp) nameAndArg.target();
+            temps.add(name.name());
+        }
         ArrayList<ASMInstruction> bodyInstructions = new ArrayList<>();
 
         if (numReturns > 2){
-            functionToTemps.get(curFunction).add("_ARG0");
+            functionToTemps.get(curFunction).add("_returnBase");
             bodyInstructions.add(new ASMMov(
-                    new ASMTempExpr("_ARG0"),
+                    new ASMTempExpr("_returnBase"),
                     new ASMRegisterExpr("rdi")
             ));
         }
 
         int start = numReturns > 2 ? 2: 1;
-        int end   = numParams > 2 ? numParams +1: numParams;
+        int end   = numReturns > 2 ? numParams +1: numParams;
         for (int i = start; i<=end;i++){
 
             // Move arg into argI. argI <- RDI
@@ -216,7 +222,8 @@ public class AbstractASMVisitor {
                                         new ASMRegisterExpr("rbp"),
                                         new ASMConstExpr(8L * (i - 7 + 2))));
             };
-            String tempName = "_ARG" + i;
+//            String tempName = "_ARG" + i;
+            String tempName = numReturns > 2 ? temps.get(i-2):temps.get(i-1);
             functionToTemps.get(curFunction).add(tempName);
             // can't do [stack location] <- [stack location2]
             // need intermediate rax <- [stack location2]
@@ -232,7 +239,8 @@ public class AbstractASMVisitor {
             bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
         }
         if (node.body() instanceof  IRSeq seq){
-            for (IRStmt stmt: seq.stmts()){
+            for (int i = numParams;i< seq.stmts().size();i++){
+                IRStmt stmt = seq.stmts().get(i);
                 bodyInstructions.addAll(stmt.accept(this));
             }
         }else{
@@ -316,14 +324,14 @@ public class AbstractASMVisitor {
                 case 2 -> new ASMRegisterExpr("rdx");
                 default -> new ASMMemExpr(
                         new ASMBinOpAddExpr(
-                                new ASMTempExpr("_ARG0"),
+                                new ASMTempExpr("_returnBase"),
                                 new ASMConstExpr(8L*(i-3))));
             };
 //
 //            if (i >2){
 //                if (i == 3){
 //                    returnInstructions.add(new ASMMov(new ASMRegisterExpr("rsi"),
-//                            new ASMTempExpr("_ARG0")));
+//                            new ASMTempExpr("_returnBase")));
 //                }
 //                System.out.println("greater than 3");
 //                // just in case we just put everything on the stack lol need intermediate

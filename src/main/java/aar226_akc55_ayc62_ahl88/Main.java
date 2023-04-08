@@ -421,7 +421,7 @@ public class Main {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
-//            System.out.println(comp);
+            System.out.println(comp);
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
 //            for (ASMInstruction instr: postAlloc){
 //                System.out.println(instr);
