@@ -1,7 +1,7 @@
 use io
 use conv
 main(args:int[][]){
-    a:int,b:int,c:int,d:int,e:int,f:int = multiMulti(100,200,300,400,500,600); // 6 6
+    a:int,b:int,c:int,d:int,e:int,f:int = multiMulti(100,200,300,400,500,600); // 6 6 see if 6 leaks
     println(unparseInt(a)); //100
     println(unparseInt(b)); //200
     println(unparseInt(c)); //300
@@ -17,9 +17,9 @@ main(args:int[][]){
     println(unparseInt(y)); //111
     println(unparseInt(z)); //111
 
-    aa:int,bb:int = multiSingle(222,333,444,555,666,777);
-    println(unparseInt(aa)); // 777
-    println(unparseInt(bb)); // 666
+    aa:int,bb:int = multiSingle(222,333,444,555,666,777,888,999,1000,1100);
+    println(unparseInt(aa)); // 1100
+    println(unparseInt(bb)); // 777
 }
 
 multiMulti(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int):int,int,int,int,int,int{
@@ -32,8 +32,8 @@ singleMulti(n1:int):int,int,int{
     return n1,n1,n1;
 }
 
-multiSingle(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int):int,int{
-    return n6,n5;
+multiSingle(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int,n7:int,n8:int,n9:int,n10:int):int,int{
+    return n10,n6;
 }
 singleZero(n1:int){
     println(unparseInt(n1));
