@@ -1,0 +1,23 @@
+use conv;
+use io;
+main(args: int[][]) {
+    a: int[] = {1, 2, 3,4,5,6,7}
+    b: int[] = {2, 4, 6,8,10,12}
+
+    a[f(a, 0)] = b[f(b, 0)]
+    i:int = 0;
+    while (i < length(a)){
+        println(unparseInt(a[i]));
+        i = i +1
+    }
+    i = 0;
+    while (i < length(b)){
+        println(unparseInt(b[i]));
+        i = i +1
+    }
+}
+
+f(a: int[], i: int): int {
+    a[i] = a[i] + 1
+    return a[i]
+}
