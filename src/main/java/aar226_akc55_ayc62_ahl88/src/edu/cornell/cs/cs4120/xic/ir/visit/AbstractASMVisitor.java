@@ -90,8 +90,8 @@ public class AbstractASMVisitor {
     }
     private ASMTempExpr munchBinop (IRBinOp binop, ArrayList<ASMInstruction> instrs) {
         // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
-        ASMTempExpr l1 = munch(binop.left(), instrs);
-        ASMTempExpr l2 = munch(binop.right(), instrs);
+        ASMTempExpr l1 = munchIRExpr(binop.left(), instrs);
+        ASMTempExpr l2 = munchIRExpr(binop.right(), instrs);
         ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
 
         switch (binop.opType()) {
