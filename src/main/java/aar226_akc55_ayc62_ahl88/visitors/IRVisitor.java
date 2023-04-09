@@ -2,6 +2,7 @@ package aar226_akc55_ayc62_ahl88.visitors;
 
 import aar226_akc55_ayc62_ahl88.Main;
 import aar226_akc55_ayc62_ahl88.OptimizationTypes;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
 import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -1006,5 +1007,32 @@ public class IRVisitor implements Visitor<IRNode>{
                                 new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
                         )));
         return accessRecur(ind + 1, indexes, sol);
+    }
+
+    public ASMTempExpr tileCost(IRTemp t1, IRTemp t2) {
+        return null;
+    }
+
+    public ASMTempExpr tileCost(IRTemp t, IRConst c) {
+        return null;
+    }
+
+    public ASMTempExpr tileCost(IRTemp t, IRMem m) {
+        return null;
+    }
+    public ASMTempExpr tileCost(IRTemp t, IRBinOp b) {
+        return null;
+    }
+    public ASMTempExpr tileCost(IRMem m, IRTemp t) {
+        return null;
+    }
+    public ASMTempExpr tileCost(IRMem m1, IRMem m2) {
+        return null;
+    }
+    public ASMTempExpr tileCost(IRMem m, IRConst c) {
+        return null;
+    }
+    public ASMTempExpr tileCost(IRMem m, IRBinOp b) {
+        return null;
     }
 }
