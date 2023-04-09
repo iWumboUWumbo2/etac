@@ -23,7 +23,6 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
-import org.apache.tools.mail.ErrorInQuitException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +75,7 @@ public class AbstractASMVisitor {
     private HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
     private String curFunction;
 
-    private ASMTempExpr munch (IRExpr e, ArrayList<ASMInstruction> instrs) {
+    private ASMTempExpr munchIRExpr(IRExpr e, ArrayList<ASMInstruction> instrs) {
         if (e instanceof IRBinOp) {
             return munchBinop((IRBinOp) e, instrs);
         }
@@ -369,34 +368,34 @@ public class AbstractASMVisitor {
     }
 
     public long tileTempMem(IRTemp t, IRMem m, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munch(m, instrs);
+        ASMTempExpr temp = munchIRExpr(m, instrs);
         instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
         return 1 + m.bestCost;
     }
     public long tileTempBinop(IRTemp t, IRBinOp b, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munch(b, instrs);
+        ASMTempExpr temp = munchIRExpr(b, instrs);
         instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
         return 1 + b.bestCost;
     }
     public long tileMemTemp(IRMem m, IRTemp t, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munch(m, instrs);
+        ASMTempExpr temp = munchIRExpr(m, instrs);
         instrs.add(new ASMMov(temp, new ASMTempExpr(t.name())));
         return 1 + m.bestCost;
     }
     public long tileMemMem(IRMem m1, IRMem m2, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp1 = munch(m1, instrs);
-        ASMTempExpr temp2 = munch(m2, instrs);
+        ASMTempExpr temp1 = munchIRExpr(m1, instrs);
+        ASMTempExpr temp2 = munchIRExpr(m2, instrs);
         instrs.add(new ASMMov(temp1, temp2));
         return m1.bestCost + m2.bestCost;
     }
     public long tileMemConst(IRMem m, IRConst c, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munch(m, instrs);
+        ASMTempExpr temp = munchIRExpr(m, instrs);
         instrs.add(new ASMMov(temp, new ASMConstExpr(c.value())));
         return 1 + m.bestCost;
     }
     public long tileMemBinop(IRMem m, IRBinOp b, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp1 = munch(m, instrs);
-        ASMTempExpr temp2 = munch(b, instrs);
+        ASMTempExpr temp1 = munchIRExpr(m, instrs);
+        ASMTempExpr temp2 = munchIRExpr(b, instrs);
         instrs.add(new ASMMov(temp1, temp2));
         return m.bestCost + b.bestCost;
     }
