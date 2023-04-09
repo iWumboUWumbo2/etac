@@ -8,6 +8,5 @@ import java.util.ArrayList;
 /** An intermediate representation for statements */
 public abstract class IRStmt extends IRNode_c {
     public abstract ArrayList<ASMInstruction> accept(AbstractASMVisitor v);
-    public long bestCost = Long.MAX_VALUE;
-    public ArrayList<ASMInstruction> bestInsructions = new ArrayList<>();
+
 }

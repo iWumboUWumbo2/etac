@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
@@ -10,10 +11,14 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsB
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 /** A node in an intermediate-representation abstract syntax tree. */
 public abstract class IRNode_c implements IRNode {
 
+    public boolean visited = false;
+    public long bestCost = Long.MAX_VALUE;
+    public ArrayList<ASMInstruction> bestInsructions = new ArrayList<>();
     @Override
     public IRNode visitChildren(IRVisitor v) {
         return this;
