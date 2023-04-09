@@ -9,9 +9,14 @@ import java.util.HashMap;
 public class ASMComment extends ASMInstruction{
 
     private String comment;
-    public ASMComment(String comment) {
+    private String functionName;
+    public ASMComment(String comment,String funcName) {
         super(ASMOpCodes.COMMENT);
         this.comment = comment;
+        functionName = funcName;
+    }
+    public String getFunctionName() {
+        return functionName;
     }
 
     public String getComment() {

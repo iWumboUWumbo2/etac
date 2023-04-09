@@ -356,6 +356,7 @@ public class AbstractASMVisitor {
     }
     public ArrayList<ASMInstruction> visit(IRCallStmt node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
+        IRName functionName = (IRName) node.target();
         int argSiz = node.args().size();
         ArrayList<String> tempNames = new ArrayList<>();
         //in case returns stop being temporaries in the future.
@@ -374,7 +375,7 @@ public class AbstractASMVisitor {
             }
         }
         functionToTemps.get(curFunction).addAll(tempNames);
-        instructions.add(new ASMComment("Add Padding"));
+        instructions.add(new ASMComment("Add Padding",functionName.name()));
         // add extra stack space for returns
         if (node.n_returns() >2){
             instructions.add(new ASMSub(
@@ -411,7 +412,6 @@ public class AbstractASMVisitor {
             String tempName = tempNames.get(loc);
             instructions.add(new ASMMov(argI,new ASMTempExpr(tempName)));
         }
-        IRName functionName = (IRName) node.target();
         // Align by 16 bytes I have no idea how
         functionsNameToSig.put(functionName.name(),new Pair<>(argSiz,node.n_returns().intValue()));
         instructions.add(new ASMCall(new ASMNameExpr(functionName.name())));
@@ -420,11 +420,10 @@ public class AbstractASMVisitor {
             instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
                     new ASMConstExpr(8L*(argSiz-6))));
         }else if (argSiz > 5 && node.n_returns() > 2){
-            System.out.println("im here");
+//            System.out.println("im here");
             instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
                     new ASMConstExpr(8L*(argSiz-5))));
         }
-        instructions.add(new ASMComment("Undo Padding"));
         String ret = "_RV";
         for (int i = 1; i<= node.n_returns();i++){
             ASMTempExpr temp = new ASMTempExpr(ret+i);
@@ -436,6 +435,7 @@ public class AbstractASMVisitor {
                 instructions.add(new ASMPop(temp));
             }
         }
+        instructions.add(new ASMComment("Undo Padding",functionName.name()));
         return instructions;
     }
 

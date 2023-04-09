@@ -1,7 +1,7 @@
 use io
 use conv
 main(args:int[][]){
-    a:int,b:int,c:int,d:int,e:int,f:int= square(100,900,500123,20,90,123);
+    a:int,b:int,c:int,d:int,e:int,f:int= square(100,900,500123,20,90,123,999);
     println(unparseInt(a));
     println(unparseInt(b));
     println(unparseInt(c));
@@ -10,7 +10,8 @@ main(args:int[][]){
     println(unparseInt(f));
 }
 
-square(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int):int,int,int,int,int,int{
+square(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int,n7:int):int,int,int,int,int,int{
+    println(unparseInt(n7));
     println(unparseInt(n6));
     println(unparseInt(n5));
     println(unparseInt(n4));

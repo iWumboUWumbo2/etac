@@ -38,9 +38,10 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             currentFunction = function.getKey();
             functionToTempsToStackOffset.put(currentFunction,new HashMap<>());
             functionToTemps.put(currentFunction,new HashSet<>());
+            ArrayList<ASMInstruction> updatedInstructions = fixAllStackAlignments(function);
             ASMEnter newEnter = createEnterAndBuildMapping(function.getValue());
             ArrayList<ASMInstruction> functionResult = new ArrayList<>();
-            for (ASMInstruction instr: function.getValue()){
+            for (ASMInstruction instr: updatedInstructions){
                 if (!(instr instanceof ASMEnter oldEnter)) {
                     functionResult.addAll(instr.accept(this));
                 }else{
@@ -91,14 +92,14 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //            res.add(new ASMAnd(new ASMRegisterExpr("rsp"),new ASMConstExpr(-16))); // possible to revert idk?
 //            System.out.println(call.toString());
 //            System.out.println(doWeNeedstackAlignment(call));
-            res.add(call);
-//            if (doWeNeedstackAlignment(call)){
-////                res.add(new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
-//                res.add(call);
-////                res.add(new ASMArg2(ASMOpCodes.ADD, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
-//            }else{
-//                res.add(call);
-//            }
+//            res.add(call);
+            if (doWeNeedstackAlignment(call.getLeft().toString())){
+//                res.add(new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                res.add(call);
+//                res.add(new ASMArg2(ASMOpCodes.ADD, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+            }else{
+                res.add(call);
+            }
 
         }else{
             ASMExpr argument = node.getLeft();
@@ -470,5 +471,37 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //        System.out.println(argSpace);
 //        System.out.println(tempCount);
         return (stackSize & 1) != 0;
+    }
+
+
+    /**
+     * Fixes all stack Alignment issues
+     * @param function
+     */
+
+    private ArrayList<ASMInstruction> fixAllStackAlignments(Map.Entry<String,ArrayList<ASMInstruction>> function) {
+        ArrayList<ASMInstruction> alignedFunction = new ArrayList<>(function.getValue());
+        for (int i = 0 ;i< alignedFunction.size();i++){
+            ASMInstruction instr = alignedFunction.get(i);
+            if (instr instanceof ASMComment comment && comment.getComment().equals("Add Padding")){
+                if (doWeNeedstackAlignment(comment.getFunctionName())){
+                    alignedFunction.set(i,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                    // find end
+                    int undoIndex = undoComment(alignedFunction,i+1);
+                    alignedFunction.set(undoIndex,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                }
+            }
+        }
+        return alignedFunction;
+
+    }
+    private int undoComment(ArrayList<ASMInstruction> instructionsList, int startIndex){
+        for (int i = startIndex;i < instructionsList.size();i++){
+            ASMInstruction instr = instructionsList.get(i);
+            if (instr instanceof ASMComment comment && comment.getComment().equals("Undo Padding")){
+                return i;
+            }
+        }
+        throw new InternalCompilerError("did align properly and replace undo");
     }
 }
