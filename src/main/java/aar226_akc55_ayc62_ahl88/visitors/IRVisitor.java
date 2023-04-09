@@ -2,7 +2,10 @@ package aar226_akc55_ayc62_ahl88.visitors;
 
 import aar226_akc55_ayc62_ahl88.Main;
 import aar226_akc55_ayc62_ahl88.OptimizationTypes;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -1009,30 +1012,4 @@ public class IRVisitor implements Visitor<IRNode>{
         return accessRecur(ind + 1, indexes, sol);
     }
 
-    public long tileTempTemp(IRTemp t1, IRTemp t2) {
-        return 0;
-    }
-
-    public long tileTempConst(IRTemp t, IRConst c) {
-        return 0;
-    }
-
-    public long tileTempMem(IRTemp t, IRMem m) {
-        return 0;
-    }
-    public long tileTempBinop(IRTemp t, IRBinOp b) {
-        return 0;
-    }
-    public long tileMemTemp(IRMem m, IRTemp t) {
-        return 0;
-    }
-    public long tileMemMem(IRMem m1, IRMem m2) {
-        return 0;
-    }
-    public long tileMemConst(IRMem m, IRConst c) {
-        return 0;
-    }
-    public long tileMemBinop(IRMem m, IRBinOp b) {
-        return 0;
-    }
 }

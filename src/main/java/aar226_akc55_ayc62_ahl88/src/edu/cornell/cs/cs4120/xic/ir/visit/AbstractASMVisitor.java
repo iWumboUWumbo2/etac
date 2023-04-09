@@ -273,21 +273,91 @@ public class AbstractASMVisitor {
         IRExpr dest = node.target();
         IRExpr source = node.source();
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
-        if (dest instanceof IRTemp t1 && source instanceof IRTemp t2){ // random case for testing atm
-            functionToTemps.get(curFunction).add(t1.name());
-            functionToTemps.get(curFunction).add(t2.name());
-            instructions.add(new ASMMov(new ASMTempExpr(t1.name()),new ASMTempExpr(t2.name())));
-        }else if (dest instanceof IRTemp t1 && source instanceof IRConst x){
-            functionToTemps.get(curFunction).add(t1.name());
-            boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
-            ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()))
-                    : new ASMMovabs(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()));
-            instructions.add(instruction);
-        }else{
+//        if (dest instanceof IRTemp t1 && source instanceof IRTemp t2){ // random case for testing atm
+//            functionToTemps.get(curFunction).add(t1.name());
+//            functionToTemps.get(curFunction).add(t2.name());
+//            instructions.add(new ASMMov(new ASMTempExpr(t1.name()),new ASMTempExpr(t2.name())));
+//        }else if (dest instanceof IRTemp t1 && source instanceof IRConst x){
+//            functionToTemps.get(curFunction).add(t1.name());
+//            boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
+//            ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()))
+//                    : new ASMMovabs(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()));
+//            instructions.add(instruction);
+//        }else{
+//            throw new InternalCompilerError("TODO Other moves");
+//        }
+
+        // TEMP TEMP
+        if (dest instanceof IRTemp t1 && source instanceof IRTemp t2) { // random case for testing atm
+            tileTempTemp(t1, t2, instructions);
+        // TEMP CONST
+        } else if (dest instanceof IRTemp t && source instanceof IRConst x) {
+            tileTempConst(t, x, instructions);
+        // TEMP MEM
+        } else if (dest instanceof IRTemp t && source instanceof IRMem m) {
+            tileTempMem(t, m, instructions);
+        // TEMP BINOP
+        } else if (dest instanceof IRTemp t && source instanceof IRBinOp b) {
+            tileTempBinop(t, b, instructions);
+        // MEM TEMP
+        } else if (dest instanceof IRMem m && source instanceof IRTemp t) {
+            tileMemTemp(m, t, instructions);
+        // MEM MEM
+        } else if (dest instanceof IRMem m1 && source instanceof IRMem m2) {
+            tileMemMem(m1, m2, instructions);
+        // MEM CONST
+        } else if (dest instanceof IRMem m && source instanceof IRConst x) {
+            tileMemConst(m, x, instructions);
+        // MEM BINOP
+        } else if (dest instanceof IRMem m && source instanceof IRBinOp b) {
+            tileMemBinop(m, b, instructions);
+        } else {
             throw new InternalCompilerError("TODO Other moves");
         }
-
         return instructions;
+    }
+
+    public long tileTempTemp(IRTemp t1, IRTemp t2, ArrayList<ASMInstruction> instrs) {
+        instrs.add(new ASMMov(new ASMTempExpr(t1.name()), new ASMTempExpr(t2.name())));
+        return 1;
+    }
+
+    public long tileTempConst(IRTemp t, IRConst c, ArrayList<ASMInstruction> instrs) {
+        instrs.add(new ASMMov(new ASMTempExpr(t.name()), new ASMConstExpr(c.value())));
+        return 1;
+    }
+
+    public long tileTempMem(IRTemp t, IRMem m, ArrayList<ASMInstruction> instrs) {
+        ASMTempExpr temp = munch(m, instrs);
+        instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
+        return 1 + m.bestCost;
+    }
+    public long tileTempBinop(IRTemp t, IRBinOp b, ArrayList<ASMInstruction> instrs) {
+        ASMTempExpr temp = munch(b, instrs);
+        instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
+        return 1 + b.bestCost;
+    }
+    public long tileMemTemp(IRMem m, IRTemp t, ArrayList<ASMInstruction> instrs) {
+        ASMTempExpr temp = munch(m, instrs);
+        instrs.add(new ASMMov(temp, new ASMTempExpr(t.name())));
+        return 1 + m.bestCost;
+    }
+    public long tileMemMem(IRMem m1, IRMem m2, ArrayList<ASMInstruction> instrs) {
+        ASMTempExpr temp1 = munch(m1, instrs);
+        ASMTempExpr temp2 = munch(m2, instrs);
+        instrs.add(new ASMMov(temp1, temp2));
+        return m1.bestCost + m2.bestCost;
+    }
+    public long tileMemConst(IRMem m, IRConst c, ArrayList<ASMInstruction> instrs) {
+        ASMTempExpr temp = munch(m, instrs);
+        instrs.add(new ASMMov(temp, new ASMConstExpr(c.value())));
+        return 1 + m.bestCost;
+    }
+    public long tileMemBinop(IRMem m, IRBinOp b, ArrayList<ASMInstruction> instrs) {
+        ASMTempExpr temp1 = munch(m, instrs);
+        ASMTempExpr temp2 = munch(b, instrs);
+        instrs.add(new ASMMov(temp1, temp2));
+        return m.bestCost + b.bestCost;
     }
 
     public ArrayList<ASMInstruction> visit(IRSeq node){
