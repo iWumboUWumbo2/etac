@@ -7,6 +7,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMAdd;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMIMul;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMSub;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
@@ -77,26 +78,44 @@ public class AbstractASMVisitor {
 
     private ASMTempExpr munch (IRExpr e, ArrayList<ASMInstruction> instrs) {
         if (e instanceof IRBinOp) {
-            IRBinOp binop = (IRBinOp) e;
-
-            ASMTempExpr l1 = munch(binop.left(), instrs);
-            ASMTempExpr l2 = munch(binop.right(), instrs);
-
-            switch (binop.opType()) {
-                case ADD:
-                    instrs.add(new ASMArg2(ASMOpCodes.ADD, l1, l2));
-                case MUL:
-                    instrs.add(new ASMArg2(ASMOpCodes.IMUL, l1, l2));
-                case DIV:
-                    instrs.add(new ASMArg2(ASMOpCodes.IDIV, l1, l2));
-                case SUB:
-                    instrs.add(new ASMArg2(ASMOpCodes.SUB, l1, l2));
-                default:
-            }
-            return l1;
+            return munchBinop((IRBinOp) e, instrs);
         }
         return null;
     }
+
+    private ASMTempExpr munchMem (IRMem binop, ArrayList<ASMInstruction> instrs) {
+        return null;
+    }
+    private ASMTempExpr munchTemp (IRTemp temp, ArrayList<ASMInstruction> instrs) {
+        return null;
+    }
+    private ASMTempExpr munchBinop (IRBinOp binop, ArrayList<ASMInstruction> instrs) {
+        // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
+        ASMTempExpr l1 = munch(binop.left(), instrs);
+        ASMTempExpr l2 = munch(binop.right(), instrs);
+        ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
+
+        switch (binop.opType()) {
+            case ADD:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMAdd(l1, l2));
+            case MUL:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMIMul(destTemp, l2));
+            case DIV:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMArg2(ASMOpCodes.IDIV, destTemp, l2));
+            case SUB:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
+            case HMUL:
+                instrs.add(new ASMArg2(ASMOpCodes.IMUL, l1, l2));
+                instrs.add(new ASMMov(l1, new ASMRegisterExpr("rax")));
+            default:
+        }
+        return l1;
+    }
+
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
     }
