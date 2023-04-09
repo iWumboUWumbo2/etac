@@ -3,6 +3,7 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 import aar226_akc55_ayc62_ahl88.asm.*;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMAdd;
@@ -20,6 +21,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +71,7 @@ public class AbstractASMVisitor {
 
     private HashMap<String,HashSet<String>> functionToTemps = new HashMap<>();
 
+    private HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
     private String curFunction;
 
 
@@ -159,7 +162,7 @@ public class AbstractASMVisitor {
 //            instructions.addAll(functionInstructions);
         }
 
-        return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping);
+        return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping,functionsNameToSig);
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
@@ -371,6 +374,7 @@ public class AbstractASMVisitor {
             }
         }
         functionToTemps.get(curFunction).addAll(tempNames);
+        instructions.add(new ASMComment("Add Padding"));
         // add extra stack space for returns
         if (node.n_returns() >2){
             instructions.add(new ASMSub(
@@ -409,12 +413,18 @@ public class AbstractASMVisitor {
         }
         IRName functionName = (IRName) node.target();
         // Align by 16 bytes I have no idea how
+        functionsNameToSig.put(functionName.name(),new Pair<>(argSiz,node.n_returns().intValue()));
         instructions.add(new ASMCall(new ASMNameExpr(functionName.name())));
 
-        if (argSiz > 6){
+        if (argSiz > 6 && node.n_returns() <= 2){
+            instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
+                    new ASMConstExpr(8L*(argSiz-6))));
+        }else if (argSiz > 5 && node.n_returns() > 2){
+            System.out.println("im here");
             instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
                     new ASMConstExpr(8L*(argSiz-5))));
         }
+        instructions.add(new ASMComment("Undo Padding"));
         String ret = "_RV";
         for (int i = 1; i<= node.n_returns();i++){
             ASMTempExpr temp = new ASMTempExpr(ret+i);

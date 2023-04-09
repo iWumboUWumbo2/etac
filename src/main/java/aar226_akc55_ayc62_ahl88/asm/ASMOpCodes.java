@@ -41,6 +41,7 @@ public enum ASMOpCodes{
         CMP,
 
         // EXTRA
-        LABEL
+        LABEL,
+        COMMENT
 }
 
