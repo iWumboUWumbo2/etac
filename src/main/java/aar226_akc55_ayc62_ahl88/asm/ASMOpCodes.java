@@ -32,11 +32,9 @@ public enum ASMOpCodes{
         AND, //bitwise and
         OR, //bitwise or
         XOR, //bitwise xor
-
         SHL, //shift left
         SHR, // shift right
         SAR, // shift arithmetic right, preserve sign bit
-
         TEST,
         CMP,
 

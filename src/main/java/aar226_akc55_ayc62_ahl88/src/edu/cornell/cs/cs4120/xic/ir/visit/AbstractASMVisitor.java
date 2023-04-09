@@ -22,6 +22,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
+import org.apache.tools.mail.ErrorInQuitException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,18 +78,24 @@ public class AbstractASMVisitor {
     private ASMTempExpr munch (IRExpr e, ArrayList<ASMInstruction> instrs) {
         if (e instanceof IRBinOp) {
             IRBinOp binop = (IRBinOp) e;
-            if (binop.opType() == IRBinOp.OpType.ADD) {
-                ASMTempExpr l1 = munch(binop.left(), instrs);
-                ASMTempExpr l2 = munch(binop.right(), instrs);
-                instrs.add(new ASMArg2(ASMOpCodes.ADD, l1, l2));
 
-            } else if (binop.opType() == IRBinOp.OpType.MUL) {
-                ASMTempExpr l1 = munch(binop.left(), instrs);
-                ASMTempExpr l2 = munch(binop.right(), instrs);
-                instrs.add(new ASMArg2(ASMOpCodes.IMUL, l1, l2));
+            ASMTempExpr l1 = munch(binop.left(), instrs);
+            ASMTempExpr l2 = munch(binop.right(), instrs);
 
+            switch (binop.opType()) {
+                case ADD:
+                    instrs.add(new ASMArg2(ASMOpCodes.ADD, l1, l2));
+                case MUL:
+                    instrs.add(new ASMArg2(ASMOpCodes.IMUL, l1, l2));
+                case DIV:
+                    instrs.add(new ASMArg2(ASMOpCodes.IDIV, l1, l2));
+                case SUB:
+                    instrs.add(new ASMArg2(ASMOpCodes.SUB, l1, l2));
+                default:
             }
+            return l1;
         }
+        return null;
     }
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
