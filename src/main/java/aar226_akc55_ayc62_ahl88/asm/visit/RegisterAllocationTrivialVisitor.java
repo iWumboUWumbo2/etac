@@ -7,9 +7,13 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.ASMAnd;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPop;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.*;
 
@@ -21,9 +25,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     HashMap<String, HashSet<String>> functionToTemps = new HashMap<>();
     HashMap<String,HashMap<String,Long>> functionToTempsToStackOffset = new HashMap<>();
 
+    HashMap<String, Pair<Integer,Integer>> functionSignatures;
     String currentFunction;
 
     public ArrayList<ASMInstruction> visit(ASMCompUnit compUnit){
+        functionSignatures = compUnit.getAllFunctionsSigs();
         ArrayList<ASMInstruction> total = new ArrayList<>();
         for (Map.Entry<String, long[]> global: compUnit.getGlobals().entrySet()){
             System.out.println("doing Global");
@@ -32,18 +38,29 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             currentFunction = function.getKey();
             functionToTempsToStackOffset.put(currentFunction,new HashMap<>());
             functionToTemps.put(currentFunction,new HashSet<>());
+            ArrayList<ASMInstruction> updatedInstructions = fixAllStackAlignments(function);
             ASMEnter newEnter = createEnterAndBuildMapping(function.getValue());
             ArrayList<ASMInstruction> functionResult = new ArrayList<>();
-            for (ASMInstruction instr: function.getValue()){
-                if (!(instr instanceof ASMEnter)) {
+            for (ASMInstruction instr: updatedInstructions){
+                if (!(instr instanceof ASMEnter oldEnter)) {
                     functionResult.addAll(instr.accept(this));
                 }else{
+                    System.out.println("oldEnter: "+ oldEnter + " newEnter: " + newEnter);
                     functionResult.add(newEnter);
+                    functionResult.add(new ASMPush(new ASMRegisterExpr("r12")));
+                    functionResult.add(new ASMPush(new ASMRegisterExpr("r13")));
+                    functionResult.add(new ASMPush(new ASMRegisterExpr("r14")));
                 }
             }
             total.addAll(functionResult);
         }
         return total;
+    }
+    @Override
+    public ArrayList<ASMInstruction> visit(ASMComment node) {
+        ArrayList<ASMInstruction> result = new ArrayList<>();
+        result.add(node);
+        return result;
     }
     @Override
     public ArrayList<ASMInstruction> visit(ASMLabel node) {
@@ -54,6 +71,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg0 node) { // leave, ret
         ArrayList<ASMInstruction> res = new ArrayList<>();
+        if (node instanceof ASMLeave){
+            res.add(new ASMPop(new ASMRegisterExpr("r14")));
+            res.add(new ASMPop(new ASMRegisterExpr("r13")));
+            res.add(new ASMPop(new ASMRegisterExpr("r12")));
+        }
         res.add(node);
         return res;
     }
@@ -62,12 +84,23 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     // JUMPS, INC, DEC, NOT, IDIV, POP, PUSH,
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg1 node) {
-        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+//        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("r12", "r13","r14"));
         ArrayList<ASMInstruction> res = new ArrayList<>();
         if (node instanceof ASMCall call){
-            // align stack if needed unalign after too
-            res.add(new ASMAnd(new ASMRegisterExpr("rsp"),new ASMConstExpr(-16)));
-            res.add(call);
+            // align stack if needed unalign after too dont know how to undo
+//            res.add(new ASMAnd(new ASMRegisterExpr("rsp"),new ASMConstExpr(-16))); // possible to revert idk?
+//            System.out.println(call.toString());
+//            System.out.println(doWeNeedstackAlignment(call));
+//            res.add(call);
+            if (doWeNeedstackAlignment(call.getLeft().toString())){
+//                res.add(new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                res.add(call);
+//                res.add(new ASMArg2(ASMOpCodes.ADD, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+            }else{
+                res.add(call);
+            }
+
         }else{
             ASMExpr argument = node.getLeft();
             if (argument instanceof ASMTempExpr temp){ // migrate temp to stack?
@@ -78,6 +111,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                 ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
                 res.add(new ASMMov(usedReg,stackLoc)); // fake reg on stack now moved to real
                 res.add(new ASMArg1(node.getOpCode(),usedReg)); // original instruction with real reg
+                res.add(new ASMMov(stackLoc,usedReg)); // move the real reg back to the stack location
             }else if (argument instanceof ASMMemExpr mem){ // see if inside mem is temp
                 ArrayList<ASMExpr> expressions = flattenMem(mem);
                 HashMap<String, String> tempToReg= new HashMap<>();
@@ -110,7 +144,8 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //    r64, r/m64 ADD,SUB,AND,OR,XOR,SHL,SHR,SAR,TEST,CMP,
     @Override
     public ArrayList<ASMInstruction> visit(ASMArg2 node) {
-        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+//        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("rax", "rcx","rdx"));
+        ArrayList<String> availReg = new ArrayList<>(Arrays.asList("r12", "r13","r14"));
         ASMExpr left = node.getLeft();
         ASMExpr right = node.getRight();
 
@@ -253,7 +288,6 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //        System.out.println("AFTER");
 //        for (ASMInstruction instr: res){
 //            System.out.println(instr);
-//
 //        }
         return res;
     }
@@ -417,4 +451,57 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         }
     }
 
+    /**
+     * Returns whether we need stack alignment or stack. Assumes We found number of temps required already
+     * @param calledFunction
+     * @return true if we need to insert stackalignment.
+     */
+    private boolean doWeNeedstackAlignment(String calledFunction) {
+
+        int tempCount = functionToTemps.get(currentFunction).size();
+
+
+        int paramCount = functionSignatures.get(calledFunction).part1();
+        int returnCount = functionSignatures.get(calledFunction).part2();
+        int returnSpace = Math.max(returnCount - 2, 0);
+        int argSpace = Math.max(paramCount - (returnCount > 2 ? 5 : 6), 0);
+        int stackSize = 1 + 1 + 3 + tempCount + returnSpace + argSpace;
+        // rip, rbp, r12, r13, r14
+//        System.out.println(returnSpace);
+//        System.out.println(argSpace);
+//        System.out.println(tempCount);
+        return (stackSize & 1) != 0;
+    }
+
+
+    /**
+     * Fixes all stack Alignment issues
+     * @param function
+     */
+
+    private ArrayList<ASMInstruction> fixAllStackAlignments(Map.Entry<String,ArrayList<ASMInstruction>> function) {
+        ArrayList<ASMInstruction> alignedFunction = new ArrayList<>(function.getValue());
+        for (int i = 0 ;i< alignedFunction.size();i++){
+            ASMInstruction instr = alignedFunction.get(i);
+            if (instr instanceof ASMComment comment && comment.getComment().equals("Add Padding")){
+                if (doWeNeedstackAlignment(comment.getFunctionName())){
+                    alignedFunction.set(i,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                    // find end
+                    int undoIndex = undoComment(alignedFunction,i+1);
+                    alignedFunction.set(undoIndex,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                }
+            }
+        }
+        return alignedFunction;
+
+    }
+    private int undoComment(ArrayList<ASMInstruction> instructionsList, int startIndex){
+        for (int i = startIndex;i < instructionsList.size();i++){
+            ASMInstruction instr = instructionsList.get(i);
+            if (instr instanceof ASMComment comment && comment.getComment().equals("Undo Padding")){
+                return i;
+            }
+        }
+        throw new InternalCompilerError("did align properly and replace undo");
+    }
 }

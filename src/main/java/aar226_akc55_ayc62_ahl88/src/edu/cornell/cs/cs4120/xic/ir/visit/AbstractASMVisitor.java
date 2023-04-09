@@ -3,6 +3,7 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 import aar226_akc55_ayc62_ahl88.asm.*;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMAdd;
@@ -20,6 +21,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +71,7 @@ public class AbstractASMVisitor {
 
     private HashMap<String,HashSet<String>> functionToTemps = new HashMap<>();
 
+    private HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
     private String curFunction;
 
 
@@ -159,7 +162,7 @@ public class AbstractASMVisitor {
 //            instructions.addAll(functionInstructions);
         }
 
-        return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping);
+        return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping,functionsNameToSig);
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
@@ -184,22 +187,28 @@ public class AbstractASMVisitor {
 
         // need to calculate number of temporaries used
 
-
+        ArrayList<String> temps = new ArrayList<>();
         // foo(1,2,3,4,5,6,7....) -> rdi, rsi, rdx, rcx, r8, r9, stack
         int numParams = node.functionSig.inputTypes.size();
         int numReturns = node.functionSig.outputTypes.size();
+        IRSeq body = (IRSeq) node.body();
+        for (int i = 0; i< numParams;i++){
+            IRMove nameAndArg = (IRMove) body.stmts().get(i);
+            IRTemp name = (IRTemp) nameAndArg.target();
+            temps.add(name.name());
+        }
         ArrayList<ASMInstruction> bodyInstructions = new ArrayList<>();
 
         if (numReturns > 2){
-            functionToTemps.get(curFunction).add("_ARG0");
+            functionToTemps.get(curFunction).add("_returnBase");
             bodyInstructions.add(new ASMMov(
-                    new ASMTempExpr("_ARG0"),
+                    new ASMTempExpr("_returnBase"),
                     new ASMRegisterExpr("rdi")
             ));
         }
 
         int start = numReturns > 2 ? 2: 1;
-        int end   = numParams > 2 ? numParams +1: numParams;
+        int end   = numReturns > 2 ? numParams +1: numParams;
         for (int i = start; i<=end;i++){
 
             // Move arg into argI. argI <- RDI
@@ -216,7 +225,8 @@ public class AbstractASMVisitor {
                                         new ASMRegisterExpr("rbp"),
                                         new ASMConstExpr(8L * (i - 7 + 2))));
             };
-            String tempName = "_ARG" + i;
+//            String tempName = "_ARG" + i;
+            String tempName = numReturns > 2 ? temps.get(i-2):temps.get(i-1);
             functionToTemps.get(curFunction).add(tempName);
             // can't do [stack location] <- [stack location2]
             // need intermediate rax <- [stack location2]
@@ -232,7 +242,8 @@ public class AbstractASMVisitor {
             bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
         }
         if (node.body() instanceof  IRSeq seq){
-            for (IRStmt stmt: seq.stmts()){
+            for (int i = numParams;i< seq.stmts().size();i++){
+                IRStmt stmt = seq.stmts().get(i);
                 bodyInstructions.addAll(stmt.accept(this));
             }
         }else{
@@ -316,14 +327,14 @@ public class AbstractASMVisitor {
                 case 2 -> new ASMRegisterExpr("rdx");
                 default -> new ASMMemExpr(
                         new ASMBinOpAddExpr(
-                                new ASMTempExpr("_ARG0"),
+                                new ASMTempExpr("_returnBase"),
                                 new ASMConstExpr(8L*(i-3))));
             };
 //
 //            if (i >2){
 //                if (i == 3){
 //                    returnInstructions.add(new ASMMov(new ASMRegisterExpr("rsi"),
-//                            new ASMTempExpr("_ARG0")));
+//                            new ASMTempExpr("_returnBase")));
 //                }
 //                System.out.println("greater than 3");
 //                // just in case we just put everything on the stack lol need intermediate
@@ -345,6 +356,7 @@ public class AbstractASMVisitor {
     }
     public ArrayList<ASMInstruction> visit(IRCallStmt node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
+        IRName functionName = (IRName) node.target();
         int argSiz = node.args().size();
         ArrayList<String> tempNames = new ArrayList<>();
         //in case returns stop being temporaries in the future.
@@ -363,6 +375,7 @@ public class AbstractASMVisitor {
             }
         }
         functionToTemps.get(curFunction).addAll(tempNames);
+        instructions.add(new ASMComment("Add Padding",functionName.name()));
         // add extra stack space for returns
         if (node.n_returns() >2){
             instructions.add(new ASMSub(
@@ -399,11 +412,15 @@ public class AbstractASMVisitor {
             String tempName = tempNames.get(loc);
             instructions.add(new ASMMov(argI,new ASMTempExpr(tempName)));
         }
-        IRName functionName = (IRName) node.target();
         // Align by 16 bytes I have no idea how
+        functionsNameToSig.put(functionName.name(),new Pair<>(argSiz,node.n_returns().intValue()));
         instructions.add(new ASMCall(new ASMNameExpr(functionName.name())));
 
-        if (argSiz > 6){
+        if (argSiz > 6 && node.n_returns() <= 2){
+            instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
+                    new ASMConstExpr(8L*(argSiz-6))));
+        }else if (argSiz > 5 && node.n_returns() > 2){
+//            System.out.println("im here");
             instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
                     new ASMConstExpr(8L*(argSiz-5))));
         }
@@ -418,6 +435,7 @@ public class AbstractASMVisitor {
                 instructions.add(new ASMPop(temp));
             }
         }
+        instructions.add(new ASMComment("Undo Padding",functionName.name()));
         return instructions;
     }
 
@@ -495,3 +513,28 @@ public class AbstractASMVisitor {
     // TODO: 4/1/2023
     // RETURN
 }
+
+//    int index = numParams;
+//            while (index < seq.stmts().size()){
+//        IRStmt stmt = seq.stmts().get(index);
+//        bodyInstructions.addAll(stmt.accept(this));
+//        if (stmt instanceof IRCallStmt call){
+//        int rvMoves = Math.toIntExact(call.n_returns());
+//        for (int i = 1; i <= rvMoves;i++){
+//        int getInd = (rvMoves + i-1);
+//        IRMove nameAndArg = (IRMove) body.stmts().get(getInd);
+//        IRTemp name = (IRTemp) nameAndArg.target();
+//        ASMTempExpr retName = new ASMTempExpr(name.name());
+//        if (i == 1){
+//        bodyInstructions.add(new ASMMov(retName,new ASMRegisterExpr("rax")));
+//        }else if (i == 2){
+//        bodyInstructions.add(new ASMMov(retName,new ASMRegisterExpr("rdx")));
+//        }else{
+//        bodyInstructions.add(new ASMPop(retName));
+//        }
+//        }
+//        index += rvMoves+1;
+//        }else{
+//        index++;
+//        }
+//        }
