@@ -1009,30 +1009,30 @@ public class IRVisitor implements Visitor<IRNode>{
         return accessRecur(ind + 1, indexes, sol);
     }
 
-    public ASMTempExpr tileCost(IRTemp t1, IRTemp t2) {
-        return null;
+    public long tileTempTemp(IRTemp t1, IRTemp t2) {
+        return 0;
     }
 
-    public ASMTempExpr tileCost(IRTemp t, IRConst c) {
-        return null;
+    public long tileTempConst(IRTemp t, IRConst c) {
+        return 0;
     }
 
-    public ASMTempExpr tileCost(IRTemp t, IRMem m) {
-        return null;
+    public long tileTempMem(IRTemp t, IRMem m) {
+        return 0;
     }
-    public ASMTempExpr tileCost(IRTemp t, IRBinOp b) {
-        return null;
+    public long tileTempBinop(IRTemp t, IRBinOp b) {
+        return 0;
     }
-    public ASMTempExpr tileCost(IRMem m, IRTemp t) {
-        return null;
+    public long tileMemTemp(IRMem m, IRTemp t) {
+        return 0;
     }
-    public ASMTempExpr tileCost(IRMem m1, IRMem m2) {
-        return null;
+    public long tileMemMem(IRMem m1, IRMem m2) {
+        return 0;
     }
-    public ASMTempExpr tileCost(IRMem m, IRConst c) {
-        return null;
+    public long tileMemConst(IRMem m, IRConst c) {
+        return 0;
     }
-    public ASMTempExpr tileCost(IRMem m, IRBinOp b) {
-        return null;
+    public long tileMemBinop(IRMem m, IRBinOp b) {
+        return 0;
     }
 }
