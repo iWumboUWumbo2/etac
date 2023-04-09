@@ -29,11 +29,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     String currentFunction;
 
     public ArrayList<ASMInstruction> visit(ASMCompUnit compUnit){
+        functionSignatures = compUnit.getAllFunctionsSigs();
         ArrayList<ASMInstruction> total = new ArrayList<>();
         for (Map.Entry<String, long[]> global: compUnit.getGlobals().entrySet()){
             System.out.println("doing Global");
         }
-        functionSignatures = compUnit.getAllFunctionsSigs();
         for (Map.Entry<String, ArrayList<ASMInstruction>> function: compUnit.getFunctionToInstructionList().entrySet()){
             currentFunction = function.getKey();
             functionToTempsToStackOffset.put(currentFunction,new HashMap<>());
