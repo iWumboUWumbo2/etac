@@ -1,0 +1,65 @@
+use io
+use conv
+
+main(args : int[][]) {
+    x : int = 8
+    y : int = 4;
+    a : bool = true;
+    b : bool = false;
+
+    // ADD
+    z : int = x + y;
+    println(unparseInt(z));
+
+    // MUL
+    z = x * y;
+    println(unparseInt(z));
+
+    // DIV:
+    z = x / y;
+    println(unparseInt(z));
+
+    // SUB:
+    z = x - y;
+    println(unparseInt(z));
+
+    // HMUL:
+    z = x *>> y;
+    println(unparseInt(z));
+
+    // MOD:
+    z = x % y;
+    println(unparseInt(z));
+
+    // AND:
+    c : bool = a && b;
+    println(unparseInt(c));
+
+    // OR:
+    c = a || b;
+    println(unparseInt(c));
+
+    // EQ:
+    c = x == y
+    println(unparseInt(c));
+
+    // NEQ:
+    c = x != y
+    println(unparseInt(c));
+
+    // LT:
+    c = x < y
+    println(unparseInt(c));
+
+    // GT:
+    c = x > y
+    println(unparseInt(c));
+
+    // LEQ:
+    c = x <= y
+    println(unparseInt(c));
+
+    // GEQ:
+    c = x >= y
+    println(unparseInt(c));
+}
