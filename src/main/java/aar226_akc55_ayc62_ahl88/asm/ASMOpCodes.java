@@ -22,6 +22,12 @@ public enum ASMOpCodes{
         POP,
         PUSH,
         SETE, //sets its argument to 1 if the zero flag is set or to 0 otherwise.
+        SETNE,
+        SETL,
+        SETLE,
+        SETG,
+        SETGE,
+
 
         // 2 arg
         ENTER,
