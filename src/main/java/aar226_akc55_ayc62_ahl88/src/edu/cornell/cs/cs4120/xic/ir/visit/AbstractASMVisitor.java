@@ -20,8 +20,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMCmp;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
@@ -588,21 +587,51 @@ public class AbstractASMVisitor {
             case EQ:
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
-                //sete al
-                //and al, 1
-
+                instrs.add(new ASMSete(new ASMRegisterExpr("al")));
+//                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case NEQ:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                instrs.add(new ASMSetne(new ASMRegisterExpr("al")));
+//                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case LT:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                instrs.add(new ASMSetl(new ASMRegisterExpr("al")));
+//                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case ULT:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                instrs.add(new ASMSetb(new ASMRegisterExpr("al")));
+                //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case GT:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                instrs.add(new ASMSetg(new ASMRegisterExpr("al")));
+//                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case LEQ:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                instrs.add(new ASMSetle(new ASMRegisterExpr("al")));
+//                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case GEQ:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                instrs.add(new ASMSetge(new ASMRegisterExpr("al")));
+//                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             default:
         }

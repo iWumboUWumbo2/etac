@@ -28,6 +28,7 @@ public enum ASMOpCodes{
         SETLE,
         SETG,
         SETGE,
+        SETB,
 
 
         // 2 arg
