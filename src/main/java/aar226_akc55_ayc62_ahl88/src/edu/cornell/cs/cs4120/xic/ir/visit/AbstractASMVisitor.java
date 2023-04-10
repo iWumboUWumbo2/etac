@@ -94,6 +94,26 @@ public class AbstractASMVisitor {
     public ASMInstruction binopCondToOpCode(IRBinOp bin,IRCJump node){
         ASMNameExpr label = new ASMNameExpr(node.trueLabel());
         return switch (bin.opType()){
+//            case ADD -> null;
+//            case SUB -> null;
+//            case MUL -> null;
+//            case HMUL -> null;
+//            case DIV -> null;
+//            case MOD -> null;
+//            case AND -> null;
+//            case OR -> null;
+//            case XOR -> {
+//                if (bin.left() instanceof IRBinOp lbin){
+//                            binopCondToOpCode(lbin,node);
+//                        }else if (bin.right() instanceof IRBinOp rbin){
+//                            binopCondToOpCode(rbin,node);
+//                        }else{
+//                    throw new InternalCompilerError("")
+//                }
+//            case LSHIFT -> null;
+//            case RSHIFT -> null;
+//            case ARSHIFT -> null;
+//            }
             case EQ -> new ASMJumpEqual(label);
             case NEQ -> new ASMJumpNotEqual(label);
             case LT -> new ASMJumpLT(label);
@@ -112,12 +132,34 @@ public class AbstractASMVisitor {
         if (condition instanceof IRBinOp c) { // maybe test is faster
             // create function for IRBINOP
             // DO A CMP instead
-            ASMAbstractReg tleft = munchIRExpr(c.left());
-            ASMAbstractReg tright = munchIRExpr(c.right());
-            instructions.addAll(c.left().getBestInstructions()); // instrs to create left temp
-            instructions.addAll(c.right().getBestInstructions()); // instrs to create right temp
-            instructions.add(new ASMCmp(tleft,tright)); // cmp
-            instructions.add(binopCondToOpCode(c,node));
+            if (c.opType() == IRBinOp.OpType.XOR){ //fix this shit
+                ASMAbstractReg tleft = munchIRExpr(c.left());
+                ASMAbstractReg tright = munchIRExpr(c.right());
+                ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
+                if (c.left() instanceof IRConst cons){
+                    instructions.addAll(c.right().getBestInstructions());
+                    instructions.add(new ASMMov(destTemp,tright));
+                    instructions.add(new ASMXor(new ASMConstExpr(cons.value()),destTemp));
+                }else if (c.right() instanceof  IRConst cons){
+                    instructions.addAll(c.left().getBestInstructions());
+                    instructions.add(new ASMMov(destTemp,tleft));
+                    instructions.add(new ASMXor(destTemp,new ASMConstExpr(cons.value())));
+                }else{
+                    instructions.addAll(c.left().getBestInstructions());
+                    instructions.addAll(c.right().getBestInstructions());
+                    instructions.add(new ASMMov(destTemp,tleft));
+                    instructions.add(new ASMXor(destTemp,tright));
+                }
+                instructions.add(new ASMTest(destTemp,destTemp));
+                instructions.add(new ASMJumpNotEqual(new ASMNameExpr(node.trueLabel())));
+            }else {
+                ASMAbstractReg tleft = munchIRExpr(c.left());
+                ASMAbstractReg tright = munchIRExpr(c.right());
+                instructions.addAll(c.left().getBestInstructions()); // instrs to create left temp
+                instructions.addAll(c.right().getBestInstructions()); // instrs to create right temp
+                instructions.add(new ASMCmp(tleft, tright)); // cmp
+                instructions.add(binopCondToOpCode(c, node));
+            }
         } else if (condition instanceof IRConst c) {
             if (c.value() != 0L){ // jump
                 instructions.add(new ASMJumpAlways(new ASMNameExpr(node.trueLabel())));
@@ -493,6 +535,7 @@ public class AbstractASMVisitor {
         ArrayList<ASMInstruction> extraInstructions = new ArrayList<>();
         extraInstructions.add(new ASMMov(new ASMTempExpr(extraTemp),new ASMConstExpr(c.value())));
         c.bestInstructions = extraInstructions;
+        c.tempName = new ASMTempExpr(extraTemp);
         return new ASMTempExpr(extraTemp);
     }
     private ASMAbstractReg munchBinop(IRBinOp binop) {

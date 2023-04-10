@@ -13,7 +13,19 @@ public class ASMIMul extends ASMArg3 {
 
     // dest = dest * src
     public ASMIMul(ASMExpr dest, ASMExpr src) {
-        super(ASMOpCodes.IMUL, dest, dest, src);
+        super(ASMOpCodes.IMUL, dest, src, null);
     }
+
+    @Override
+    public String toString(){
+        if (getA2() == null && getA3() == null){
+            return opCodeToString() + getA1();
+        }else if (getA3() == null){
+            return opCodeToString() + getA1()+ ", "+getA2();
+        }else{
+            return opCodeToString() + getA1()+ ", "+getA2() + ", "+getA3();
+        }
+    }
+
 
 }
