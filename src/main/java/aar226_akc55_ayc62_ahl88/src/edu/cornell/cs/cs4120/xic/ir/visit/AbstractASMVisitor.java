@@ -581,10 +581,14 @@ public class AbstractASMVisitor {
                 binop.bestInstructions = instrs;
                 return destTemp;
             case ARSHIFT:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMSar(destTemp, l2));
                 break;
             case EQ:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 4;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
                 instrs.add(new ASMSete(new ASMRegisterExpr("al")));
@@ -592,6 +596,8 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case NEQ:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 4;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
                 instrs.add(new ASMSetne(new ASMRegisterExpr("al")));
@@ -599,6 +605,8 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case LT:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 4;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
                 instrs.add(new ASMSetl(new ASMRegisterExpr("al")));
@@ -606,6 +614,8 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case ULT:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 4;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
                 instrs.add(new ASMSetb(new ASMRegisterExpr("al")));
@@ -613,6 +623,8 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case GT:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 4;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
                 instrs.add(new ASMSetg(new ASMRegisterExpr("al")));
@@ -620,6 +632,8 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case LEQ:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 4;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
                 instrs.add(new ASMSetle(new ASMRegisterExpr("al")));
@@ -627,6 +641,8 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
             case GEQ:
+                binop.bestCost = binop.left().getBestCost() +
+                        binop.right().getBestCost() + 4;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMCmp(destTemp, l2));
                 instrs.add(new ASMSetge(new ASMRegisterExpr("al")));
