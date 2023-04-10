@@ -1,5 +1,8 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
@@ -7,8 +10,18 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCons
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
+import java.util.ArrayList;
+
 /** A node in an intermediate-representation abstract syntax tree. */
 public interface IRNode {
+    void setASMAbstractReg(ASMAbstractReg reg);
+    ASMAbstractReg getAbstractReg();
+    void setVisited();
+    boolean getVisited();
+    void setbestCost(long cost);
+    long getBestCost();
+    void setbestInstructions(ArrayList<ASMInstruction> instrs);
+    ArrayList<ASMInstruction> getBestInstructions();
 
     /**
      * Visit the children of this IR node.

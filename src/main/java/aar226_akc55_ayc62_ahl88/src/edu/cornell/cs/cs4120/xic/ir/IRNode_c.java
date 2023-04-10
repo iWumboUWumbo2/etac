@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -16,11 +17,34 @@ import java.util.ArrayList;
 
 /** A node in an intermediate-representation abstract syntax tree. */
 public abstract class IRNode_c implements IRNode {
-
-    public ASMTempExpr tempName = null;
+    public ASMAbstractReg tempName = null;
     public boolean visited = false;
     public long bestCost = Long.MAX_VALUE;
-    public ArrayList<ASMInstruction> bestInsructions = new ArrayList<>();
+    public ArrayList<ASMInstruction> bestInstructions = new ArrayList<>();
+    public void setASMAbstractReg(ASMAbstractReg reg){
+        tempName = reg;
+    }
+    public ASMAbstractReg getAbstractReg(){
+        return tempName;
+    }
+    public void setVisited(){
+        visited = true;
+    }
+    public boolean getVisited(){
+        return visited;
+    }
+    public void setbestCost(long cost){
+        bestCost = cost;
+    }
+    public long getBestCost(){
+        return bestCost;
+    }
+    public void setbestInstructions(ArrayList<ASMInstruction> instrs){
+        bestInstructions = instrs;
+    }
+    public ArrayList<ASMInstruction> getBestInstructions(){
+        return bestInstructions;
+    }
     @Override
     public IRNode visitChildren(IRVisitor v) {
         return this;

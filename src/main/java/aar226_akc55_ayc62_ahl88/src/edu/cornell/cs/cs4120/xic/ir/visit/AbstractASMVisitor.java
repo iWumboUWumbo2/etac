@@ -77,58 +77,59 @@ public class AbstractASMVisitor {
     private HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
     private String curFunction;
 
-    private ASMTempExpr munchIRExpr(IRExpr e, ArrayList<ASMInstruction> instrs) {
+    private ASMAbstractReg munchIRExpr(IRExpr e) {
         IRNode_c top = (IRNode_c) e;
         if (top.visited){
             System.out.println("not here");
-            instrs.addAll(top.bestInsructions);
             return top.tempName;
         }
         if (e instanceof IRBinOp binop) {
-            return munchBinop(binop, instrs);
+            return munchBinop(binop);
         }else if (e instanceof IRTemp t){
-            return munchTemp(t,instrs);
+            return munchTemp(t);
         }else if (e instanceof IRConst cons){
-            return munchIRConst(cons,instrs);
+            return munchIRConst(cons);
         }else if (e instanceof IRName name){ // cheese way of doing it
-            return munchIRName(name,instrs);
+            return munchIRName(name);
         }else if (e instanceof IRMem mem){
-            return munchIRMem(mem,instrs);
+            return munchIRMem(mem);
         }else{
             throw new InternalCompilerError("TODO EXPR not tested");
         }
     }
-    private ASMTempExpr munchIRName(IRName name, ArrayList<ASMInstruction> instrs) {
+    private ASMTempExpr munchIRName(IRName name) {
         name.visited = true;
         name.bestCost = 0;
-        name.bestInsructions = new ArrayList<>();
+        name.bestInstructions = new ArrayList<>();
         return new ASMTempExpr(name.name());
     }
-    private ASMTempExpr munchIRMem(IRMem mem, ArrayList<ASMInstruction> instrs) {
+    private ASMTempExpr munchIRMem(IRMem mem) {
         throw new InternalCompilerError("TODO MEM");
 //        return null;
     }
-    private ASMTempExpr munchTemp(IRTemp temp, ArrayList<ASMInstruction> instrs) {
+    private ASMTempExpr munchTemp(IRTemp temp) {
         temp.visited = true;
         temp.bestCost = 0;
-        temp.bestInsructions = new ArrayList<>();
+        temp.bestInstructions = new ArrayList<>();
         return new ASMTempExpr(temp.name());
     }
-    private ASMTempExpr munchIRConst(IRConst c, ArrayList<ASMInstruction> instrs){
+    private ASMTempExpr munchIRConst(IRConst c){
         c.visited = true;
         c.bestCost = 1;
         String extraTemp = nxtTemp();
         ArrayList<ASMInstruction> extraInstructions = new ArrayList<>();
         extraInstructions.add(new ASMMov(new ASMTempExpr(extraTemp),new ASMConstExpr(c.value())));
-        c.bestInsructions = extraInstructions;
-        instrs.addAll(extraInstructions);
+        c.bestInstructions = extraInstructions;
         return new ASMTempExpr(extraTemp);
     }
-    private ASMTempExpr munchBinop(IRBinOp binop, ArrayList<ASMInstruction> instrs) {
+    private ASMTempExpr munchBinop(IRBinOp binop) {
         // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
-        ASMTempExpr l1 = munchIRExpr(binop.left(), instrs);
-        ASMTempExpr l2 = munchIRExpr(binop.right(), instrs);
+        ASMAbstractReg l1 = munchIRExpr(binop.left());
+        ASMAbstractReg l2 = munchIRExpr(binop.right());
         ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
+        ArrayList<ASMInstruction> instrs = new ArrayList<>();
+        instrs.addAll(binop.left().getBestInstructions());
+        instrs.addAll(binop.right().getBestInstructions());
         switch (binop.opType()) {
             case ADD:
                 instrs.add(new ASMMov(destTemp, l1));
@@ -421,47 +422,69 @@ public class AbstractASMVisitor {
         return instructions;
     }
 
+    // Base Case
     public long tileTempTemp(IRTemp t1, IRTemp t2, ArrayList<ASMInstruction> instrs) {
         instrs.add(new ASMMov(new ASMTempExpr(t1.name()), new ASMTempExpr(t2.name())));
         return 1;
     }
 
+    // Base Case
     public long tileTempConst(IRTemp t, IRConst c, ArrayList<ASMInstruction> instrs) {
         instrs.add(new ASMMov(new ASMTempExpr(t.name()), new ASMConstExpr(c.value())));
         return 1;
     }
 
+    // Can Expand
     public long tileTempMem(IRTemp t, IRMem m, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(m, instrs);
-        instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
-        return 1 + m.bestCost;
+        long curBestCost = Long.MAX_VALUE;
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        if (false){ // other patterns;
+
+        }else { // catch all case
+            ASMAbstractReg temp = munchIRExpr(m);
+            if (m.getBestCost() + 1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), temp)); // move the temp mem into ASMMOV
+                curBestInstructions = caseInstructions;
+                curBestCost = m.getBestCost() + 1;
+            }
+        }
+        instrs.addAll(curBestInstructions);
+        return curBestCost;
     }
+
+    // Can Expand
     public long tileTempBinop(IRTemp t, IRBinOp b, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(b, instrs);
+        ASMAbstractReg temp = munchIRExpr(b);
         instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
-        return 1 + b.bestCost;
+        return 1 + b.getBestCost();
     }
+
+    // Can Expand
     public long tileMemTemp(IRMem m, IRTemp t, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(m, instrs);
+        ASMAbstractReg temp = munchIRExpr(m);
         instrs.add(new ASMMov(temp, new ASMTempExpr(t.name())));
-        return 1 + m.bestCost;
+        return 1 + m.getBestCost();
     }
+    // Can Expand
     public long tileMemMem(IRMem m1, IRMem m2, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp1 = munchIRExpr(m1, instrs);
-        ASMTempExpr temp2 = munchIRExpr(m2, instrs);
+        ASMAbstractReg temp1 = munchIRExpr(m1);
+        ASMAbstractReg temp2 = munchIRExpr(m2);
         instrs.add(new ASMMov(temp1, temp2));
-        return m1.bestCost + m2.bestCost;
+        return m1.getBestCost() + m2.getBestCost();
     }
+    // Can Expand
     public long tileMemConst(IRMem m, IRConst c, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(m, instrs);
+        ASMAbstractReg temp = munchIRExpr(m);
         instrs.add(new ASMMov(temp, new ASMConstExpr(c.value())));
-        return 1 + m.bestCost;
+        return 1 + m.getBestCost();
     }
+    // Can Expand
     public long tileMemBinop(IRMem m, IRBinOp b, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp1 = munchIRExpr(m, instrs);
-        ASMTempExpr temp2 = munchIRExpr(b, instrs);
+        ASMAbstractReg temp1 = munchIRExpr(m);
+        ASMAbstractReg temp2 = munchIRExpr(b);
         instrs.add(new ASMMov(temp1, temp2));
-        return m.bestCost + b.bestCost;
+        return m.getBestCost()+ b.getBestCost();
     }
 
     public ArrayList<ASMInstruction> visit(IRSeq node){
