@@ -514,7 +514,7 @@ public class AbstractASMVisitor {
                 break;
             case HMUL: // TODO: fix this
                 binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
+                        binop.right().getBestCost() + 5;
                 ASMTempExpr srcTemp = new ASMTempExpr(nxtTemp());
 
                 instrs.add(new ASMMov(destTemp, l1));
@@ -525,7 +525,7 @@ public class AbstractASMVisitor {
                 break;
             case MOD: // rax/div, store result in rax and remainder in rdx
                 binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
+                        binop.right().getBestCost() + 3;
                 instrs.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                 instrs.add(new ASMIDiv(l2));
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
