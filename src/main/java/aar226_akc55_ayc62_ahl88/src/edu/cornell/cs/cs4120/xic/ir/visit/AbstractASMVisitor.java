@@ -19,6 +19,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMCmp;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -154,6 +155,11 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMSar(destTemp, l2));
                 break;
             case EQ:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                //sete al
+                //and al, 1
+
                 break;
             case NEQ:
                 break;
