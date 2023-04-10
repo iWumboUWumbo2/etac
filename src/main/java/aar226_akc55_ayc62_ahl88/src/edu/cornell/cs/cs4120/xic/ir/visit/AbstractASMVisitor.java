@@ -488,39 +488,31 @@ public class AbstractASMVisitor {
         instrs.addAll(binop.right().getBestInstructions());
         switch (binop.opType()) {
             case ADD:
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMAdd(l1, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case MUL:
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMIMul(destTemp, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case DIV: // rax/div, store result in rax and remainder in rdx
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                 instrs.add(new ASMIDiv(l2));
-                binop.bestInstructions = instrs;
-                return (new ASMRegisterExpr("rax"));
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                break;
             case SUB:
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case HMUL: // TODO: fix this
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 ASMTempExpr srcTemp = new ASMTempExpr(nxtTemp());
@@ -530,56 +522,44 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMShr(destTemp, new ASMConstExpr(32)));
                 instrs.add(new ASMShr(srcTemp, new ASMConstExpr(32)));
                 instrs.add(new ASMIMul(destTemp, srcTemp));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case MOD: // rax/div, store result in rax and remainder in rdx
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                 instrs.add(new ASMIDiv(l2));
-                binop.bestInstructions = instrs;
-                return (new ASMRegisterExpr("rdx"));
+                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
+                break;
             case AND:
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMAnd(destTemp, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case OR:
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMOr(destTemp, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case XOR:
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMXor(destTemp, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case LSHIFT: // logical left shift
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMShl(destTemp, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case RSHIFT: // logical right shift
-                binop.visited = true;
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMShr(destTemp, l2));
-                binop.bestInstructions = instrs;
-                return destTemp;
+                break;
             case ARSHIFT:
                 binop.bestCost = binop.left().getBestCost() +
                         binop.right().getBestCost() + 2;
