@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMAdd;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMIMul;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMSub;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.ASMSar;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
@@ -130,7 +131,7 @@ public class AbstractASMVisitor {
         switch (binop.opType()) {
             case ADD:
                 instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMAdd(l1, l2));
+                instrs.add(new ASMAdd(destTemp, l2));
                 break;
             case MUL:
                 instrs.add(new ASMMov(destTemp, l1));
@@ -150,7 +151,7 @@ public class AbstractASMVisitor {
                 break;
             default:
         }
-        return l1;
+        return destTemp;
     }
 
     private String nxtTemp() {
