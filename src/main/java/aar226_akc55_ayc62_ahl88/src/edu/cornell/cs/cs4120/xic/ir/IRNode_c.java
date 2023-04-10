@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 /** A node in an intermediate-representation abstract syntax tree. */
 public abstract class IRNode_c implements IRNode {
 
+    public ASMTempExpr tempName = null;
     public boolean visited = false;
     public long bestCost = Long.MAX_VALUE;
     public ArrayList<ASMInstruction> bestInsructions = new ArrayList<>();

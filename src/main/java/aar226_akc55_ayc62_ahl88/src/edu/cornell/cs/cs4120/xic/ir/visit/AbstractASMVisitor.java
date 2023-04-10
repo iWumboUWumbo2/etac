@@ -76,19 +76,49 @@ public class AbstractASMVisitor {
     private String curFunction;
 
     private ASMTempExpr munchIRExpr(IRExpr e, ArrayList<ASMInstruction> instrs) {
-        if (e instanceof IRBinOp) {
-            return munchBinop((IRBinOp) e, instrs);
+        IRNode_c top = (IRNode_c) e;
+        if (top.visited){
+            instrs.addAll(top.bestInsructions);
+            return top.tempName;
         }
+        if (e instanceof IRBinOp binop) {
+            return munchBinop(binop, instrs);
+        }else if (e instanceof IRTemp t){
+            return munchTemp(t,instrs);
+        }else if (e instanceof IRConst cons){
+            return munchIRConst(cons,instrs);
+        }else if (e instanceof IRName name){ // cheese way of doing it
+            return munchIRName(name,instrs);
+        }else{
+            throw new InternalCompilerError("TODO EXPR not tested");
+        }
+    }
+    private ASMTempExpr munchIRName(IRName name, ArrayList<ASMInstruction> instrs) {
+        name.visited = true;
+        name.bestCost = 0;
+        name.bestInsructions = new ArrayList<>();
+        return new ASMTempExpr(name.name());
+    }
+    private ASMTempExpr munchIRMem(IRMem mem, ArrayList<ASMInstruction> instrs) {
         return null;
     }
-
-    private ASMTempExpr munchMem (IRMem binop, ArrayList<ASMInstruction> instrs) {
-        return null;
+    private ASMTempExpr munchTemp(IRTemp temp, ArrayList<ASMInstruction> instrs) {
+        temp.visited = true;
+        temp.bestCost = 0;
+        temp.bestInsructions = new ArrayList<>();
+        return new ASMTempExpr(temp.name());
     }
-    private ASMTempExpr munchTemp (IRTemp temp, ArrayList<ASMInstruction> instrs) {
-        return null;
+    private ASMTempExpr munchIRConst(IRConst c, ArrayList<ASMInstruction> instrs){
+        c.visited = true;
+        c.bestCost = 1;
+        String extraTemp = nxtTemp();
+        ArrayList<ASMInstruction> extraInstructions = new ArrayList<>();
+        extraInstructions.add(new ASMMov(new ASMTempExpr(extraTemp),new ASMConstExpr(c.value())));
+        c.bestInsructions = extraInstructions;
+        instrs.addAll(extraInstructions);
+        return new ASMTempExpr(extraTemp);
     }
-    private ASMTempExpr munchBinop (IRBinOp binop, ArrayList<ASMInstruction> instrs) {
+    private ASMTempExpr munchBinop(IRBinOp binop, ArrayList<ASMInstruction> instrs) {
         // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
         ASMTempExpr l1 = munchIRExpr(binop.left(), instrs);
         ASMTempExpr l2 = munchIRExpr(binop.right(), instrs);
