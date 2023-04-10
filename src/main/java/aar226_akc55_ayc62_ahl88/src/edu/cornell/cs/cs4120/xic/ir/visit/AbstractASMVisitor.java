@@ -37,7 +37,6 @@ import java.util.HashSet;
  * - function args: rdi, rsi, rdx, rcx, r8, r9, push rest on stack
  * - callee saved: rbx, rbp, and r12–r15
  * - caller saved: everything else
- *
  * THINGS WE NEEEEEEEEEEEDDDDDDDDD
  * - ir compunit ->
  *      add glob mem locations
@@ -64,8 +63,6 @@ import java.util.HashSet;
  *      clean accroding to ABI spec (be careful about multireturns and stack dead space)
  *      pop from function
  * - IR Label -> ASM label
- *
- *
  * Generic ASM Class will be called ASMNode
  */
 
@@ -74,8 +71,7 @@ public class AbstractASMVisitor {
 
 //    private HashMap<String,HashSet<String>> functionToTemps = new HashMap<>();
 
-    private HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
-    private String curFunction;
+    private final HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
 
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
@@ -93,9 +89,7 @@ public class AbstractASMVisitor {
     }
 
     public ArrayList<ASMInstruction> visit(IRData node){
-        ArrayList<ASMInstruction> instructions = new ArrayList<>();
-
-        return instructions;
+        throw new InternalCompilerError("not visiting IRDATA");
     }
 
     public ASMInstruction binopCondToOpCode(IRBinOp bin,IRCJump node){
@@ -159,7 +153,7 @@ public class AbstractASMVisitor {
         }
 
         for (IRFuncDecl func : node.functions().values()) {
-            curFunction = func.name();
+            String curFunction = func.name();
 //            functionToTemps.put(func.name(),new HashSet<>());
             ArrayList<ASMInstruction> functionInstructions = visit(func);
 //            functionToTempsMapping.put(curFunction,functionToTemps.get(curFunction));
@@ -171,7 +165,7 @@ public class AbstractASMVisitor {
         return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping,functionsNameToSig);
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
         boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
         ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(nxtTemp()),new ASMConstExpr(x.value()))
                 : new ASMMovabs(new ASMTempExpr(nxtTemp()),new ASMConstExpr(x.value()));
@@ -271,7 +265,7 @@ public class AbstractASMVisitor {
         return instructions;
     }
     public ArrayList<ASMInstruction> visit(IRLabel node) {
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
         instructions.add(new ASMLabel(node.name()));
         return instructions;
     }
@@ -619,7 +613,7 @@ public class AbstractASMVisitor {
 
 
     public ArrayList<ASMInstruction> visit(IRSeq node){
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
         for (IRStmt stmt : node.stmts()) {
             ArrayList<ASMInstruction> stmtInstrs = stmt.accept(this);
             instructions.addAll(stmtInstrs);
@@ -640,7 +634,7 @@ public class AbstractASMVisitor {
                  System.out.println("return is not a temp? " + e);
                  String nxtName = nxtTemp();
                  tempNames.add(nxtName);
-                 ASMTempExpr tmp = new ASMTempExpr(nxtName);
+//                 ASMTempExpr tmp = new ASMTempExpr(nxtName);
                  // need to translate
                  throw new InternalCompilerError("return has an element that isn't a temp");
              }
