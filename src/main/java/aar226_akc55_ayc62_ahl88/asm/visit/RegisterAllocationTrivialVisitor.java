@@ -1,11 +1,9 @@
 package aar226_akc55_ayc62_ahl88.asm.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
-import aar226_akc55_ayc62_ahl88.asm.ASMData;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.ASMAnd;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPop;
@@ -131,9 +129,13 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                 ASMExpr tempMem = tempsToRegs(mem,tempToReg);
                 res.add(new ASMArg1(node.getOpCode(),tempMem));
             }else if (argument instanceof ASMConstExpr cons){
-                throw new InternalCompilerError("TODO CONST 1 ARG");
-            }
+                String curReg = availReg.get(availReg.size()-1);
+                availReg.remove(availReg.size()-1);
+                ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
 
+                ASMExpr curSrc = isIMMTooBig(cons,res,availReg);
+                res.add(new ASMMov(usedReg,curSrc));
+            }
             else{ // no change instruction Jumps
                 res.add(node);
             }
@@ -153,10 +155,10 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         ArrayList<ASMInstruction> res = new ArrayList<>();
         ArrayList<ASMInstruction> postInstruction = new ArrayList<>();
         ASMOpCodes opCodes = node.getOpCode();
-        ASMExpr curDest = null; // replace Left with curDest
-        ASMExpr curSrc = null;  // replace Right with curSrc
-        if (node instanceof ASMEnter enter){
-            throw new InternalCompilerError("enter TODO replace this enter with function One");
+        ASMExpr curDest; // replace Left with curDest
+        ASMExpr curSrc;  // replace Right with curSrc
+        if (node instanceof ASMEnter ){
+            throw new InternalCompilerError("Enter Replaced Earlier");
         }
 
         if (left instanceof ASMRegisterExpr reg){// known register Return
@@ -303,7 +305,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     /**
      * Creates a new Instruction Enter for the number of locations on the stack needed.
      * @param instructions
-     * @return
+     * @return A new Enter Statement and the Register mapping
      */
     private ASMEnter createEnterAndBuildMapping(ArrayList<ASMInstruction> instructions){
 
@@ -332,8 +334,8 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 
     /**
      * Check if Expression has any Temps
-     * @param expr
-     * @param temps
+     * @param expr checking if ASMexpr has temp
+     * @param temps returns the set of temps
      */
     private void checkExprForTemp(ASMExpr expr, HashSet<String> temps){
         if (expr == null){
