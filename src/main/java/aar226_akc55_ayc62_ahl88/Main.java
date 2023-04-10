@@ -525,6 +525,8 @@ public class Main {
                 Paths.get("").toAbsolutePath().toString();
         target = Target.LINUX;
 
+        boolean shouldAsmGen = true;
+
 //        System.out.println(outputDirectory);
 
         try {
@@ -568,6 +570,7 @@ public class Main {
             }
 
             if (cmd.hasOption("lex")) {
+                shouldAsmGen = false;
                 for (String filename : filenames) {
                     typeCheckFile(filename, false);
                     lexFile(filename, new StringBuilder(), true);
@@ -575,6 +578,7 @@ public class Main {
             }
 
             if (cmd.hasOption("parse")) {
+                shouldAsmGen = false;
                 for (String filename : filenames) {
                     typeCheckFile(filename, false);
                     parseFile(filename, true);
@@ -582,27 +586,31 @@ public class Main {
             }
 
             if (cmd.hasOption("typecheck")) {
+                shouldAsmGen = false;
                 for (String filename : filenames) {
                     typeCheckFile(filename, true);
                 }
             }
 
             if (cmd.hasOption("irgen")) {
+                shouldAsmGen = false;
                 for (String filename : filenames) {
                     irgenFile(filename, true);
                 }
             }
 
             if (cmd.hasOption("irrun")) {
+                shouldAsmGen = false;
                 for (String filename : filenames) {
                     irrunFile(filename, true);
                 }
             }
 
-            for (String filename : filenames) {
-                asmGenFile(filename, true);
+            if (shouldAsmGen) {
+                for (String filename : filenames) {
+                    asmGenFile(filename, true);
+                }
             }
-
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);
