@@ -497,157 +497,224 @@ public class AbstractASMVisitor {
     }
     private ASMAbstractReg munchBinop(IRBinOp binop) {
         // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
-        ASMAbstractReg l1 = munchIRExpr(binop.left());
-        ASMAbstractReg l2 = munchIRExpr(binop.right());
+        long curBestCost = Long.MAX_VALUE;
         ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-        ArrayList<ASMInstruction> instrs = new ArrayList<>();
-        instrs.addAll(binop.left().getBestInstructions());
-        instrs.addAll(binop.right().getBestInstructions());
-        switch (binop.opType()) {
-            case ADD:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMAdd(l1, l2));
-                break;
-            case MUL:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMIMul(destTemp, l2));
-                break;
-            case DIV: // rax/div, store result in rax and remainder in rdx
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
-                instrs.add(new ASMIDiv(l2));
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-                break;
-            case SUB:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
-                break;
-            case HMUL: // TODO: fix this
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 5;
-                ASMTempExpr srcTemp = new ASMTempExpr(nxtTemp());
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
 
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMShr(srcTemp, l2));
-                instrs.add(new ASMShr(destTemp, new ASMConstExpr(32)));
-                instrs.add(new ASMShr(srcTemp, new ASMConstExpr(32)));
-                instrs.add(new ASMIMul(destTemp, srcTemp));
-                break;
-            case MOD: // rax/div, store result in rax and remainder in rdx
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 3;
-                instrs.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
-                instrs.add(new ASMIDiv(l2));
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
-                break;
-            case AND:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMAnd(destTemp, l2));
-                break;
-            case OR:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMOr(destTemp, l2));
-                break;
-            case XOR:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMXor(destTemp, l2));
-                break;
-            case LSHIFT: // logical left shift
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMShl(destTemp, l2));
-                break;
-            case RSHIFT: // logical right shift
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMShr(destTemp, l2));
-                break;
-            case ARSHIFT:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 2;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMSar(destTemp, l2));
-                break;
-            case EQ:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 4;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMCmp(destTemp, l2));
-                instrs.add(new ASMSete(new ASMRegisterExpr("al")));
+
+        if (false) {
+
+        } else {
+
+            ASMAbstractReg l1 = munchIRExpr(binop.left());
+            ASMAbstractReg l2 = munchIRExpr(binop.right());
+            curBestInstructions.addAll(binop.left().getBestInstructions());
+            curBestInstructions.addAll(binop.right().getBestInstructions());
+
+            switch (binop.opType()) {
+                case ADD:
+                    if ( binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMAdd(l1, l2));
+                    }
+                    break;
+                case MUL:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMIMul(destTemp, l2));
+                    }
+                    break;
+                case DIV: // rax/div, store result in rax and remainder in rdx
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 3 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 3;
+                        curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
+                        curBestInstructions.add(new ASMIDiv(l2));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                    }
+                    break;
+                case SUB:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
+                    }
+                    break;
+                case HMUL: // TODO: fix this
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 5 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 5;
+                        ASMTempExpr srcTemp = new ASMTempExpr(nxtTemp());
+
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMShr(srcTemp, l2));
+                        curBestInstructions.add(new ASMShr(destTemp, new ASMConstExpr(32)));
+                        curBestInstructions.add(new ASMShr(srcTemp, new ASMConstExpr(32)));
+                        curBestInstructions.add(new ASMIMul(destTemp, srcTemp));
+                    }
+                    break;
+                case MOD: // rax/div, store result in rax and remainder in rdx
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 3 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 3;
+                        curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
+                        curBestInstructions.add(new ASMIDiv(l2));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
+                    }
+                    break;
+                case AND:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMAnd(destTemp, l2));
+                    }
+                    break;
+                case OR:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMOr(destTemp, l2));
+                    }
+                    break;
+                case XOR:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMXor(destTemp, l2));
+                    }
+                    break;
+                case LSHIFT: // logical left shift
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMShl(destTemp, l2));
+                    }
+                    break;
+                case RSHIFT: // logical right shift
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMShr(destTemp, l2));
+                    }
+                    break;
+                case ARSHIFT:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 2;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMSar(destTemp, l2));
+                    }
+                    break;
+                case EQ:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 4 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 4;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMCmp(destTemp, l2));
+                        curBestInstructions.add(new ASMSete(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
-                break;
-            case NEQ:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 4;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMCmp(destTemp, l2));
-                instrs.add(new ASMSetne(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                    }
+                    break;
+                case NEQ:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 4 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 4;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMCmp(destTemp, l2));
+                        curBestInstructions.add(new ASMSetne(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
-                break;
-            case LT:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 4;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMCmp(destTemp, l2));
-                instrs.add(new ASMSetl(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                    }
+                    break;
+                case LT:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 4 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 4;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMCmp(destTemp, l2));
+                        curBestInstructions.add(new ASMSetl(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
-                break;
-            case ULT:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 4;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMCmp(destTemp, l2));
-                instrs.add(new ASMSetb(new ASMRegisterExpr("al")));
-                //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
-                break;
-            case GT:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 4;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMCmp(destTemp, l2));
-                instrs.add(new ASMSetg(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                    }
+                    break;
+                case ULT:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 4 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 4;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMCmp(destTemp, l2));
+                        curBestInstructions.add(new ASMSetb(new ASMRegisterExpr("al")));
+                        //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                    }
+                    break;
+                case GT:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 4 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 4;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMCmp(destTemp, l2));
+                        curBestInstructions.add(new ASMSetg(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
-                break;
-            case LEQ:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 4;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMCmp(destTemp, l2));
-                instrs.add(new ASMSetle(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                    }
+                    break;
+                case LEQ:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 4 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 4;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMCmp(destTemp, l2));
+                        curBestInstructions.add(new ASMSetle(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
-                break;
-            case GEQ:
-                binop.bestCost = binop.left().getBestCost() +
-                        binop.right().getBestCost() + 4;
-                instrs.add(new ASMMov(destTemp, l1));
-                instrs.add(new ASMCmp(destTemp, l2));
-                instrs.add(new ASMSetge(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                    }
+                    break;
+                case GEQ:
+                    if (binop.left().getBestCost() +
+                            binop.right().getBestCost() + 4 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() +
+                                binop.right().getBestCost() + 4;
+                        curBestInstructions.add(new ASMMov(destTemp, l1));
+                        curBestInstructions.add(new ASMCmp(destTemp, l2));
+                        curBestInstructions.add(new ASMSetge(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
-                break;
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                    }
+                    break;
+            }
         }
-        binop.bestInstructions = instrs;
+        binop.bestInstructions = curBestInstructions;
+        binop.bestCost = curBestCost;
         binop.visited = true;
         return destTemp;
     }
