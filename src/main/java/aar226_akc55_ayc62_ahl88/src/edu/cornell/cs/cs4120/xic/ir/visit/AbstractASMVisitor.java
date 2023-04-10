@@ -11,7 +11,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMIDiv;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMIMul;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMSub;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.*;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPop;
@@ -22,7 +22,6 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMCmp;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
@@ -73,7 +72,7 @@ import java.util.HashSet;
 public class AbstractASMVisitor {
     private int tempCnt = 0;
 
-    private HashMap<String,HashSet<String>> functionToTemps = new HashMap<>();
+//    private HashMap<String,HashSet<String>> functionToTemps = new HashMap<>();
 
     private HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
     private String curFunction;
@@ -92,54 +91,57 @@ public class AbstractASMVisitor {
     private ASMTempExpr tempToASM(IRTemp t) {
         return new ASMTempExpr(t.name());
     }
-    // change te parameters if needed
-    private ArrayList<ASMInstruction> cJumpBinop(IRBinOp binop){
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
-//        switch (binop.opType()) {
-//            case EQ:
-//            case NEQ:
-//            case LT:
-//            case ULT:
-//            case GT:
-//            case LEQ:
-//            case GEQ:
-////                ASMArg2 instr1 = new ASMCmp(binop.left(), binop.right());
-//
-//        }
-        return instructions;
-    }
 
     public ArrayList<ASMInstruction> visit(IRData node){
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
 
         return instructions;
     }
+
+    public ASMInstruction binopCondToOpCode(IRBinOp bin,IRCJump node){
+        ASMNameExpr label = new ASMNameExpr(node.trueLabel());
+        return switch (bin.opType()){
+            case EQ -> new ASMJumpEqual(label);
+            case NEQ -> new ASMJumpNotEqual(label);
+            case LT -> new ASMJumpLT(label);
+            case ULT -> new ASMJumpULT(label);
+            case GT -> new ASMJumpGT(label);
+            case LEQ -> new ASMJumpLE(label);
+            case GEQ -> new ASMJumpGE(label);
+            default -> throw new InternalCompilerError("binop Cond is not boolean it is: " + bin);
+        };
+    }
     public ArrayList<ASMInstruction> visit(IRCJump node) {
-        ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
+        ArrayList<ASMInstruction> instructions = new ArrayList<>();
 
         IRExpr condition = node.cond();
 
-        if (condition instanceof IRBinOp c) {
+        if (condition instanceof IRBinOp c) { // maybe test is faster
             // create function for IRBINOP
             // DO A CMP instead
-            return cJumpBinop(c);
+            ASMAbstractReg tleft = munchIRExpr(c.left());
+            ASMAbstractReg tright = munchIRExpr(c.right());
+            instructions.addAll(c.left().getBestInstructions()); // instrs to create left temp
+            instructions.addAll(c.right().getBestInstructions()); // instrs to create right temp
+            instructions.add(new ASMCmp(tleft,tright)); // cmp
+            instructions.add(binopCondToOpCode(c,node));
         } else if (condition instanceof IRConst c) {
             if (c.value() != 0L){ // jump
                 instructions.add(new ASMJumpAlways(new ASMNameExpr(node.trueLabel())));
             }
         } else if (condition instanceof IRTemp c) {
-            functionToTemps.get(curFunction).add(c.name());
+//            functionToTemps.get(curFunction).add(c.name());
             ASMTempExpr tempName = tempToASM(c);
             instructions.add(new ASMTest(tempName,tempName));
             instructions.add(new ASMJumpNotEqual(new ASMNameExpr(node.trueLabel())));
             //test t, t
             //jnz l
         } else if (condition instanceof IRMem c) {
-            ASMTempExpr tempForMem = new ASMTempExpr(nxtTemp());
-            // accept mem for this temp
-            // add move instruction
+            ASMAbstractReg tempMem = munchIRExpr(c);
+            instructions.addAll(c.getBestInstructions());
+            instructions.add(new ASMTest(tempMem,tempMem));
+            instructions.add(new ASMJumpNotEqual(new ASMNameExpr(node.trueLabel())));
             // do temp test and ASM Jump no Equal
-            return null;
         }else{
             throw new InternalCompilerError("CJUMP guard has another type");
         }
@@ -158,9 +160,9 @@ public class AbstractASMVisitor {
 
         for (IRFuncDecl func : node.functions().values()) {
             curFunction = func.name();
-            functionToTemps.put(func.name(),new HashSet<>());
+//            functionToTemps.put(func.name(),new HashSet<>());
             ArrayList<ASMInstruction> functionInstructions = visit(func);
-            functionToTempsMapping.put(curFunction,functionToTemps.get(curFunction));
+//            functionToTempsMapping.put(curFunction,functionToTemps.get(curFunction));
             functionToInstructionList.put(curFunction,functionInstructions);
 //            replaceTemps(functionInstructions,curFunction);
 //            instructions.addAll(functionInstructions);
@@ -204,7 +206,7 @@ public class AbstractASMVisitor {
         ArrayList<ASMInstruction> bodyInstructions = new ArrayList<>();
 
         if (numReturns > 2){
-            functionToTemps.get(curFunction).add("_returnBase");
+//            functionToTemps.get(curFunction).add("_returnBase");
             bodyInstructions.add(new ASMMov(
                     new ASMTempExpr("_returnBase"),
                     new ASMRegisterExpr("rdi")
@@ -231,7 +233,7 @@ public class AbstractASMVisitor {
             };
 //            String tempName = "_ARG" + i;
             String tempName = numReturns > 2 ? temps.get(i-2):temps.get(i-1);
-            functionToTemps.get(curFunction).add(tempName);
+//            functionToTemps.get(curFunction).add(tempName);
             // can't do [stack location] <- [stack location2]
             // need intermediate rax <- [stack location2]
             // then [stack location] <- temp rax
@@ -255,7 +257,8 @@ public class AbstractASMVisitor {
         }
         // add enter at begin.
         // enter 8*L, 0
-        ASMEnter begin = new ASMEnter(new ASMConstExpr(8L*functionToTemps.get(curFunction).size()),new ASMConstExpr(0));
+//        ASMEnter begin = new ASMEnter(new ASMConstExpr(8L*functionToTemps.get(curFunction).size()),new ASMConstExpr(0));
+        ASMEnter begin = new ASMEnter(new ASMConstExpr(0),new ASMConstExpr(0));
         result.add(begin);
         result.addAll(bodyInstructions);
         return result;
@@ -440,7 +443,7 @@ public class AbstractASMVisitor {
     private ASMAbstractReg munchIRExpr(IRExpr e) {
         IRNode_c top = (IRNode_c) e;
         if (top.visited){
-            System.out.println("not here");
+            System.out.println("visited");
             return top.tempName;
         }
         if (e instanceof IRBinOp binop) {
@@ -642,7 +645,7 @@ public class AbstractASMVisitor {
                  throw new InternalCompilerError("return has an element that isn't a temp");
              }
         }
-        functionToTemps.get(curFunction).addAll(tempNames);
+//        functionToTemps.get(curFunction).addAll(tempNames);
         // looping in reverse so rax can be used temporarily until the end
         for (int i = 1; i <= returnSize; i++) {
             // move expression to Return Location
@@ -699,7 +702,7 @@ public class AbstractASMVisitor {
                 throw new InternalCompilerError("return has an element that isn't a temp");
             }
         }
-        functionToTemps.get(curFunction).addAll(tempNames);
+//        functionToTemps.get(curFunction).addAll(tempNames);
         instructions.add(new ASMComment("Add Padding",functionName.name()));
         // add extra stack space for returns
         if (node.n_returns() >2){
@@ -811,19 +814,19 @@ public class AbstractASMVisitor {
         else throw new InternalCompilerError("Invalid expression for visitExpression");
     }
 
-    private void replaceTemps(ArrayList<ASMInstruction> instructions, String functionName){
-        functionToTemps.get(functionName);
-        int index = 1;
-        HashMap<String, Integer> tempToStack = new HashMap<>();
-        for (String temp: functionToTemps.get(functionName)){
-            tempToStack.put(temp,index*8);
-            index++;
-        }
-        for (ASMInstruction instr: instructions){
-            instr.createPrint(tempToStack);
-            System.out.println(instr);
-        }
-    }
+//    private void replaceTemps(ArrayList<ASMInstruction> instructions, String functionName){
+//        functionToTemps.get(functionName);
+//        int index = 1;
+//        HashMap<String, Integer> tempToStack = new HashMap<>();
+//        for (String temp: functionToTemps.get(functionName)){
+//            tempToStack.put(temp,index*8);
+//            index++;
+//        }
+//        for (ASMInstruction instr: instructions){
+//            instr.createPrint(tempToStack);
+//            System.out.println(instr);
+//        }
+//    }
 
     // TODO: 4/1/2023
     // move

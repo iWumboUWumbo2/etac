@@ -6,6 +6,7 @@ public enum ASMOpCodes{
         LEAVE,
 
         // 1 arg
+        JB, // Jump Below unsigned
         JMP, // jump always
         JE, // jump if equal a == b
         JNE, // jump if not equal a != b
