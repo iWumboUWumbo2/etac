@@ -55,6 +55,12 @@ public abstract class ASMInstruction {
             case COMMENT -> "";
             case SETE -> "sete ";
             case JB -> "jb ";
+            case SETB -> "setb ";
+            case SETG -> "setg ";
+            case SETNE -> "setne";
+            case SETL -> "setl ";
+            case SETGE -> "setge ";
+            case SETLE -> "setle ";
         };
     }
     public String exprASMToString(ASMExpr expr, HashMap<String, Integer> location){
