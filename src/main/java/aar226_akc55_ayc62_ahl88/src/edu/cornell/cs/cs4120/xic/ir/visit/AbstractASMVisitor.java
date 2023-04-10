@@ -460,7 +460,14 @@ public class AbstractASMVisitor {
         return new ASMTempExpr(name.name());
     }
     private ASMTempExpr munchIRMem(IRMem mem) {
-        throw new InternalCompilerError("TODO MEM");
+        mem.visited = true;
+        ASMAbstractReg munched = munchIRExpr(mem.expr());
+        ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
+        ArrayList<ASMInstruction> instructions = new ArrayList<>(mem.expr().getBestInstructions());
+        instructions.add(new ASMMov(destTemp,new ASMMemExpr(munched)));
+        mem.bestCost = mem.expr().getBestCost() + 1;
+        mem.bestInstructions = instructions;
+        return destTemp;
 //        return null;
     }
     private ASMTempExpr munchTemp(IRTemp temp) {
@@ -629,8 +636,9 @@ public class AbstractASMVisitor {
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                 instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
                 break;
-            default:
         }
+        binop.bestInstructions = instrs;
+        binop.visited = true;
         return destTemp;
     }
 
