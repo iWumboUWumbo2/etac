@@ -6,8 +6,10 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.*;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.*;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMAdd;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMIMul;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMSub;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.ASMSar;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpNotEqual;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
@@ -17,6 +19,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMCmp;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.tstcmp.ASMTest;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -73,157 +76,6 @@ public class AbstractASMVisitor {
 
     private HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
     private String curFunction;
-
-    private ASMTempExpr munchIRExpr(IRExpr e, ArrayList<ASMInstruction> instrs) {
-        IRNode_c top = (IRNode_c) e;
-        if (top.visited){
-            System.out.println("not here");
-            instrs.addAll(top.bestInsructions);
-            return top.tempName;
-        }
-        if (e instanceof IRBinOp binop) {
-            return munchBinop(binop, instrs);
-        }else if (e instanceof IRTemp t){
-            return munchTemp(t,instrs);
-        }else if (e instanceof IRConst cons){
-            return munchIRConst(cons,instrs);
-        }else if (e instanceof IRName name){ // cheese way of doing it
-            return munchIRName(name,instrs);
-        }else if (e instanceof IRMem mem){
-            return munchIRMem(mem,instrs);
-        }else{
-            throw new InternalCompilerError("TODO EXPR not tested");
-        }
-    }
-    private ASMTempExpr munchIRName(IRName name, ArrayList<ASMInstruction> instrs) {
-        name.visited = true;
-        name.bestCost = 0;
-        name.bestInsructions = new ArrayList<>();
-        return new ASMTempExpr(name.name());
-    }
-    private ASMTempExpr munchIRMem(IRMem mem, ArrayList<ASMInstruction> instrs) {
-        throw new InternalCompilerError("TODO MEM");
-//        return null;
-    }
-    private ASMTempExpr munchTemp(IRTemp temp, ArrayList<ASMInstruction> instrs) {
-        temp.visited = true;
-        temp.bestCost = 0;
-        temp.bestInsructions = new ArrayList<>();
-        return new ASMTempExpr(temp.name());
-    }
-    private ASMTempExpr munchIRConst(IRConst c, ArrayList<ASMInstruction> instrs){
-        c.visited = true;
-        c.bestCost = 1;
-        String extraTemp = nxtTemp();
-        ArrayList<ASMInstruction> extraInstructions = new ArrayList<>();
-        extraInstructions.add(new ASMMov(new ASMTempExpr(extraTemp),new ASMConstExpr(c.value())));
-        c.bestInsructions = extraInstructions;
-        instrs.addAll(extraInstructions);
-        return new ASMTempExpr(extraTemp);
-    }
-    private ASMExpr munchBinop(IRBinOp binop, ArrayList<ASMInstruction> instrs) {
-        // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
-        ASMTempExpr l1 = munchIRExpr(binop.left(), instrs);
-        ASMTempExpr l2 = munchIRExpr(binop.right(), instrs);
-        ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-        ArrayList<ASMInstruction> extraInstructions = new ArrayList<>();
-        switch (binop.opType()) {
-            case ADD:
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMAdd(l1, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case MUL:
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMIMul(destTemp, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case DIV: // rax/div, store result in rax and remainder in rdx
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
-                extraInstructions.add(new ASMIDiv(l2));
-                binop.bestInsructions = extraInstructions;
-                return (new ASMRegisterExpr("rax"));
-            case SUB:
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case HMUL: // TODO: fix this
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                ASMTempExpr srcTemp = new ASMTempExpr(nxtTemp());
-
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMShr(srcTemp, l2));
-                extraInstructions.add(new ASMShr(destTemp, new ASMConstExpr(32)));
-                extraInstructions.add(new ASMShr(srcTemp, new ASMConstExpr(32)));
-                extraInstructions.add(new ASMIMul(destTemp, srcTemp));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case MOD: // rax/div, store result in rax and remainder in rdx
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
-                extraInstructions.add(new ASMIDiv(l2));
-                binop.bestInsructions = extraInstructions;
-                return (new ASMRegisterExpr("rdx"));
-            case AND:
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMAnd(destTemp, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case OR:
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMOr(destTemp, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case XOR:
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMXor(destTemp, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case LSHIFT: // logical left shift
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMShl(destTemp, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            case RSHIFT: // logical right shift
-                binop.visited = true;
-                binop.bestCost = ((IRNode_c) binop.left()).bestCost +
-                        ((IRNode_c) binop.right()).bestCost + 2;
-                extraInstructions.add(new ASMMov(destTemp, l1));
-                extraInstructions.add(new ASMShr(destTemp, l2));
-                binop.bestInsructions = extraInstructions;
-                return destTemp;
-            default: throw new InternalCompilerError("no binop match found");
-        }
-    }
 
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
@@ -424,19 +276,6 @@ public class AbstractASMVisitor {
         IRExpr dest = node.target();
         IRExpr source = node.source();
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
-//        if (dest instanceof IRTemp t1 && source instanceof IRTemp t2){ // random case for testing atm
-//            functionToTemps.get(curFunction).add(t1.name());
-//            functionToTemps.get(curFunction).add(t2.name());
-//            instructions.add(new ASMMov(new ASMTempExpr(t1.name()),new ASMTempExpr(t2.name())));
-//        }else if (dest instanceof IRTemp t1 && source instanceof IRConst x){
-//            functionToTemps.get(curFunction).add(t1.name());
-//            boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
-//            ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()))
-//                    : new ASMMovabs(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()));
-//            instructions.add(instruction);
-//        }else{
-//            throw new InternalCompilerError("TODO Other moves");
-//        }
 
         // TEMP TEMP
         if (dest instanceof IRTemp t1 && source instanceof IRTemp t2) { // random case for testing atm
@@ -468,48 +307,239 @@ public class AbstractASMVisitor {
         return instructions;
     }
 
+    // Base Case
     public long tileTempTemp(IRTemp t1, IRTemp t2, ArrayList<ASMInstruction> instrs) {
         instrs.add(new ASMMov(new ASMTempExpr(t1.name()), new ASMTempExpr(t2.name())));
         return 1;
     }
 
+    // Base Case
     public long tileTempConst(IRTemp t, IRConst c, ArrayList<ASMInstruction> instrs) {
         instrs.add(new ASMMov(new ASMTempExpr(t.name()), new ASMConstExpr(c.value())));
         return 1;
     }
 
+    // Can Expand
     public long tileTempMem(IRTemp t, IRMem m, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(m, instrs);
-        instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
-        return 1 + m.bestCost;
+        long curBestCost = Long.MAX_VALUE;
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        if (false){ // other patterns;
+
+        }else { // catch all case
+            ASMAbstractReg temp = munchIRExpr(m);
+            if (m.getBestCost() + 1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), temp)); // move the temp mem into ASMMOV
+                curBestInstructions = caseInstructions;
+                curBestCost = m.getBestCost() + 1;
+            }
+        }
+        instrs.addAll(curBestInstructions);
+        return curBestCost;
     }
+
+    // Can Expand
     public long tileTempBinop(IRTemp t, IRBinOp b, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(b, instrs);
-        instrs.add(new ASMMov(new ASMTempExpr(t.name()), temp));
-        return 1 + b.bestCost;
+        long curBestCost = Long.MAX_VALUE;
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        if (false){ // other patterns;
+
+        }else { // catch all case
+            ASMAbstractReg temp = munchIRExpr(b);
+            if (b.getBestCost() + 1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.getBestInstructions()); // instructions for Mem
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), temp)); // move the temp mem into ASMMOV
+                curBestInstructions = caseInstructions;
+                curBestCost = b.getBestCost() + 1;
+            }
+        }
+        instrs.addAll(curBestInstructions);
+        return curBestCost;
     }
+
+    // Can Expand
     public long tileMemTemp(IRMem m, IRTemp t, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(m, instrs);
-        instrs.add(new ASMMov(temp, new ASMTempExpr(t.name())));
-        return 1 + m.bestCost;
+        long curBestCost = Long.MAX_VALUE;
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        if (false){ // other patterns;
+
+        }else { // catch all case
+            ASMAbstractReg temp = munchIRExpr(m);
+            if (m.getBestCost() + 1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), temp)); // move the temp mem into ASMMOV
+                curBestInstructions = caseInstructions;
+                curBestCost = m.getBestCost() + 1;
+            }
+        }
+        instrs.addAll(curBestInstructions);
+        return curBestCost;
     }
+    // Can Expand
     public long tileMemMem(IRMem m1, IRMem m2, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp1 = munchIRExpr(m1, instrs);
-        ASMTempExpr temp2 = munchIRExpr(m2, instrs);
-        instrs.add(new ASMMov(temp1, temp2));
-        return m1.bestCost + m2.bestCost;
+        long curBestCost = Long.MAX_VALUE;
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        if (false){ // other patterns;
+
+        }else { // catch all case do right mem then left mem
+            ASMAbstractReg leftTemp = munchIRExpr(m1);
+            ASMAbstractReg rightTemp = munchIRExpr(m2);
+            if (m2.getBestCost() + m1.getBestCost() +  1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
+                caseInstructions.addAll(m2.getBestInstructions());
+                caseInstructions.addAll(m1.getBestInstructions());
+                caseInstructions.add(new ASMMov(leftTemp, rightTemp)); // move the temp mem into ASMMOV
+                curBestInstructions = caseInstructions;
+                curBestCost = m2.getBestCost() + m1.getBestCost() +  1;
+            }
+        }
+        instrs.addAll(curBestInstructions);
+        return curBestCost;
     }
+    // Can Expand
     public long tileMemConst(IRMem m, IRConst c, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp = munchIRExpr(m, instrs);
-        instrs.add(new ASMMov(temp, new ASMConstExpr(c.value())));
-        return 1 + m.bestCost;
+        long curBestCost = Long.MAX_VALUE;
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        if (false){ // other patterns;
+
+        }else { // catch all case
+            ASMAbstractReg temp = munchIRExpr(m);
+            if (m.getBestCost() + 1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
+                caseInstructions.add(new ASMMov(temp, new ASMConstExpr(c.value()))); // move the temp mem into ASMMOV
+                curBestInstructions = caseInstructions;
+                curBestCost = m.getBestCost() + 1;
+            }
+        }
+        instrs.addAll(curBestInstructions);
+        return curBestCost;
     }
+    // Can Expand
     public long tileMemBinop(IRMem m, IRBinOp b, ArrayList<ASMInstruction> instrs) {
-        ASMTempExpr temp1 = munchIRExpr(m, instrs);
-        ASMTempExpr temp2 = munchIRExpr(b, instrs);
-        instrs.add(new ASMMov(temp1, temp2));
-        return m.bestCost + b.bestCost;
+        long curBestCost = Long.MAX_VALUE;
+        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        if (false){ // other patterns;
+
+        }else { // catch all case
+            ASMAbstractReg temp1 = munchIRExpr(m);
+            ASMAbstractReg temp2 = munchIRExpr(b);
+            if (m.getBestCost() + b.getBestCost() + 1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
+                caseInstructions.addAll(b.getBestInstructions());
+                caseInstructions.addAll(m.getBestInstructions());
+                caseInstructions.add(new ASMMov(temp1, temp2)); // move the temp mem into ASMMOV
+                curBestInstructions = caseInstructions;
+                curBestCost = m.getBestCost() + 1;
+            }
+        }
+        instrs.addAll(curBestInstructions);
+        return curBestCost;
     }
+
+    private ASMAbstractReg munchIRExpr(IRExpr e) {
+        IRNode_c top = (IRNode_c) e;
+        if (top.visited){
+            System.out.println("not here");
+            return top.tempName;
+        }
+        if (e instanceof IRBinOp binop) {
+            return munchBinop(binop);
+        }else if (e instanceof IRTemp t){
+            return munchTemp(t);
+        }else if (e instanceof IRConst cons){
+            return munchIRConst(cons);
+        }else if (e instanceof IRName name){ // cheese way of doing it
+            return munchIRName(name);
+        }else if (e instanceof IRMem mem){
+            return munchIRMem(mem);
+        }else{
+            throw new InternalCompilerError("TODO EXPR not tested");
+        }
+    }
+    private ASMTempExpr munchIRName(IRName name) {
+        name.visited = true;
+        name.bestCost = 0;
+        name.bestInstructions = new ArrayList<>();
+        return new ASMTempExpr(name.name());
+    }
+    private ASMTempExpr munchIRMem(IRMem mem) {
+        throw new InternalCompilerError("TODO MEM");
+//        return null;
+    }
+    private ASMTempExpr munchTemp(IRTemp temp) {
+        temp.visited = true;
+        temp.bestCost = 0;
+        temp.bestInstructions = new ArrayList<>();
+        return new ASMTempExpr(temp.name());
+    }
+    private ASMTempExpr munchIRConst(IRConst c){
+        c.visited = true;
+        c.bestCost = 1;
+        String extraTemp = nxtTemp();
+        ArrayList<ASMInstruction> extraInstructions = new ArrayList<>();
+        extraInstructions.add(new ASMMov(new ASMTempExpr(extraTemp),new ASMConstExpr(c.value())));
+        c.bestInstructions = extraInstructions;
+        return new ASMTempExpr(extraTemp);
+    }
+    private ASMTempExpr munchBinop(IRBinOp binop) {
+        // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
+        ASMAbstractReg l1 = munchIRExpr(binop.left());
+        ASMAbstractReg l2 = munchIRExpr(binop.right());
+        ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
+        ArrayList<ASMInstruction> instrs = new ArrayList<>();
+        instrs.addAll(binop.left().getBestInstructions());
+        instrs.addAll(binop.right().getBestInstructions());
+        switch (binop.opType()) {
+            case ADD:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMAdd(destTemp, l2));
+                break;
+            case MUL:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMIMul(destTemp, l2));
+                break;
+            case DIV:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMArg2(ASMOpCodes.IDIV, destTemp, l2));
+                break;
+            case SUB:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
+                break;
+            case HMUL:
+                instrs.add(new ASMArg2(ASMOpCodes.IMUL, l1, l2));
+                instrs.add(new ASMMov(l1, new ASMRegisterExpr("rax")));
+                break;
+            case ARSHIFT:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMSar(destTemp, l2));
+                break;
+            case EQ:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMCmp(destTemp, l2));
+                //sete al
+                //and al, 1
+
+                break;
+            case NEQ:
+                break;
+            case LT:
+                break;
+            case ULT:
+                break;
+            case GT:
+                break;
+            case LEQ:
+                break;
+            case GEQ:
+                break;
+            default:
+        }
+        return destTemp;
+    }
+
+
+
 
     public ArrayList<ASMInstruction> visit(IRSeq node){
         ArrayList<ASMInstruction> instructions = new ArrayList<ASMInstruction>();
@@ -758,4 +788,18 @@ public class AbstractASMVisitor {
 //        }else{
 //        index++;
 //        }
+//        }
+
+//        if (dest instanceof IRTemp t1 && source instanceof IRTemp t2){ // random case for testing atm
+//            functionToTemps.get(curFunction).add(t1.name());
+//            functionToTemps.get(curFunction).add(t2.name());
+//            instructions.add(new ASMMov(new ASMTempExpr(t1.name()),new ASMTempExpr(t2.name())));
+//        }else if (dest instanceof IRTemp t1 && source instanceof IRConst x){
+//            functionToTemps.get(curFunction).add(t1.name());
+//            boolean isInt = x.value() <= Integer.MAX_VALUE && x.value() >= Integer.MIN_VALUE;
+//            ASMArg2 instruction = (isInt) ? new ASMMov(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()))
+//                    : new ASMMovabs(new ASMTempExpr(t1.name()),new ASMConstExpr(x.value()));
+//            instructions.add(instruction);
+//        }else{
+//            throw new InternalCompilerError("TODO Other moves");
 //        }

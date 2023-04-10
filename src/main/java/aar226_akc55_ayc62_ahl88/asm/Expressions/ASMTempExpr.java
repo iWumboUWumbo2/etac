@@ -1,7 +1,7 @@
 package aar226_akc55_ayc62_ahl88.asm.Expressions;
 
 
-public class ASMTempExpr extends ASMExpr {
+public class ASMTempExpr extends ASMAbstractReg{
 
     private String name;
     public ASMTempExpr(String tempLabel){

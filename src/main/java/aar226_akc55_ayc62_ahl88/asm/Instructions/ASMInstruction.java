@@ -53,6 +53,7 @@ public abstract class ASMInstruction {
             case TEST -> "test ";
             case CMP -> "cmp ";
             case COMMENT -> "";
+            case SETE -> "sete";
         };
     }
     public String exprASMToString(ASMExpr expr, HashMap<String, Integer> location){

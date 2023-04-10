@@ -4,6 +4,7 @@ public enum ASMOpCodes{
         // 0 arg
         RET, // when you finish executing function do ret.
         LEAVE,
+
         // 1 arg
         JMP, // jump always
         JE, // jump if equal a == b
@@ -20,6 +21,7 @@ public enum ASMOpCodes{
         IDIV, // (rdx.rax) / divisor, stores quotient in rax, stores remainder in rdx
         POP,
         PUSH,
+        SETE, //sets its argument to 1 if the zero flag is set or to 0 otherwise.
 
         // 2 arg
         ENTER,
