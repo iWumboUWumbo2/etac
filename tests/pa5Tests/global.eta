@@ -1,3 +1,6 @@
+use io;
+use conv;
+
 a:int = 5
 b:int = 24
 

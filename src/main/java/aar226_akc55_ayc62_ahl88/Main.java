@@ -3,6 +3,7 @@ package aar226_akc55_ayc62_ahl88;
 import aar226_akc55_ayc62_ahl88.Errors.EtaError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
+import aar226_akc55_ayc62_ahl88.asm.ASMData;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
@@ -413,7 +414,7 @@ public class Main {
         }
     }
 
-    private static final String INDENT_SFILE = "    ";
+    public static final String INDENT_SFILE = "    ";
     private static void asmGenFile(String filename, boolean shouldWrite) {
         String zhenFilename = getZhenFilename(filename);
 
@@ -421,17 +422,17 @@ public class Main {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
-            System.out.println(comp);
+//            System.out.println(comp.printInstructions());
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
-//            for (ASMInstruction instr: postAlloc){
-//                System.out.println(instr);
-//            }
             StringWriter out = new StringWriter();
             out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");
             out.write(INDENT_SFILE+".intel_syntax noprefix\n");
             out.write(INDENT_SFILE+".text\n");
             out.write(INDENT_SFILE+".globl  _Imain_paai\n");
             out.write(INDENT_SFILE+".type	_Imain_paai, @function\n");
+            for (ASMData data: comp.getGlobals()){
+                out.write(data.toString());
+            }
             for (ASMInstruction instr: postAlloc){
                 if (!(instr instanceof ASMLabel)){
                     out.write(INDENT_SFILE + instr + '\n');

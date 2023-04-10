@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.asm.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
+import aar226_akc55_ayc62_ahl88.asm.ASMData;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
@@ -31,9 +32,9 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     public ArrayList<ASMInstruction> visit(ASMCompUnit compUnit){
         functionSignatures = compUnit.getAllFunctionsSigs();
         ArrayList<ASMInstruction> total = new ArrayList<>();
-        for (Map.Entry<String, long[]> global: compUnit.getGlobals().entrySet()){
-            System.out.println("doing Global");
-        }
+//        for (ASMData d: compUnit.getGlobals()){
+//            System.out.println("doing Global");
+//        }
         for (Map.Entry<String, ArrayList<ASMInstruction>> function: compUnit.getFunctionToInstructionList().entrySet()){
             currentFunction = function.getKey();
             functionToTempsToStackOffset.put(currentFunction,new HashMap<>());

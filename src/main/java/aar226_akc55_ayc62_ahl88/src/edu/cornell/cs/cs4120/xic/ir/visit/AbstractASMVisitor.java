@@ -183,12 +183,13 @@ public class AbstractASMVisitor {
         return instructions;
     }
     public ASMCompUnit visit(IRCompUnit node) {
-        HashMap<String, long[]> globals = new HashMap<>();
+        HashSet<ASMData> globals = new HashSet<>();
         HashMap<String, ArrayList<ASMInstruction>> functionToInstructionList = new HashMap<>();
         HashMap<String, HashSet<String>> functionToTempsMapping = new HashMap<>();
         for (IRData data : node.dataMap().values()) {
             ASMLabel data_label = new ASMLabel(data.name());
-//            ASMData data_instr = new ASMData(getType(data.name()), new ASMConstExpr(data.data()));
+            ASMData data_instr = new ASMData(data_label, data.data());
+            globals.add(data_instr);
             // add to ASMCOMP UNIT GLOBAL
         }
 

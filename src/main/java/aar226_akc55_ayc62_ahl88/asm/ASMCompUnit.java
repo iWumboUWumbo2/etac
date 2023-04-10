@@ -10,13 +10,13 @@ import java.util.Map;
 
 public class ASMCompUnit {
 
-    HashMap<String, long[]> globals;
+    HashSet<ASMData> globals;
     HashMap<String, ArrayList<ASMInstruction>> functionToInstructionList;
     HashMap<String, HashSet<String>> functionToTempsMapping;
 
     HashMap<String, Pair<Integer,Integer>> allFunctionsSigs;
 
-    public ASMCompUnit(HashMap<String, long[]> globals, HashMap<String, ArrayList<ASMInstruction>> functions,
+    public ASMCompUnit(HashSet<ASMData> globals, HashMap<String, ArrayList<ASMInstruction>> functions,
     HashMap<String, HashSet<String>> functionToTemps, HashMap<String, Pair<Integer,Integer>> funcs){
         this.globals = globals;
         functionToInstructionList = functions;
@@ -28,7 +28,7 @@ public class ASMCompUnit {
         return functionToInstructionList;
     }
 
-    public HashMap<String, long[]> getGlobals() {
+    public HashSet<ASMData> getGlobals() {
         return globals;
     }
 
@@ -40,11 +40,23 @@ public class ASMCompUnit {
         return allFunctionsSigs;
     }
 
+
+    public String printInstructions(){
+        StringBuilder out = new StringBuilder("ASMCompUnit{" + "globals=");
+        out.append("functionToInstructionList=");
+        for (Map.Entry<String, ArrayList<ASMInstruction>> kv: functionToInstructionList.entrySet()){
+            out.append(kv.getKey()).append(":");
+            for (ASMInstruction instr: kv.getValue()){
+                out.append(instr).append("\n");
+            }
+        }
+        return out.toString();
+    }
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder("ASMCompUnit{" + "globals=");
-        for (Map.Entry<String, long[]> kv: globals.entrySet()){
-            out.append(kv.toString());
+        for (ASMData data: globals){
+            out.append(data);
         }
         out.append("\n functionToInstructionList=");
         for (Map.Entry<String, ArrayList<ASMInstruction>> kv: functionToInstructionList.entrySet()){

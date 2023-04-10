@@ -2,11 +2,6 @@ package aar226_akc55_ayc62_ahl88.visitors;
 
 import aar226_akc55_ayc62_ahl88.Main;
 import aar226_akc55_ayc62_ahl88.OptimizationTypes;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMConstExpr;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
-import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.Use;
@@ -34,7 +29,6 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import org.apache.commons.text.StringEscapeUtils;
 
-import javax.naming.Name;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -784,7 +778,6 @@ public class IRVisitor implements Visitor<IRNode>{
             // Add Single Global Decls to the DATA MAP USE FUNC BELOW
             if (definition instanceof Globdecl) {
                 compUnit.appendData(initSingleGlobal((Globdecl) definition));
-
             }
             // Add multi global decls to the DATA map use the Func Below
             else if (definition instanceof MultiGlobalDecl) {
