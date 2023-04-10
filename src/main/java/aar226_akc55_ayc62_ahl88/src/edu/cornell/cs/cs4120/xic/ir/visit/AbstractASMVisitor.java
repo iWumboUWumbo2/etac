@@ -78,6 +78,7 @@ public class AbstractASMVisitor {
     private ASMTempExpr munchIRExpr(IRExpr e, ArrayList<ASMInstruction> instrs) {
         IRNode_c top = (IRNode_c) e;
         if (top.visited){
+            System.out.println("not here");
             instrs.addAll(top.bestInsructions);
             return top.tempName;
         }
@@ -89,6 +90,8 @@ public class AbstractASMVisitor {
             return munchIRConst(cons,instrs);
         }else if (e instanceof IRName name){ // cheese way of doing it
             return munchIRName(name,instrs);
+        }else if (e instanceof IRMem mem){
+            return munchIRMem(mem,instrs);
         }else{
             throw new InternalCompilerError("TODO EXPR not tested");
         }
@@ -100,7 +103,8 @@ public class AbstractASMVisitor {
         return new ASMTempExpr(name.name());
     }
     private ASMTempExpr munchIRMem(IRMem mem, ArrayList<ASMInstruction> instrs) {
-        return null;
+        throw new InternalCompilerError("TODO MEM");
+//        return null;
     }
     private ASMTempExpr munchTemp(IRTemp temp, ArrayList<ASMInstruction> instrs) {
         temp.visited = true;
@@ -123,23 +127,27 @@ public class AbstractASMVisitor {
         ASMTempExpr l1 = munchIRExpr(binop.left(), instrs);
         ASMTempExpr l2 = munchIRExpr(binop.right(), instrs);
         ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-
         switch (binop.opType()) {
             case ADD:
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMAdd(l1, l2));
+                break;
             case MUL:
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMIMul(destTemp, l2));
+                break;
             case DIV:
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMArg2(ASMOpCodes.IDIV, destTemp, l2));
+                break;
             case SUB:
                 instrs.add(new ASMMov(destTemp, l1));
                 instrs.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
+                break;
             case HMUL:
                 instrs.add(new ASMArg2(ASMOpCodes.IMUL, l1, l2));
                 instrs.add(new ASMMov(l1, new ASMRegisterExpr("rax")));
+                break;
             default:
         }
         return l1;
