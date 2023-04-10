@@ -149,6 +149,24 @@ public class AbstractASMVisitor {
                 instrs.add(new ASMArg2(ASMOpCodes.IMUL, l1, l2));
                 instrs.add(new ASMMov(l1, new ASMRegisterExpr("rax")));
                 break;
+            case ARSHIFT:
+                instrs.add(new ASMMov(destTemp, l1));
+                instrs.add(new ASMSar(destTemp, l2));
+                break;
+            case EQ:
+                break;
+            case NEQ:
+                break;
+            case LT:
+                break;
+            case ULT:
+                break;
+            case GT:
+                break;
+            case LEQ:
+                break;
+            case GEQ:
+                break;
             default:
         }
         return destTemp;
