@@ -430,15 +430,17 @@ public class Main {
             out.write(INDENT_SFILE+".text\n");
             out.write(INDENT_SFILE+".globl  _Imain_paai\n");
             out.write(INDENT_SFILE+".type	_Imain_paai, @function\n");
-            for (ASMData data: comp.getGlobals()){
-                out.write(data.toString());
-            }
             for (ASMInstruction instr: postAlloc){
                 if (!(instr instanceof ASMLabel)){
                     out.write(INDENT_SFILE + instr + '\n');
                 }else{
                     out.write(instr+"\n");
                 }
+            }
+            out.write("\n");
+            out.write(INDENT_SFILE+".data\n");
+            for (ASMData data: comp.getGlobals()){
+                out.write(data.toString());
             }
             if (shouldWrite) {
                 writeOutputAsm(filename, out.toString(), "s");

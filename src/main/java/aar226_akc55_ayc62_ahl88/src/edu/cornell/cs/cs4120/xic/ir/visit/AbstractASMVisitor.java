@@ -332,9 +332,11 @@ public class AbstractASMVisitor {
         // MEM BINOP
         } else if (dest instanceof IRMem m && source instanceof IRBinOp b) {
             tileMemBinop(m, b, instructions);
-        } else if (dest instanceof IRMem m && source instanceof IRName n) {
-            //tileMemName()
-        } else {
+        }
+//        else if (dest instanceof IRMem m && source instanceof IRName n) {
+//            //tileMemName()
+//        }
+        else {
             System.out.println(node);
             throw new InternalCompilerError("TODO Other moves");
         }
@@ -500,11 +502,11 @@ public class AbstractASMVisitor {
             throw new InternalCompilerError("TODO EXPR not tested");
         }
     }
-    private ASMTempExpr munchIRName(IRName name) {
+    private ASMNameExpr munchIRName(IRName name) {
         name.visited = true;
         name.bestCost = 0;
         name.bestInstructions = new ArrayList<>();
-        ASMTempExpr res = new ASMTempExpr(name.name());
+        ASMNameExpr res = new ASMNameExpr(name.name());
         name.tempName = res;
         return res;
     }

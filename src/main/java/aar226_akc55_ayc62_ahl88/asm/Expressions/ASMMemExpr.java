@@ -20,6 +20,9 @@ public class ASMMemExpr extends ASMExpr{
 //        if (mem == null) {
 //            throw new InternalCompilerError("mem should not be null");
 //        }
+//        if (mem instanceof  ASMNameExpr name){
+//            return "QWORD PTR " + name + "[rip] ";
+//        }
         return "QWORD PTR [ " + mem +" ]";
     }
 }

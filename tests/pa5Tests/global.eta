@@ -2,8 +2,8 @@ use io;
 use conv;
 
 a:int = 5
-//b:int = 24
+b:int = 24
 main(args:int[][]){
     println(unparseInt(a));
-    //println(unparseInt(b));
+    println(unparseInt(b));
 }

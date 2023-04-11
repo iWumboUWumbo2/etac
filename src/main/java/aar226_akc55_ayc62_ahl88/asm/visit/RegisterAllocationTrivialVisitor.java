@@ -181,6 +181,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             postInstruction.add(new ASMMov(stackLoc,usedReg));
             curDest = usedReg;
         }else if (left instanceof ASMMemExpr mem){ // Mem
+//            System.out.println("im in mem");
             // find the memory locations of the temps inside of mem pass in current avail Regs
             ArrayList<ASMExpr> expressions = flattenMem(mem);
             HashMap<String, String> tempToReg= new HashMap<>();
