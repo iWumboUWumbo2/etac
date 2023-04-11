@@ -11,55 +11,86 @@ main(args : int[][]) {
     z : int = x + y;
     println(unparseInt(z));
 
-    // MUL
-    z = x * y;
-    println(unparseInt(z));
+// MUL
+z = x * y;
+println(unparseInt(z));
 
-    // DIV:
-    z = x / y;
-    println(unparseInt(z));
+// DIV:
+z = x / y;
+println(unparseInt(z));
 
-    // SUB:
-    z = x - y;
-    println(unparseInt(z));
+// SUB:
+z = x - y;
+println(unparseInt(z));
 
-    // HMUL:
-    z = x *>> y;
-    println(unparseInt(z));
+// HMUL:
+z = x *>> y;
+println(unparseInt(z));
 
-    // MOD:
-    z = x % y;
-    println(unparseInt(z));
+// MOD:
+z = x % y;
+println(unparseInt(z));
 
-    // AND:
-    c : bool = a && b;
-    println(unparseInt(c));
+// AND:
+c : bool = a & b;
+if (c){
+    println("And true: c");
+}else{
+    println("And false: c");
+}
 
-    // OR:
-    c = a || b;
-    println(unparseInt(c));
+// OR:
+c = a | b;
+if (c){
+    println("Or True: c");
+}else{
+    println("Or False: c");
+}
+// EQ:
+c = x == y
+if (c){
+    println("EQ True: c");
+}else{
+    println("EQ False: c");
+}
 
-    // EQ:
-    c = x == y
-    println(unparseInt(c));
+// NEQ:
+c = x != y
+if (c){
+    println("NEQ True: c");
+}else{
+    println("NEQ False: c");
+}
 
-    // NEQ:
-    c = x != y
-    println(unparseInt(c));
+// LT:
+c = x < y
+if (c){
+    println("LT True: c");
+}else{
+    println("LT False: c");
+}
+// GEQ:
+c = x >= y
+if (c){
+    println("GEQ True: c");
+}else{
+    println("GEQ False: c");
+}
 
-    // LT:
-    c = x < y
-    println(unparseInt(c));
+// GT:
+c = x > y
+if (c){
+    println("GT True: c");
+}else{
+    println("GT False: c");
+}
 
-    // GT:
-    c = x > y
-    println(unparseInt(c));
+// LEQ:
+c = x <= y
+if (c){
+    println("LEQ True: c");
+}else{
+    println("LEQ False: c");
+}
 
-    // LEQ:
-    c = x <= y
-    println(unparseInt(c));
-
-    // GEQ:
-    c = x >= y
-    println(unparseInt(c));
 }

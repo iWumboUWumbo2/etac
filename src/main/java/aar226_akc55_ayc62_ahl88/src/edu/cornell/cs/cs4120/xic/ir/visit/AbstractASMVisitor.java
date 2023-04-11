@@ -583,6 +583,7 @@ public class AbstractASMVisitor {
                             binop.right().getBestCost() + 3 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
                                 binop.right().getBestCost() + 3;
+                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                         curBestInstructions.add(new ASMIDiv(l2));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
@@ -613,6 +614,7 @@ public class AbstractASMVisitor {
                             binop.right().getBestCost() + 3 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
                                 binop.right().getBestCost() + 3;
+                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                         curBestInstructions.add(new ASMIDiv(l2));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));

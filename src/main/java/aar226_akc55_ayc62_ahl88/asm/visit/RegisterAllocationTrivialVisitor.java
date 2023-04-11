@@ -101,7 +101,6 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             }else{
                 res.add(call);
             }
-
         }else{
             ASMExpr argument = node.getLeft();
             if (argument instanceof ASMTempExpr temp){ // migrate temp to stack?
@@ -137,11 +136,16 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 
                 ASMExpr curSrc = isIMMTooBig(cons,res,availReg);
                 res.add(new ASMMov(usedReg,curSrc));
-            }
-            else{ // no change instruction Jumps
+            } else{ // no change instruction Jumps
                 res.add(node);
             }
         }
+//        System.out.println("Before");
+//        System.out.println(node);
+//        System.out.println("AFTER");
+//        for (ASMInstruction instr: res){
+//            System.out.println(instr);
+//        }
         return res;
     }
 
@@ -342,7 +346,8 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             }else{
                 throw new InternalCompilerError("nothing else should be left for IMUL on the top level");
             }
-            if (right instanceof ASMTempExpr temp) {
+            if (mid instanceof ASMTempExpr temp) {
+
                 // get the stack location through mapping
                 String curReg = availReg.get(availReg.size()-1);
                 availReg.remove(availReg.size()-1);
@@ -351,9 +356,10 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                 ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
                 res.add(new ASMMov(usedReg,stackLoc));
                 curMiddle = usedReg;
+//                System.out.println(curMiddle);
                 // Move temp into reg2 cause temp is a stack location
                 // use reg 2 for right
-            } else if (right instanceof ASMMemExpr mem) { // can leave right side as mem
+            } else if (mid instanceof ASMMemExpr mem) { // can leave right side as mem
                 ArrayList<ASMExpr> expressions = flattenMem(mem);
                 HashMap<String, String> tempToReg= new HashMap<>();
                 for (ASMExpr expr: expressions){
@@ -371,10 +377,10 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                 curMiddle = tempsToRegs(mem,tempToReg);
                 // Move the temp in mem (if exist) into reg2 cause temp is a stack location
                 // Move the tempSecond in mem (if exist) into reg3 cause temp is a stack location
-            } else if (right instanceof ASMConstExpr num) {
+            } else if (mid instanceof ASMConstExpr num) {
                 throw new InternalCompilerError("IMUL cant have immediate as second");
             } else { // ASM Register
-                curMiddle = right;
+                curMiddle = mid;
             }
 
         }else{
@@ -382,6 +388,12 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         }
         res.add(new ASMIMul(curDest, curMiddle,curRight));
         res.addAll(postInstruction);
+//        System.out.println("Before");
+//        System.out.println(node);
+//        System.out.println("AFTER");
+//        for (ASMInstruction instr: res){
+//            System.out.println(instr);
+//        }
         return res;
     }
 
