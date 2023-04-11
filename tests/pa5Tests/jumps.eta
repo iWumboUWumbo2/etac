@@ -1,23 +1,26 @@
+use io
+use conv
 main(args : int[][]) {
     x : int = 5
-    z : int = 4;
+    z : int = 5;
 
-    if (x == z) { // JE
-        x = x + 1;
+    if !!(5 == z) { // JE
+        println("JE");
     }
-    if (x != z) { // JNE
-        x = x + 1;
+    if !!(1 != z) { // JNE
+        println("JNE");
     }
-    if (x < z) { // JL
-        x = x + 1;
+    if !!(1 < x) { // JL
+        println("JL");
     }
-    if (x <= z) { // JLE
-        x = x + 1;
+    if !!(1 <= z) { // JLE
+        println("JLE");
     }
-    if (x > z) { // JG
-        x = x + 1;
+    if !!(6 > z) { // JG
+        println("JG");
     }
-    if (x >= z) { // JGE
-        x = x + 1;
+    if (7 >= z) { // JGE
+        println("JGE");
     }
+
 }

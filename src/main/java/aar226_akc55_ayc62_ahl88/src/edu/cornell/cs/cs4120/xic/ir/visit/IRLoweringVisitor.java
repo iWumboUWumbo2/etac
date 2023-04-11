@@ -416,7 +416,21 @@ public class IRLoweringVisitor extends IRVisitor {
                     String tlabel = cjmp.trueLabel();
                     String flabel = cjmp.falseLabel();
                     if (tlabel.equals(il.name())){
-                        IRBinOp newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
+                        IRExpr newCond;
+                        if (cjmp.cond() instanceof IRBinOp inner){
+                            if (inner.opType() != IRBinOp.OpType.XOR) {
+                                newCond = inner.negate();
+                            }else if (inner.opType() == IRBinOp.OpType.XOR && inner.left() instanceof IRConst c && (c.value() == 1L)){
+                                newCond = inner.right();
+                            }else if (inner.opType() == IRBinOp.OpType.XOR && inner.right() instanceof IRConst c && (c.value() == 1L)){
+                                newCond = inner.left();
+                            }else{
+                                newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
+                            }
+                        }else{
+                            newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
+                        }
+//                        newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
                         IRCJump newCJump = new IRCJump(newCond, flabel,null);
                         labelToNumber.put(tlabel, labelToNumber.get(tlabel)-1);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);

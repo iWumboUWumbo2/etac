@@ -33,7 +33,8 @@ public class IRBinOp extends IRExpr_c {
         ULT,
         GT,
         LEQ,
-        GEQ;
+        GEQ,
+        UGE;
 
         @Override
         public String toString() {
@@ -76,6 +77,8 @@ public class IRBinOp extends IRExpr_c {
                     return "LEQ";
                 case GEQ:
                     return "GEQ";
+                case UGE:
+                    return "UGE";
             }
             throw new InternalCompilerError("Unknown op type");
         }
@@ -158,45 +161,20 @@ public class IRBinOp extends IRExpr_c {
         right.printSExp(p);
         p.endList();
     }
-
-    //    public IRExpr negate() {
-    //        IRBinOp expr = (IRBinOp) copy();
-    //        switch (type) {
-    //        case LT:
-    //            expr.type = OpType.GE;
-    //            break;
-    //        case GT:
-    //            expr.type = OpType.LE;
-    //            break;
-    //        case LE:
-    //            expr.type = OpType.GT;
-    //            break;
-    //        case GE:
-    //            expr.type = OpType.LT;
-    //            break;
-    //        case ULT:
-    //            expr.type = OpType.UGE;
-    //            break;
-    //        case UGT:
-    //            expr.type = OpType.ULE;
-    //            break;
-    //        case ULE:
-    //            expr.type = OpType.UGT;
-    //            break;
-    //        case UGE:
-    //            expr.type = OpType.ULT;
-    //            break;
-    //        case EQ:
-    //            expr.type = OpType.NEQ;
-    //            break;
-    //        case NEQ:
-    //            expr.type = OpType.EQ;
-    //            break;
-    //        default:
-    //            return super.negate();
-    //        }
-    //        return expr;
-    //    }
+    public IRBinOp negate() {
+        IRBinOp expr = new IRBinOp(type,left,right);
+        switch (type) {
+            case LT -> expr.type = OpType.GEQ;
+            case GT -> expr.type = OpType.LEQ;
+            case LEQ -> expr.type = OpType.GT;
+            case GEQ -> expr.type = OpType.LT;
+            case ULT -> expr.type = OpType.UGE;
+            case UGE -> expr.type = OpType.ULT;
+            case EQ -> expr.type = OpType.NEQ;
+            case NEQ -> expr.type = OpType.EQ;
+        }
+        return expr;
+    }
     //
     //    public IRBinOp swapArgs() {
     //        IRBinOp expr = (IRBinOp) copy();
