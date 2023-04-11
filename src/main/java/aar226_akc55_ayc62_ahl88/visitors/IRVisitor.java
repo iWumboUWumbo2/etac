@@ -490,7 +490,7 @@ public class IRVisitor implements Visitor<IRNode>{
         for (Expr param: node.getParamList()){
             paramListIR.add(param.accept(this));
         }
-        return new IRCallStmt(func,1L,paramListIR);
+        return new IRCallStmt(func,0L,paramListIR);
     }
 
     @Override
