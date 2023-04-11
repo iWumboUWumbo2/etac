@@ -526,7 +526,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String temp = nxtTemp();
         IRMove extraMove = new IRMove(new IRTemp(temp),right);
         IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
-                new IRESeq(new IRExp(right),new IRTemp("_RV1")): new IRTemp(temp);
+                new IRTemp("_RV1"): new IRTemp(temp);
 
         if (node.getDecl() instanceof AnnotatedTypeDecl atd){
             if (atd.type.isArray()){
