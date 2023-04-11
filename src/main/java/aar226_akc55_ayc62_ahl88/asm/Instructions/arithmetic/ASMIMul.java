@@ -13,7 +13,11 @@ public class ASMIMul extends ASMArg3 {
 
     // dest = dest * src
     public ASMIMul(ASMExpr dest, ASMExpr src) {
-        super(ASMOpCodes.IMUL, dest, dest, src);
+        super(ASMOpCodes.IMUL, dest, src, null);
+    }
+
+    public ASMIMul(ASMExpr src) {
+        super(ASMOpCodes.IMUL, src, null, null);
     }
 
 }
