@@ -373,8 +373,8 @@ public class AbstractASMVisitor {
         }else { // catch all case
             ASMAbstractReg temp = munchIRExpr(m);
             if (m.getBestCost() + 1 < curBestCost){
-                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
-                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), temp)); // move the temp mem into ASMMOV
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.expr().getBestInstructions()); // instructions for Mem
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(m.expr().getAbstractReg()))); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m.getBestCost() + 1;
             }
@@ -411,7 +411,7 @@ public class AbstractASMVisitor {
         }else { // catch all case
             ASMAbstractReg temp = munchIRExpr(m); // side effects
             if (m.getBestCost() + 1 < curBestCost){
-                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.expr().getBestInstructions()); // instructions for Mem
                 caseInstructions.add(new ASMMov( new ASMMemExpr(m.expr().getAbstractReg()),new ASMTempExpr(t.name()))); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m.getBestCost() + 1;
@@ -431,9 +431,9 @@ public class AbstractASMVisitor {
             ASMAbstractReg rightTemp = munchIRExpr(m2);
             if (m2.getBestCost() + m1.getBestCost() +  1 < curBestCost){
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
-                caseInstructions.addAll(m2.getBestInstructions());
-                caseInstructions.addAll(m1.getBestInstructions());
-                caseInstructions.add(new ASMMov(leftTemp, rightTemp)); // move the temp mem into ASMMOV
+                caseInstructions.addAll(m2.expr().getBestInstructions());
+                caseInstructions.addAll(m1.expr().getBestInstructions());
+                caseInstructions.add(new ASMMov(new ASMMemExpr(m1.expr().getAbstractReg()), new ASMMemExpr(m2.expr().getAbstractReg()))); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m2.getBestCost() + m1.getBestCost() +  1;
             }
@@ -450,8 +450,8 @@ public class AbstractASMVisitor {
         }else { // catch all case
             ASMAbstractReg temp = munchIRExpr(m);
             if (m.getBestCost() + 1 < curBestCost){
-                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
-                caseInstructions.add(new ASMMov(temp, new ASMConstExpr(c.value()))); // move the temp mem into ASMMOV
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.expr().getBestInstructions()); // instructions for Mem
+                caseInstructions.add(new ASMMov(new ASMMemExpr(m.expr().getAbstractReg()), new ASMConstExpr(c.value()))); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m.getBestCost() + 1;
             }
@@ -471,8 +471,8 @@ public class AbstractASMVisitor {
             if (m.getBestCost() + b.getBestCost() + 1 < curBestCost){
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
                 caseInstructions.addAll(b.getBestInstructions());
-                caseInstructions.addAll(m.getBestInstructions());
-                caseInstructions.add(new ASMMov(temp1, temp2)); // move the temp mem into ASMMOV
+                caseInstructions.addAll(m.expr().getBestInstructions());
+                caseInstructions.add(new ASMMov(new ASMMemExpr(m.expr().getAbstractReg()), temp2)); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m.getBestCost() + 1;
             }
@@ -573,7 +573,7 @@ public class AbstractASMVisitor {
                         curBestCost = binop.left().getBestCost() +
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
-                        curBestInstructions.add(new ASMAdd(l1, l2));
+                        curBestInstructions.add(new ASMAdd(destTemp, l2));
                     }
                     break;
                 case MUL:
