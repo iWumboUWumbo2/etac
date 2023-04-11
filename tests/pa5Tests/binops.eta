@@ -1,0 +1,9 @@
+use io
+use conv
+
+main(args:int[][]) {
+    a:bool = 4 == 5
+    b:bool = a & true;
+    c:bool = b | a;
+
+}

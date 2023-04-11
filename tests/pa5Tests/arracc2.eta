@@ -2,7 +2,7 @@ single():int{
     return 1
 }
 
-array() : int {
+array() : int[] {
     y : int[] = {1,2,3,4}
     return y
 }

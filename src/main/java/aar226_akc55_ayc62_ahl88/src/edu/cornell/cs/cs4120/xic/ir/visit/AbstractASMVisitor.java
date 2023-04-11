@@ -332,7 +332,9 @@ public class AbstractASMVisitor {
         // MEM BINOP
         } else if (dest instanceof IRMem m && source instanceof IRBinOp b) {
             tileMemBinop(m, b, instructions);
-        }else {
+        } else if (dest instanceof IRMem m && source instanceof IRName n) {
+            //tileMemName()
+        } else {
             System.out.println(node);
             throw new InternalCompilerError("TODO Other moves");
         }
@@ -474,6 +476,10 @@ public class AbstractASMVisitor {
         return curBestCost;
     }
 
+    public long tileMemName(IRMem m, IRName n, ArrayList<ASMInstruction> instrs) {
+        return 0;
+    }
+
     private ASMAbstractReg munchIRExpr(IRExpr e) {
         IRNode_c top = (IRNode_c) e;
         if (top.visited){
@@ -506,15 +512,24 @@ public class AbstractASMVisitor {
         long curBestCost = Long.MAX_VALUE;
         ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
         ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-        if (false){ // other patterns;
 
-        }else { // catch all case
+        if (mem.expr() instanceof IRName name){ // other patterns;
+            if (mem.expr().getBestCost() + 1 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(mem.expr().getBestInstructions()); // instructions for Mem
+                System.out.println(name.name());
+                caseInstructions.add(new ASMMov(destTemp, new ASMMemExpr(new ASMNameExpr(name.name()))));
+                System.out.println(caseInstructions);
+                curBestInstructions = caseInstructions;
+                curBestCost = mem.expr().getBestCost() + 1;
+            }
+        } else
+        { // catch all case
             ASMAbstractReg munched = munchIRExpr(mem.expr());
-            if ( mem.expr().getBestCost() +1 < curBestCost){
+            if (mem.expr().getBestCost() + 1 < curBestCost){
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(mem.expr().getBestInstructions()); // instructions for Mem
                 caseInstructions.add(new ASMMov(destTemp,new ASMMemExpr(munched)));
                 curBestInstructions = caseInstructions;
-                curBestCost = mem.expr().getBestCost() +1;
+                curBestCost = mem.expr().getBestCost() + 1;
             }
         }
         mem.visited = true;
