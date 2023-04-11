@@ -139,7 +139,7 @@ public class AbstractASMVisitor {
                 if (c.left() instanceof IRConst cons){
                     instructions.addAll(c.right().getBestInstructions());
                     instructions.add(new ASMMov(destTemp,tright));
-                    instructions.add(new ASMXor(new ASMConstExpr(cons.value()),destTemp));
+                    instructions.add(new ASMXor(destTemp,new ASMConstExpr(cons.value())));
                 }else if (c.right() instanceof  IRConst cons){
                     instructions.addAll(c.left().getBestInstructions());
                     instructions.add(new ASMMov(destTemp,tleft));
@@ -332,15 +332,16 @@ public class AbstractASMVisitor {
         // MEM BINOP
         } else if (dest instanceof IRMem m && source instanceof IRBinOp b) {
             tileMemBinop(m, b, instructions);
-        } else {
+        }else {
+            System.out.println(node);
             throw new InternalCompilerError("TODO Other moves");
         }
-//        System.out.println("before IRSTMT: ");
-//        System.out.println(node);
-//        System.out.println("After IRSTMT: ");
-//        for (ASMInstruction instrs: instructions){
-//            System.out.println(instrs);
-//        }
+        System.out.println("before IRSTMT: ");
+        System.out.println(node);
+        System.out.println("After IRSTMT: ");
+        for (ASMInstruction instrs: instructions){
+            System.out.println(instrs);
+        }
         return instructions;
     }
 
@@ -680,7 +681,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSete(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
                 case NEQ:
@@ -692,7 +693,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetne(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
                 case LT:
@@ -704,7 +705,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetl(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
                 case ULT:
@@ -716,7 +717,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetb(new ASMRegisterExpr("al")));
                         //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
                 case GT:
@@ -728,7 +729,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetg(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
                 case LEQ:
@@ -740,7 +741,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetle(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
                 case GEQ:
@@ -752,7 +753,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetge(new ASMRegisterExpr("al")));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
             }

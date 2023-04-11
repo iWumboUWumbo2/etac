@@ -331,6 +331,12 @@ public class IRLoweringVisitor extends IRVisitor {
     }
     // to do
     private boolean moveCommute(IRMove node){
+        if (!(node.source() instanceof IRESeq)){
+            return true;
+        }
+        if (node.target() instanceof IRMem mem && mem.expr() instanceof IRName){
+            return true;
+        }
         return false;
     }
     private IRStmt moveNaive(IRMem targ, IRExpr src){

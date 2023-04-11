@@ -66,3 +66,34 @@ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
     trappingrainwater.eta;
     validpalindrome.eta;
 }
+etac ("Test -target linux") "-libpath $(testpath) -target linux" {
+    ex01.eta;
+    ack.eta;
+    primes.eta;
+    arrmedian.eta;
+    bestTimeToBuyStock.eta;
+    binsearch.eta;
+    moveslikejagger.eta;
+    recursion1.eta;
+    recursion2.eta;
+    recursion3.eta;
+    stringweird.eta;
+    trappingrainwater.eta;
+    validpalindrome.eta;
+}
+
+etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
+    ex01.eta;
+    ack.eta;
+    primes.eta;
+    arrmedian.eta;
+    bestTimeToBuyStock.eta;
+    binsearch.eta;
+    moveslikejagger.eta;
+    recursion1.eta;
+    recursion2.eta;
+    recursion3.eta;
+    stringweird.eta;
+    trappingrainwater.eta;
+    validpalindrome.eta;
+}

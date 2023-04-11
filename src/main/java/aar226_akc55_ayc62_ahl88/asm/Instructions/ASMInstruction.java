@@ -57,7 +57,7 @@ public abstract class ASMInstruction {
             case JB -> "jb ";
             case SETB -> "setb ";
             case SETG -> "setg ";
-            case SETNE -> "setne";
+            case SETNE -> "setne ";
             case SETL -> "setl ";
             case SETGE -> "setge ";
             case SETLE -> "setle ";
