@@ -422,7 +422,7 @@ public class Main {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
-            System.out.println(comp.printInstructions());
+//            System.out.println(comp.printInstructions());
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             StringWriter out = new StringWriter();
             out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");

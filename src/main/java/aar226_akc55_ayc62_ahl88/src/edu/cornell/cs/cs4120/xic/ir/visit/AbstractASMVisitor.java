@@ -292,8 +292,8 @@ public class AbstractASMVisitor {
     }
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
-        if (jump.target() instanceof IRName) {
-            instructions.add(new ASMJumpAlways(new ASMNameExpr(jump.label())));
+        if (jump.target() instanceof IRName name) {
+            instructions.add(new ASMJumpAlways(new ASMNameExpr(name.name())));
         }
         return instructions;
     }
@@ -336,12 +336,12 @@ public class AbstractASMVisitor {
             System.out.println(node);
             throw new InternalCompilerError("TODO Other moves");
         }
-        System.out.println("before IRSTMT: ");
-        System.out.println(node);
-        System.out.println("After IRSTMT: ");
-        for (ASMInstruction instrs: instructions){
-            System.out.println(instrs);
-        }
+//        System.out.println("before IRSTMT: ");
+//        System.out.println(node);
+//        System.out.println("After IRSTMT: ");
+//        for (ASMInstruction instrs: instructions){
+//            System.out.println(instrs);
+//        }
         return instructions;
     }
 
