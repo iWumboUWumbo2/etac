@@ -17,9 +17,9 @@ public class ASMMemExpr extends ASMExpr{
 
     @Override
     public String toString() {
-        if (mem == null) {
-            throw new RuntimeException("mem should not be null");
-        }
-        return "QWORD PTR [ " + mem.toString() +" ]";
+//        if (mem == null) {
+//            throw new InternalCompilerError("mem should not be null");
+//        }
+        return "QWORD PTR [ " + mem +" ]";
     }
 }
