@@ -682,7 +682,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSete(new ASMRegisterExpr("al")));
-//                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
+                        curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
                     break;
@@ -694,6 +694,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetne(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
@@ -706,6 +707,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetl(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
@@ -718,6 +720,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetb(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
                         //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
@@ -730,6 +733,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetg(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
@@ -742,6 +746,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetle(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
@@ -754,6 +759,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMCmp(destTemp, l2));
                         curBestInstructions.add(new ASMSetge(new ASMRegisterExpr("al")));
+                        curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }

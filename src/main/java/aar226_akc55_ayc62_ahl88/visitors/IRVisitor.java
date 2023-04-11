@@ -329,7 +329,13 @@ public class IRVisitor implements Visitor<IRNode>{
         if (constantFold && ire.isConstant()) {
             return new IRConst(1-ire.constant());
         }
-        return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), ire);
+        if (ire instanceof IRBinOp bin && bin.opType() == IRBinOp.OpType.XOR && bin.left() instanceof IRConst c && (c.value() == 1L)){
+            return bin.right();
+        } else if (ire instanceof IRBinOp bin && bin.opType() == IRBinOp.OpType.XOR && bin.right() instanceof IRConst c && (c.value() == 1L)){
+            return bin.left();
+        }else{
+            return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), ire);
+        }
     }
 
     @Override
