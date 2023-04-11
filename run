@@ -1,0 +1,12 @@
+#!/bin/bash
+
+ETAFILE=$(readlink -f "$1")
+ASMFILE="${ETAFILE%%.*}.s"
+PROGNAME=$(basename ${ETAFILE} .eta)
+
+pushd ${HOME}/shared >> /dev/null
+./etac ${ETAFILE} -libpath tests/pa5Tests/
+pushd ${HOME}/runtime >> /dev/null
+./linketa.sh -o ${PROGNAME} ${ASMFILE}
+./${PROGNAME}
+popd >> /dev/null
