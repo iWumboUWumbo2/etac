@@ -343,6 +343,12 @@ public class AbstractASMVisitor {
         } else {
             throw new InternalCompilerError("TODO Other moves");
         }
+        System.out.println("before IRSTMT: ");
+        System.out.println(node);
+        System.out.println("After IRSTMT: ");
+        for (ASMInstruction instrs: instructions){
+            System.out.println(instrs);
+        }
         return instructions;
     }
 
@@ -403,10 +409,10 @@ public class AbstractASMVisitor {
         if (false){ // other patterns;
 
         }else { // catch all case
-            ASMAbstractReg temp = munchIRExpr(m);
+            ASMAbstractReg temp = munchIRExpr(m); // side effects
             if (m.getBestCost() + 1 < curBestCost){
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.getBestInstructions()); // instructions for Mem
-                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), temp)); // move the temp mem into ASMMOV
+                caseInstructions.add(new ASMMov( new ASMMemExpr(m.expr().getAbstractReg()),new ASMTempExpr(t.name()))); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m.getBestCost() + 1;
             }
@@ -499,7 +505,9 @@ public class AbstractASMVisitor {
         name.visited = true;
         name.bestCost = 0;
         name.bestInstructions = new ArrayList<>();
-        return new ASMTempExpr(name.name());
+        ASMTempExpr res = new ASMTempExpr(name.name());
+        name.tempName = res;
+        return res;
     }
     private ASMTempExpr munchIRMem(IRMem mem) {
         long curBestCost = Long.MAX_VALUE;
@@ -519,6 +527,7 @@ public class AbstractASMVisitor {
         mem.visited = true;
         mem.bestCost = curBestCost;
         mem.bestInstructions = curBestInstructions;
+        mem.tempName = destTemp;
         return destTemp;
 //        return null;
     }
@@ -526,7 +535,9 @@ public class AbstractASMVisitor {
         temp.visited = true;
         temp.bestCost = 0;
         temp.bestInstructions = new ArrayList<>();
-        return new ASMTempExpr(temp.name());
+        ASMTempExpr res = new ASMTempExpr(temp.name());
+        temp.tempName = res;
+        return res;
     }
     private ASMTempExpr munchIRConst(IRConst c){
         c.visited = true;
@@ -535,8 +546,9 @@ public class AbstractASMVisitor {
         ArrayList<ASMInstruction> extraInstructions = new ArrayList<>();
         extraInstructions.add(new ASMMov(new ASMTempExpr(extraTemp),new ASMConstExpr(c.value())));
         c.bestInstructions = extraInstructions;
-        c.tempName = new ASMTempExpr(extraTemp);
-        return new ASMTempExpr(extraTemp);
+        ASMTempExpr res = new ASMTempExpr(extraTemp);
+        c.tempName = res;
+        return res;
     }
     private ASMAbstractReg munchBinop(IRBinOp binop) {
         // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
@@ -759,6 +771,7 @@ public class AbstractASMVisitor {
         binop.bestInstructions = curBestInstructions;
         binop.bestCost = curBestCost;
         binop.visited = true;
+        binop.tempName = destTemp;
         return destTemp;
     }
 
