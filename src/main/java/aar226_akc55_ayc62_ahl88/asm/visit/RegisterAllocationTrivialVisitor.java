@@ -327,8 +327,42 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         ASMExpr curDest= null; // replace Left with curDest
         ASMExpr curMiddle = null;  // replace Middle with curSrc
         ASMExpr curRight = null;  // replace Right with curSrc
+        // imul 1 arg
         if (node.getA2() == null && node.getA3() == null){
-            throw new InternalCompilerError("1 ARGS TODO");
+            if (left instanceof ASMRegisterExpr reg){ // known register Return
+                curDest = left;
+                availReg.remove(reg.getRegisterName());
+            }else if (left instanceof ASMTempExpr temp){ // Move left into Reg1 cause left is a stack location
+                // get the stack location through mapping
+                String curReg = availReg.get(availReg.size()-1);
+                availReg.remove(availReg.size()-1);
+                // add the move
+                ASMMemExpr stackLoc = tempToStack(temp);
+                ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                res.add(new ASMMov(usedReg,stackLoc));
+                postInstruction.add(new ASMMov(stackLoc,usedReg));
+                curDest = usedReg;
+            }else if (left instanceof ASMMemExpr mem) { // can left as mem
+                ArrayList<ASMExpr> expressions = flattenMem(mem);
+                HashMap<String, String> tempToReg= new HashMap<>();
+                for (ASMExpr expr: expressions){
+                    if (expr instanceof ASMTempExpr temp){
+                        // get stack mapping for reg
+                        String curReg = availReg.get(availReg.size()-1);
+                        availReg.remove(availReg.size()-1);
+                        // add the move
+                        ASMMemExpr stackLoc = tempToStack(temp);
+                        ASMRegisterExpr usedReg = new ASMRegisterExpr(curReg);
+                        res.add(new ASMMov(usedReg,stackLoc));
+                        tempToReg.put(temp.getName(),curReg);
+                    }
+                }
+                curMiddle = tempsToRegs(mem,tempToReg);
+                // Move the temp in mem (if exist) into reg2 cause temp is a stack location
+                // Move the tempSecond in mem (if exist) into reg3 cause temp is a stack location
+            }else{
+                throw new InternalCompilerError("nothing else should be left for IMUL on the top level");
+            }
         }else if (node.getA3() == null){
             if (left instanceof ASMRegisterExpr reg){ // known register Return
                 curDest = left;

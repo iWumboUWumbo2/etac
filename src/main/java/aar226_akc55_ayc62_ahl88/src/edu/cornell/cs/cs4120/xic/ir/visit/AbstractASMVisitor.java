@@ -606,7 +606,7 @@ public class AbstractASMVisitor {
 
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                         curBestInstructions.add(new ASMIMul(l2));
-                        curBestInstructions.add(new ASMIMul(destTemp, new ASMRegisterExpr("rdx")));
+                        curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
                     }
                     break;
                 case MOD: // rax/div, store result in rax and remainder in rdx

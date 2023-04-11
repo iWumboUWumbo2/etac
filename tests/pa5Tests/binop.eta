@@ -24,11 +24,11 @@ z = x - y;
 println(unparseInt(z));
 
 // HMUL:
-z = x *>> y;
+z = 17179869184 *>> 17179869184;
 println(unparseInt(z));
 
 // MOD:
-z = x % y;
+z = 20 % 6;
 println(unparseInt(z));
 
 // AND:
