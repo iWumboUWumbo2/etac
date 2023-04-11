@@ -1,0 +1,30 @@
+Index: src/main/java/aar226_akc55_ayc62_ahl88/asm/OpCodes.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package aar226_akc55_ayc62_ahl88.asm;\n\npublic class OpCodes {\n    public enum BinOp {\n        ADD,\n        SUB,\n        IMUL\n    }\n\n    public enum Jump {\n\n    }\n}\n
+===================================================================
+diff --git a/src/main/java/aar226_akc55_ayc62_ahl88/asm/OpCodes.java b/src/main/java/aar226_akc55_ayc62_ahl88/asm/OpCodes.java
+--- a/src/main/java/aar226_akc55_ayc62_ahl88/asm/OpCodes.java	
++++ b/src/main/java/aar226_akc55_ayc62_ahl88/asm/OpCodes.java	
+@@ -4,10 +4,20 @@
+     public enum BinOp {
+         ADD,
+         SUB,
+-        IMUL
++        IMUL,
+     }
+ 
+     public enum Jump {
++        JR
++    }
+ 
++    public enum Directives {
++        INTELSYNTAX,
++        TEXT,
++        GLOBL,
++        ZERO,
++        QUAD,
++        ASCIZ
+     }
++
+ }

@@ -16,6 +16,10 @@ public class ASMIMul extends ASMArg3 {
         super(ASMOpCodes.IMUL, dest, src, null);
     }
 
+    public ASMIMul(ASMExpr src) {
+        super(ASMOpCodes.IMUL, src, null, null);
+    }
+
     @Override
     public String toString(){
         if (getA2() == null && getA3() == null){

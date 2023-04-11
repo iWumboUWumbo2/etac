@@ -606,16 +606,13 @@ public class AbstractASMVisitor {
                     break;
                 case HMUL: // TODO: fix this
                     if (binop.left().getBestCost() +
-                            binop.right().getBestCost() + 5 < curBestCost) {
+                            binop.right().getBestCost() + 3 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
-                                binop.right().getBestCost() + 5;
-                        ASMTempExpr srcTemp = new ASMTempExpr(nxtTemp());
+                                binop.right().getBestCost() + 3;
 
-                        curBestInstructions.add(new ASMMov(destTemp, l1));
-                        curBestInstructions.add(new ASMShr(srcTemp, l2));
-                        curBestInstructions.add(new ASMShr(destTemp, new ASMConstExpr(32)));
-                        curBestInstructions.add(new ASMShr(srcTemp, new ASMConstExpr(32)));
-                        curBestInstructions.add(new ASMIMul(destTemp, srcTemp));
+                        curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
+                        curBestInstructions.add(new ASMIMul(l2));
+                        curBestInstructions.add(new ASMIMul(destTemp, new ASMRegisterExpr("rdx")));
                     }
                     break;
                 case MOD: // rax/div, store result in rax and remainder in rdx
