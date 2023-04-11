@@ -272,14 +272,6 @@ public class AbstractASMVisitor {
             // can't do [stack location] <- [stack location2]
             // need intermediate rax <- [stack location2]
             // then [stack location] <- temp rax
-//            if (i>=7){
-//                bodyInstructions.add(new ASMMov(new ASMRegisterExpr("rax"),ARGI));
-//                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),new ASMRegisterExpr("rax")));
-//            }
-//            // just do MOV [stack location] <- register
-//            else{
-//                bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
-//            }
             bodyInstructions.add(new ASMMov(new ASMTempExpr(tempName),ARGI));
         }
         if (node.body() instanceof  IRSeq seq){
@@ -343,12 +335,12 @@ public class AbstractASMVisitor {
         } else {
             throw new InternalCompilerError("TODO Other moves");
         }
-        System.out.println("before IRSTMT: ");
-        System.out.println(node);
-        System.out.println("After IRSTMT: ");
-        for (ASMInstruction instrs: instructions){
-            System.out.println(instrs);
-        }
+//        System.out.println("before IRSTMT: ");
+//        System.out.println(node);
+//        System.out.println("After IRSTMT: ");
+//        for (ASMInstruction instrs: instructions){
+//            System.out.println(instrs);
+//        }
         return instructions;
     }
 

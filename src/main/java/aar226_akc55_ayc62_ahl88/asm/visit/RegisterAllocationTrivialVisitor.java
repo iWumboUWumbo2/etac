@@ -43,7 +43,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             ArrayList<ASMInstruction> functionResult = new ArrayList<>();
             for (ASMInstruction instr: updatedInstructions){
                 if (!(instr instanceof ASMEnter oldEnter)) {
-                    System.out.println(instr);
+//                    System.out.println(instr);
                     functionResult.addAll(instr.accept(this));
                 }else{
 //                    System.out.println("oldEnter: "+ oldEnter + " newEnter: " + newEnter);
