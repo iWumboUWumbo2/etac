@@ -236,7 +236,7 @@ public class IRVisitor implements Visitor<IRNode>{
         if (constantFold && ire1.isConstant() && ire2.isConstant()) {
             return new IRConst(ire1.constant() + ire2.constant());
         } else {
-                return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
+            return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
         }
     }
 
@@ -388,18 +388,18 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
 
-        if (node.getRaw() != null){ // it is a string
-            String stringName = nxtString();
-            long[] res  = new long[node.getValues().size()+1];
-            String escapeString  = StringEscapeUtils.unescapeJava(node.getRaw());
-            res[0] = escapeString.length();
-            for (int i = 0; i< escapeString.length();i++){
-                char c = escapeString.charAt(i);
-                res[i+1] = (int) c;
-            }
-            IRData str =  new IRData(stringName,res); // we never use lmao
-            string_consts.add(str);
-        }
+//        if (node.getRaw() != null){ // it is a string
+//            String stringName = nxtString();
+//            long[] res  = new long[node.getValues().size()+1];
+//            String escapeString  = StringEscapeUtils.unescapeJava(node.getRaw());
+//            res[0] = escapeString.length();
+//            for (int i = 0; i< escapeString.length();i++){
+//                char c = escapeString.charAt(i);
+//                res[i+1] = (int) c;
+//            }
+//            IRData str =  new IRData(stringName,res); // we never use lmao
+//            string_consts.add(str);
+//        }
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
         long n = values.size();
@@ -538,7 +538,7 @@ public class IRVisitor implements Visitor<IRNode>{
         if (node.getDecl() instanceof AnnotatedTypeDecl atd){
             if (atd.type.isArray()){
                 if (atd.type.dimensions.allEmpty){ // random init is fine
-                    return new IRSeq(extraMove, new IRMove(new IRTemp(atd.identifier.toString()),exec));
+                    return new IRMove(new IRTemp(atd.identifier.toString()),right);
                 }else{
                     IRExpr iden = atd.getIdentifier().accept(this); // x:int[e1][e2][e3]
                     ArrayList<String> dimTemps = new ArrayList<>();
@@ -561,7 +561,7 @@ public class IRVisitor implements Visitor<IRNode>{
 //                    throw new InternalCompilerError("Gotta create init array malloc thing");
                 }
             }else if (atd.type.isBasic()){
-                return new IRSeq(extraMove,new IRMove(new IRTemp(atd.identifier.toString()),exec));
+                return new IRMove(new IRTemp(atd.identifier.toString()),right);
             }
             throw new InternalCompilerError("Annotated can only be array or basic");
         }else if (node.getDecl() instanceof ArrAccessDecl aad){
@@ -582,9 +582,9 @@ public class IRVisitor implements Visitor<IRNode>{
                 return new IRSeq(extraMove,new IRMove(memComponent,exec));
             }// find a[e1][e2]
         }else if (node.getDecl() instanceof NoTypeDecl){
-            return new IRSeq(extraMove,new IRMove(node.getDecl().identifier.accept(this),exec));
+            return new IRMove(node.getDecl().identifier.accept(this),right);
         }else if (node.getDecl() instanceof UnderScore){
-            return new IRSeq(extraMove,new IRExp(exec));
+            return new IRExp(right);
         }
         throw new InternalCompilerError("NOT A DECL?");
     }

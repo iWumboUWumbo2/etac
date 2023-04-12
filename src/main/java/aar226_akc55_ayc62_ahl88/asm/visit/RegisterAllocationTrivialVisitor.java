@@ -607,7 +607,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //        System.out.println(returnSpace);
 //        System.out.println(argSpace);
 //        System.out.println(tempCount);
-        return (stackSize & 1) != 0;
+        return (stackSize & 1) == 0;
     }
 
 

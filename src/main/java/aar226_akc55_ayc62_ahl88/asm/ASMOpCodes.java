@@ -4,6 +4,7 @@ public enum ASMOpCodes{
         // 0 arg
         RET, // when you finish executing function do ret.
         LEAVE,
+        CQTO,
 
         // 1 arg
         JB, // Jump Below unsigned
@@ -29,6 +30,7 @@ public enum ASMOpCodes{
         SETG,
         SETGE,
         SETB,
+        SETAE,
 
 
         // 2 arg
@@ -47,6 +49,7 @@ public enum ASMOpCodes{
         SAR, // shift arithmetic right, preserve sign bit
         TEST,
         CMP,
+        LEA,
 
         // EXTRA
         LABEL,

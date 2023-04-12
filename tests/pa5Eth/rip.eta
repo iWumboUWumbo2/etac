@@ -1,0 +1,10 @@
+use io;
+use conv;
+main(args: int[][]) {
+    pos: int = 0;
+    total: int = 500000*50;
+    while (pos < total) {
+        pos = pos + 1
+        println(unparseInt(pos));
+    }
+}

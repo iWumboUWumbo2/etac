@@ -1,0 +1,33 @@
+use io
+use conv
+
+main(args : int[][]) {
+    x : int = 8
+    y : int = 4;
+    a : bool = true;
+    b : bool = false;
+    gg : int = 999;
+    // SUB:
+    x = x - y;
+    println(unparseInt(x));
+
+    // MUL:
+    x = x * y;
+    println(unparseInt(x));
+
+    // ADD:
+    x = x + y;
+    println(unparseInt(x));
+
+    // LEA:
+    z:int = gg + y;
+    println(unparseInt(z));
+
+    // LEA:
+    u:int = gg + 5;
+    println(unparseInt(u));
+
+    // LEA:
+    uz:int = 1 + gg;
+    println(unparseInt(uz));
+}
