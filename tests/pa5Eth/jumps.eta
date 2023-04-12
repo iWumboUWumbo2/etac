@@ -1,0 +1,26 @@
+use io
+use conv
+main(args : int[][]) {
+    x : int = 5
+    z : int = 5;
+
+    if !!(5 == z) { // JE
+        println("JE");
+    }
+    if !!(1 != z) { // JNE
+        println("JNE");
+    }
+    if !!(1 < x) { // JL
+        println("JL");
+    }
+    if !!(1 <= z) { // JLE
+        println("JLE");
+    }
+    if !!(6 > z) { // JG
+        println("JG");
+    }
+    if (7 >= z) { // JGE
+        println("JGE");
+    }
+
+}

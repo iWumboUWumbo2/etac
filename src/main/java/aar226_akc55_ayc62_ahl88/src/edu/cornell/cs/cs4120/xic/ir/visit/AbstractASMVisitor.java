@@ -485,7 +485,7 @@ public class AbstractASMVisitor {
     private ASMAbstractReg munchIRExpr(IRExpr e) {
         IRNode_c top = (IRNode_c) e;
         if (top.visited){
-            System.out.println("visited");
+//            System.out.println("visited");
             return top.tempName;
         }
         if (e instanceof IRBinOp binop) {

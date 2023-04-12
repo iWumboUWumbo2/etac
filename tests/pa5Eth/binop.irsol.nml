@@ -1,0 +1,14 @@
+12
+32
+2
+4
+16
+2
+And false: c
+Or True: c
+EQ False: c
+NEQ True: c
+LT False: c
+GEQ True: c
+GT True: c
+LEQ False: c
