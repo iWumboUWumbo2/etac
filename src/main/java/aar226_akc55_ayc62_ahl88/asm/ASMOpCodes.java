@@ -49,6 +49,7 @@ public enum ASMOpCodes{
         SAR, // shift arithmetic right, preserve sign bit
         TEST,
         CMP,
+        LEA,
 
         // EXTRA
         LABEL,

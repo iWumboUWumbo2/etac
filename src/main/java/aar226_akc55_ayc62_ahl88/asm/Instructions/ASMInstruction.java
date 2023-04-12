@@ -63,6 +63,7 @@ public abstract class ASMInstruction {
             case SETLE -> "setle ";
             case CQTO -> "cqto ";
             case SETAE -> "setae ";
+            case LEA -> "lea ";
         };
     }
     public String exprASMToString(ASMExpr expr, HashMap<String, Integer> location){

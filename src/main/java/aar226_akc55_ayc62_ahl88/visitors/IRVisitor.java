@@ -236,8 +236,6 @@ public class IRVisitor implements Visitor<IRNode>{
         if (constantFold && ire1.isConstant() && ire2.isConstant()) {
             return new IRConst(ire1.constant() + ire2.constant());
         } else {
-            System.out.println(ire1);
-            System.out.println(ire2);
             return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
         }
     }

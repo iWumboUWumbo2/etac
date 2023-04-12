@@ -6,7 +6,7 @@ main(args : int[][]) {
     y : int = 4;
     a : bool = true;
     b : bool = false;
-
+    gg : int = 999;
     // SUB:
     x = x - y;
     println(unparseInt(x));
@@ -18,4 +18,8 @@ main(args : int[][]) {
     // ADD:
     x = x + y;
     println(unparseInt(x));
+
+    // LEA:
+    z:int = gg + y;
+    println(unparseInt(z));
 }
