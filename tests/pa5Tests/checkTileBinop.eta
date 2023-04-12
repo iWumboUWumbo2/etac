@@ -22,4 +22,12 @@ main(args : int[][]) {
     // LEA:
     z:int = gg + y;
     println(unparseInt(z));
+
+    // LEA:
+    u:int = gg + 5;
+    println(unparseInt(u));
+
+    // LEA:
+    uz:int = 1 + gg;
+    println(unparseInt(uz));
 }

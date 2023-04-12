@@ -355,13 +355,32 @@ public class AbstractASMVisitor {
                 curBestCost = b.left().getBestCost() + 1;
             }
         }
-        if (b.left() instanceof IRTemp && (b.opType() == IRBinOp.OpType.ADD)){  // lea t1 [t2 + t3]
+        if (b.opType() == IRBinOp.OpType.ADD){
+            // lea t1 [t2 + t3]
             if (b.left().getBestCost() + b.right().getBestCost() + 1 < curBestCost){
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.left().getBestInstructions());
                 caseInstructions.addAll(b.right().getBestInstructions());
                 caseInstructions.add(new ASMLEA(tempTemp,new ASMMemExpr(new ASMBinOpAddExpr(b.left().getAbstractReg(),b.right().getAbstractReg())))); // lea t1 [t2 + t3]
                 curBestInstructions = caseInstructions;
                 curBestCost = b.left().getBestCost() + b.right().getBestCost() + 1;
+            }
+            // lea t1 [5 + t2]
+            if (b.left() instanceof IRConst c){
+                if (b.right().getBestCost() + 1 < curBestCost) {
+                    ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.right().getBestInstructions());
+                    caseInstructions.add(new ASMLEA(tempTemp,new ASMMemExpr(new ASMBinOpAddExpr(new ASMConstExpr(c.value()),b.right().getAbstractReg()))));
+                    curBestInstructions = caseInstructions;
+                    curBestCost = b.right().getBestCost() + 1;
+                }
+            }
+            // lea t1 [t2 + 5]
+            if (b.right() instanceof IRConst c){
+                if (b.left().getBestCost() + 1 < curBestCost) {
+                    ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.left().getBestInstructions());
+                    caseInstructions.add(new ASMLEA(tempTemp,new ASMMemExpr(new ASMBinOpAddExpr(b.left().getAbstractReg(),new ASMConstExpr(c.value())))));
+                    curBestInstructions = caseInstructions;
+                    curBestCost = b.right().getBestCost() + 1;
+                }
             }
         }
 
