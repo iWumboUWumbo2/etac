@@ -994,6 +994,12 @@ public class AbstractASMVisitor {
         else throw new InternalCompilerError("Invalid expression for visitExpression");
     }
     // add/sub/xor/imul dest, src // dest += src; dest -= src; dest ^= src; dest *= src;
+
+    /**
+     * Checks if the IRBinop can be reduced to Two Arguments
+     * @param b IRBinop node to check
+     * @return the binop can be reduced to two arg asm instruction eg a = a * t1
+     */
     private boolean twoOpArith(IRBinOp b){
         return (b.opType() == IRBinOp.OpType.ADD)
                 || (b.opType() == IRBinOp.OpType.SUB)
@@ -1001,6 +1007,11 @@ public class AbstractASMVisitor {
                 || (b.opType() == IRBinOp.OpType.MUL);
     }
 
+    /**
+     * Converts the IRBinop Instruction to the Corresponding ASM Opcode
+     * @param b IRBinop to Check
+     * @return The ASMOpCode
+     */
     private ASMOpCodes irOpToASMOp(IRBinOp b){
         return switch (b.opType()){
             case ADD -> ASMOpCodes.ADD;
