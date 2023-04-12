@@ -329,15 +329,37 @@ public class AbstractASMVisitor {
         long curBestCost = Long.MAX_VALUE;
         ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
         ASMAbstractReg temp = munchIRExpr(m);
-        if (false){ // other patterns;
 
-        }else { // catch all case
-            if (m.getBestCost() + 1 < curBestCost){
-                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.expr().getBestInstructions()); // instructions for Mem
-                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(m.expr().getAbstractReg()))); // move the temp mem into ASMMOV
-                curBestInstructions = caseInstructions;
-                curBestCost = m.getBestCost() + 1;
+        if (m.expr() instanceof IRBinOp binop && twoOpAddSub(binop) && binop.left() instanceof IRTemp t1 && binop.right() instanceof IRConst c){ // other patterns;
+            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
+            if (binop.opType() == IRBinOp.OpType.ADD) {
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpAddExpr(new ASMTempExpr(t1.name()), new ASMConstExpr(c.value()))))); // move the temp mem into ASMMOV
+            } else {
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpSubExpr(new ASMTempExpr(t1.name()), new ASMConstExpr(c.value())))));
             }
+            curBestInstructions = caseInstructions;
+            curBestCost = m.getBestCost() + 1;
+        }
+
+
+
+//        if (m.expr() instanceof IRBinOp binop && twoOpAddSub(binop) && binop.left() instanceof IRTemp t1 && binop.right() instanceof IRTemp t2){ // other patterns;
+//            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
+//            if (binop.opType() == IRBinOp.OpType.ADD) {
+//                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpAddExpr(new ASMTempExpr(t1.name()), new ASMTempExpr(t2.name()))))); // move the temp mem into ASMMOV
+//            } else {
+//                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpSubExpr(new ASMTempExpr(t1.name()), new ASMTempExpr(t2.name())))));
+//            }
+//            curBestInstructions = caseInstructions;
+//            curBestCost = m.getBestCost() + 1;
+//        }
+
+        // catch all case
+        if (m.getBestCost() + 1 < curBestCost){
+            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.expr().getBestInstructions()); // instructions for Mem
+            caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(m.expr().getAbstractReg()))); // move the temp mem into ASMMOV
+            curBestInstructions = caseInstructions;
+            curBestCost = m.getBestCost() + 1;
         }
         instrs.addAll(curBestInstructions);
         return curBestCost;
@@ -349,6 +371,7 @@ public class AbstractASMVisitor {
         ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
         ASMAbstractReg tempTemp = munchIRExpr(t);
         ASMAbstractReg binopTemp = munchIRExpr(b);
+
         if (b.left() instanceof IRTemp tleft && twoOpArith(b) && (t.toString().equals(tleft.toString()))) { // move a (a+tright)
             if (b.right().getBestCost() + 1 < curBestCost) {
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.right().getBestInstructions());
@@ -413,16 +436,40 @@ public class AbstractASMVisitor {
         long curBestCost = Long.MAX_VALUE;
         ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
         ASMAbstractReg temp = munchIRExpr(m); // side effects
-        if (false){ // other patterns;
 
-        }else { // catch all case
+        //             (+- (temp) (* temp const))
+        if (
+                m.expr() instanceof IRBinOp b &&
+                twoOpAddSub(b) &&
+                b.left() instanceof IRTemp base &&
+                b.right() instanceof IRBinOp bop &&
+                bop.opType() == IRBinOp.OpType.MUL &&
+                bop.left() instanceof IRTemp index &&
+                bop.right() instanceof IRConst scale &&
+                isValidScale(scale.value())
+        ) {
+//            if (1 < curBestCost) {
+            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
+            if (b.opType() == IRBinOp.OpType.ADD) {
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpAddExpr(
+                        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
+                        new ASMTempExpr(index.name()), new ASMConstExpr(scale.value()))))));
+            } else {
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpSubExpr(
+                        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
+                        new ASMTempExpr(index.name()), new ASMConstExpr(scale.value()))))));
+            }
+            curBestInstructions = caseInstructions;
+            curBestCost = 1;
+//            }
+        }
+
             if (m.getBestCost() + 1 < curBestCost){
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.expr().getBestInstructions()); // instructions for Mem
                 caseInstructions.add(new ASMMov( new ASMMemExpr(m.expr().getAbstractReg()),new ASMTempExpr(t.name()))); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m.getBestCost() + 1;
             }
-        }
         instrs.addAll(curBestInstructions);
         return curBestCost;
     }
@@ -1106,6 +1153,16 @@ public class AbstractASMVisitor {
                 || (b.opType() == IRBinOp.OpType.SUB)
                 || (b.opType() == IRBinOp.OpType.XOR)
                 || (b.opType() == IRBinOp.OpType.MUL);
+    }
+
+    /**
+     * Checks if the IRBinop can be reduced to Add or Sub
+     * @param b IRBinop node to check
+     * @return the binop can be reduced to add or sub
+     */
+    private boolean twoOpAddSub(IRBinOp b){
+        return (b.opType() == IRBinOp.OpType.ADD)
+                || (b.opType() == IRBinOp.OpType.SUB);
     }
 
     /**

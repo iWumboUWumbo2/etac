@@ -1,0 +1,13 @@
+use io;
+use conv;
+main(args: int[][]) {
+    pos: int = 0;
+    total: int = 500000;
+    while (pos < total) {
+        a:int[] = {'a'};
+        pos = pos + 1
+        print(unparseInt(pos))
+        print(": ")
+        println(a);
+    }
+}
