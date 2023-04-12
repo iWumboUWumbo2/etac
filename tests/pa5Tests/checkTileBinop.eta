@@ -1,0 +1,21 @@
+use io
+use conv
+
+main(args : int[][]) {
+    x : int = 8
+    y : int = 4;
+    a : bool = true;
+    b : bool = false;
+
+    // SUB:
+    x = x - y;
+    println(unparseInt(x));
+
+    // MUL:
+    x = x * y;
+    println(unparseInt(x));
+
+    // ADD:
+    x = x + y;
+    println(unparseInt(x));
+}
