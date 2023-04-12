@@ -6,10 +6,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMAdd;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMIDiv;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMIMul;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMSub;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
@@ -596,8 +593,9 @@ public class AbstractASMVisitor {
                             binop.right().getBestCost() + 3 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
                                 binop.right().getBestCost() + 3;
-                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
+//                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
+                        curBestInstructions.add(new ASMCQTO());
                         curBestInstructions.add(new ASMIDiv(l2));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
                     }
@@ -627,8 +625,9 @@ public class AbstractASMVisitor {
                             binop.right().getBestCost() + 3 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
                                 binop.right().getBestCost() + 3;
-                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
+//                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
+                        curBestInstructions.add(new ASMCQTO());
                         curBestInstructions.add(new ASMIDiv(l2));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
                     }

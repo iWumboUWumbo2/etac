@@ -4,6 +4,7 @@ public enum ASMOpCodes{
         // 0 arg
         RET, // when you finish executing function do ret.
         LEAVE,
+        CQTO,
 
         // 1 arg
         JB, // Jump Below unsigned

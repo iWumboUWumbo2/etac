@@ -388,18 +388,18 @@ public class IRVisitor implements Visitor<IRNode>{
     @Override
     public IRExpr visit(ArrayValueLiteral node) { // Going to have to be DATA if String
 
-        if (node.getRaw() != null){ // it is a string
-            String stringName = nxtString();
-            long[] res  = new long[node.getValues().size()+1];
-            String escapeString  = StringEscapeUtils.unescapeJava(node.getRaw());
-            res[0] = escapeString.length();
-            for (int i = 0; i< escapeString.length();i++){
-                char c = escapeString.charAt(i);
-                res[i+1] = (int) c;
-            }
-            IRData str =  new IRData(stringName,res); // we never use lmao
-            string_consts.add(str);
-        }
+//        if (node.getRaw() != null){ // it is a string
+//            String stringName = nxtString();
+//            long[] res  = new long[node.getValues().size()+1];
+//            String escapeString  = StringEscapeUtils.unescapeJava(node.getRaw());
+//            res[0] = escapeString.length();
+//            for (int i = 0; i< escapeString.length();i++){
+//                char c = escapeString.charAt(i);
+//                res[i+1] = (int) c;
+//            }
+//            IRData str =  new IRData(stringName,res); // we never use lmao
+//            string_consts.add(str);
+//        }
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
         long n = values.size();
