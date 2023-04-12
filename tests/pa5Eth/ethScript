@@ -36,42 +36,54 @@ etac ("Test --help") "--help" {
 }
 
 etac ("Test --irgen") "-libpath $(testpath) --irgen" {
-
+    if02.eta;
+    if03.eta;
+    if04.eta;
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
+    multiret08.eta;
+    while01.eta;
 }
 
 etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
-
+    if02.eta;
+    if03.eta;
+    if04.eta;
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
+    multiret08.eta;
+    while01.eta;
 }
 
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
-    ex01.eta;
-    ack.eta;
-    primes.eta;
-    arrmedian.eta;
-    bestTimeToBuyStock.eta;
-    binsearch.eta;
-    moveslikejagger.eta;
-    recursion1.eta;
-    recursion2.eta;
-    recursion3.eta;
-    stringweird.eta;
-    trappingrainwater.eta;
-    validpalindrome.eta;
+    if02.eta;
+    if03.eta;
+    if04.eta;
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
+    multiret08.eta;
+    while01.eta;
 }
 
 etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
-    ex01.eta;
-    ack.eta;
-    primes.eta;
-    arrmedian.eta;
-    bestTimeToBuyStock.eta;
-    binsearch.eta;
-    moveslikejagger.eta;
-    recursion1.eta;
-    recursion2.eta;
-    recursion3.eta;
-    stringweird.eta;
-    trappingrainwater.eta;
-    validpalindrome.eta;
+    if02.eta;
+    if03.eta;
+    if04.eta;
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
+    multiret08.eta;
+    while01.eta;
 }
 

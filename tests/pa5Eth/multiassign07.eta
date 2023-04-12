@@ -1,0 +1,11 @@
+use conv
+use io
+fun(a:int): int {
+return a
+}
+
+main(args: int[][]) {
+    x:int, y:int, _ = fun(1), fun(2), fun(3)
+    println(unparseInt(x))
+    println(unparseInt(y))
+}
