@@ -1,0 +1,13 @@
+use io
+use conv
+i : int
+main(args: int[][]) {
+	{
+		i = 0
+		println(unparseInt(i))
+	}
+	{
+		i = 1
+		println(unparseInt(i))
+	}
+}

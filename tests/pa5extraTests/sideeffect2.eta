@@ -1,0 +1,29 @@
+use io
+use conv
+n : int = 0;
+a : int[];
+main(args: int[][]) {
+	a = {0}
+	incPrint()
+	inc_arrPrint()
+	incPrint()
+	inc_arrPrint()
+	if (true) {
+		incPrint()
+		inc_arrPrint()
+	}
+	n = 10
+	a = {10}
+	incPrint()
+	inc_arrPrint()
+}
+
+incPrint(){
+	n = n + 1
+	println(unparseInt(n))
+}
+
+inc_arrPrint(){
+	a[0] = a[0] + 1
+	println(unparseInt(a[0]))
+}

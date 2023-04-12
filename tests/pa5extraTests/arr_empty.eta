@@ -1,0 +1,25 @@
+use io
+use conv
+main(args: int[][]) {
+	a : int[][] = {createEmpty(),createEmpty()}
+	print2dArr(a)
+	println("a")
+}
+
+createEmpty():int[]{
+	a : int[0]
+	return a
+}
+
+print2dArr(a:int[][]){
+	i : int = 0
+	while(i<length(a)){
+		j : int = 0
+		while(j<length(a[i])){
+			print(unparseInt(a[i][j])+"a")
+			j = j + 1
+		}
+		println("")
+		i = i + 1
+	}
+}

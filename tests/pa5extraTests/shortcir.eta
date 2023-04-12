@@ -1,0 +1,49 @@
+use io
+use conv
+x : int = 0
+main(args: int[][]) {
+
+	printBool(f1()) // +1
+	printBool(f2()) // +1
+	printBool(f1()&f2()) // +1
+
+	println(unparseInt(x)) // 3
+
+	x = 0
+
+	if (f1()&f2()){ // false +1
+		println("no")
+	}
+	println(unparseInt(x)) // 1
+	x = 0
+
+	if (f1()|f2()){ // true +1 +1
+		println("yea")
+	}
+	println(unparseInt(x)) // 2
+	x = 0
+
+	if (f2()|f1()){ // true +1
+		println("meh")
+	}
+	println(unparseInt(x)) // 1
+}
+
+printBool(b:bool){
+  if(b){
+    println("true")
+  }
+  else{
+    println("false")
+  }
+}
+
+
+f1():bool{
+	x = x + 1
+	return false & false
+}
+f2():bool{
+	x = x + 1
+	return true | true
+}

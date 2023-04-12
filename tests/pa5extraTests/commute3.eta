@@ -1,0 +1,16 @@
+use io
+use conv
+a : int[]
+main(args: int[][]) {
+	a = {1}
+	println(unparseInt(a[0])) // 1
+	b : int = a[0] + f() // 1 + 1 = 2
+	c : int = a[0] + f() // 2 + 1 = 3
+	println(unparseInt(b))
+	println(unparseInt(c))
+}
+
+f():int{
+	a[0] = a[0] + 1
+	return 1
+}

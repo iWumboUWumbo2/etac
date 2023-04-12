@@ -1,0 +1,7 @@
+use io
+use conv
+g : int = 3;
+main (a : int[][]) {
+	g = -672;
+	println(unparseInt(g))
+}

@@ -1,0 +1,45 @@
+use io
+use conv
+main(args: int[][]) {
+	a: int, b: bool, c: int[], d: int[], e: int[][] = foo()
+	println(unparseInt(a))
+	printBool(b)
+	printArr(c)
+	printArr(d)
+	print2dArr(e)
+}
+
+foo():int,bool,int[],int[],int[][]{
+	return 1,true,{1,3},{},{{1},{2,2}}
+}
+
+printBool(b:bool){
+  if(b){
+    println("true")
+  }
+  else{
+    println("false")
+  }
+}
+
+printArr(arr:int[]){
+	i : int = 0
+	while(i<length(arr)){
+		print(unparseInt(arr[i])+" ")
+		i = i + 1
+	}
+	println("")
+}
+
+print2dArr(a:int[][]){
+	i : int = 0
+	while(i<length(a)){
+		j : int = 0
+		while(j<length(a[i])){
+			print(unparseInt(a[i][j])+" ")
+			j = j + 1
+		}
+		println("")
+		i = i + 1
+	}
+}

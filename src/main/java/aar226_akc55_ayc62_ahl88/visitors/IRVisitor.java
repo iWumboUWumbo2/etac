@@ -239,7 +239,6 @@ public class IRVisitor implements Visitor<IRNode>{
             return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
         }
     }
-
     @Override
     public IRNode visit(IntegerComparisonBinop node) {
 //        < , <= , > , >=

@@ -1,0 +1,6 @@
+use io
+main(a:int[][]) {
+	if(true){
+		println("test pass")
+	}
+}

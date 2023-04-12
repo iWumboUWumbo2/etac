@@ -1,0 +1,22 @@
+use io
+use conv
+main(args: int[][]) {
+	a : int[3][3]
+	print2dArr(a)
+	a[0][0] = 123
+	a[1][1] = 123
+	a[2][2] = 123
+	print2dArr(a)
+}
+print2dArr(a:int[][]){
+	i : int = 0
+	while(i<length(a)){
+		j : int = 0
+		while(j<length(a[i])){
+			print(unparseInt(a[i][j])+" ")
+			j = j + 1
+		}
+		println("")
+		i = i + 1
+	}
+}

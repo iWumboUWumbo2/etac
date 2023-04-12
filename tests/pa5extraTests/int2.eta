@@ -1,0 +1,24 @@
+use io
+use conv
+main(args: int[][]) {
+	a : int
+	a = 222
+	println(unparseInt(a))
+	str : int[] = unparseInt(128);
+	println(str)
+	n : int, b : bool = parseInt("123");
+	m : int, c : bool = parseInt("no");
+	println(unparseInt(n))
+	printBool(b)
+	println(unparseInt(m))
+	printBool(c)
+}
+
+printBool(b:bool){
+  if(b){
+    println("true")
+  }
+  else{
+    println("false")
+  }
+}
