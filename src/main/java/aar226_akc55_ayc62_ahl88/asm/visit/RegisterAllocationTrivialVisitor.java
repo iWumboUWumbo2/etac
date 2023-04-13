@@ -31,15 +31,12 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
     public ArrayList<ASMInstruction> visit(ASMCompUnit compUnit){
         functionSignatures = compUnit.getAllFunctionsSigs();
         ArrayList<ASMInstruction> total = new ArrayList<>();
-//        for (ASMData d: compUnit.getGlobals()){
-//            System.out.println("doing Global");
-//        }
         for (Map.Entry<String, ArrayList<ASMInstruction>> function: compUnit.getFunctionToInstructionList().entrySet()){
             currentFunction = function.getKey();
             functionToTempsToStackOffset.put(currentFunction,new HashMap<>());
             functionToTemps.put(currentFunction,new HashSet<>());
-            ArrayList<ASMInstruction> updatedInstructions = fixAllStackAlignments(function);
             ASMEnter newEnter = createEnterAndBuildMapping(function.getValue());
+            ArrayList<ASMInstruction> updatedInstructions = fixAllStackAlignments(function);
             ArrayList<ASMInstruction> functionResult = new ArrayList<>();
             for (ASMInstruction instr: updatedInstructions){
                 if (!(instr instanceof ASMEnter oldEnter)) {
@@ -114,6 +111,8 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                 res.add(new ASMMov(stackLoc,usedReg)); // move the real reg back to the stack location
             }else if (argument instanceof ASMMemExpr mem){ // see if inside mem is temp
                 ArrayList<ASMExpr> expressions = flattenMem(mem);
+                System.out.println(node);
+                System.out.println(expressions);
                 HashMap<String, String> tempToReg= new HashMap<>();
                 for (ASMExpr expr: expressions){
                     if (expr instanceof ASMTempExpr temp){
@@ -271,7 +270,6 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 //                System.out.println("right is mem left is reg");
                 ArrayList<ASMExpr> expressions = flattenMem(mem);
                 HashMap<String, String> tempToReg= new HashMap<>();
-//                System.out.println("this is expressions: " + expressions);
                 for (ASMExpr expr: expressions){
                     if (expr instanceof ASMTempExpr temp){
                         // get stack mapping for reg
@@ -583,7 +581,10 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
         }else if (expr instanceof ASMBinOpAddExpr binopAdd){
             return new ASMBinOpAddExpr(tempsToRegs(binopAdd.getLeft(),tempMapping),
                     tempsToRegs(binopAdd.getRight(),tempMapping));
-        }else{ // other base case
+        }else if (expr instanceof ASMBinOpSubExpr binopSub){
+            return new ASMBinOpAddExpr(tempsToRegs(binopSub.getLeft(),tempMapping),
+                    tempsToRegs(binopSub.getRight(),tempMapping));
+        } else{ // other base case
             return expr;
         }
     }
@@ -597,17 +598,16 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
 
         int tempCount = functionToTemps.get(currentFunction).size();
 
-
         int paramCount = functionSignatures.get(calledFunction).part1();
         int returnCount = functionSignatures.get(calledFunction).part2();
         int returnSpace = Math.max(returnCount - 2, 0);
         int argSpace = Math.max(paramCount - (returnCount > 2 ? 5 : 6), 0);
-        int stackSize = 1 + 1 + 3 + tempCount + returnSpace + argSpace;
+        int stackSize = 1+ 1 + 3 + tempCount + returnSpace + argSpace;
         // rip, rbp, r12, r13, r14
 //        System.out.println(returnSpace);
 //        System.out.println(argSpace);
 //        System.out.println(tempCount);
-        return (stackSize & 1) == 0;
+        return (stackSize & 1) != 0;
     }
 
 

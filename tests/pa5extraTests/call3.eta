@@ -1,9 +1,0 @@
-use io
-use conv
-main(args: int[][]) {
-    println(unparseInt(-f(1)))
-}
-f(x: int): int {
-    println("ok " + unparseInt(x))
-    return x
-}

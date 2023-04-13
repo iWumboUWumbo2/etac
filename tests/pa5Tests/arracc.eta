@@ -2,8 +2,7 @@ use io
 use conv
 
 main(args : int[][]) {
-    x:int[1];
-    x[0] = 5;
+    x:int[3];
 
-    println(unparseInt(x[0]))
+    println(unparseInt(length(x)))
 }

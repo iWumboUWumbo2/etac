@@ -1,7 +1,0 @@
-use io
-use conv
-a: int[]
-main(args: int[][]) {
-	a = {1}
-	println(unparseInt(a[-1]))
-}

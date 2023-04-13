@@ -1,9 +1,0 @@
-use io
-use conv
-main(args: int[][]) {
-	_ = foo()
-	println("ok")
-}
-foo():int{
-	return 1
-}
