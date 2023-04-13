@@ -1,8 +1,0 @@
-use io
-main(a:int[][]) {
-  f(true)
-}
-f(b:bool) {
-  if (b) println("test pass - b was set to true")
-  else println("test fail - b was set to false oopsies")
-}

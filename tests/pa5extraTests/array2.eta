@@ -1,7 +1,0 @@
-use io
-use conv
-main(a:int[][]) {
-    x:int[3]
-	x[1] = 123
-	println(unparseInt(x[1]))
-}
