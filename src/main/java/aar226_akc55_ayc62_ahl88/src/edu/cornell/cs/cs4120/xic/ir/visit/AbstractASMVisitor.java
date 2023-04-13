@@ -499,6 +499,7 @@ public class AbstractASMVisitor {
             curBestInstructions = caseInstructions;
             curBestCost = m.getBestCost() -1 + 1;
         }
+
         if (false){ // other patterns;
 
         }else { // catch all case
@@ -591,6 +592,28 @@ public class AbstractASMVisitor {
                 caseInstructions.add(new ASMMov(destTemp, new ASMMemExpr(new ASMNameExpr(name.name()))));
                 curBestInstructions = caseInstructions;
                 curBestCost = mem.expr().getBestCost() + 1;
+            }
+        }
+        if (mem.expr() instanceof IRBinOp memBinop && memBinop.opType() == IRBinOp.OpType.ADD) {
+            // MEM( Blah * Const 8)
+            //IRBinOp memBinop = (IRBinOp) mem.expr();
+            IRExpr left = memBinop.left();
+            IRExpr right = memBinop.right();
+
+            if (left instanceof IRConst c && right instanceof IRTemp rTemp) {
+                if (1 < curBestCost) {
+                    ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
+                    caseInstructions.add(new ASMMov(destTemp, new ASMMemExpr(new ASMBinOpAddExpr(new ASMConstExpr(c.value()), new ASMTempExpr(rTemp.name())))));
+                    curBestInstructions = caseInstructions;
+                    curBestCost = 1;
+                }
+            } else if (right.isConstant() && left instanceof IRTemp) {
+                if (1 < curBestCost) {
+                    ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
+                    caseInstructions.add(new ASMMov(destTemp, new ASMMemExpr(new ASMBinOpAddExpr(new ASMConstExpr(((IRConst) right).value()), new ASMTempExpr(((IRTemp) left).name())))));
+                    curBestInstructions = caseInstructions;
+                    curBestCost = 1;
+                }
             }
         }
         if (mem.expr() instanceof IRBinOp memBinop && ((IRBinOp) mem.expr()).opType() == IRBinOp.OpType.MUL) {
