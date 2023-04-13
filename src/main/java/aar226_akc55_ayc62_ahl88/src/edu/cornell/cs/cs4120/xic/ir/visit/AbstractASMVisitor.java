@@ -330,16 +330,47 @@ public class AbstractASMVisitor {
         ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
         ASMAbstractReg temp = munchIRExpr(m);
 
-        if (m.expr() instanceof IRBinOp binop && twoOpAddSub(binop) && binop.left() instanceof IRTemp t1 && binop.right() instanceof IRConst c){ // other patterns;
-            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
-            if (binop.opType() == IRBinOp.OpType.ADD) {
-                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpAddExpr(new ASMTempExpr(t1.name()), new ASMConstExpr(c.value()))))); // move the temp mem into ASMMOV
+
+        //             (+- (temp) (* temp const))
+        if (
+                m.expr() instanceof IRBinOp b &&
+                        twoOpAddSub(b) &&
+                        b.left() instanceof IRTemp base &&
+                        b.right() instanceof IRBinOp bop &&
+                        bop.opType() == IRBinOp.OpType.MUL &&
+                        bop.left() instanceof IRTemp index &&
+                        bop.right() instanceof IRConst scale &&
+                        isValidScale(scale.value())
+        ) {
+//            if (1 < curBestCost) {
+            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
+            if (b.opType() == IRBinOp.OpType.ADD) {
+                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()),
+                        new ASMMemExpr(new ASMBinOpAddExpr(
+                        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
+                        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name()))))));
             } else {
-                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpSubExpr(new ASMTempExpr(t1.name()), new ASMConstExpr(c.value())))));
+                caseInstructions.add(new ASMMov(
+                        new ASMTempExpr(t.name()),
+                        new ASMMemExpr(new ASMBinOpSubExpr(
+                        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
+                        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name()))))));
             }
             curBestInstructions = caseInstructions;
-            curBestCost = m.getBestCost() + 1;
+            curBestCost = 1;
+//            }
         }
+
+//        if (m.expr() instanceof IRBinOp binop && twoOpAddSub(binop) && binop.left() instanceof IRTemp t1 && binop.right() instanceof IRConst c){ // other patterns;
+//            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
+//            if (binop.opType() == IRBinOp.OpType.ADD) {
+//                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpAddExpr(new ASMTempExpr(t1.name()), new ASMConstExpr(c.value()))))); // move the temp mem into ASMMOV
+//            } else {
+//                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpSubExpr(new ASMTempExpr(t1.name()), new ASMConstExpr(c.value())))));
+//            }
+//            curBestInstructions = caseInstructions;
+//            curBestCost = m.getBestCost() + 1;
+//        }
 
 
 
@@ -451,25 +482,31 @@ public class AbstractASMVisitor {
 //            if (1 < curBestCost) {
             ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
             if (b.opType() == IRBinOp.OpType.ADD) {
-                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpAddExpr(
+                caseInstructions.add(new ASMMov(new ASMMemExpr(new ASMBinOpAddExpr(
                         new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
-                        new ASMTempExpr(index.name()), new ASMConstExpr(scale.value()))))));
+                        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name())))),
+                        new ASMTempExpr(t.name())));
             } else {
-                caseInstructions.add(new ASMMov(new ASMTempExpr(t.name()), new ASMMemExpr(new ASMBinOpSubExpr(
+                caseInstructions.add(new ASMMov(new ASMMemExpr(new ASMBinOpSubExpr(
                         new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
-                        new ASMTempExpr(index.name()), new ASMConstExpr(scale.value()))))));
+                        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name())))),
+                        new ASMTempExpr(t.name())));
             }
             curBestInstructions = caseInstructions;
             curBestCost = 1;
 //            }
         }
+        
+        if (false) {
 
-            if (m.getBestCost() + 1 < curBestCost){
+        } else {
+            if (m.getBestCost() + 1 < curBestCost) {
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m.expr().getBestInstructions()); // instructions for Mem
-                caseInstructions.add(new ASMMov( new ASMMemExpr(m.expr().getAbstractReg()),new ASMTempExpr(t.name()))); // move the temp mem into ASMMOV
+                caseInstructions.add(new ASMMov(new ASMMemExpr(m.expr().getAbstractReg()), new ASMTempExpr(t.name()))); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
                 curBestCost = m.getBestCost() + 1;
             }
+        }
         instrs.addAll(curBestInstructions);
         return curBestCost;
     }
@@ -508,6 +545,37 @@ public class AbstractASMVisitor {
         long curBestCost = Long.MAX_VALUE;
         ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
         ASMAbstractReg temp = munchIRExpr(m);
+
+
+        //             (+- (temp) (* temp const))
+        if (
+                m.expr() instanceof IRBinOp b &&
+                        twoOpAddSub(b) &&
+                        b.left() instanceof IRTemp base &&
+                        b.right() instanceof IRBinOp bop &&
+                        bop.opType() == IRBinOp.OpType.MUL &&
+                        bop.left() instanceof IRTemp index &&
+                        bop.right() instanceof IRConst scale &&
+                        isValidScale(scale.value())
+        ) {
+//            if (1 < curBestCost) {
+            ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
+            if (b.opType() == IRBinOp.OpType.ADD) {
+                caseInstructions.add(new ASMMov(new ASMMemExpr(new ASMBinOpAddExpr(
+                        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
+                        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name())))),
+                        new ASMConstExpr(c.value())));
+            } else {
+                caseInstructions.add(new ASMMov(new ASMMemExpr(new ASMBinOpSubExpr(
+                        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
+                        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name())))),
+                        new ASMConstExpr(c.value())));
+            }
+            curBestInstructions = caseInstructions;
+            curBestCost = 1;
+//            }
+        }
+
         if (false){ // other patterns;
 
         }else { // catch all case
