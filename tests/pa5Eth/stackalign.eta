@@ -1,0 +1,54 @@
+use io
+use conv
+
+main(args: int[][]){
+    arg1: int = 34
+    arg2: int = 56
+    arg3: int = 78
+    res1: int, res2: int, res3: int = a1(arg1, arg2, arg3)
+    println(unparseInt(res1))
+    println(unparseInt(res2))
+    println(unparseInt(res3))
+}
+
+a1(a: int, b: int, c: int): int, int, int{
+    sum: int = a + b + c
+    println(unparseInt(a))
+    println(unparseInt(b))
+    println(unparseInt(c))
+    res1: int, res2: int, res3: int = b1(a + sum, b + sum, c + sum)
+    return res1, res2, res3
+}
+
+b1(a: int, b: int, c: int): int, int, int{
+    sum: int = a + b + c
+    println(unparseInt(a))
+    println(unparseInt(b))
+    println(unparseInt(c))
+    res1: int, res2: int, res3: int = c1(a + sum, b + sum, c + sum)
+    return res1, res2, res3
+}
+
+c1(a: int, b: int, c: int): int, int, int{
+    sum: int = a + b + c
+    println(unparseInt(a))
+    println(unparseInt(b))
+    println(unparseInt(c))
+    res1: int, res2: int, res3: int = d1(a + sum, b + sum, c + sum)
+    return res1, res2, res3
+}
+
+d1(a: int, b: int, c: int): int, int, int{
+    sum: int = a + b + c
+    println(unparseInt(a))
+    println(unparseInt(b))
+    println(unparseInt(c))
+    e1(a + sum, b + sum, c + sum)
+    return a, b, c
+}
+
+e1(a: int, b: int, c: int){
+    println(unparseInt(a))
+    println(unparseInt(b))
+    println(unparseInt(c))
+}

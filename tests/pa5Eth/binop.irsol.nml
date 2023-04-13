@@ -1,14 +1,18 @@
 12
-32
-2
-4
+17
+28
+112
+7
+24
+24
+-20
 16
 2
 And false: c
 Or True: c
 EQ False: c
 NEQ True: c
-LT False: c
-GEQ True: c
-GT True: c
-LEQ False: c
+LT True: c
+GEQ False: c
+GT False: c
+LEQ True: c

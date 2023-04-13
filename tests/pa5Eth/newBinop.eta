@@ -1,0 +1,22 @@
+use io
+use conv
+
+main(args : int[][]) {
+    x : int = 8
+    z : int  = 20;
+    // ADD:
+    x = x + 9;
+
+    x = 9 + x;
+
+    x = z + x;
+
+    // ADD:
+    x = 11 + x;
+    // SUB:
+    x = x - 4;
+
+    // SUB:
+    x = 4 - x;
+    println(unparseInt(x));
+}

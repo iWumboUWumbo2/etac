@@ -49,6 +49,8 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     binop.eta;
     jumps.eta;
     order.eta;
+    stackalign.eta;
+    newBinop.eta;
 }
 
 etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
@@ -65,6 +67,8 @@ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
     binop.eta;
     jumps.eta;
     order.eta;
+    stackalign.eta;
+    newBinop.eta;
 }
 
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
@@ -81,6 +85,8 @@ etac ("Test -target linux") "-libpath $(testpath) -target linux" {
     binop.eta;
     jumps.eta;
     order.eta;
+    stackalign.eta;
+    newBinop.eta;
 }
 
 etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
@@ -97,5 +103,7 @@ etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
     binop.eta;
     jumps.eta;
     order.eta;
+    stackalign.eta;
+    newBinop.eta;
 }
 
