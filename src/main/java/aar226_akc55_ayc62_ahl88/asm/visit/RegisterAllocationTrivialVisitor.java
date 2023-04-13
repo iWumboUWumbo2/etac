@@ -582,7 +582,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
             return new ASMBinOpAddExpr(tempsToRegs(binopAdd.getLeft(),tempMapping),
                     tempsToRegs(binopAdd.getRight(),tempMapping));
         }else if (expr instanceof ASMBinOpSubExpr binopSub){
-            return new ASMBinOpAddExpr(tempsToRegs(binopSub.getLeft(),tempMapping),
+            return new ASMBinOpSubExpr(tempsToRegs(binopSub.getLeft(),tempMapping),
                     tempsToRegs(binopSub.getRight(),tempMapping));
         } else{ // other base case
             return expr;

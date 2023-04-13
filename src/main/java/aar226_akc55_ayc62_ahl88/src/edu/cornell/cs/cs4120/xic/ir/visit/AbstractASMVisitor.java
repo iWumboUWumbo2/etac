@@ -598,7 +598,7 @@ public class AbstractASMVisitor {
                 curBestCost = mem.expr().getBestCost() + 1;
             }
         }
-        if (mem.expr() instanceof IRBinOp memBinop && (memBinop.opType() == IRBinOp.OpType.ADD )) {
+        if (mem.expr() instanceof IRBinOp memBinop && (memBinop.opType() == IRBinOp.OpType.ADD || memBinop.opType() == IRBinOp.OpType.SUB)) {
             // MEM( Blah + Const)
             //IRBinOp memBinop = (IRBinOp) mem.expr();
             IRExpr left = memBinop.left();
@@ -612,22 +612,20 @@ public class AbstractASMVisitor {
                     if (memBinop.opType() == IRBinOp.OpType.ADD){
                         add = new ASMBinOpAddExpr(new ASMConstExpr(c.value()), new ASMTempExpr(rTemp.name()));
                     }else{
-                        System.out.println("sub only");
                         add =new ASMBinOpSubExpr(new ASMConstExpr(c.value()), new ASMTempExpr(rTemp.name()));
                     }
                     caseInstructions.add(new ASMMov(destTemp, new ASMMemExpr(add)));
                     curBestInstructions = caseInstructions;
                     curBestCost = 1;
                 }
-            } else if (right.isConstant() && left instanceof IRTemp) {
+            } else if (right instanceof IRConst cLeft && left instanceof IRTemp tleft) {
                 if (1 < curBestCost) {
                     ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
                     ASMBinOpExpr add;
                     if (memBinop.opType() == IRBinOp.OpType.ADD){
-                        add = new ASMBinOpAddExpr(new ASMConstExpr(((IRConst) right).value()), new ASMTempExpr(((IRTemp) left).name()));
+                        add = new ASMBinOpAddExpr(new ASMTempExpr(tleft.name()),new ASMConstExpr(cLeft.value()));
                     }else{
-                        System.out.println("sub only");
-                        add =new ASMBinOpSubExpr(new ASMTempExpr(((IRTemp) left).name()),new ASMConstExpr(((IRConst) right).value()));
+                        add = new ASMBinOpSubExpr(new ASMTempExpr(tleft.name()),new ASMConstExpr(cLeft.value()));
                     }
                     caseInstructions.add(new ASMMov(destTemp, new ASMMemExpr(add)));
                     curBestInstructions = caseInstructions;
@@ -658,8 +656,9 @@ public class AbstractASMVisitor {
             }
         }
 
-        if (mem.expr() instanceof IRBinOp memBinop && (memBinop.opType() == IRBinOp.OpType.ADD )) {
+        if (mem.expr() instanceof IRBinOp memBinop && (memBinop.opType() == IRBinOp.OpType.ADD || memBinop.opType() == IRBinOp.OpType.SUB)) {
             // MEM (ADD BLAH, MUL(TEMP, CONST))
+            // TODO MEM (SUB BLAH, MUL(TEMP, CONST))
             IRExpr left = memBinop.left();
             IRExpr right = memBinop.right();
 
@@ -680,7 +679,6 @@ public class AbstractASMVisitor {
                         if (memBinop.opType() == IRBinOp.OpType.ADD) {
                             add = new ASMBinOpAddExpr(mult, addTemp);
                         }else{
-                            System.out.println("sub");
                             add = new ASMBinOpSubExpr(mult, addTemp);
                         }
 
@@ -699,7 +697,6 @@ public class AbstractASMVisitor {
                         if (memBinop.opType() == IRBinOp.OpType.ADD) {
                             add = new ASMBinOpAddExpr(mult, addTemp);
                         }else{
-                            System.out.println("sub");
                             add = new ASMBinOpSubExpr(mult, addTemp);
                         }
                         ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
@@ -726,8 +723,7 @@ public class AbstractASMVisitor {
                         if (memBinop.opType() == IRBinOp.OpType.ADD) {
                             add = new ASMBinOpAddExpr(addTemp,mult);
                         }else{
-                            System.out.println("sub");
-                            add = new ASMBinOpSubExpr(mult,addTemp);
+                            add = new ASMBinOpSubExpr(addTemp,mult);
                         }
                         ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
                         caseInstructions.add(new ASMMov(destTemp, new ASMMemExpr(add)));
@@ -744,7 +740,6 @@ public class AbstractASMVisitor {
                         if (memBinop.opType() == IRBinOp.OpType.ADD) {
                             add = new ASMBinOpAddExpr(addTemp,mult);
                         }else{
-                            System.out.println("sub");
                             add = new ASMBinOpSubExpr(addTemp,mult);
                         }
 
