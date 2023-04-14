@@ -1,0 +1,13 @@
+use io
+
+main(args:int[][]) {
+  a:int = 0
+  b:int = a + 1
+
+  while(i<20) {
+    a = a + 1
+    a = b + 1
+    b = a + 1
+    b = b + 1
+  }
+}
