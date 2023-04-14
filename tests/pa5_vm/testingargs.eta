@@ -1,0 +1,20 @@
+use io use conv
+// check sign extend
+one() : int {
+    return 1
+}
+neg() : int {
+    return -1;
+}
+rdx() : int, int {
+    return -1 , -1;
+}
+main(args:int[][]) {
+    b:int = 10;
+    print("Negative ten: ");
+    println(unparseInt(b / neg()));
+    ones:int = one();
+    _, _ = rdx();
+    print("Positive ten: ");
+    println(unparseInt(b / ones));
+}

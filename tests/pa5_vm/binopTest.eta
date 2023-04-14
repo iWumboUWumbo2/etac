@@ -1,0 +1,11 @@
+use io
+use conv
+
+main(args: int[][]) {
+  println(unparseInt(11234 + 292))
+  println(unparseInt(31234 - 198))
+  println(unparseInt(45322 * 194))
+  println(unparseInt(2053 *>> 22))
+  println(unparseInt(61293 / 223))
+  println(unparseInt(73123 % 243))
+}
