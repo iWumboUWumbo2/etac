@@ -381,6 +381,18 @@ public class AbstractASMVisitor {
                     curBestCost = 1;
                 }
             }
+            if (b.right() instanceof IRMem m ){ // mov a add(a,mem)
+                ArrayList<ASMInstruction> copyMemInstrs = new ArrayList<>(m.getBestInstructions());
+                ASMMov movMemToDest = (ASMMov) copyMemInstrs.get(copyMemInstrs.size()-1);
+                copyMemInstrs.remove(copyMemInstrs.size()-1);
+                ASMMemExpr rightSideMem = (ASMMemExpr)  movMemToDest.getRight();
+                if (m.getBestCost() -1 + 1 < curBestCost){
+                    ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(copyMemInstrs);
+                    caseInstructions.add(new ASMArg2(irOpToASMOp(b),new ASMTempExpr(t.name()),rightSideMem));
+                    curBestInstructions = caseInstructions;
+                    curBestCost = m.getBestCost() -1 + 1;
+                }
+            }
         }
         // right side must commute
         if (b.right() instanceof IRTemp tright && twoOpArith(b) && (t.toString().equals(tright.toString()))) { // move a (e1 + a)
@@ -398,6 +410,18 @@ public class AbstractASMVisitor {
                     caseInstructions.add(new ASMArg2(irOpToASMOp(b),new ASMTempExpr(t.name()),b.left().getAbstractReg()));
                     curBestInstructions = caseInstructions;
                     curBestCost = 1 + b.left().getBestCost();
+                }
+                if (b.left() instanceof IRMem m ){ // mov a add(mem,a)
+                    ArrayList<ASMInstruction> copyMemInstrs = new ArrayList<>(m.getBestInstructions());
+                    ASMMov movMemToDest = (ASMMov) copyMemInstrs.get(copyMemInstrs.size()-1);
+                    copyMemInstrs.remove(copyMemInstrs.size()-1);
+                    ASMMemExpr rightSideMem = (ASMMemExpr)  movMemToDest.getRight();
+                    if (m.getBestCost() -1 + 1 < curBestCost){
+                        ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(copyMemInstrs);
+                        caseInstructions.add(new ASMArg2(irOpToASMOp(b),new ASMTempExpr(t.name()),rightSideMem));
+                        curBestInstructions = caseInstructions;
+                        curBestCost = m.getBestCost() -1 + 1;
+                    }
                 }
             }
         }
@@ -605,7 +629,7 @@ public class AbstractASMVisitor {
 
     // Scale has to be a power of 2 (1, 2, 4, 8)
     private boolean isValidScale(long x) {
-        return (x != 0) && (x & (x - 1)) == 0;
+        return x == 1 || x == 2 || x== 4 || x== 8;
     }
     private ASMTempExpr munchIRMem(IRMem mem) {
         long curBestCost = Long.MAX_VALUE;
