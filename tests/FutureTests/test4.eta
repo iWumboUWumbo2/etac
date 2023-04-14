@@ -1,0 +1,15 @@
+use io
+use conv
+
+main(args: int[][]) {
+  a : int = 1
+  b : int = 2
+  c : int = a
+  d : int = b
+  e : int = c + d
+  f : int = c + d
+  g : int = c + d
+  println(unparseInt(e))
+  println(unparseInt(f))
+  println(unparseInt(g))
+}
