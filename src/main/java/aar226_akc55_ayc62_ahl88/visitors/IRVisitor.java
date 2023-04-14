@@ -403,15 +403,15 @@ public class IRVisitor implements Visitor<IRNode>{
         String t = nxtTemp();   // temp label for malloc
         ArrayList<Expr> values = node.getValues();
         long n = values.size();
-        String l = nxtTemp();
+//        String l = nxtTemp();
 
         // reg[l] <- length
-        IRMove length_to_l = new IRMove(new IRTemp(l), new IRConst(n));
+//        IRMove length_to_l = new IRMove(new IRTemp(l), new IRConst(n));
 
         // 8*n+8
         IRBinOp size = new IRBinOp(IRBinOp.OpType.ADD,
                 new IRBinOp(IRBinOp.OpType.MUL,
-                        new IRTemp(l),
+                        new IRConst(n),
                         new IRConst(WORD_BYTES)),
                 new IRConst(WORD_BYTES));
 
@@ -421,9 +421,9 @@ public class IRVisitor implements Visitor<IRNode>{
         // reg[t] <- call malloc
         IRMove malloc_move = new IRMove(new IRTemp(t), new IRTemp("_RV1"));
 
-        IRMove size_move = new IRMove(new IRMem(new IRTemp(t)), new IRTemp(l));
+        IRMove size_move = new IRMove(new IRMem(new IRTemp(t)), new IRConst(n));
 
-        List<IRStmt> seq_list = new ArrayList<>(List.of(length_to_l, alloc_call, malloc_move, size_move));
+        List<IRStmt> seq_list = new ArrayList<>(List.of(alloc_call, malloc_move, size_move));
 
         for(int i = 0; i < n; i++) {
             IRExpr ire = values.get(i).accept(this);
