@@ -37,13 +37,43 @@ etac ("Test --help") "--help" {
 
 etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     binopTest.eta;
+    binopFunc.eta;
+    arrayEdge.eta;
+    hi_mult.eta;
+    longLoop.eta;
+    testingsargs.eta;
+    test1.eta;
+    test2.eta;
+    test3.eta;
+    test4.eta;
+    test5.eta;
 }
 
 etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
     binopTest.eta;
+    binopFunc.eta;
+    arrayEdge.eta;
+    hi_mult.eta;
+    longLoop.eta;
+    testingsargs.eta;
+    test1.eta;
+    test2.eta;
+    test3.eta;
+    test4.eta;
+    test5.eta;
 }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
     binopTest.eta;
+    binopFunc.eta;
+    arrayEdge.eta;
+    hi_mult.eta;
+    longLoop.eta;
+    testingsargs.eta;
+    test1.eta;
+    test2.eta;
+    test3.eta;
+    test4.eta;
+    test5.eta;
 
 }
 
@@ -54,4 +84,9 @@ etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
     hi_mult.eta;
     longLoop.eta;
     testingsargs.eta;
+    test1.eta;
+    test2.eta;
+    test3.eta;
+    test4.eta;
+    test5.eta;
 }

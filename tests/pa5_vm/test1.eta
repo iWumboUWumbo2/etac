@@ -6,8 +6,10 @@ main(args:int[][]) {
   c:int = 2
   d:int = 3
   e:int = 4
+  x:int = 1
+  i:int = 1;
   while (a < 100) {
-    x = x + i * (a + (b * (c + (d * e))
+    x = x + i * (a + (b * (c + (d * e))))
     a = a + 1
   }
   println(unparseInt(a))

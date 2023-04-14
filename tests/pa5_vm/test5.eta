@@ -17,7 +17,7 @@ main(args:int[][]){
     i:int = 0
     c:int = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
 
-    while(i < 100000000) {
+    while(i < 10) {
         i = i+1
         c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
         d : int = num()
