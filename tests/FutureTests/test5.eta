@@ -1,6 +1,15 @@
 use io
 use conv
 
+num() : int {
+  a:int=2;
+  b:int=3;
+  c:int = (a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))) * 0;
+  d:int = (a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))) * 1;
+  e:int = (a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))) * 2;
+  f:int = (a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))) * 3;
+  return f;
+}
 main(args:int[][]){
     a : int = 100
     b : int = 101
@@ -9,10 +18,12 @@ main(args:int[][]){
     c:int = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
 
     while(i < 100000000) {
-    i = i+1
-    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+        i = i+1
+        c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+        d : int = num()
     }
 
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
     c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
     c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + 1
     c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
