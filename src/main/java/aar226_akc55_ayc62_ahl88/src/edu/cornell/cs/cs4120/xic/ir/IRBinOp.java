@@ -8,6 +8,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.Aggregate
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 /** An intermediate representation for a binary operation OP(left, right) */
@@ -293,6 +294,16 @@ public class IRBinOp extends IRExpr_c {
             }
             case MUL -> {
                 return leftVal * rightVal;
+            }
+            case LEQ -> {
+                return leftVal <= rightVal ? 1 : 0;
+            }
+            case GEQ -> {
+                return leftVal >= rightVal ? 1: 0;
+            }
+            case HMUL -> {
+                BigInteger a = BigInteger.valueOf(leftVal).multiply(BigInteger.valueOf(rightVal));
+                return a.shiftRight(64).longValue();
             }
             case NEQ -> {
                 return leftVal != rightVal ? 1 : 0;
