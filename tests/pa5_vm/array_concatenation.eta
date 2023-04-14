@@ -1,0 +1,42 @@
+use io
+use conv
+
+main(args:int[][]) {
+	print("this is \\n: ");
+	print("\n")
+	println("the part of me")
+
+	a1 : int[] = {65} + {69, 70} + {121};
+	print("{65} + {69, 70} + {121}:")
+	printArr(a1)
+
+	a2 : int[] = "what"  + "the"  +   "flux"
+	print("\"what\"+\"the\"+\"flux\":")
+	printArr(a2)
+
+	a3 : int[][] = {a1+a1, a2+a2}
+	print("a1 + a1 + a2 + a2:\n")
+	print2dArr(a3)
+
+	a4 : int[] = {0}+"a"
+	a5 : int[] = unparseInt(0)+"a"
+	printArr(a4)
+	printArr(a5)
+}
+
+printArr(arr:int[]){
+	i : int = 0
+	while(i < length(arr)){
+		print(unparseInt(arr[i]) + "\t")
+		i = i + 1
+	}
+	println("")
+}
+
+print2dArr(a:int[][]){
+	i:int = 0
+	while(i < length(a)) {
+		printArr(a[i])
+		i = i + 1
+	}
+}

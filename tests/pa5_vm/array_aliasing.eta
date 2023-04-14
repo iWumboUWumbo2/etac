@@ -1,0 +1,24 @@
+use io
+use conv
+
+main(args: int[][]) {
+	a:int[] = {increment(6), increment(9)}
+	b:int[] = a
+	c:int[] = {increment(6), increment(9)};
+
+	printBool(a == b)
+	printBool(a != c)
+	printBool(b != c)
+}
+
+increment(n:int):int {
+	return n + 1
+}
+
+printBool(b:bool) {
+  if(b) {
+    println("true")
+  } else {
+    println("false")
+  }
+}

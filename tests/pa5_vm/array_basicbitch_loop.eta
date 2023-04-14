@@ -1,0 +1,17 @@
+use io
+use conv
+
+main(args: int[][]) {
+	arr: int[] = {0, 1, 2, 3, 4, 5}
+	i: int = 0
+
+	println(unparseInt(length(arr)))
+	while(i < length(arr)) {
+		print(unparseInt(arr[i]) + "\t")
+		i = succ(i)
+	}
+}
+
+succ(a:int):int{
+	return a+1
+}

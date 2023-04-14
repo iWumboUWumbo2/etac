@@ -1,0 +1,8 @@
+use io
+use conv
+
+main(args: int[][]) {
+	print("I ")
+	print("like ")
+	println("porcupines")
+}

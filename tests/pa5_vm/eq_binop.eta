@@ -1,0 +1,23 @@
+use io
+use conv
+
+main(args: int[][]) {
+    printBool(1 < 2)
+    printBool(1 <= 2)
+    printBool(1 > 2)
+    printBool(1 >= 2)
+    printBool(1 == 2)
+    printBool(1 != 2)
+    printBool(2 != 2)
+    printBool(true == true)
+    printBool(true != false)
+    printBool(true == false)
+}
+
+printBool(b:bool) {
+  if (b) {
+    println("true")
+  } else {
+    println("false")
+  }
+}

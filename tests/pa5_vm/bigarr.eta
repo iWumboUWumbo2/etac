@@ -1,0 +1,6 @@
+use io
+use conv
+
+main(args: int[][]) {
+	arr : int[2023]
+}

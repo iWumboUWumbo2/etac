@@ -1,0 +1,6 @@
+use io
+use conv
+main(a:int[][]) {
+    x:int[] = {1,2,3}
+	println(unparseInt(x[1]))
+}

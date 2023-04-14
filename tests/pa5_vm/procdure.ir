@@ -1,0 +1,40 @@
+(COMPUNIT
+ CompUnit
+ (FUNC
+  _Imain_paai
+  (SEQ
+   (MOVE (TEMP args) (TEMP _ARG1))
+   (CALL_STMT 0 (NAME _Ifoo_p))
+   (CALL_STMT 0 (NAME _Ibar_p))
+   (CALL_STMT 0 (NAME _Ibar_p))
+   (RETURN)))
+ (FUNC
+  _Ifoo_p
+  (SEQ
+   (MOVE (TEMP tl0) (CONST 48))
+   (CALL_STMT 1 (NAME _eta_alloc) (TEMP tl0))
+   (MOVE (TEMP t0) (TEMP _RV1))
+   (MOVE (MEM (TEMP t0)) (CONST 5))
+   (MOVE (MEM (ADD (TEMP t0) (CONST 8))) (CONST 119))
+   (MOVE (MEM (ADD (TEMP t0) (CONST 16))) (CONST 117))
+   (MOVE (MEM (ADD (TEMP t0) (CONST 24))) (CONST 98))
+   (MOVE (MEM (ADD (TEMP t0) (CONST 32))) (CONST 98))
+   (MOVE (MEM (ADD (TEMP t0) (CONST 40))) (CONST 97))
+   (MOVE (TEMP tl1) (ADD (TEMP t0) (CONST 8)))
+   (CALL_STMT 0 (NAME _Iprintln_pai) (TEMP tl1))
+   (RETURN)))
+ (FUNC
+  _Ibar_p
+  (SEQ
+   (MOVE (TEMP tl2) (CONST 48))
+   (CALL_STMT 1 (NAME _eta_alloc) (TEMP tl2))
+   (MOVE (TEMP t1) (TEMP _RV1))
+   (MOVE (MEM (TEMP t1)) (CONST 5))
+   (MOVE (MEM (ADD (TEMP t1) (CONST 8))) (CONST 100))
+   (MOVE (MEM (ADD (TEMP t1) (CONST 16))) (CONST 117))
+   (MOVE (MEM (ADD (TEMP t1) (CONST 24))) (CONST 98))
+   (MOVE (MEM (ADD (TEMP t1) (CONST 32))) (CONST 98))
+   (MOVE (MEM (ADD (TEMP t1) (CONST 40))) (CONST 97))
+   (MOVE (TEMP tl3) (ADD (TEMP t1) (CONST 8)))
+   (CALL_STMT 0 (NAME _Iprintln_pai) (TEMP tl3))
+   (RETURN))))

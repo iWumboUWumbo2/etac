@@ -1,0 +1,9 @@
+use io
+use conv
+
+main(args: int[][]) {
+    b:int[5][5][5][];
+	a:int[] = b[1][2][3]
+
+	println("wubba dubba")
+}
