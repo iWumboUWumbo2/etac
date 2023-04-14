@@ -1,0 +1,46 @@
+use io
+use conv
+
+even(i : int) : bool {
+  if (i == 0) {
+    return true;
+  } else if (i < 0) {
+    return odd(i+1);
+  } else {
+    return odd(i-1);
+  }
+}
+
+odd(i : int) : bool {
+  if (i == 0) {
+    return false;
+  } else if (i < 0) {
+    return even(i+1);
+  } else {
+    return even(i-1);
+  }
+}
+
+printBool(b:bool){
+  if(b){
+    println("t")
+  }
+  else{
+    println("f")
+  }
+}
+
+main(args:int[][]) {
+  a : int = 76
+  b : int = -76
+  c : int = 0
+  d : int = 25
+  e : int = 57
+  printBool(even(d))  //false
+  printBool(even(e))  //false
+  printBool(odd(d))  //true
+  printBool(odd(e))  //true
+  if (even(a) & even(b) & even(c) & odd(d) & odd(e)){
+	println("test pass")
+  }
+}

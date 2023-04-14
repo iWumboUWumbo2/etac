@@ -1,0 +1,17 @@
+use io
+use conv
+x : int[]
+
+arradd():int{
+	x[0] = x[0] + 5
+	return 1
+}
+
+main(args: int[][]) {
+	x = {5}
+	println(unparseInt(x[0])) // 5
+	b : int = x[0] + arradd() // 10 + 1 = 11
+	c : int = x[0] + arradd() // 15 + 1 = 16
+	println(unparseInt(b))
+	println(unparseInt(c))
+}

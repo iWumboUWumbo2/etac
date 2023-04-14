@@ -1,0 +1,11 @@
+use io
+use conv
+
+main(args:int[][]) {
+	a : int = 40
+	b : int = add(20,a)
+	println(unparseInt(b))
+}
+add(n:int, m:int):int{
+	return n + m
+}

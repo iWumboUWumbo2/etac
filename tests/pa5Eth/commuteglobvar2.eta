@@ -1,0 +1,40 @@
+use io
+use conv
+y : int
+
+bool1():bool{
+	y = y + 2
+	return true
+}
+
+bool2():bool{
+	y = y + 2
+	return true
+}
+
+bool3():bool{
+	_ = bool1()
+	y = y + 2
+	return true
+}
+
+
+
+main(args: int[][]) {
+    y = 0
+	if (bool1() & bool2() & bool3()){
+		println(unparseInt(y)) //2+2+8=14
+	}
+	y = 0
+	if (bool1() & bool2() | bool3()){
+		println(unparseInt(y)) //2+2=4
+	}
+	y = 0
+	if (bool1() | bool2() & bool3()){
+		println(unparseInt(y)) //2
+	}
+	y = 0
+	if (!bool1() & bool2() & bool3()){
+	}
+	println(unparseInt(y)) //2
+}
