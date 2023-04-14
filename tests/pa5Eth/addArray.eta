@@ -2,8 +2,7 @@ use io
 use conv
 
 main(args : int[][]) {
-    x : int[] = {1}
-    y : int = 10;
-    y = x[0] + y
-    println(unparseInt(y));
+    x: int = 6;
+    x = 128 * x;
+    println(unparseInt(x));
 }

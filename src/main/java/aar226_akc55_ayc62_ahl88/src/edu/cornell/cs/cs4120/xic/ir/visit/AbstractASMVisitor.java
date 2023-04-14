@@ -367,6 +367,18 @@ public class AbstractASMVisitor {
         ASMAbstractReg binopTemp = munchIRExpr(b);
 
         if (b.left() instanceof IRTemp tleft && twoOpArith(b) && (t.toString().equals(tleft.toString()))) { // move a (a+tright)
+            if (b.right() instanceof IRConst c && isPowerOfTwo(c.value()) && b.opType() == IRBinOp.OpType.MUL){
+                int power = 0;
+                long number = c.value();
+                while (number > 1){
+                    power++;
+                    number = number/2;
+                }
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
+                caseInstructions.add(new ASMShl(new ASMTempExpr(tleft.name()),new ASMConstExpr(power)));
+                curBestInstructions = caseInstructions;
+                curBestCost = 1;
+            }
             if (b.right().getBestCost() + 1 < curBestCost) {
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.right().getBestInstructions());
                 caseInstructions.add(new ASMArg2(irOpToASMOp(b), new ASMTempExpr(t.name()), b.right().getAbstractReg()));
@@ -396,6 +408,18 @@ public class AbstractASMVisitor {
         }
         // right side must commute
         if (b.right() instanceof IRTemp tright && twoOpArith(b) && (t.toString().equals(tright.toString()))) { // move a (e1 + a)
+            if (b.left() instanceof IRConst c && isPowerOfTwo(c.value()) && b.opType() == IRBinOp.OpType.MUL){
+                int power = 0;
+                long number = c.value();
+                while (number > 1){
+                    power++;
+                    number = number/2;
+                }
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
+                caseInstructions.add(new ASMShl(new ASMTempExpr(tright.name()),new ASMConstExpr(power)));
+                curBestInstructions = caseInstructions;
+                curBestCost = 1;
+            }
             if (b.left() instanceof IRConst cLeft && (b.opType() == IRBinOp.OpType.XOR || b.opType() == IRBinOp.OpType.ADD) ){ // move a (const arith a)
                 if (1 < curBestCost){
                     ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
@@ -843,7 +867,6 @@ public class AbstractASMVisitor {
         mem.bestInstructions = curBestInstructions;
         mem.tempName = destTemp;
         return destTemp;
-//        return null;
     }
     private ASMTempExpr munchTemp(IRTemp temp) {
         temp.visited = true;
@@ -868,20 +891,44 @@ public class AbstractASMVisitor {
         // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
         long curBestCost = Long.MAX_VALUE;
         ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
+        ArrayList<ASMInstruction> resultingInstructions = new ArrayList<>();
         ASMAbstractReg l1 = munchIRExpr(binop.left());
         ASMAbstractReg l2 = munchIRExpr(binop.right());
 
-        if (binop.left() instanceof IRConst cLeft){
-
+        if (binop.left() instanceof IRConst cLeft && binop.opType() == IRBinOp.OpType.MUL && isPowerOfTwo(cLeft.value())){
+            int power = 0;
+            long number = cLeft.value();
+            while (number > 1){
+                power++;
+                number = number/2;
+            }
+            if (binop.right().getBestCost() + 2 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.right().getBestInstructions());
+                caseInstructions.add(new ASMMov(destTemp,binop.right().getAbstractReg()));
+                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
+                resultingInstructions = caseInstructions;
+                curBestCost = binop.right().getBestCost() + 2;
+            }
         }
-        if (binop.right() instanceof IRConst cRight){
-
+        if (binop.right() instanceof IRConst cRight && binop.opType() == IRBinOp.OpType.MUL && isPowerOfTwo(cRight.value())){
+            int power = 0;
+            long number = cRight.value();
+            while (number > 1){
+                power++;
+                number = number/2;
+            }
+            if (binop.right().getBestCost() + 2 < curBestCost){
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.left().getBestInstructions());
+                caseInstructions.add(new ASMMov(destTemp,binop.left().getAbstractReg()));
+                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
+                resultingInstructions = caseInstructions;
+                curBestCost = binop.right().getBestCost() + 2;
+            }
         }
         if (false) {
 
         } else {
-
+            ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
             curBestInstructions.addAll(binop.left().getBestInstructions());
             curBestInstructions.addAll(binop.right().getBestInstructions());
 
@@ -893,6 +940,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMAdd(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case MUL:
@@ -902,6 +950,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMIMul(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case DIV: // rax/div, store result in rax and remainder in rdx
@@ -914,6 +963,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCQTO());
                         curBestInstructions.add(new ASMIDiv(l2));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case SUB:
@@ -923,6 +973,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case HMUL: // TODO: fix this
@@ -934,6 +985,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                         curBestInstructions.add(new ASMIMul(l2));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case MOD: // rax/div, store result in rax and remainder in rdx
@@ -946,6 +998,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMCQTO());
                         curBestInstructions.add(new ASMIDiv(l2));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case AND:
@@ -955,6 +1008,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMAnd(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case OR:
@@ -964,6 +1018,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMOr(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case XOR:
@@ -973,6 +1028,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMXor(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case LSHIFT: // logical left shift
@@ -982,6 +1038,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMShl(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case RSHIFT: // logical right shift
@@ -991,6 +1048,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMShr(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case ARSHIFT:
@@ -1000,6 +1058,7 @@ public class AbstractASMVisitor {
                                 binop.right().getBestCost() + 2;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMSar(destTemp, l2));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case EQ:
@@ -1012,6 +1071,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMSete(new ASMRegisterExpr("al")));
                         curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case NEQ:
@@ -1025,6 +1085,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case LT:
@@ -1038,6 +1099,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case ULT:
@@ -1051,6 +1113,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
                         //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case GT:
@@ -1064,6 +1127,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case LEQ:
@@ -1077,6 +1141,7 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
                 case GEQ:
@@ -1090,11 +1155,12 @@ public class AbstractASMVisitor {
                         curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
 //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
                         curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
+                        resultingInstructions = curBestInstructions;
                     }
                     break;
             }
         }
-        binop.bestInstructions = curBestInstructions;
+        binop.bestInstructions = resultingInstructions;
         binop.bestCost = curBestCost;
         binop.visited = true;
         binop.tempName = destTemp;
@@ -1302,6 +1368,17 @@ public class AbstractASMVisitor {
     }
 
     /**
+     * Checks if the binary operator is commutable
+     * @param b binop to test
+     * @return boolean for commuting binop
+     */
+    private boolean commuteOp(IRBinOp b){
+        return (b.opType() == IRBinOp.OpType.ADD) || b.opType() == IRBinOp.OpType.AND || b.opType() == IRBinOp.OpType.OR
+                || b.opType() == IRBinOp.OpType.XOR || b.opType() == IRBinOp.OpType.MUL
+                || b.opType() == IRBinOp.OpType.EQ || b.opType() == IRBinOp.OpType.NEQ;
+    }
+
+    /**
      * Checks if the IRBinop can be reduced to Add or Sub
      * @param b IRBinop node to check
      * @return the binop can be reduced to add or sub
@@ -1311,6 +1388,12 @@ public class AbstractASMVisitor {
                 || (b.opType() == IRBinOp.OpType.SUB);
     }
 
+    private boolean isPowerOfTwo(long x){
+        if (x < 0){
+            return false;
+        }
+        return x != 0 && ((x & (x - 1)) == 0);
+    }
     /**
      * Converts the IRBinop Instruction to the Corresponding ASM Opcode
      * @param b IRBinop to Check
