@@ -1,0 +1,8 @@
+use io
+use conv
+main(args:int[][]) {
+
+    lo:int = -9223372036854775808 *>> 9223372036854775807
+    println(unparseInt(lo))
+
+}

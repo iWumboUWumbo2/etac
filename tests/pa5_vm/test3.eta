@@ -1,0 +1,26 @@
+use io
+use conv
+
+nothing() {
+  a: int = 0
+  b: int = 0
+  c: int = 1
+  d: int = 1
+  while (a < 50) {
+    b = b
+    b = c
+    c = b + d
+    d = b - 1
+    c = b + c + d
+    a = a + 1
+  }
+}
+
+main(args: int[][]) {
+  i : int = 0
+  while (i < 10) {
+    nothing()
+    i = i + 1
+  }
+  println(unparseInt(i));
+}

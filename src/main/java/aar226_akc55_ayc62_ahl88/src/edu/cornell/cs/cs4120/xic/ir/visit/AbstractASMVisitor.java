@@ -887,6 +887,36 @@ public class AbstractASMVisitor {
         c.tempName = res;
         return res;
     }
+    private ArrayList<ASMInstruction> multiplyOptimization (ASMTempExpr destTemp, IRConst constant, ASMAbstractReg reg) {
+        //Multiply optimization, if right is const
+        ArrayList<ASMInstruction> instrs = new ArrayList<>();
+
+        instrs.add(new ASMMov(new ASMRegisterExpr("rdx"), reg));
+        instrs.add(new ASMMov(new ASMRegisterExpr("rax"), new ASMRegisterExpr("rdx")));
+        instrs.add(new ASMXor(new ASMRegisterExpr("rdx"), new ASMRegisterExpr("rdx")));
+        String binaryString = Long.toBinaryString(constant.value());
+        int i = binaryString.length() -1;
+        int zeroCounter = 0;
+        while (i > -1) {
+            if (binaryString.charAt(i) == '0') {
+                for (int j = i; j > -1; j--) {
+                    if (binaryString.charAt(j) == '0') {
+                        zeroCounter++;
+                    } else {
+                        break;
+                    }
+                }
+                instrs.add(new ASMShl(new ASMRegisterExpr("rax"), new ASMConstExpr(zeroCounter)));
+                i -= zeroCounter;
+            } else {
+                instrs.add(new ASMAdd(new ASMRegisterExpr("rdx"), new ASMRegisterExpr("rax")));
+                instrs.add(new ASMAdd(new ASMRegisterExpr("rax"), new ASMRegisterExpr("rax")));
+                i--;
+            }
+        }
+        instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
+        return instrs;
+    }
     private ASMAbstractReg munchBinop(IRBinOp binop) {
         // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
         long curBestCost = Long.MAX_VALUE;
