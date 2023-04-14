@@ -8,9 +8,9 @@ main(args:int[][]){
     i:int = 0
     c:int = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
 
-    while(i < 100000000) {
-    i = i+1
-    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+    while(i < 10) {
+        i = i+1
+        c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
     }
 
     c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
@@ -21,6 +21,6 @@ main(args:int[][]){
     a = 2
     b = 3
     d : int = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + 1
-    c = c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
     println(unparseInt(c))
 }

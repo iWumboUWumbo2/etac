@@ -18,8 +18,9 @@ nothing() {
 
 main(args: int[][]) {
   i : int = 0
-  while (i < 100000000000000) {
+  while (i < 10) {
     nothing()
     i = i + 1
   }
+  println(unparseInt(i));
 }
