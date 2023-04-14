@@ -1,15 +1,14 @@
 use io
 use conv
-
-main(a:int[][]) {
-	y:int = fib(10)
-	println(unparseInt(y))
-
+main(args:int[][]) {
+    println(unparseInt(fib(1)))
+    println(unparseInt(fib(2)))
+    println(unparseInt(fib(10)))
+    println(unparseInt(fib(25)))
 }
 
-fib(x:int):int {
-	if x==2 {return 1}
-	if x==1 {return 1}
-	
-	return fib(x-1) + fib(x-2)
+fib(n:int) : int {
+    if (n == 0) {return 1}
+    if (n == 1) {return 1}
+    return fib(n-1) + fib(n-2)
 }
