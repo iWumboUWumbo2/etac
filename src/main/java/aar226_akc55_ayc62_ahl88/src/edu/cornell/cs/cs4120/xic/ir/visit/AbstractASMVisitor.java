@@ -896,12 +896,19 @@ public class AbstractASMVisitor {
                     }
                     break;
                 case MUL:
-                    if (binop.left().getBestCost() +
-                            binop.right().getBestCost() + 2 < curBestCost) {
-                        curBestCost = binop.left().getBestCost() +
-                                binop.right().getBestCost() + 2;
-                        curBestInstructions.add(new ASMMov(destTemp, l1));
-                        curBestInstructions.add(new ASMIMul(destTemp, l2));
+                    if (binop.left().getBestCost() + binop.right().getBestCost() + 2 < curBestCost) {
+                        curBestCost = binop.left().getBestCost() + binop.right().getBestCost() + 2;
+
+                        if (binop.left() instanceof IRConst lconst && isValidScale(lconst.value())){
+                            curBestInstructions.add(new ASMMov(destTemp, l2));
+                            curBestInstructions.add(new ASMShl(destTemp, new ASMConstExpr((int)(Math.log(lconst.value()) / Math.log(2)))));
+                        } else if (binop.right() instanceof IRConst rconst && isValidScale(rconst.value())) {
+                            curBestInstructions.add(new ASMMov(destTemp, l1));
+                            curBestInstructions.add(new ASMShl(destTemp, new ASMConstExpr((int)(Math.log(rconst.value()) / Math.log(2)))));
+                        } else {
+                            curBestInstructions.add(new ASMMov(destTemp, l1));
+                            curBestInstructions.add(new ASMIMul(destTemp, l2));
+                        }
                     }
                     break;
                 case DIV: // rax/div, store result in rax and remainder in rdx
