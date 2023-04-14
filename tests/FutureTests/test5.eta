@@ -1,0 +1,26 @@
+use io
+use conv
+
+main(args:int[][]){
+    a : int = 100
+    b : int = 101
+
+    i:int = 0
+    c:int = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+
+    while(i < 100000000) {
+    i = i+1
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+    }
+
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + 1
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + c
+
+    a = 2
+    b = 3
+    d : int = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + 1
+    c = c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+    println(unparseInt(c))
+}
