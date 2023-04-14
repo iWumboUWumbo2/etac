@@ -31,6 +31,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
@@ -991,27 +992,54 @@ public class IRVisitor implements Visitor<IRNode>{
         String ti = nxtTemp();
         String lok = nxtLabel();
         String ler = nxtLabel();
-        IRESeq sol = new IRESeq( // 1d array need loop for further
-                new IRSeq(
-                        new IRMove(new IRTemp(ta), expr),
-                        new IRMove(new IRTemp(ti), curInd),
-                        new IRCJump(
+        ArrayList<IRStmt> eseqBody = new ArrayList<>();
+
+        IRExpr exprRes = expr instanceof IRESeq ? new IRTemp(ta) : expr;
+        IRExpr indRes = curInd instanceof IRESeq ? new IRTemp(ti) : curInd;
+        if ((expr instanceof IRESeq)){
+            eseqBody.add(new IRMove(new IRTemp(ta), expr));
+        }
+        if (curInd instanceof IRESeq){
+            eseqBody.add(new IRMove(new IRTemp(ti), curInd));
+        }
+        eseqBody.addAll(Arrays.asList(new IRCJump(
                                 new IRBinOp(IRBinOp.OpType.ULT,
-                                        new IRTemp(ti),
+                                        indRes,
                                         new IRMem(
                                                 new IRBinOp(IRBinOp.OpType.SUB,
-                                                        new IRTemp(ta),
+                                                        exprRes,
                                                         new IRConst(8)))),
                                 lok,ler),
                         new IRLabel(ler),
                         new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>()),
-                        new IRLabel(lok)
-                ),
-                new IRMem(
+                        new IRLabel(lok)));
+        IRESeq sol = new IRESeq(new IRSeq(eseqBody),
+                        new IRMem(
                         new IRBinOp(IRBinOp.OpType.ADD,
-                                new IRTemp(ta),
-                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
+                                exprRes,
+                                new IRBinOp(IRBinOp.OpType.MUL,indRes,new IRConst(8))
                         )));
+//        IRESeq sol = new IRESeq( // 1d array need loop for further
+//                new IRSeq(
+//                        new IRMove(new IRTemp(ta), expr),
+//                        new IRMove(new IRTemp(ti), curInd),
+//                        new IRCJump(
+//                                new IRBinOp(IRBinOp.OpType.ULT,
+//                                        new IRTemp(ti),
+//                                        new IRMem(
+//                                                new IRBinOp(IRBinOp.OpType.SUB,
+//                                                        new IRTemp(ta),
+//                                                        new IRConst(8)))),
+//                                lok,ler),
+//                        new IRLabel(ler),
+//                        new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>()),
+//                        new IRLabel(lok)
+//                ),
+//                new IRMem(
+//                        new IRBinOp(IRBinOp.OpType.ADD,
+//                                new IRTemp(ta),
+//                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8))
+//                        )));
         return accessRecur(ind + 1, indexes, sol);
     }
 

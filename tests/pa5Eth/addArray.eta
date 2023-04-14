@@ -4,5 +4,6 @@ use conv
 main(args : int[][]) {
     x : int[] = {1}
     y : int = 10;
-    y = y + x[0]
+    y = x[0] + y
+    println(unparseInt(y));
 }

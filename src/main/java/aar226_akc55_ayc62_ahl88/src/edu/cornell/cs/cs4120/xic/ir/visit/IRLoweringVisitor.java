@@ -1,6 +1,8 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 
+import aar226_akc55_ayc62_ahl88.Main;
+import aar226_akc55_ayc62_ahl88.OptimizationTypes;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
@@ -36,7 +38,7 @@ class BasicBlock {
 public class IRLoweringVisitor extends IRVisitor {
     private int labelCnt;
     private int tempCnt;
-
+    public boolean folding;
 
     private String nxtLabel() {
         return String.format("lb%d", (labelCnt++));
@@ -50,6 +52,7 @@ public class IRLoweringVisitor extends IRVisitor {
         labelCnt = 0;
         tempCnt = 0;
         labelToNumber= new HashMap<>();
+        folding = Main.opts.isSet(OptimizationTypes.CONSTANT_FOLDING);
     }
     private HashMap<String,Long> labelToNumber;
 
@@ -573,8 +576,26 @@ public class IRLoweringVisitor extends IRVisitor {
             }
             e2 = ires2.expr();
         }
+        IRExpr res =new IRBinOp(node.opType(),e1,e2);
+        if (e1.isConstant() && e2.isConstant() && folding){
+            try {
+                long number = IRBinOp.eval(node.opType(),e1.constant(),e2.constant());
+                res = new IRConst(number);
+            }catch(InternalCompilerError c){
+
+            }
+        }
         if (hoisted.size() != 0){
-            return new IRESeq(new IRSeq(hoisted),new IRBinOp(node.opType(),e1,e2));
+            return new IRESeq(new IRSeq(hoisted),res);
+        }else{
+            if (node.left().isConstant() && node.right().isConstant() && folding){
+                try{
+                    long number = IRBinOp.eval(node.opType(),node.left().constant(),node.right().constant());
+                    return new IRConst(number);
+                }catch (InternalCompilerError c){
+                    return node;
+                }
+            }
         }
         return node;
     }

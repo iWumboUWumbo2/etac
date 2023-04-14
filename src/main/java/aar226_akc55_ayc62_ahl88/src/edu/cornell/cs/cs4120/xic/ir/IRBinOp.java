@@ -254,65 +254,76 @@ public class IRBinOp extends IRExpr_c {
     //    }
     //
     //    // eval the value based on op type
-    //    public static long eval(OpType opType, long leftVal, long rightVal) {
-    //        switch (opType) {
-    //        case ADD:
-    //            return leftVal + rightVal;
-    //        case AND:
-    //        case LOGAND:
-    //            return leftVal & rightVal;
-    //        case DIV:
-    //            if (rightVal == 0)
-    //                throw new InternalCompilerException("Division by zero "
-    //                        + "during constant folding -- please fix your program!");
-    //            return leftVal / rightVal;
-    //        case EQ:
-    //            return leftVal == rightVal ? 1 : 0;
-    //        case GE:
-    //            return leftVal >= rightVal ? 1 : 0;
-    //        case GT:
-    //            return leftVal > rightVal ? 1 : 0;
-    //        case LE:
-    //            return leftVal <= rightVal ? 1 : 0;
-    //        case AR_LSHIFT:
-    //            return leftVal << rightVal;
-    //        case LSHIFT:
-    //            return leftVal << rightVal;
-    //        case LT:
-    //            return leftVal < rightVal ? 1 : 0;
-    //        case MOD:
-    //            if (rightVal == 0)
-    //                throw new InternalCompilerException("Division by zero "
-    //                        + "during constant folding -- please fix your program!");
-    //            return leftVal % rightVal;
-    //        case MUL:
-    //            return leftVal * rightVal;
-    //        case NEQ:
-    //            return leftVal != rightVal ? 1 : 0;
-    //        case OR:
-    //        case LOGOR:
-    //            return leftVal | rightVal;
-    //        case AR_RSHIFT:
-    //            return leftVal >> rightVal;
-    //        case RSHIFT:
-    //            return leftVal >>> rightVal;
-    //        case SUB:
-    //            return leftVal - rightVal;
-    //        case XOR:
-    //            return leftVal ^ rightVal;
-    //        case UGT:
-    //            return leftVal > rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
-    //        case ULT:
-    //            return leftVal < rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
-    //        case ULE:
-    //            return leftVal == rightVal
-    //                    || leftVal < rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
-    //        case UGE:
-    //            return leftVal == rightVal
-    //                    || leftVal > rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
-    //        default:
-    //            throw new InternalCompilerException("Unknow op type "
-    //                    + opType.toString());
-    //        }
-    //    }
+    public static long eval(OpType opType, long leftVal, long rightVal) {
+        switch (opType) {
+            case ADD -> {
+                return leftVal + rightVal;
+            }
+//            case LOGAND:
+//                return leftVal & rightVal;
+            case AND, DIV -> {
+                if (rightVal == 0)
+                    throw new InternalCompilerError("Division by zero "
+                            + "during constant folding -- please fix your program!");
+                return leftVal / rightVal;
+            }
+            case EQ -> {
+                return leftVal == rightVal ? 1 : 0;
+            }
+//            case GE:
+//                return leftVal >= rightVal ? 1 : 0;
+            case GT -> {
+                return leftVal > rightVal ? 1 : 0;
+            }
+//            case LE:
+//                return leftVal <= rightVal ? 1 : 0;
+//            case AR_LSHIFT:
+//                return leftVal << rightVal;
+            case LSHIFT -> {
+                return leftVal << rightVal;
+            }
+            case LT -> {
+                return leftVal < rightVal ? 1 : 0;
+            }
+            case MOD -> {
+                if (rightVal == 0)
+                    throw new InternalCompilerError("Division by zero "
+                            + "during constant folding -- please fix your program!");
+                return leftVal % rightVal;
+            }
+            case MUL -> {
+                return leftVal * rightVal;
+            }
+            case NEQ -> {
+                return leftVal != rightVal ? 1 : 0;
+            }
+//            case LOGOR:
+//                return leftVal | rightVal;
+//            case AR_RSHIFT:
+//                return leftVal >> rightVal;
+            case OR, RSHIFT -> {
+                return leftVal >>> rightVal;
+            }
+            case SUB -> {
+                return leftVal - rightVal;
+            }
+            case XOR -> {
+                return leftVal ^ rightVal;
+            }
+//            case UGT:
+//                return leftVal > rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
+            case ULT -> {
+                return leftVal < rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
+            }
+//            case ULE:
+//                return leftVal == rightVal
+//                        || leftVal < rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
+            case UGE -> {
+                return leftVal == rightVal
+                        || leftVal > rightVal ^ leftVal < 0 != rightVal < 0 ? 1 : 0;
+            }
+            default -> throw new InternalCompilerError("Unknow op type "
+                    + opType.toString());
+        }
+    }
 }
