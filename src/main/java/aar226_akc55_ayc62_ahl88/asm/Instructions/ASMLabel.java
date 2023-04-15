@@ -13,6 +13,11 @@ public class ASMLabel extends ASMInstruction {
         super(ASMOpCodes.LABEL);
         this.label = label;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
     @Override
     public void createPrint(HashMap<String, Integer> location) {
     }
