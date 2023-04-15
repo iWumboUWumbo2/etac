@@ -32,6 +32,6 @@ main(args:int[][]){
     a = 2
     b = 3
     d : int = a * (b + (a * (b + a + (a * (b * (a + b * (a + b))))))) + 1
-    c = c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
+    c = a * (b + (a * (b + a + (a * (b * (a + b * (a + b)))))))
     println(unparseInt(c))
 }

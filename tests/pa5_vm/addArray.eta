@@ -1,8 +1,0 @@
-use io
-use conv
-
-main(args : int[][]) {
-    x: int = 6;
-    x = 128 * x;
-    println(unparseInt(x));
-}

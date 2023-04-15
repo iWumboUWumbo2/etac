@@ -5,7 +5,6 @@ a2 : int[][]
 
 main(args: int[][]) {
 	a1  = {1, 2, 3}
-	a2 : int[123]
 	a3 : int[12][4]
 	prInt(length(a1))
 }
