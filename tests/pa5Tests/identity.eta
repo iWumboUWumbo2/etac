@@ -1,0 +1,14 @@
+use io
+use conv
+
+main(args : int[][]) {
+    gg:int[] = {1,2,3}
+    y:int = 1 * 5;
+    z:int = y * 1;
+    println(unparseInt(y));
+    println(unparseInt(z));
+}
+
+foo():int{
+    return 5;
+}

@@ -92,6 +92,32 @@ public class IRVisitor implements Visitor<IRNode>{
                 default: throw new Error("NOT INTEGER ARITHMETIC BINOP");
             }
         }
+        // Eseq s * 1 = s
+        if (constantFold && ire2 instanceof IRConst cRight){
+            if (cRight.value() == 1){
+                return ire1;
+            }
+            if (cRight.value() == 0){
+                if (ire1 instanceof IRESeq eseq){
+                    new IRESeq(eseq.stmt(),new IRConst(0));
+                }else{
+                    return new IRConst(0);
+                }
+            }
+        }
+        // 1 * Eseq s = s
+        if (constantFold && ire1 instanceof IRConst cLeft){
+            if (cLeft.value() == 1){
+                return ire2;
+            }
+            if (cLeft.value() == 0){
+                if (ire2 instanceof IRESeq eseq){
+                    new IRESeq(eseq.stmt(),new IRConst(0));
+                }else{
+                    return new IRConst(0);
+                }
+            }
+        }
         return new IRBinOp(op, ire1, ire2);
     }
 
@@ -236,7 +262,11 @@ public class IRVisitor implements Visitor<IRNode>{
         // if one unknown and other int, return int
         if (constantFold && ire1.isConstant() && ire2.isConstant()) {
             return new IRConst(ire1.constant() + ire2.constant());
-        } else {
+        } else if(constantFold && ire2 instanceof IRConst cRight && cRight.value() == 0){
+            return ire1;
+        }else if (constantFold && ire1 instanceof IRConst cLeft && cLeft.value() == 0){
+            return ire2;
+        }else {
             return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
         }
     }
