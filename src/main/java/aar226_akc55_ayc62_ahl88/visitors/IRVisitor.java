@@ -93,7 +93,7 @@ public class IRVisitor implements Visitor<IRNode>{
             }
         }
         // Eseq s * 1 = s
-        if (constantFold && ire2 instanceof IRConst cRight){
+        if (constantFold && ire2 instanceof IRConst cRight && op == IRBinOp.OpType.MUL){
             if (cRight.value() == 1){
                 return ire1;
             }
@@ -106,7 +106,7 @@ public class IRVisitor implements Visitor<IRNode>{
             }
         }
         // 1 * Eseq s = s
-        if (constantFold && ire1 instanceof IRConst cLeft){
+        if (constantFold && ire1 instanceof IRConst cLeft && op == IRBinOp.OpType.MUL){
             if (cLeft.value() == 1){
                 return ire2;
             }

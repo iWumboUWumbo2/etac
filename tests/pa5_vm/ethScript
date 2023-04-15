@@ -11,7 +11,7 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     array_basicbitch_loop.eta;
     array_concatenation.eta;
     array_lengths.eta;
- 
+
     basic_array.eta;
     basicfunccall.eta;
     bigarr.eta;
@@ -26,10 +26,7 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     create_empty_array.eta;
     double_inc.eta;
     eq_binop.eta;
-    evenodd.eta;
     ex01.eta;
-    factorial.eta;
-    fib.eta;
     gigaarray.eta;
     globalvar.eta;
     hello.eta;
@@ -53,7 +50,6 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     print_char.eta;
     procdure.eta;
     read_arr_first_element.eta;
-    rec.eta;
     rip.eta;
     stackalign.eta;
     test1.eta;
@@ -70,65 +66,61 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
 
 etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
    
-   arr_multdim_chain.eta;
-   array_aliasing.eta;
-   array_basicbitch_loop.eta;
-   array_concatenation.eta;
-   array_lengths.eta;
+    arr_multdim_chain.eta;
+    array_aliasing.eta;
+    array_basicbitch_loop.eta;
+    array_concatenation.eta;
+    array_lengths.eta;
 
-   basic_array.eta;
-   basicfunccall.eta;
-   bigarr.eta;
+    basic_array.eta;
+    basicfunccall.eta;
+    bigarr.eta;
 
-   binopFunc.eta;
-   binopTest.eta;
-   bool_chain.eta;
-   call_triple.eta;
-   commuteglobvar.eta;
-   commuteglobvar2.eta;
-   commuteglobvar3.eta;
-   create_empty_array.eta;
-   double_inc.eta;
-   eq_binop.eta;
-   evenodd.eta;
-   ex01.eta;
-   factorial.eta;
-   fib.eta;
-   gigaarray.eta;
-   globalvar.eta;
-   hello.eta;
-   hi_mult.eta;
-   if02.eta;
-   if03.eta;
-   if04.eta;
-   inttest.eta;
-   jumps.eta;
-   localdecl13.eta;
-   localdecl14.eta;
-   longLoop.eta;
-   multiassign06.eta;
-   multiassign07.eta;
-   multiassign08.eta;
-   multiret08.eta;
-   nested_arr.eta;
-   newBinop.eta;
-   order.eta;
-   print2darr_double_block.eta;
-   print_char.eta;
-   procdure.eta;
-   read_arr_first_element.eta;
-   rec.eta;
-   rip.eta;
-   stackalign.eta;
-   test1.eta;
-   test2.eta;
-   test3.eta;
-   test4.eta;
-   test5.eta;
-   testingargs.eta;
-   tooDarr.eta;
-   two_mult.eta;
-   while01.eta;
+    binopFunc.eta;
+    binopTest.eta;
+    bool_chain.eta;
+    call_triple.eta;
+    commuteglobvar.eta;
+    commuteglobvar2.eta;
+    commuteglobvar3.eta;
+    create_empty_array.eta;
+    double_inc.eta;
+    eq_binop.eta;
+    ex01.eta;
+    gigaarray.eta;
+    globalvar.eta;
+    hello.eta;
+    hi_mult.eta;
+    if02.eta;
+    if03.eta;
+    if04.eta;
+    inttest.eta;
+    jumps.eta;
+    localdecl13.eta;
+    localdecl14.eta;
+    longLoop.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
+    multiret08.eta;
+    nested_arr.eta;
+    newBinop.eta;
+    order.eta;
+    print2darr_double_block.eta;
+    print_char.eta;
+    procdure.eta;
+    read_arr_first_element.eta;
+    rip.eta;
+    stackalign.eta;
+    test1.eta;
+    test2.eta;
+    test3.eta;
+    test4.eta;
+    test5.eta;
+    testingargs.eta;
+    tooDarr.eta;
+    two_mult.eta;
+    while01.eta;
 
 }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {

@@ -8,11 +8,10 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
+import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNodeFactory_c;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
@@ -26,6 +25,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -325,8 +325,13 @@ public class Main {
                     }
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
+//                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        System.out.println(stmtGraph);
+//                    }
                     {
                         CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
+
 //                        System.out.print("Canonical?: ");
 //                        System.out.println(cv.visit(ir));
                     }
