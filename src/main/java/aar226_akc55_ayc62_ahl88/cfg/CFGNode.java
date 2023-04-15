@@ -17,6 +17,8 @@ public class CFGNode<T> {
     private HashSet<T> in, out, def, use;
 
     public CFGNode(T stmt) {
+        this.predecessors = new ArrayList<>();
+
         this.stmt = stmt;
         fallThroughChild = null;
         jumpChild = null;
@@ -99,5 +101,10 @@ public class CFGNode<T> {
 
     public void setUse(HashSet<T> use) {
         this.use = use;
+    }
+
+    @Override
+    public String toString() {
+        return stmt.toString();
     }
 }

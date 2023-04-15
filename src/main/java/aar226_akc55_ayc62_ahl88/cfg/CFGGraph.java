@@ -65,6 +65,10 @@ public class CFGGraph<T> {
             }
 
         }
+    }
 
+    @Override
+    public String toString() {
+        return nodes.toString();
     }
 }
