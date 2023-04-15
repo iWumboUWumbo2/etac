@@ -334,13 +334,39 @@ public class IRLoweringVisitor extends IRVisitor {
     }
     // to do
     private boolean moveCommute(IRMove node){
-        if (!(node.source() instanceof IRESeq)){
-            return true;
-        }
         if (node.target() instanceof IRMem mem && mem.expr() instanceof IRName){
             return true;
         }
-        return false;
+        if (node.source() instanceof IRESeq eseqRight) {
+            ArrayList<IRNode> rightStatement = eseqRight.stmt().
+                    aggregateChildren(new FlattenIrVisitor());
+
+            ArrayList<IRNode> leftExpression;
+            if (node.target() instanceof IRESeq eseqLeft) {
+                leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
+            } else {
+                leftExpression = node.target().aggregateChildren(new FlattenIrVisitor());
+            }
+            // Make sure right havs no mem
+            for (IRNode n : rightStatement) {
+                if (n instanceof IRMem) {
+                    return false;
+                }
+            }
+            for (IRNode n : leftExpression) {
+                if (n instanceof IRMem) {
+                    return false;
+                }
+            }
+            HashSet<String> rightTemps = usedTemps(rightStatement);
+            HashSet<String> leftTemps = usedTemps(leftExpression);
+            for (String s : rightTemps) {
+                if (leftTemps.contains(s)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     private IRStmt moveNaive(IRMem targ, IRExpr src){
         ArrayList<IRStmt> stmts = new ArrayList<>();
@@ -550,10 +576,49 @@ public class IRLoweringVisitor extends IRVisitor {
         return doesBinopCommunte(node) ? commuteBinop(node) : defaultBinop(node);
     }
 
+
+    private HashSet<String> usedTemps(ArrayList<IRNode> nodes){
+        HashSet<String> res = new HashSet<>();
+        for (IRNode node : nodes){
+            if (node instanceof IRTemp temp){
+                res.add(temp.name());
+            }
+        }
+        return res;
+    }
     // to do
     private boolean doesBinopCommunte(IRBinOp node){
         IRExpr right = node.right();
-        return !(right instanceof IRESeq); // can commute if right side not eseq
+        if (right instanceof IRESeq eseqRight) {
+            ArrayList<IRNode> rightStatement = eseqRight.stmt().
+                    aggregateChildren(new FlattenIrVisitor());
+
+            ArrayList<IRNode> leftExpression;
+            if (node.left() instanceof IRESeq eseqLeft) {
+                leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
+            } else {
+                leftExpression = node.left().aggregateChildren(new FlattenIrVisitor());
+            }
+            // Make sure right havs no mem
+            for (IRNode n : rightStatement) {
+                if (n instanceof IRMem) {
+                    return false;
+                }
+            }
+            for (IRNode n : leftExpression) {
+                if (n instanceof IRMem) {
+                    return false;
+                }
+            }
+            HashSet<String> rightTemps = usedTemps(rightStatement);
+            HashSet<String> leftTemps = usedTemps(leftExpression);
+            for (String s : rightTemps) {
+                if (leftTemps.contains(s)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private IRNode commuteBinop(IRBinOp node){
