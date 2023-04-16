@@ -16,4 +16,9 @@ public class ASMTempExpr extends ASMAbstractReg{
     public String toString() {
         return name;
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

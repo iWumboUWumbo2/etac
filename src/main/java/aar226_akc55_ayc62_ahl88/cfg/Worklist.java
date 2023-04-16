@@ -120,9 +120,34 @@ public class Worklist<T> {
 
     public void setIn(CFGNode<T> node) {
         HashSet<T> in = new HashSet<>();
-        
+        ArrayList<CFGNode<T>> predecessors = node.getPredecessors();
+        CFGNode<T> fallThroughChild = node.getFallThroughChild();
+        CFGNode<T> jumpChild = node.getJumpChild();
+
+        in.addAll(node.getOut());
+        for (T deftemp : node.getDef()) {
+            if (in.contains(deftemp)) in.remove(deftemp);
+        }
+        in.addAll(node.getUse());
 
         node.setIn(in);
+
+    }
+
+    public void setOut(CFGNode<T> node) {
+        HashSet<T> out = new HashSet<>();
+        CFGNode<T> fallThroughChild = node.getFallThroughChild();
+        CFGNode<T> jumpChild = node.getJumpChild();
+
+        if (fallThroughChild != null) {
+            out.addAll(fallThroughChild.getIn());
+        }
+
+        if (jumpChild != null) {
+            out.addAll(jumpChild.getIn());
+        }
+
+        node.setOut(out);
 
     }
 
@@ -131,6 +156,8 @@ public class Worklist<T> {
         for(int i = 0; i < nodes.size(); i ++) {
             worklistNodes.add(nodes.get(i));
         }
+
+        //TODO: set up queue, and finish worklist algorithm
     }
 
 
