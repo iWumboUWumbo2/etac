@@ -340,12 +340,12 @@ public class IRLoweringVisitor extends IRVisitor {
         if (node.source() instanceof IRESeq eseqRight) {
             ArrayList<IRNode> rightStatement = eseqRight.stmt().
                     aggregateChildren(new FlattenIrVisitor());
-
+            ArrayList<IRNode> extra = node.source().aggregateChildren(new FlattenIrVisitor());
             ArrayList<IRNode> leftExpression;
-            if (node.target() instanceof IRESeq eseqLeft) {
+            if (node.source() instanceof IRESeq eseqLeft) {
                 leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
             } else {
-                leftExpression = node.target().aggregateChildren(new FlattenIrVisitor());
+                leftExpression = node.source().aggregateChildren(new FlattenIrVisitor());
             }
             // Make sure right havs no mem
             for (IRNode n : rightStatement) {
@@ -357,6 +357,22 @@ public class IRLoweringVisitor extends IRVisitor {
                 if (n instanceof IRMem) {
                     return false;
                 }
+            }
+            boolean leftCall = false;
+            boolean rightCall = false;
+            for (IRNode n : extra){
+                if (n instanceof IRCallStmt call){
+                    leftCall = true;
+                    break;
+                }
+            }
+            for (IRNode n : rightStatement){
+                if (n instanceof IRCallStmt call){
+                    rightCall = true;
+                }
+            }
+            if (leftCall && rightCall){
+                return false;
             }
             HashSet<String> rightTemps = usedTemps(rightStatement);
             HashSet<String> leftTemps = usedTemps(leftExpression);
@@ -592,7 +608,7 @@ public class IRLoweringVisitor extends IRVisitor {
         if (right instanceof IRESeq eseqRight) {
             ArrayList<IRNode> rightStatement = eseqRight.stmt().
                     aggregateChildren(new FlattenIrVisitor());
-
+            ArrayList<IRNode> extra = node.left().aggregateChildren(new FlattenIrVisitor());
             ArrayList<IRNode> leftExpression;
             if (node.left() instanceof IRESeq eseqLeft) {
                 leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
@@ -609,6 +625,22 @@ public class IRLoweringVisitor extends IRVisitor {
                 if (n instanceof IRMem) {
                     return false;
                 }
+            }
+            boolean leftCall = false;
+            boolean rightCall = false;
+            for (IRNode n : extra){
+                if (n instanceof IRCallStmt call){
+                    leftCall = true;
+                    break;
+                }
+            }
+            for (IRNode n : rightStatement){
+                if (n instanceof IRCallStmt call){
+                    rightCall = true;
+                }
+            }
+            if (leftCall && rightCall){
+                return false;
             }
             HashSet<String> rightTemps = usedTemps(rightStatement);
             HashSet<String> leftTemps = usedTemps(leftExpression);
