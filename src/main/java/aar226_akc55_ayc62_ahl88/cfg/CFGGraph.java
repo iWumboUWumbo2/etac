@@ -66,7 +66,6 @@ public class CFGGraph<T> {
                 String asmname = asmjump.getLeft().toString();
                 cfgnode.setJumpChild( nodes.get(labelMap.get(asmname)));
             }
-
         }
     }
 
@@ -75,12 +74,10 @@ public class CFGGraph<T> {
         return nodes.toString();
     }
 
-
-
     public String CFGtoDOT() {
         StringBuilder result = new StringBuilder();
 
-        //Aasume first node is start node
+        // Assume first node is start node
         if (nodes.size() == 0) {
             return "";
         }
@@ -112,11 +109,7 @@ public class CFGGraph<T> {
                 .append("\t [ label=\"").append(StringEscapeUtils.escapeJava(popped.toString()))
                 .append("\"]\n");
 
-            ArrayList<CFGNode<T>> children = new ArrayList<>();
-            children.add(popped.getFallThroughChild());
-            children.add(popped.getJumpChild());
-
-            for (CFGNode<T> child : children) {
+            for (CFGNode<T> child : popped.getChildren()) {
                 if (child != null) {
                     if (!visitedIDs.containsKey(child)) {
                         visitedIDs.put(child, visitedIDs.size());

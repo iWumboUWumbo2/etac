@@ -7,10 +7,12 @@ import java.util.HashSet;
 import java.util.Objects;
 
 public class CFGNode<T> {
+    final private int FALLTHROUGH = 0;
+    final private int JUMP = 1;
+
     T stmt;
-    private CFGNode<T> fallThroughChild, jumpChild;
 
-
+    private ArrayList<CFGNode<T>> children;
 
     private ArrayList<CFGNode<T>> predecessors;
 
@@ -18,10 +20,9 @@ public class CFGNode<T> {
 
     public CFGNode(T stmt) {
         this.predecessors = new ArrayList<>();
+        this.children = new ArrayList<>(2);
 
         this.stmt = stmt;
-        fallThroughChild = null;
-        jumpChild = null;
         in = new HashSet<>();
         out = new HashSet<>();
         def = new HashSet<>();
@@ -29,7 +30,7 @@ public class CFGNode<T> {
     }
     @Override
     public int hashCode() {
-        return Objects.hash(stmt, fallThroughChild, jumpChild, predecessors, in, out, def, use);
+        return Objects.hash(stmt, children, predecessors, in, out, def, use);
     }
 
     public void addPredecessor(CFGNode<T> pred) {
@@ -47,20 +48,28 @@ public class CFGNode<T> {
         this.stmt = stmt;
     }
 
+    public ArrayList<CFGNode<T>> getChildren() {
+        return children;
+    }
+
+    public void setChildren(ArrayList<CFGNode<T>> children) {
+        this.children = children;
+    }
+
     public CFGNode<T> getFallThroughChild() {
-        return fallThroughChild;
+        return children.get(FALLTHROUGH);
     }
 
     public void setFallThroughChild(CFGNode<T> fallThroughChild) {
-        this.fallThroughChild = fallThroughChild;
+        this.children.set(FALLTHROUGH, fallThroughChild) ;
     }
 
     public CFGNode<T> getJumpChild() {
-        return jumpChild;
+        return children.get(JUMP);
     }
 
     public void setJumpChild(CFGNode<T> jumpChild) {
-        this.jumpChild = jumpChild;
+        children.set(JUMP, jumpChild);
     }
 
     public ArrayList<CFGNode<T>> getPredecessors() {
