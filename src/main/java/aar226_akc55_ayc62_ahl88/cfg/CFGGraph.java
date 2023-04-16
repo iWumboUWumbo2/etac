@@ -4,10 +4,13 @@ import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMAbstractJump;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Stack;
 
 public class CFGGraph<T> {
     private ArrayList<CFGNode<T>> nodes;
@@ -70,5 +73,64 @@ public class CFGGraph<T> {
     @Override
     public String toString() {
         return nodes.toString();
+    }
+
+
+
+    public String CFGtoDOT() {
+        StringBuilder result = new StringBuilder();
+
+        //Aasume first node is start node
+        if (nodes.size() == 0) {
+            return "";
+        }
+
+        result.append("digraph g {").append("\n\t")
+            .append("node [shape=record];").append("\n")
+            .append("forcelabels=true;").append("\n");
+
+
+        HashMap<CFGNode<T>, Integer> visitedIDs = new HashMap<>();
+        HashSet<CFGNode<T>> visited = new HashSet<>();
+
+        Stack<CFGNode<T>> stack = new Stack<>();
+        stack.push(nodes.get(0));
+
+        while (!stack.isEmpty()) {
+            CFGNode<T> popped = stack.pop();
+
+            if (visited.contains(popped)) {
+                continue;
+            }
+
+            // Add node
+            if (!visitedIDs.containsKey(popped)) {
+                visitedIDs.put(popped, visitedIDs.size());
+            }
+
+            result.append("\t").append(visitedIDs.get(popped))
+                .append("\t [ label=\"").append(StringEscapeUtils.escapeJava(popped.toString()))
+                .append("\"]\n");
+
+            ArrayList<CFGNode<T>> children = new ArrayList<>();
+            children.add(popped.getFallThroughChild());
+            children.add(popped.getJumpChild());
+
+            for (CFGNode<T> child : children) {
+                if (child != null) {
+                    if (!visitedIDs.containsKey(child)) {
+                        visitedIDs.put(child, visitedIDs.size());
+                    }
+
+                    result.append("\t").append(visitedIDs.get(popped))
+                            .append(" -> ").append(visitedIDs.get(child)).append("\n");
+                    stack.add(child);
+                }
+            }
+
+            visited.add(popped);
+        }
+
+        return result.toString();
     }
 }
