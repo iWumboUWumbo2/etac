@@ -340,12 +340,12 @@ public class IRLoweringVisitor extends IRVisitor {
         if (node.source() instanceof IRESeq eseqRight) {
             ArrayList<IRNode> rightStatement = eseqRight.stmt().
                     aggregateChildren(new FlattenIrVisitor());
-            ArrayList<IRNode> extra = node.source().aggregateChildren(new FlattenIrVisitor());
+//            ArrayList<IRNode> extra = node.left().aggregateChildren(new FlattenIrVisitor());
             ArrayList<IRNode> leftExpression;
-            if (node.source() instanceof IRESeq eseqLeft) {
+            if (node.target() instanceof IRESeq eseqLeft) {
                 leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
             } else {
-                leftExpression = node.source().aggregateChildren(new FlattenIrVisitor());
+                leftExpression = node.target().aggregateChildren(new FlattenIrVisitor());
             }
             // Make sure right havs no mem
             for (IRNode n : rightStatement) {
@@ -358,24 +358,21 @@ public class IRLoweringVisitor extends IRVisitor {
                     return false;
                 }
             }
-            boolean leftCall = false;
             boolean rightCall = false;
-            for (IRNode n : extra){
-                if (n instanceof IRCallStmt call){
-                    leftCall = true;
-                    break;
-                }
-            }
             for (IRNode n : rightStatement){
                 if (n instanceof IRCallStmt call){
                     rightCall = true;
                 }
             }
-            if (leftCall && rightCall){
-                return false;
-            }
             HashSet<String> rightTemps = usedTemps(rightStatement);
             HashSet<String> leftTemps = usedTemps(leftExpression);
+            if (rightCall){
+                for (String tempName : leftTemps){
+                    if (tempName.startsWith("_RV")){
+                        return false;
+                    }
+                }
+            }
             for (String s : rightTemps) {
                 if (leftTemps.contains(s)) {
                     return false;
@@ -608,7 +605,7 @@ public class IRLoweringVisitor extends IRVisitor {
         if (right instanceof IRESeq eseqRight) {
             ArrayList<IRNode> rightStatement = eseqRight.stmt().
                     aggregateChildren(new FlattenIrVisitor());
-            ArrayList<IRNode> extra = node.left().aggregateChildren(new FlattenIrVisitor());
+//            ArrayList<IRNode> extra = node.left().aggregateChildren(new FlattenIrVisitor());
             ArrayList<IRNode> leftExpression;
             if (node.left() instanceof IRESeq eseqLeft) {
                 leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
@@ -626,24 +623,21 @@ public class IRLoweringVisitor extends IRVisitor {
                     return false;
                 }
             }
-            boolean leftCall = false;
             boolean rightCall = false;
-            for (IRNode n : extra){
-                if (n instanceof IRCallStmt call){
-                    leftCall = true;
-                    break;
-                }
-            }
             for (IRNode n : rightStatement){
                 if (n instanceof IRCallStmt call){
                     rightCall = true;
                 }
             }
-            if (leftCall && rightCall){
-                return false;
-            }
             HashSet<String> rightTemps = usedTemps(rightStatement);
             HashSet<String> leftTemps = usedTemps(leftExpression);
+            if (rightCall){
+                for (String tempName : leftTemps){
+                    if (tempName.startsWith("_RV")){
+                        return false;
+                    }
+                }
+            }
             for (String s : rightTemps) {
                 if (leftTemps.contains(s)) {
                     return false;

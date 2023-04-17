@@ -498,6 +498,14 @@ public class IRVisitor implements Visitor<IRNode>{
         String lt = nxtLabel();
         String lf = nxtLabel();
         String lafter = nxtLabel();
+        IRExpr guardAccept = node.getGuard().accept(this);
+        if (constantFold && guardAccept instanceof IRConst c){
+            if (c.value() == 1){ // guard is true
+                return iFStatement;
+            }else{
+                return elseStatement;
+            }
+        }
         IRStmt condStmt = booleanAsControlFlow(node.getGuard(),lt,lf);
         IRJump endJmp = new IRJump(new IRName(lafter));
         return new IRSeq(condStmt,
@@ -514,6 +522,11 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRStmt visit(IfOnly node) {
         String l1 = nxtLabel();
         String l2 = nxtLabel();
+        IRExpr guardAccept = node.guard.accept(this);
+        if (constantFold &&  guardAccept instanceof IRConst c &&
+        c.value() == 0){
+            return new IRSeq();
+        }
         IRStmt condStmt = booleanAsControlFlow(node.guard,l1,l2);
         IRStmt statement = node.ifState.accept(this);
         return new IRSeq(condStmt,new IRLabel(l1),statement, new IRLabel(l2));
@@ -543,6 +556,11 @@ public class IRVisitor implements Visitor<IRNode>{
         String lh = nxtLabel();
         String l1 = nxtLabel();
         String le = nxtLabel();
+        IRExpr guardAccept = node.getGuard().accept(this);
+        if (constantFold &&  guardAccept instanceof IRConst c &&
+                c.value() == 0){
+            return new IRSeq();
+        }
         IRStmt condStmt = booleanAsControlFlow(node.getGuard(),l1,le);
         IRStmt bodyStmt = node.getStmt().accept(this);
         return new IRSeq(
