@@ -126,4 +126,8 @@ public class CFGGraph<T> {
 
         return result.toString();
     }
+
+    public ArrayList<CFGNode<T>> getNodes() {
+        return nodes;
+    }
 }

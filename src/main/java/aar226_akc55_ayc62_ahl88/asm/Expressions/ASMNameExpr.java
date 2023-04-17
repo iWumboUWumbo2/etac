@@ -10,4 +10,9 @@ public class ASMNameExpr extends ASMAbstractReg {
     public String toString() {
         return name;
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

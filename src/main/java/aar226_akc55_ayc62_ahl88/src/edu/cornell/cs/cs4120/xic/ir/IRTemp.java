@@ -36,4 +36,9 @@ public class IRTemp extends IRExpr_c {
     public ArrayList<ASMInstruction> accept(AbstractASMVisitor v) {
         return v.visit(this);
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
