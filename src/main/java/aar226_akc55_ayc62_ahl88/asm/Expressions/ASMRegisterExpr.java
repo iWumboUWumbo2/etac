@@ -14,4 +14,8 @@ public class ASMRegisterExpr extends ASMAbstractReg{
     public String toString() {
         return registerName;
     }
+    @Override
+    public int hashCode() {
+        return registerName.hashCode();
+    }
 }
