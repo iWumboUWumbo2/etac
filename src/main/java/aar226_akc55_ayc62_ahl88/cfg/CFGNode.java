@@ -21,6 +21,8 @@ public class CFGNode<T> {
     public CFGNode(T stmt) {
         this.predecessors = new ArrayList<>();
         this.children = new ArrayList<>(2);
+        this.children.add(null);
+        this.children.add(null);
 
         this.stmt = stmt;
         in = new HashSet<>();
