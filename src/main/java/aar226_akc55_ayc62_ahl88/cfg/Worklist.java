@@ -25,13 +25,13 @@ public class Worklist<T> {
         // if [mov temp, expr] then don't add temp
         if ((stmt instanceof IRMove irmove &&
                 irmove.target() instanceof IRTemp)) {
-            use.addAll(getTemps((T) irmove.source(), new ArrayList<T>());
+            use.addAll(getTemps((T) irmove.source(), new ArrayList<T>()));
             node.setUse(use);
             return;
         }
         if ((stmt instanceof ASMMov asmmov &&
                 asmmov.getLeft() instanceof ASMAbstractReg)) {
-            use.addAll(getTemps((T) asmmov.getRight(), new ArrayList<T>());
+            use.addAll(getTemps((T) asmmov.getRight(), new ArrayList<T>()));
             node.setUse(use);
             return;
         }
