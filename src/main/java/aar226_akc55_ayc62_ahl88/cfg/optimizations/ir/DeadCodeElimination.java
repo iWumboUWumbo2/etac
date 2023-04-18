@@ -1,4 +1,4 @@
-package aar226_akc55_ayc62_ahl88.cfg.optimizations;
+package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;

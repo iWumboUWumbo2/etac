@@ -6,17 +6,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class CFGNode<T> {
+public class CFGNode<T, U> {
     final private int FALLTHROUGH = 0;
     final private int JUMP = 1;
 
     T stmt;
 
-    private ArrayList<CFGNode<T>> children;
+    private ArrayList<CFGNode<T, U>> children;
 
-    private ArrayList<CFGNode<T>> predecessors;
+    private ArrayList<CFGNode<T, U>> predecessors;
 
-    private HashSet<T> in, out, def, use;
+    private HashSet<U> in, out, def, use;
 
     public CFGNode(T stmt) {
         this.predecessors = new ArrayList<>();
@@ -25,6 +25,7 @@ public class CFGNode<T> {
         this.children.add(null);
 
         this.stmt = stmt;
+
         in = new HashSet<>();
         out = new HashSet<>();
         def = new HashSet<>();
@@ -35,7 +36,7 @@ public class CFGNode<T> {
         return Objects.hash(stmt, children, predecessors, in, out, def, use);
     }
 
-    public void addPredecessor(CFGNode<T> pred) {
+    public void addPredecessor(CFGNode<T, U> pred) {
         if (predecessors.contains(pred)) {
             throw new InternalCompilerError("UR TRYING TO ADD PRED THAT ALREADY EXISTS");
         }
@@ -50,67 +51,67 @@ public class CFGNode<T> {
         this.stmt = stmt;
     }
 
-    public ArrayList<CFGNode<T>> getChildren() {
+    public ArrayList<CFGNode<T, U>> getChildren() {
         return children;
     }
 
-    public void setChildren(ArrayList<CFGNode<T>> children) {
+    public void setChildren(ArrayList<CFGNode<T, U>> children) {
         this.children = children;
     }
 
-    public CFGNode<T> getFallThroughChild() {
+    public CFGNode<T, U> getFallThroughChild() {
         return children.get(FALLTHROUGH);
     }
 
-    public void setFallThroughChild(CFGNode<T> fallThroughChild) {
+    public void setFallThroughChild(CFGNode<T, U> fallThroughChild) {
         this.children.set(FALLTHROUGH, fallThroughChild) ;
     }
 
-    public CFGNode<T> getJumpChild() {
+    public CFGNode<T, U> getJumpChild() {
         return children.get(JUMP);
     }
 
-    public void setJumpChild(CFGNode<T> jumpChild) {
+    public void setJumpChild(CFGNode<T, U> jumpChild) {
         children.set(JUMP, jumpChild);
     }
 
-    public ArrayList<CFGNode<T>> getPredecessors() {
+    public ArrayList<CFGNode<T, U>> getPredecessors() {
         return predecessors;
     }
 
-    public void setPredecessors(ArrayList<CFGNode<T>> predecessors) {
+    public void setPredecessors(ArrayList<CFGNode<T, U>> predecessors) {
         this.predecessors = predecessors;
     }
 
-    public HashSet<T> getIn() {
+    public HashSet<U> getIn() {
         return in;
     }
 
-    public void setIn(HashSet<T> in) {
+    public void setIn(HashSet<U> in) {
         this.in = in;
     }
 
-    public HashSet<T> getOut() {
+    public HashSet<U> getOut() {
         return out;
     }
 
-    public void setOut(HashSet<T> out) {
+    public void setOut(HashSet<U> out) {
         this.out = out;
     }
 
-    public HashSet<T> getDef() {
+    public HashSet<U> getDef() {
         return def;
     }
 
-    public void setDef(HashSet<T> def) {
+    public void setDef(HashSet<U> def) {
         this.def = def;
     }
 
-    public HashSet<T> getUse() {
+    public HashSet<U> getUse() {
         return use;
     }
 
-    public void setUse(HashSet<T> use) {
+    public void setUse(HashSet<U> use) {
         this.use = use;
     }
 
@@ -119,7 +120,7 @@ public class CFGNode<T> {
         return stmt.toString();
     }
 
-    public void removePredecessor(CFGNode<T> pred) {
+    public void removePredecessor(CFGNode<T, U> pred) {
         predecessors.remove(pred);
     }
 }

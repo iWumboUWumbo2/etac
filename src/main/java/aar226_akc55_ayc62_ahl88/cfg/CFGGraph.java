@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
-public class CFGGraph<T> {
-    private ArrayList<CFGNode<T>> nodes;
+public class CFGGraph<T, U> {
+    private ArrayList<CFGNode<T, U>> nodes;
     private HashMap<String, Integer> labelMap;
 
     public CFGGraph(ArrayList<T> stmts) {
@@ -24,7 +24,7 @@ public class CFGGraph<T> {
         for (int i = 0; i < stmts.size(); i++) {
             T stmt = stmts.get(i);
 
-            CFGNode<T> node = new CFGNode<T>(stmt);
+            CFGNode<T, U> node = new CFGNode<T, U>(stmt);
 
             if (node.getStmt() instanceof IRLabel irLabel) {
                 labelMap.put(irLabel.name(), i);
@@ -40,7 +40,7 @@ public class CFGGraph<T> {
         // second pass: add pred and succ
         for (int i = 0; i < stmts.size(); i++) {
 
-            CFGNode<T> cfgnode = nodes.get(i);
+            CFGNode<T, U> cfgnode = nodes.get(i);
             T stmt = cfgnode.getStmt();
 
             if (i != 0) {
@@ -87,14 +87,14 @@ public class CFGGraph<T> {
             .append("forcelabels=true;").append("\n");
 
 
-        HashMap<CFGNode<T>, Integer> visitedIDs = new HashMap<>();
-        HashSet<CFGNode<T>> visited = new HashSet<>();
+        HashMap<CFGNode<T, U>, Integer> visitedIDs = new HashMap<>();
+        HashSet<CFGNode<T, U>> visited = new HashSet<>();
 
-        Stack<CFGNode<T>> stack = new Stack<>();
+        Stack<CFGNode<T, U>> stack = new Stack<>();
         stack.push(nodes.get(0));
 
         while (!stack.isEmpty()) {
-            CFGNode<T> popped = stack.pop();
+            CFGNode<T, U> popped = stack.pop();
 
             if (visited.contains(popped)) {
                 continue;
@@ -109,7 +109,7 @@ public class CFGGraph<T> {
                 .append("\t [ label=\"").append(StringEscapeUtils.escapeJava(popped.toString()))
                 .append("\"]\n");
 
-            for (CFGNode<T> child : popped.getChildren()) {
+            for (CFGNode<T, U> child : popped.getChildren()) {
                 if (child != null) {
                     if (!visitedIDs.containsKey(child)) {
                         visitedIDs.put(child, visitedIDs.size());
@@ -127,7 +127,7 @@ public class CFGGraph<T> {
         return result.toString();
     }
 
-    public ArrayList<CFGNode<T>> getNodes() {
+    public ArrayList<CFGNode<T, U>> getNodes() {
         return nodes;
     }
 }
