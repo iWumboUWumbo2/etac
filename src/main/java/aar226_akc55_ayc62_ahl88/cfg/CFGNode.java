@@ -118,4 +118,8 @@ public class CFGNode<T> {
     public String toString() {
         return stmt.toString();
     }
+
+    public void removePredecessor(CFGNode<T> pred) {
+        predecessors.remove(pred);
+    }
 }

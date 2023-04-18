@@ -11,11 +11,16 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class Worklist<T> {
 
     private Queue<CFGNode<T>> worklistNodes;
+
+    public Worklist() {
+        worklistNodes = new LinkedList<>();
+    }
 
     public void setUse(CFGNode<T> node) {
         HashSet<T> use = new HashSet<>();
