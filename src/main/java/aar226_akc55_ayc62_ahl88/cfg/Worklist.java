@@ -11,12 +11,11 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Queue;
 
 public class Worklist<T> {
 
-    private ArrayList<CFGNode<T>> worklistNodes;
-    public Worklist() {
-    }
+    private Queue<CFGNode<T>> worklistNodes;
 
     public void setUse(CFGNode<T> node) {
         HashSet<T> use = new HashSet<>();
@@ -118,7 +117,7 @@ public class Worklist<T> {
         }
     }
 
-    public void setIn(CFGNode<T> node) {
+    public HashSet<T> setIn(CFGNode<T> node) {
         HashSet<T> in = new HashSet<>();
         ArrayList<CFGNode<T>> predecessors = node.getPredecessors();
         CFGNode<T> fallThroughChild = node.getFallThroughChild();
@@ -130,8 +129,9 @@ public class Worklist<T> {
         }
         in.addAll(node.getUse());
 
-        node.setIn(in);
+        return in;
 
+//        node.setIn(in);
     }
 
     public void setOut(CFGNode<T> node) {
@@ -148,16 +148,29 @@ public class Worklist<T> {
         }
 
         node.setOut(out);
-
     }
 
-    public void liveVarAnalysis(CFGGraph graph) {
-        ArrayList<CFGNode> nodes = graph.getNodes();
-        for(int i = 0; i < nodes.size(); i ++) {
-            worklistNodes.add(nodes.get(i));
+    public void liveVarAnalysis(CFGGraph<T> graph) {
+        ArrayList<CFGNode<T>> nodes = graph.getNodes();
+        worklistNodes.addAll(nodes);
+
+        while (!worklistNodes.isEmpty()) {
+            CFGNode<T> node = worklistNodes.poll();
+            setOut(node);
+            HashSet<T> ts = setIn(node);
+
+            if (node.getIn().size() != ts.size()) {
+                for (CFGNode<T> pred : node.getPredecessors()) {
+                    if (!worklistNodes.contains(pred) && pred != null) {
+                        worklistNodes.add(node);
+                    }
+                }
+            }
+
+            node.setIn(ts);
         }
 
-        //TODO: set up queue, and finish worklist algorithm
+        // TODO: set up queue, and finish worklist algorithm
     }
 
 
