@@ -638,9 +638,11 @@ public class IRLoweringVisitor extends IRVisitor {
                     }
                 }
             }
-            for (String s : rightTemps) {
-                if (leftTemps.contains(s)) {
-                    return false;
+            for (IRNode stmt : rightStatement){
+                if (stmt instanceof IRMove mov && mov.target() instanceof IRTemp t){
+                    if (leftTemps.contains(t.name())){
+                        return false;
+                    }
                 }
             }
         }
