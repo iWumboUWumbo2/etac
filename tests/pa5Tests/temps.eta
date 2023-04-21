@@ -1,8 +1,8 @@
-x : int = 5
+z : int = 5
 
 single():int{
-    x = x + 1
-    return x
+    z = z + 1
+    return z
 }
 
 single2() : int {
