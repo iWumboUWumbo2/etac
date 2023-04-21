@@ -124,6 +124,9 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
     "else"    { return symbol(sym.ELSE); }
     "return"  { return symbol(sym.RETURN); }
     "length"  { return symbol(sym.LENGTH); }
+    "record"  { return symbol(sym.RECORD); }
+    "break"   { return symbol(sym.BREAK); }
+    "null"    { return symbol(sym.NULL); }
 
     // operators
     "-"       { return symbol(sym.MINUS); }
