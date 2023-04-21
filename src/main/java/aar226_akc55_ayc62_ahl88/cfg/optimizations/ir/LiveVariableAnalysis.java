@@ -57,6 +57,11 @@ public class LiveVariableAnalysis {
             for (IRExpr e: ret.rets()){
                 flattened.addAll(e.aggregateChildren(new FlattenIrVisitor()));
             }
+        }else if (stmt instanceof IRCallStmt call){
+            flattened = new ArrayList<>();
+            for (IRExpr e : call.args()){
+                flattened.addAll(e.aggregateChildren(new FlattenIrVisitor()));
+            }
         }
 
         else{
