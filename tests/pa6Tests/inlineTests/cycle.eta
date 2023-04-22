@@ -1,0 +1,34 @@
+use io;
+use conv;
+main(args:int[][]){
+    i:int = a();
+    i = b();
+    i = cycle1(5);
+    i = cycle2(5);
+    i = cycle3(5);
+
+    println(unparseInt(i));
+}
+a():int{
+    return 1;
+}
+b():int{
+    return 1 + a()
+}
+
+cycle1(n:int):int{
+    if (n == 0) {return 0;}
+    return cycle2(n-1) + 1;
+}
+
+
+cycle2(n:int):int{
+    if (n == 0) {return 0;}
+    return cycle3(n-1) + 1;
+}
+
+
+cycle3(n:int):int{
+    if (n == 0) {return 0;}
+    return cycle1(n-1) + 1;
+}

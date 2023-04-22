@@ -1,18 +1,13 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg1;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg3;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Queue;
 
 public class LiveVariableAnalysis {
     public void setDefLVA(CFGNode<IRStmt, IRTemp> node) {

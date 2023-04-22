@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
@@ -67,6 +68,11 @@ public class IRReturn extends IRStmt {
         p.printAtom("RETURN");
         for (IRExpr ret : rets) ret.printSExp(p);
         p.endList();
+    }
+
+    @Override
+    public IRStmt accept(FunctionInliningVisitor v) {
+        return v.visit(this);
     }
 
     @Override

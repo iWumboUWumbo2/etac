@@ -4,15 +4,11 @@ import aar226_akc55_ayc62_ahl88.Errors.EtaError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.ASMData;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 //import aar226_akc55_ayc62_ahl88.cfg.Worklist;
 //import aar226_akc55_ayc62_ahl88.cfg.optimizations.DeadCodeElimination;
-import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -21,6 +17,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractA
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.lr_parser;
@@ -29,7 +26,6 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -329,16 +325,19 @@ public class Main {
                     }
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
-                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-                        CFGGraph<IRStmt,IRTemp> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-                        LiveVariableAnalysis lva = new LiveVariableAnalysis();
-                        lva.runLVA(stmtGraph);
-                        for (CFGNode<IRStmt,IRTemp> node : stmtGraph.getNodes()){
-                            System.out.println(node);
-                            System.out.println("Live nodes in:" + node.getIn());
-                        }
 
-                    }
+                    FunctionInliningVisitor fv = new FunctionInliningVisitor();
+                    ir = ir.accept(fv);
+//                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+//                        CFGGraph<IRStmt,IRTemp> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        LiveVariableAnalysis lva = new LiveVariableAnalysis();
+//                        lva.runLVA(stmtGraph);
+//                        for (CFGNode<IRStmt,IRTemp> node : stmtGraph.getNodes()){
+//                            System.out.println(node);
+//                            System.out.println("Live nodes in:" + node.getIn());
+//                        }
+//
+//                    }
                     {
                         CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 
