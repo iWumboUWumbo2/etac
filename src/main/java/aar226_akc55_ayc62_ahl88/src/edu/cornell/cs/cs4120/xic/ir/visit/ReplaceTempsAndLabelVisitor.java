@@ -107,6 +107,9 @@ public class ReplaceTempsAndLabelVisitor extends IRVisitor{
     }
 
     private IRNode replaceTemp(IRCJump ircj) {
+        if (labelMapping.containsKey(ircj.trueLabel())){
+            return new IRCJump(ircj.cond(),labelMapping.get(ircj.trueLabel()));
+        }
         return ircj;
     }
 
