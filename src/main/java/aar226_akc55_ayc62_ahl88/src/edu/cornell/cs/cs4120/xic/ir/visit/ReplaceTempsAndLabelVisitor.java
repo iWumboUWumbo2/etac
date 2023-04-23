@@ -9,10 +9,12 @@ public class ReplaceTempsAndLabelVisitor extends IRVisitor{
 
     HashMap<String,String> tempMapping;
     HashMap<String,String> labelMapping;
-    public ReplaceTempsAndLabelVisitor(IRNodeFactory inf, HashMap<String,String> tempMapping, HashMap<String,String> labelMapping) {
+    String function;
+    public ReplaceTempsAndLabelVisitor(IRNodeFactory inf, HashMap<String,String> tempMapping, HashMap<String,String> labelMapping,String funcName) {
         super(inf);
         this.tempMapping = tempMapping;
         this.labelMapping = labelMapping;
+        function = funcName;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class ReplaceTempsAndLabelVisitor extends IRVisitor{
 
     private IRNode replaceTemp(IRTemp irtem) {
         if (!tempMapping.containsKey(irtem.name())){
-            if (irtem.name().startsWith("_RV") || irtem.name().startsWith("_ARG")){
+            if (irtem.name().startsWith("_RV") || irtem.name().startsWith("_ARG") || (function.equals("_Imain_paai") && irtem.name().equals("args"))){
                 return irtem;
             }else{
                 throw new InternalCompilerError("temp isn't mapping: " + irtem);
@@ -58,6 +60,9 @@ public class ReplaceTempsAndLabelVisitor extends IRVisitor{
     }
 
     private IRNode replaceTemp(IRName irname) {
+        if (labelMapping.containsKey(irname.name())){
+            return new IRName(labelMapping.get(irname.name()));
+        }
         return irname;
     }
 
