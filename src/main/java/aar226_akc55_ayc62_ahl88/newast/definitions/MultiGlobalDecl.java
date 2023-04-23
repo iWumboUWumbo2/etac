@@ -20,12 +20,14 @@ public class MultiGlobalDecl extends Definition{
     public MultiGlobalDecl (ArrayList<AnnotatedTypeDecl > d, ArrayList<Expr> e, int left, int right) {
         super(left,right);
         decls = d;
-        for (AnnotatedTypeDecl de: decls){
-            if (!de.type.dimensions.allEmpty) {
-                throw new SyntaxError(left, right, "array with init len no Val");
-            }
-            if ((de.type.dimensions.getDim() != 0)){
-                throw new SyntaxError(left, right ,"array can't have gets");
+        if (e.size() != 0) {
+            for (AnnotatedTypeDecl de : decls) {
+                if (!de.type.dimensions.allEmpty) {
+                    throw new SyntaxError(left, right, "array with init len no Val");
+                }
+                if ((de.type.dimensions.getDim() != 0)) {
+                    throw new SyntaxError(left, right, "array can't have gets");
+                }
             }
         }
         expressions = e;

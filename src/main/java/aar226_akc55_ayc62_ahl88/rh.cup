@@ -24,11 +24,11 @@ import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import java.util.ArrayList;
 
 // You might want to add types to these declarations.
-//parser EtaParser {:
-//    public void syntax_error(Symbol cur_token){
-//        throw new SyntaxError(cur_token.left,cur_token.right ,"Parsing error " + cur_token.value());
-//    }
-//:};
+parser EtaParser {:
+    public void syntax_error(Symbol cur_token){
+        throw new SyntaxError(cur_token.left,cur_token.right ,"Parsing error " + cur_token.value());
+    }
+:};
 
 terminal String     IDENTIFIER;
 terminal String     STRING_LITERAL;
@@ -124,6 +124,7 @@ definitionStar ::=
 definition ::=
     method:m {: RESULT = m; :}
     | globalDecl:gd {: RESULT = gd; :}
+    | record:r {: RESULT = r; :}
     ;
 
 method ::= // Id b
@@ -153,7 +154,8 @@ emptyBracketDecl_plus ::=
     ;
 
 emptyBracketDecl ::=
-    IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new AnnotatedTypeDecl(new Id(i,ileft,iright),t,ileft,iright); :}
+    IDENTIFIER:i COLON emptyBracketType:t {:
+     RESULT = new AnnotatedTypeDecl(new Id(i,ileft,iright),t,ileft,iright); :}
     ;
 
 fullBracketType::=
@@ -175,11 +177,14 @@ fullBracketPlus ::=
     ;
 
 
-globalDecl ::= newGlob:ng {:RESULT = ng;:}
+globalDecl ::= newGlob:ng {:
+    RESULT = ng;
+:}
 ;
 
 newGlob ::=
-    emptyBracketDecl:ed {:RESULT = new Globdecl(ed, null, edleft, edright);:} // make sure to check NULL
+    emptyBracketDecl:ed {:
+    RESULT = new Globdecl(ed, null, edleft, edright);:} // make sure to check NULL
     | emptyBracketDecl:ed GETS:g value:v {:
         if (!ed.type.dimensions.allEmpty) {
             throw new SyntaxError(gleft,gright ,"array with init len no Val");
@@ -189,9 +194,12 @@ newGlob ::=
         }
         RESULT  = new Globdecl(ed, v, edleft, edright);
     :}
-    | newGlob:gd SEMICOLON {:RESULT = gd;:}
-    | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
+    | newGlob:gd SEMICOLON {:
+        RESULT = gd;:}
+    | glob_type_list:tl GETS:g valueList:v {:
+        RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
     | identifier_plus:ip COLON emptyBracketType:t {:       // x, y : int
+//            throw new SyntaxError(ipleft,ipright,"new match");
              ArrayList<AnnotatedTypeDecl> declList = new ArrayList<AnnotatedTypeDecl>();
                      for(int j = 0; j < ip.size(); j++) {
                              declList.add(new AnnotatedTypeDecl(ip.get(j), t, ipleft, ipright));
