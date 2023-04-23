@@ -2,28 +2,36 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsAndLabelVisitor;
 
 import java.util.*;
 
 public class FunctionInliningVisitor implements IROPTVisitor<IRNode>{
     private int tempCnt;
+    private int labelCnt;
 
     private String currentFunction;
 
     private HashMap<String,ArrayList<IRStmt>> inLinedFunctions;
 
     private HashMap<String,HashSet<String>> functionToTemps;
+    private HashMap<String,HashSet<String>> functionToLabels;
 
-    private String nxtTemp() {
-        return String.format("tl%d", (tempCnt++));
+    private String nxtTemp(String funcName) {
+        return String.format(funcName + "_tp%d_fi_", (tempCnt++));
     }
-
+    private String nxtLabel(String funcName) {
+        return String.format(funcName + "lb%d_fi_", (labelCnt++));
+    }
     ArrayList<String> allowedInline;
 
     public FunctionInliningVisitor() {
         tempCnt = 0;
+        labelCnt = 0;
         inLinedFunctions = new HashMap<>();
         functionToTemps = new HashMap<>();
+        functionToLabels = new HashMap<>();
     }
     public ArrayList<String> topoSort(IRCompUnit node){
         HashMap<String,Integer> inDegreeMap = new HashMap<>();
@@ -63,8 +71,8 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode>{
                 }
             }
         }
-        System.out.println("order: " + order);
-        System.out.println("adjList: " + adjList);
+//        System.out.println("order: " + order);
+//        System.out.println("adjList: " + adjList);
         return order;
     }
 
@@ -100,26 +108,28 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode>{
             }
         }
         // Get Temps used
+        HashMap<String,IRFuncDecl> newIrFunc = new HashMap<>();
+        System.out.println(functionVisitOrder);
         for (String funcToVisit: functionVisitOrder){
-            functionToTemps.put(funcToVisit,new HashSet<>());
+            System.out.println("functionName: " + funcToVisit);
             IRFuncDecl func = node.getFunction(funcToVisit);
-            ArrayList<IRNode> flattened = func.aggregateChildren(new FlattenIrVisitor());
+            IRFuncDecl externalUse  = firstPass(func); // Generates the Inlined Version for other people to use
+            IRFuncDecl inLinedFunc = func.accept(this);
+            newIrFunc.put(funcToVisit,inLinedFunc);
+            functionToTemps.put(funcToVisit,new HashSet<>());
+            functionToLabels.put(funcToVisit,new HashSet<>());
+            ArrayList<IRNode> flattened = externalUse.aggregateChildren(new FlattenIrVisitor());
             for (IRNode n : flattened){
                 if (n instanceof IRTemp t){
                     if (!(t.name().startsWith("_ARG") || t.name().startsWith("_RV"))){ // Dont add Temps
                         functionToTemps.get(funcToVisit).add(t.name());
                     }
                 }
+                if (n instanceof IRLabel l){
+                    functionToLabels.get(funcToVisit).add(l.name());
+                }
             }
         }
-        HashMap<String,IRFuncDecl> newIrFunc = new HashMap<>();
-        for (String funcToVisit: functionVisitOrder){
-            IRFuncDecl func = node.getFunction(funcToVisit);
-            firstPass(func); // Generates the Inlined Version for other people to use
-            IRFuncDecl inLinedFunc = func.accept(this);
-            newIrFunc.put(funcToVisit,inLinedFunc);
-        }
-        System.out.println("function to Temps: " + functionToTemps);
         return new IRCompUnit(node.name(), newIrFunc,new ArrayList<>(),node.dataMap());
     }
 
@@ -145,9 +155,9 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode>{
      * @return Inlined version of this function for other peoples use Still need to Replace Temps everytime we call though
      *
      */
-    public void firstPass(IRFuncDecl node){
+    public IRFuncDecl firstPass(IRFuncDecl node){
         if (!allowedInline.contains(node.name())){
-            return;
+            return node;
         }
         IRSeq body = (IRSeq) node.body();
         ArrayList<IRStmt> newBody = new ArrayList<>();
@@ -159,7 +169,8 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode>{
                         IRTemp dest = new IRTemp("_ARG" + (i + 1));
                         newBody.add(new IRMove(dest, call.args().get(i)));
                     }
-                    newBody.addAll(inLinedFunctions.get(destFunc.name()));
+                    ArrayList<IRStmt> mangle =  makeUnique(destFunc.name());
+                    newBody.addAll(mangle);
                 }else{
                     newBody.add(call);
                 }
@@ -173,26 +184,49 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode>{
             }
         }
         inLinedFunctions.put(node.name(),newBody);
-        System.out.println("original: " + node.name() + " res: " + body);
-        System.out.println("inlined Version:" + node.name() + " res: " + newBody);
+        return new IRFuncDecl(node.name(),new IRSeq(newBody));
     }
     @Override
     public IRFuncDecl visit(IRFuncDecl node) {
-        return node;
-//        ArrayList<IRStmt> newBodyLocal = new ArrayList<>();
-//        IRSeq body = (IRSeq) node.body();
-//        for (IRStmt stmt: body.stmts()){
-//            if (stmt instanceof IRCallStmt call && inLinedFunctions.containsKey(((IRName)call.target()).name())){ // We are calling a inlinable function
-//
-//            }else if (stmt instanceof IRReturn ret){
-//
-//            }else{
-//                newBodyLocal.add(stmt);
-//            }
-//        }
-//        IRFuncDecl ret = new IRFuncDecl(node.name(),new IRSeq(newBodyLocal));
-//        inLinedFunctions.put(node.name(),ret);
-//        return ret;
+
+        ArrayList<IRStmt> newBodyLocal = new ArrayList<>();
+        IRSeq body = (IRSeq) node.body();
+        for (IRStmt stmt: body.stmts()){
+            if (stmt instanceof IRCallStmt call && allowedInline.contains(((IRName) call.target()).name())){
+                String functionName = ((IRName) call.target()).name();
+                for (int i = 0; i < call.args().size(); i++) {
+                    IRTemp dest = new IRTemp("_ARG" + (i + 1));
+                    newBodyLocal.add(new IRMove(dest, call.args().get(i)));
+                }
+                ArrayList<IRStmt> mangle =  makeUnique(functionName);
+                newBodyLocal.addAll(mangle);
+            }else{
+                newBodyLocal.add(stmt);
+            }
+        }
+        return new IRFuncDecl(node.name(),new IRSeq(newBodyLocal));
+    }
+
+    private ArrayList<IRStmt> makeUnique(String funcName) {
+        ArrayList<IRStmt> irStmts = inLinedFunctions.get(funcName);
+        HashSet<String> usedTemps = functionToTemps.get(funcName);
+        HashSet<String> usedLabels = functionToLabels.get(funcName);
+        HashMap<String,String> tempMapping = new HashMap<>();
+        for (String temp: usedTemps){
+            String mangled = nxtTemp(funcName) + temp;
+            tempMapping.put(temp,mangled);
+        }
+        HashMap<String,String> labelMapping = new HashMap<>();
+        for (String label: usedLabels){
+            String mangled = nxtLabel(funcName) + label;
+            labelMapping.put(label,mangled);
+        }
+        ReplaceTempsAndLabelVisitor replacementVisitor = new ReplaceTempsAndLabelVisitor(new IRNodeFactory_c(),tempMapping,labelMapping);
+        ArrayList<IRStmt> result = new ArrayList<>();
+        for (IRStmt stmt: irStmts){
+            result.add((IRStmt) replacementVisitor.visit(stmt));
+        }
+        return result;
     }
 
     @Override

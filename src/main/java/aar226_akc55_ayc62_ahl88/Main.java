@@ -306,7 +306,6 @@ public class Main {
                 if (filename.endsWith(".eta")) {
                     Program result = (Program) p.parse().value;
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
-//                    filename.substring(0, filename.length() - 2)
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
 //                    {
 //                        StringWriter out = new StringWriter();
@@ -317,7 +316,6 @@ public class Main {
 //                        printer.close();
 //                        writeOutput(filename, out.toString(), "irnoLower");
 //                    }
-                    // IR constant-folding checker demo
                     {
                         CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
 //                        System.out.print("Constant-folded?: ");
@@ -325,9 +323,9 @@ public class Main {
                     }
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
-
+//                    System.out.println(ir);
                     FunctionInliningVisitor fv = new FunctionInliningVisitor();
-                    ir = ir.accept(fv);
+//                    ir = ir.accept(fv);
 //                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
 //                        CFGGraph<IRStmt,IRTemp> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
 //                        LiveVariableAnalysis lva = new LiveVariableAnalysis();

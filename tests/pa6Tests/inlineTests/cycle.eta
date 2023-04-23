@@ -3,6 +3,7 @@ use conv;
 main(args:int[][]){
     i:int = a();
     i = b();
+    i = b();
     i = cycle1(5);
     i = cycle2(5);
     i = cycle3(5);
