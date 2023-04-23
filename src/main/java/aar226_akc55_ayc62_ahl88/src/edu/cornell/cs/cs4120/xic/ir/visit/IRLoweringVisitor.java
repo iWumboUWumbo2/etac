@@ -2,8 +2,7 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 
 import aar226_akc55_ayc62_ahl88.Main;
-import aar226_akc55_ayc62_ahl88.OptimizationTypes;
-import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
@@ -52,7 +51,7 @@ public class IRLoweringVisitor extends IRVisitor {
         labelCnt = 0;
         tempCnt = 0;
         labelToNumber= new HashMap<>();
-        folding = Main.opts.isSet(OptimizationTypes.CONSTANT_FOLDING);
+        folding = Main.opts.isSet(OptimizationType.CONSTANT_FOLDING);
     }
     private HashMap<String,Long> labelToNumber;
 

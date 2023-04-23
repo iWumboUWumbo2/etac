@@ -7,8 +7,8 @@ import aar226_akc55_ayc62_ahl88.asm.ASMData;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
-//import aar226_akc55_ayc62_ahl88.cfg.Worklist;
-//import aar226_akc55_ayc62_ahl88.cfg.optimizations.DeadCodeElimination;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -40,6 +40,8 @@ public class Main {
     private static String outputDiagnosticDirectory;
     private static String inputDirectory;
     public static String libpathDirectory;
+
+    private static String phase;
 
     private static boolean isOutputAsmDirSpecified;
     private static boolean isOutputDiagnosticDirSpecified;
@@ -351,7 +353,7 @@ public class Main {
                     System.out.println("Why are we here");
                 }
 
-//                if (opts.isSet(OptimizationTypes.CONSTANT_FOLDING)) {
+//                if (opts.isSet(OptimizationType.CONSTANT_FOLDING)) {
 //
 //                }
 
@@ -468,13 +470,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws java.io.IOException {
-        ArrayList<String> filenames = new ArrayList<>();
-        for (int i = args.length - 1; i >= 0; i--) {
-            if (args[i].endsWith(".eta") || args[i].endsWith(".eti")) {
-                filenames.add(args[i]);
-            }
-        }
-
         // Create the command line parser
         CommandLineParser parser = new DefaultParser();
 
@@ -483,6 +478,8 @@ public class Main {
 
         Option helpOpt = new Option("h", "help", false,
                 "Print a synopsis of options.");
+        Option reportOpt = new Option(null, "report-opts", false,
+                "Output a list of optimizations supported by the compiler");
 
         Option lexOpt = new Option(null, "lex", false,
                 "Generate output from lexical analysis.");
@@ -495,6 +492,11 @@ public class Main {
         Option irrunOpt = new Option (null, "irrun", false,
                 "Generate and interpret intermediate code.");
 
+        Option optirOpt = new Option(null, "optir", true,
+                "Report the intermediate code at the specified phase of optimization.");
+        Option optcfgOpt = new Option(null, "optcfg", true,
+                "Report the control-flow graph at the specified phase of optimization.");
+
 
         Option sourcepathOpt   = new Option ("sourcepath", true,
                 "Specify where to find input source files.");
@@ -505,8 +507,9 @@ public class Main {
                 "Specify where to place generated diagnostic files.");
         Option asmDirOpt   = new Option ("d", true,
                 "Specify where to place generated assembly output files.");
-        Option optOpt   = new Option ("O", false,
-                " Disable optimizations.");
+        Option optOpt   = new Option ("O", true,
+                "Disable optimizations.");
+        optOpt.setOptionalArg(true);
 
         Option targetOpt = new Option("target", true,
                 "Specify the operating system for which to generate code.");
@@ -514,11 +517,15 @@ public class Main {
 //        optOpt.setOptionalArg(true);
 
         options.addOption(helpOpt);
+        options.addOption(reportOpt);
         options.addOption(lexOpt);
         options.addOption(parseOpt);
         options.addOption(typeOpt);
         options.addOption(irgenOpt);
         options.addOption(irrunOpt);
+
+        options.addOption(optirOpt);
+        options.addOption(optcfgOpt);
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
@@ -532,23 +539,54 @@ public class Main {
         HelpFormatter formatter = new HelpFormatter();
 
         opts = new Optimizations();
-//        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING, OptimizationTypes.IR_LOWERING);
-        opts.setOptimizations(OptimizationTypes.CONSTANT_FOLDING);
+        opts.clearAll();
 
         isOutputAsmDirSpecified = isOutputDiagnosticDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
         outputAsmDirectory = outputDiagnosticDirectory = inputDirectory = libpathDirectory =
                 Paths.get("").toAbsolutePath().toString();
         target = Target.LINUX;
+        phase = "";
 
         boolean shouldAsmGen = true;
 
-//        System.out.println(outputDirectory);
+        ArrayList<String> filenames = new ArrayList<>();
+        for (int i = args.length - 1; i >= 0; i--) {
+            if (args[i].endsWith(".eta") || args[i].endsWith(".eti")) {
+                filenames.add(args[i]);
+            }
+        }
+
+        opts.setAll();
+        for (int i = args.length - 1; i >= 0; i--) {
+            if (args[i].startsWith("-O")) {
+                opts.clearAll();
+                break;
+            }
+        }
 
         try {
             CommandLine cmd = parser.parse(options, args);
             if (args.length == 0 || cmd.hasOption("help")) {
                 formatter.printHelp("etac [options] <source files>", options);
                 return;
+            }
+
+            if (cmd.hasOption("report-opts")) {
+                opts.reportOpts();
+                return;
+            }
+
+            // TODO: fix optir and optcfg
+            if (cmd.hasOption("optir")) {
+                phase = switch (cmd.getOptionValue("optir")) {
+                    case "initial" -> "initial";
+                    case "final" -> "final";
+                    default -> "";
+                };
+            }
+
+            if (cmd.hasOption("optcfg")) {
+
             }
 
             if (cmd.hasOption("D")) {
@@ -562,7 +600,24 @@ public class Main {
             }
 
             if (cmd.hasOption("O")) {
-                opts.clearOptimizations(OptimizationTypes.CONSTANT_FOLDING);
+                String[] optims = cmd.getOptionValues("O");
+
+                if (optims == null) {
+                    opts.clearAll();
+                    System.out.println(opts);
+                    return;
+                }
+
+                for (String opt : optims)
+                if (opt != null)  {
+                    switch (opt) {
+                        case "cf" -> opts.setOptimizations(OptimizationType.CONSTANT_FOLDING);
+                        case "inl" -> opts.setOptimizations(OptimizationType.INLINING);
+                        default -> throw new RuntimeException("Unidentified Optimization Specified");
+                    }
+                }
+
+                System.out.println(opts);
             }
 
             if (cmd.hasOption("sourcepath")) {
@@ -626,6 +681,8 @@ public class Main {
                     asmGenFile(filename, true);
                 }
             }
+
+            System.out.println(opts);
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);
