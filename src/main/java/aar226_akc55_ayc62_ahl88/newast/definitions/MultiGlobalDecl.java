@@ -46,7 +46,7 @@ public class MultiGlobalDecl extends Definition{
     }
     @Override
     public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
-        if (decls.size() != expressions.size()) {
+        if ((decls.size() != expressions.size()) && (expressions.size() != 0)) {
             throw new SemanticError(getLine(),getColumn(),"size of declarations dont match expressions");
         }
         for (AnnotatedTypeDecl atd: decls){

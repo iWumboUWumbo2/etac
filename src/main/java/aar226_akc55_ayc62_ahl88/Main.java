@@ -580,7 +580,7 @@ public class Main {
             if (cmd.hasOption("lex")) {
                 shouldAsmGen = false;
                 for (String filename : filenames) {
-                    typeCheckFile(filename, false);
+//                    typeCheckFile(filename, false);
                     lexFile(filename, new StringBuilder(), true);
                 }
             }

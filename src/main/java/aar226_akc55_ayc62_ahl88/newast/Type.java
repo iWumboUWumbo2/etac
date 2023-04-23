@@ -23,7 +23,8 @@ public class Type implements Printer {
         RETURN,
         FUNC,
         UNDERSCORE,
-        MULTIRETURN
+        MULTIRETURN,
+        RECORD
     }
     /**
      * @return Return line number for element
@@ -43,6 +44,8 @@ public class Type implements Printer {
 
     public ArrayList<Type> inputTypes, outputTypes;
     public ArrayList<Type> multiTypes;
+
+    public String recordType;
 
     public Type arrayType;
 
@@ -65,6 +68,20 @@ public class Type implements Printer {
         else {
             tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
         }
+        recordType = null;
+//        inputTypes = new ArrayList<>();
+//        outputTypes = new ArrayList<>();
+    }
+
+    public Type (String record,Dimension d,int l, int c) {
+//        super(l,c);
+        line = l;
+        col = c;
+        isInt = false;
+        dimensions = d;
+        recordType = record;
+        tct = TypeCheckingType.RECORD;
+
 //        inputTypes = new ArrayList<>();
 //        outputTypes = new ArrayList<>();
     }

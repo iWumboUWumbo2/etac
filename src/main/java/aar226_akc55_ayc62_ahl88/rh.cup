@@ -24,11 +24,11 @@ import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import java.util.ArrayList;
 
 // You might want to add types to these declarations.
-parser EtaParser {:
-    public void syntax_error(Symbol cur_token){
-        throw new SyntaxError(cur_token.left,cur_token.right ,"Parsing error " + cur_token.value());
-    }
-:};
+//parser EtaParser {:
+//    public void syntax_error(Symbol cur_token){
+//        throw new SyntaxError(cur_token.left,cur_token.right ,"Parsing error " + cur_token.value());
+//    }
+//:};
 
 terminal String     IDENTIFIER;
 terminal String     STRING_LITERAL;
@@ -64,6 +64,7 @@ nonterminal Stmt                    stmt;
 nonterminal ArrayList<Stmt>         statement_star;
 nonterminal Stmt                    declaration_assign_stmt;
 nonterminal Stmt                    multi_declaration_assign_stmt;
+nonterminal ArrayList<Expr>         right_side;
 nonterminal Return                  return;
 nonterminal ArrayList<Decl>         type_list;
 nonterminal ArrayList<Expr>         fullBracketPlus;
@@ -73,14 +74,16 @@ nonterminal ArrAccessDecl           fullBracketAss;
 nonterminal ArrayList<AnnotatedTypeDecl> glob_type_list;
 //Rho
 nonterminal Dimension              rhoEmptyDimension_star;
-nonterminal ArrayList<Type>        rhoEmptyBracketType;
+nonterminal Type                   rhoEmptyBracketType;
 nonterminal ArrayList<Type>        rhoEmptyBracketType_plus;
 nonterminal AnnotatedTypeDecl      rhoEmptyBracketDecl;
 nonterminal ArrayList<AnnotatedTypeDecl>        rhoEmptyBracketDecl_plus;
-nonterminal ArrayList<Id>           identifer_plus;
-nonterminal ArrayList<AnnotatedTypeDecl>         multiDecl;
+nonterminal ArrayList<Id>           identifier_plus;
+nonterminal ArrayList<AnnotatedTypeDecl>         rhoMultiDecl;
 nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
-nonterminal Record                  record;
+nonterminal RecordDef                  record;
+nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
+nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
 
 
 
@@ -188,10 +191,16 @@ newGlob ::=
     :}
     | newGlob:gd SEMICOLON {:RESULT = gd;:}
     | glob_type_list:tl GETS:g valueList:v {:RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
+    | identifier_plus:ip COLON emptyBracketType:t {:       // x, y : int
+             ArrayList<AnnotatedTypeDecl> declList = new ArrayList<AnnotatedTypeDecl>();
+                     for(int j = 0; j < ip.size(); j++) {
+                             declList.add(new AnnotatedTypeDecl(ip.get(j), t, ipleft, ipright));
+                         }
+                     RESULT = new MultiGlobalDecl(declList, new ArrayList<Expr>(), ipleft, ipright);
+            :}
     ;
 
-glob_type_list ::=
-     emptyBracketDecl:ed1 COMMA emptyBracketDecl:ed2 {:
+glob_type_list ::= emptyBracketDecl:ed1 COMMA emptyBracketDecl:ed2 {:
      ArrayList<AnnotatedTypeDecl> temp = new ArrayList<>();
      temp.add(ed1);
      temp.add(ed2);
@@ -230,6 +239,7 @@ emptyBracketType_plus ::=
 emptyBracketType ::=
    INT  emptyDimension_star:d {:RESULT = new Type(true,d,dleft,dright); :}
  | BOOL emptyDimension_star:d {:RESULT = new Type(false,d,dleft,dright); :}
+ | IDENTIFIER:i emptyDimension_star:d {:RESULT = new Type(i, d, ileft,iright); :}
  ;
 
 emptyDimension_star ::=
@@ -319,6 +329,7 @@ stmt ::=
     // single or multiple TODO a = 4
     declaration_assign_stmt:das {:RESULT = das; :}
     | multi_declaration_assign_stmt:mdas {:RESULT = mdas;:}
+//    | multi_declaration_stmt:mds {: RESULT = mds; :}
     | WHILE expr:e stmt:s {:RESULT = new While(e,s,eleft,eright);:}
     | IF expr:e stmt:s {:RESULT = new IfOnly(e,s,eleft,eright);:}
     | IF expr:e stmt:s1 ELSE stmt:s2 {:RESULT = new IfElse(e,s1,s2,eleft,eright);:}
@@ -327,18 +338,28 @@ stmt ::=
     | block:b {: RESULT = b; :}
 ;
 
-multi_declaration_assign_stmt ::=
-    type_list:tl GETS exprList:el {:RESULT = new MultiDeclAssignStmt(tl,el,tlleft,tlright);:}
+multi_declaration_assign_stmt ::= type_list:tl right_side:rs{:RESULT = new MultiDeclAssignStmt(tl,rs,tlleft,tlright);:}
 ;
+
+right_side ::=  GETS exprList:el {:RESULT = el;:}
+                | {:RESULT = null;:};
+
+multi_declaration_stmt ::=
+    // x, y : int
+   identifier_plus:ip COLON emptyBracketType:t {:
+       ArrayList<AnnotatedTypeDecl> declList = new ArrayList<AnnotatedTypeDecl>();
+               for(int j = 0; j < ip.size(); j++) {
+                       declList.add(new AnnotatedTypeDecl(ip.get(j), t, ipleft, ipright));
+                   }
+               RESULT = declList;
+      :}
+      ;
 
 fullBracketAss ::= IDENTIFIER:id fullBracketPlus:fbp {: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), fbp,idleft,idright ); :}
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN fullBracketPlus:e{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright),new ArrayList<Expr>(),e, idleft, idright); :}
      | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN fullBracketPlus:indi{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), e,indi, idleft, idright); :}
 ;
-
-
-
-//TODO
+// x:int, y, b:bool, z
 type_list ::=
     UNDERSCORE:u COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
@@ -490,7 +511,7 @@ statement_star ::=
 
 return ::=
       RETURN:r exprList:el {:RESULT = new Return(el,rleft,rright);:}
-      | RETURN:r {:RESULT = new Return(new ArrayList<Expr>(),rleft,rright);:}
+      | RETURN:r {:RESULT = new Return(new ArrayList<Expr>(),rleft,rright);:} ;
 
 //Rho stuff-----------------------------------------
 rhoEmptyDimension_star ::=
@@ -511,16 +532,8 @@ rhoEmptyDimension_star ::=
 rhoEmptyBracketType ::=
    INT  rhoEmptyDimension_star:d {:RESULT = new Type(true,d,dleft,dright); :}
  | BOOL rhoEmptyDimension_star:d {:RESULT = new Type(false,d,dleft,dright); :}
+ | IDENTIFIER:i rhoEmptyDimension_star:d {: RESULT = new Type(i, d, ileft, iright); :}
  ;
-
- // x,y:int, x,y : int[4][0], x,y : int, bool
-rhoEmptyBracketType_plus ::=
-    rhoEmptyBracketType_plus:ts COMMA rhoEmptyBracketType:t {: ts.add(t); RESULT = ts; :}
-    | rhoEmptyBracketType:t {: ArrayList<Type> typeList = new ArrayList<Type>();
-                               typeList.add(t);
-                               RESULT = typeList;
-                            :}
-    ;
 
 rhoEmptyBracketDecl ::=
     IDENTIFIER:i COLON rhoEmptyBracketType:t {: RESULT = new AnnotatedTypeDecl(new Id(i,ileft,iright),t,ileft,iright); :}
@@ -534,45 +547,38 @@ rhoEmptyBracketDecl_plus ::=
       :}
     ;
 
-identifer_plus ::=
-    identifier_plus:ip COMMA IDENTIFIER:i {: ip.add(i); RESULT = ip; :}
-    | IDENTIFIER:i {: ArrayList<Id> idList = new ArrayList<Id>();
-                      idList.add(i);
+identifier_plus ::=
+    identifier_plus:ip COMMA IDENTIFIER:i {: ip.add(new Id(i, ileft, iright)); RESULT = ip; :}
+    | IDENTIFIER:i1 COMMA IDENTIFIER:i2 {: ArrayList<Id> idList = new ArrayList<Id>();
+                      idList.add(new Id(i1, i1left, i1right));
+                      idList.add(new Id(i2, i2left, i2right));
                       RESULT = idList; :}
     ;
 
-multiDecl ::=
-    identifier_plus:i COLON rhoEmptyBracketType_plus:e {:
+// x, y : int
+rhoMultiDecl ::=
+    identifier_plus:ip COLON rhoEmptyBracketType:e {:
         ArrayList<AnnotatedTypeDecl> declList = new ArrayList<AnnotatedTypeDecl>();
-        if (e.size() > i.size()) {
-            throw new SyntaxError(ileft,iright ,"Wrong number of types.");
-        } else if (i.size() > e.size() && e.size() > 1) {
-            throw new SyntaxError(ileft,iright ,"Wrong number of types.");
-        } else if (i.size() > e.size() && e.size() == 1) {
-            for(Id id : i) {
-                declList.append(new AnnotatedDeclType(id, e[0], ileft, iright));
+        for(int j = 0; j < ip.size(); j++) {
+                declList.add(new AnnotatedTypeDecl(ip.get(j), e, ipleft, ipright));
             }
-        } else if (i.size() == e.size()) {
-            for(int j = 0; j < i.size(); j++) {
-                declList.append(new AnnotatedDeclType(i[j], e[j], ileft, iright));
-            }
-        } else {
-            throw new SyntaxError(ileft,iright ,"Shouldn't be here.");
-        }
         RESULT = declList; :}
     ;
 
+// x, y : int
+// x : int, y : int
 fieldDecl ::=
-    multiDecl:m {: RESULT = m; :}
-    | multiDecl:m SEMICOLON {: m :}
+    rhoMultiDecl:m {: RESULT = m; :}
+    | rhoMultiDecl:m SEMICOLON {: RESULT = m; :}
     | rhoEmptyBracketDecl_plus:e {: RESULT = e; :}
     | rhoEmptyBracketDecl_plus:e SEMICOLON {: RESULT = e; :}
     ;
 
-fieldDeclStar ::=
-    fieldDeclStar:ss fieldDecl:s {: ss.add(s); RESULT = ss; :}
-    |statement_star:ss SEMICOLON stmt:s {: ss.add(s); RESULT = ss;:}
-    | {:RESULT = new ArrayList<Stmt>();:};
+fieldDeclPlus ::=
+    fieldDeclPlus:ss fieldDecl:s {: ss.addAll(s); RESULT = ss; :}
+    |fieldDecl:s {: RESULT = s; :}
+    ;
 
 record ::=
-    RECORD IDENTIFIER:i OPEN_BRACE defOrDeclStar:s CLOSE_BRACE {:RESULT = new Record(s, ileft, iright)};
+    RECORD IDENTIFIER:i OPEN_BRACE fieldDeclPlus:s CLOSE_BRACE {:RESULT = new RecordDef(new Id(i, ileft, iright), s, ileft, iright); :}
+    ;
