@@ -500,7 +500,6 @@ public class Main {
         Option optcfgOpt = new Option(null, "optcfg", true,
                 "Report the control-flow graph at the specified phase of optimization.");
 
-
         Option sourcepathOpt   = new Option ("sourcepath", true,
                 "Specify where to find input source files.");
         Option libpathOpt = new Option ("libpath", true,
@@ -512,6 +511,12 @@ public class Main {
                 "Specify where to place generated assembly output files.");
         Option optOpt   = new Option ("O", true,
                 "Disable optimizations.");
+
+        Option cfOptOpt = new Option ("Ocf", true,
+                "Enable constant folding optimization.");
+        Option inlOptOpt = new Option ("Oinl", true,
+                "Enable function inlining optimization.");
+
         optOpt.setOptionalArg(true);
 
         Option targetOpt = new Option("target", true,
@@ -530,6 +535,9 @@ public class Main {
         options.addOption(optirOpt);
         options.addOption(optcfgOpt);
 
+        options.addOption(cfOptOpt);
+        options.addOption(inlOptOpt);
+
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
 
@@ -542,7 +550,7 @@ public class Main {
         HelpFormatter formatter = new HelpFormatter();
 
         opts = new Optimizations();
-        opts.clearAll();
+        opts.setAll();
 
         isOutputAsmDirSpecified = isOutputDiagnosticDirSpecified = isInputDirSpecified = isLibpathDirSpecified = false;
         outputAsmDirectory = outputDiagnosticDirectory = inputDirectory = libpathDirectory =
@@ -603,24 +611,15 @@ public class Main {
             }
 
             if (cmd.hasOption("O")) {
-                String[] optims = cmd.getOptionValues("O");
+                opts.clearAll();
+            }
 
-                if (optims == null) {
-                    opts.clearAll();
-                    System.out.println(opts);
-                    return;
-                }
+            if (cmd.hasOption("Ocf")) {
+                opts.setOptimizations(OptimizationType.CONSTANT_FOLDING);
+            }
 
-                for (String opt : optims)
-                if (opt != null)  {
-                    switch (opt) {
-                        case "cf" -> opts.setOptimizations(OptimizationType.CONSTANT_FOLDING);
-                        case "inl" -> opts.setOptimizations(OptimizationType.INLINING);
-                        default -> throw new RuntimeException("Unidentified Optimization Specified");
-                    }
-                }
-
-                System.out.println(opts);
+            if (cmd.hasOption("Oinl")) {
+                opts.setOptimizations(OptimizationType.INLINING);
             }
 
             if (cmd.hasOption("sourcepath")) {
