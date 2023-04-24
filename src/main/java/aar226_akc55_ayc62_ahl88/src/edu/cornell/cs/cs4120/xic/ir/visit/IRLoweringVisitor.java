@@ -434,7 +434,7 @@ public class IRLoweringVisitor extends IRVisitor {
     }
 
     // Create Basic Blocks And reorder all the body
-    private IRNode canon(IRFuncDecl node) {
+    public IRNode canon(IRFuncDecl node) {
         if (node.body() instanceof IRSeq irs){
             ArrayList<IRStmt> orderedStatements = new ArrayList<>();
             ArrayList<BasicBlock> unorderedBlocks = createBasicBlocksAndGraph(irs);

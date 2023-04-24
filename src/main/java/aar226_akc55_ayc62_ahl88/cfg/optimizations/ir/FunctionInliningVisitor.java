@@ -11,6 +11,8 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
     private int tempCnt;
     private int labelCnt;
 
+    private int extraJmp;
+
     private String currentFunction;
 
     private HashMap<String,ArrayList<IRStmt>> inLinedFunctions;
@@ -23,6 +25,9 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
     }
     private String nxtLabel(String funcName) {
         return String.format(funcName + "lb%d_fi_", (labelCnt++));
+    }
+    private String extraJmps() {
+        return String.format("_extra_jump_%d", (extraJmp++));
     }
     ArrayList<String> allowedInline;
 
@@ -130,9 +135,39 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
                 }
             }
         }
-        return new IRCompUnit(node.name(), newIrFunc,new ArrayList<>(),node.dataMap());
+
+        HashMap<String,IRFuncDecl> reorderedBlocks = reorderFunctions(newIrFunc);
+        return new IRCompUnit(node.name(), reorderedBlocks,new ArrayList<>(),node.dataMap());
     }
 
+    private HashMap<String,IRFuncDecl> reorderFunctions(HashMap<String,IRFuncDecl> inLinedResult){
+
+        HashMap<String,IRFuncDecl> result = new HashMap<>();
+        for (String funcName: inLinedResult.keySet()){
+            IRFuncDecl func = inLinedResult.get(funcName);
+            IRSeq body = (IRSeq) func.body();
+            ArrayList<IRStmt> nxtBody = new ArrayList<>();
+            for (IRStmt stmt: body.stmts()){
+                if (stmt instanceof IRCJump cjmp){
+                    if (!cjmp.hasFalseLabel()){
+                        String ex = extraJmps();
+                        nxtBody.add(new IRCJump(cjmp.cond(),cjmp.trueLabel(),ex));
+                        nxtBody.add(new IRLabel(ex));
+                    }else{
+                        nxtBody.add(cjmp);
+                    }
+                }else{
+                    nxtBody.add(stmt);
+                }
+            }
+            IRFuncDecl nxtFunc = new IRFuncDecl(funcName,new IRSeq(nxtBody));
+
+            IRFuncDecl reorderedFunc = (IRFuncDecl) new IRLoweringVisitor(new IRNodeFactory_c()).canon(nxtFunc);
+            reorderedFunc.functionSig = func.functionSig;
+            result.put(funcName,reorderedFunc);
+        }
+        return result;
+    }
     @Override
     public IRExpr visit(IRConst node) {
         return node;
