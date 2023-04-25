@@ -26,6 +26,8 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -41,7 +43,8 @@ public class Main {
     private static String inputDirectory;
     public static String libpathDirectory;
 
-    private static String phase;
+    private static HashMap<String, IRNode> IRs;
+
 
     private static boolean isOutputAsmDirSpecified;
     private static boolean isOutputDiagnosticDirSpecified;
@@ -53,7 +56,7 @@ public class Main {
     private static Target target;
 
     // Write the lexed string into the corresponding file name
-    private static void writeOutputGeneric(String filename, String output, String extension, boolean isAsm) {
+    private static void writeOutputGeneric(String filename, String suffix, String output, String extension, boolean isAsm) {
         Path path;
         Path path1 = Paths.get(filename);
 
@@ -69,7 +72,7 @@ public class Main {
         }
 
         String pathname = path.toString();
-        pathname = pathname.substring(0, pathname.length() - 3) + extension;
+        pathname = pathname.substring(0, pathname.length() - 4) + suffix + "." + extension;
 //        System.out.println(pathname);
         Path parentPath = path.getParent();
         String dirname = (parentPath == null) ? "" : parentPath.toString();
@@ -101,11 +104,21 @@ public class Main {
     }
 
     private static void writeOutput(String filename, String output, String extension) {
-        writeOutputGeneric(filename, output, extension, false);
+        writeOutputGeneric(filename, "", output, extension, false);
     }
 
     private static void writeOutputAsm(String filename, String output, String extension) {
-        writeOutputGeneric(filename, output, extension, true);
+        writeOutputGeneric(filename, "", output, extension, true);
+    }
+
+    private static void writeOutputOptIR(String filename, String phase, String output) {
+        System.out.println(filename + " " + phase);
+        System.out.println(output);
+        writeOutputGeneric(filename, "_" + phase, output, "ir", false);
+    }
+
+    private static void writeOutputDot(String filename, String phase, String output) {
+        writeOutputGeneric(filename, "_" + phase, output, "dot", false);
     }
 
     private static String prettyOut(Symbol s){
@@ -309,6 +322,11 @@ public class Main {
                     Program result = (Program) p.parse().value;
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
+
+                    IRs.put("initial", ir);
+
+
+
 //                    {
 //                        StringWriter out = new StringWriter();
 //                        PrintWriter pw = new PrintWriter(out);
@@ -347,6 +365,8 @@ public class Main {
 //                        System.out.print("Canonical?: ");
 //                        System.out.println(cv.visit(ir));
                     }
+
+                    IRs.put("final", ir);
                     return ir;
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
@@ -431,6 +451,8 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+
 
     public static final String INDENT_SFILE = "    ";
     private static void asmGenFile(String filename, boolean shouldWrite) {
@@ -556,7 +578,8 @@ public class Main {
         outputAsmDirectory = outputDiagnosticDirectory = inputDirectory = libpathDirectory =
                 Paths.get("").toAbsolutePath().toString();
         target = Target.LINUX;
-        phase = "";
+
+        IRs = new HashMap<>();
 
         boolean shouldAsmGen = true;
 
@@ -585,19 +608,6 @@ public class Main {
             if (cmd.hasOption("report-opts")) {
                 opts.reportOpts();
                 return;
-            }
-
-            // TODO: fix optir and optcfg
-            if (cmd.hasOption("optir")) {
-                phase = switch (cmd.getOptionValue("optir")) {
-                    case "initial" -> "initial";
-                    case "final" -> "final";
-                    default -> "";
-                };
-            }
-
-            if (cmd.hasOption("optcfg")) {
-
             }
 
             if (cmd.hasOption("D")) {
@@ -639,6 +649,26 @@ public class Main {
                     case "macos" -> Target.MACOS;
                     default -> throw new IllegalStateException("Unexpected value: " + cmd.getOptionValue("target"));
                 };
+            }
+
+            // TODO: fix optir and optcfg
+            if (cmd.hasOption("optir")) {
+                String[] phases = cmd.getOptionValues("optir");
+                System.out.println(Arrays.toString(phases));
+
+                for (String filename : filenames) {
+                    String zhenFilename = getZhenFilename(filename);
+                    irbuild(zhenFilename);
+
+                    for (String phase : phases) {
+                        IRNode ir = IRs.get(phase);
+                        writeOutputOptIR(filename, phase, ir.toString());
+                    }
+                }
+            }
+
+            if (cmd.hasOption("optcfg")) {
+
             }
 
             if (cmd.hasOption("lex")) {
@@ -689,6 +719,8 @@ public class Main {
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);
             System.out.println("Unexpected exception: " + parseException.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
