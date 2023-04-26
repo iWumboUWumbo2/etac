@@ -3,14 +3,13 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
 
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 
-public class BackwardIRDataflow<T> {
+public class ForwardIRDataflow<T> {
 
     private BiFunction<CFGNode<IRStmt>,T,T> transferFunction;
 
@@ -24,11 +23,11 @@ public class BackwardIRDataflow<T> {
 
     private HashMap<CFGNode<IRStmt>,T> outMapping;
 
-    public BackwardIRDataflow(CFGGraph<IRStmt> g,
-                              BiFunction<CFGNode<IRStmt>,T, T> transfer,
-                              BinaryOperator<T> meet,
-                              Supplier<T> acc,
-                              T topElement){
+    public ForwardIRDataflow(CFGGraph<IRStmt> g,
+                             BiFunction<CFGNode<IRStmt>,T, T> transfer,
+                             BinaryOperator<T> meet,
+                             Supplier<T> acc,
+                             T topElement){
         graph = g;
         transferFunction = transfer;
         meetOperator = meet;
@@ -40,44 +39,19 @@ public class BackwardIRDataflow<T> {
             outMapping.put(node,topElement);
         }
     }
-
-    public BiFunction<CFGNode<IRStmt>, T, T> getTransferFunction() {
-        return transferFunction;
-    }
-
-    public BinaryOperator<T> getMeetOperator() {
-        return meetOperator;
-    }
-
-    public CFGGraph<IRStmt> getGraph() {
-        return graph;
-    }
-
-    public Supplier<T> getAccum() {
-        return accum;
-    }
-
-    public HashMap<CFGNode<IRStmt>, T> getInMapping() {
-        return inMapping;
-    }
-
-    public HashMap<CFGNode<IRStmt>, T> getOutMapping() {
-        return outMapping;
-    }
-
     private T meetBeforeTransfer(CFGNode<IRStmt> node){
-        ArrayList<CFGNode<IRStmt>> succs = node.getChildren();
-        T outN = accum.get();
-        for (var succ : succs){
-            outN = meetOperator.apply(outN,inMapping.get(succ));
+        ArrayList<CFGNode<IRStmt>> preds = node.getPredecessors();
+        T inN = accum.get();
+        for (var pred : preds){
+            inN = meetOperator.apply(inN, outMapping.get(pred));
         }
-        outMapping.put(node, outN);
-        return outN;
+        inMapping.put(node, inN);
+        return inN;
     }
 
     private T applyTransfer(CFGNode<IRStmt> node) {
         T applied = transferFunction.apply(node, meetBeforeTransfer(node));
-        inMapping.put(node, applied);
+        outMapping.put(node, applied);
         return applied;
     }
 
@@ -89,14 +63,14 @@ public class BackwardIRDataflow<T> {
             var node = queue.poll();
             set.remove(node);
 
-            T oldIn = inMapping.get(node);
-            T newIn = applyTransfer(node);
+            T oldOut = outMapping.get(node);
+            T newOut = applyTransfer(node);
 
-            if (!oldIn.equals(newIn)) {
-                for (var pred : node.getPredecessors()) {
-                    if (!set.contains(pred)) {
-                        set.add(pred);
-                        queue.add(pred);
+            if (!oldOut.equals(newOut)) {
+                for (var succ : node.getChildren()) {
+                    if (!set.contains(succ)) {
+                        set.add(succ);
+                        queue.add(succ);
                     }
                 }
             }

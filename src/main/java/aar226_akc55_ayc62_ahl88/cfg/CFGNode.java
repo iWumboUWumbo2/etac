@@ -25,10 +25,7 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
         this.stmt = stmt;
 
     }
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(stmt, children, predecessors, in, out, def, use);
-//    }
+
 
     public void addPredecessor(CFGNode<T> pred) {
         if (predecessors.contains(pred)) {
