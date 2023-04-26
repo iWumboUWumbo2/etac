@@ -15,6 +15,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
+import aar226_akc55_ayc62_ahl88.newast.expr.recordaccessexpr.RecordAccess;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntegerNegExpr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
@@ -651,6 +652,7 @@ public class IRVisitor implements Visitor<IRNode>{
         // UnderScore Can't
     }
 
+
     @Override
     public IRStmt visit(MultiDeclAssignStmt node) {
         List<IRExpr> right = node.getExpressions().stream().map(expr -> expr.accept(this)).toList();
@@ -803,6 +805,11 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(ArrAccessDecl node) {// no need to visit
+        return null;
+    }
+
+    @Override
+    public IRExpr visit(RecordAccess node) {
         return null;
     }
 

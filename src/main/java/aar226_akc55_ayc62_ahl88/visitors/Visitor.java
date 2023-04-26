@@ -19,12 +19,14 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.IntegerComparisonBinop
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.LogicalBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
+import aar226_akc55_ayc62_ahl88.newast.expr.recordaccessexpr.RecordAccess;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntegerNegExpr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 
 public interface Visitor<T> {
 
@@ -83,6 +85,8 @@ public interface Visitor<T> {
     T visit(AnnotatedTypeDecl node);
 
     T visit(ArrAccessDecl node);
+
+    IRExpr visit(RecordAccess node);
 
     T visit(NoTypeDecl node);
 

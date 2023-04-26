@@ -20,10 +20,6 @@ public class RecordAccess extends Expr {
     // Read This Left to Right
     ArrayList<Id> indicies;
 
-    /**
-     * @param argArray Expression prior to array indexing
-     * @param arrayOfIndexing Expressions found within indexing area.
-     */
     public RecordAccess(ArrayList<Id> recordAccess, int l, int c){
         super (l, c);
         indicies = recordAccess;
