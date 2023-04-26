@@ -124,6 +124,7 @@ public class CFGGraph<T, U> {
             visited.add(popped);
         }
 
+        result.append("}");
         return result.toString();
     }
 

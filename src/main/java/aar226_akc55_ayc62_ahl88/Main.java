@@ -7,6 +7,8 @@ import aar226_akc55_ayc62_ahl88.asm.ASMData;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
+import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
+import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.newast.Program;
@@ -28,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -117,8 +120,8 @@ public class Main {
         writeOutputGeneric(filename, "_" + phase, output, "ir", false);
     }
 
-    private static void writeOutputDot(String filename, String phase, String output) {
-        writeOutputGeneric(filename, "_" + phase, output, "dot", false);
+    private static void writeOutputDot(String filename, String function, String phase, String output) {
+        writeOutputGeneric(filename, "_" + function + "_" + phase, output, "dot", false);
     }
 
     private static String prettyOut(Symbol s){
@@ -668,7 +671,26 @@ public class Main {
             }
 
             if (cmd.hasOption("optcfg")) {
+                String[] phases = cmd.getOptionValues("optcfg");
 
+                for (String filename : filenames) {
+                    String zhenFilename = getZhenFilename(filename);
+                    irbuild(zhenFilename);
+
+                    for (String phase : phases) {
+                        IRNode ir = IRs.get(phase);
+
+                        for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                            String funcName = map.getValue().name();
+                            CFGGraph<IRStmt,IRTemp> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+
+//                            System.out.println(stmtGraph.CFGtoDOT());
+                            writeOutputDot(filename, funcName, phase, stmtGraph.CFGtoDOT());
+
+//                            break;
+                        }
+                    }
+                }
             }
 
             if (cmd.hasOption("lex")) {

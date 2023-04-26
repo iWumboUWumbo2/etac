@@ -31,10 +31,10 @@ public class CFGNode<T, U> {
         def = new HashSet<>();
         use = new HashSet<>();
     }
-    @Override
-    public int hashCode() {
-        return Objects.hash(stmt, children, predecessors, in, out, def, use);
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(stmt, children, predecessors, in, out, def, use);
+//    }
 
     public void addPredecessor(CFGNode<T, U> pred) {
         if (predecessors.contains(pred)) {
