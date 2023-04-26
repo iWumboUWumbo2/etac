@@ -588,7 +588,7 @@ public class Main {
             if (cmd.hasOption("parse")) {
                 shouldAsmGen = false;
                 for (String filename : filenames) {
-                    typeCheckFile(filename, false);
+//                    typeCheckFile(filename, false);
                     parseFile(filename, true);
                 }
             }

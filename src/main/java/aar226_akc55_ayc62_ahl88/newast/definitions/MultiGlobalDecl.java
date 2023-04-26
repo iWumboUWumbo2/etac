@@ -75,10 +75,10 @@ public class MultiGlobalDecl extends Definition{
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();
-        p.printAtom("=");
-        p.startList();
+        if (expressions.size() != 0) p.printAtom("=");
+        if (expressions.size() != 0) p.startList();
         decls.forEach(e -> e.prettyPrint(p));
-        p.endList();
+        if (expressions.size() != 0) p.endList();
         expressions.forEach(e -> e.prettyPrint(p));
         p.endList();
     }

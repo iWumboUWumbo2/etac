@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.declarations.Decl;
+import aar226_akc55_ayc62_ahl88.newast.declarations.NoTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.declarations.UnderScore;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
@@ -22,16 +23,45 @@ public class MultiDeclAssignStmt extends Stmt {
 
     public MultiDeclAssignStmt(ArrayList<Decl> d, ArrayList<Expr> e,int l, int c) {
         super(l,c);
-        decls = d;
-        for (Decl dec: d){
-            if (dec instanceof AnnotatedTypeDecl){
+
+        for (Decl dec: d) {
+            if (dec instanceof AnnotatedTypeDecl) {
                 AnnotatedTypeDecl cast = (AnnotatedTypeDecl) dec;
                 if (!cast.type.dimensions.allEmpty) {
-                    throw new SyntaxError(cast.getLine(), cast.getColumn() ,"array in param list has init value");
+                    throw new SyntaxError(cast.getLine(), cast.getColumn(), "array in param list has init value");
                 }
             }
         }
+
         expressions = e;
+
+        ArrayList<Decl> decl_list = new ArrayList<>();
+        if (e.size() == 0) {    // if e is null, then we have stmt form x, y, z : type
+            int last_decl_i = d.size()-1;
+            if (!(d.get(last_decl_i) instanceof AnnotatedTypeDecl)) {
+                throw new SyntaxError(d.get(last_decl_i).getLine(), d.get(last_decl_i).getColumn(),
+                        "invalid variable declaration statement");
+            }
+            decl_list.add(d.get(last_decl_i));
+            Type last_type = ((AnnotatedTypeDecl) d.get(last_decl_i)).type;
+            for (int i = 0; i < last_decl_i; i ++) {
+                if (!(d.get(i) instanceof NoTypeDecl)) {
+                    throw new SyntaxError(d.get(i).getLine(), d.get(i).getColumn(),
+                            "invalid variable declaration statement");
+                }
+                if (!(d.get(i) instanceof UnderScore)) {
+                    AnnotatedTypeDecl newdecl = new AnnotatedTypeDecl(d.get(i).identifier, last_type, d.get(i).getLine(), d.get(i).getColumn());
+                    decl_list.add(newdecl);
+                }
+            }
+            decls = decl_list;
+
+        } else {
+            decls = d;
+        }
+
+
+
     }
 
     public String toString(){
@@ -42,10 +72,10 @@ public class MultiDeclAssignStmt extends Stmt {
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
             p.startList();
-            p.printAtom("=");
-            p.startList();
+            if (expressions.size() != 0) p.printAtom("=");
+            if (expressions.size() != 0) p.startList();
             decls.forEach(e -> e.prettyPrint(p));
-            p.endList();
+            if (expressions.size() != 0) p.endList();
             expressions.forEach(e -> e.prettyPrint(p));
             p.endList();
     }
