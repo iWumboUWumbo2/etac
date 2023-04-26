@@ -144,6 +144,7 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
     "!="      { return symbol(sym.NOT_EQUAL); }
     "&"       { return symbol(sym.AND); }
     "|"       { return symbol(sym.OR); }
+    "."       { return symbol(sym.PERIOD); }
 
     // seperators
     ":"       { return symbol(sym.COLON); }
