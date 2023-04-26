@@ -682,7 +682,7 @@ public class Main {
 
                         for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                             String funcName = map.getValue().name();
-                            CFGGraph<IRStmt,IRTemp> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                            CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
 
 //                            System.out.println(stmtGraph.CFGtoDOT());
                             writeOutputDot(filename, funcName, phase, stmtGraph.CFGtoDOT());
