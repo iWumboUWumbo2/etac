@@ -524,13 +524,6 @@ rhoEmptyDimension_star ::=
         ds.foundEmpty = true;
         ds.indices.add(null);
         RESULT = ds;:}
-    |rhoEmptyDimension_star:ds OPEN_BRACKET INTEGER_LITERAL:i CLOSE_BRACKET {:
-        if (ds.foundEmpty) throw new SyntaxError(ileft,iright,"Filled index after empty");
-        ds.allEmpty = false;
-        IntLiteral iL = new IntLiteral(i,ileft,iright);
-        ds.indices.add(iL);
-        ds.increment(); // [][2]
-        RESULT = ds;:}
     | {:RESULT = new Dimension(-1,-1); :}; // Maybe check future
 
 rhoEmptyBracketType ::=
