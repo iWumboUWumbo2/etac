@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
@@ -88,6 +89,11 @@ public class IRCJump extends IRStmt {
         p.printAtom(trueLabel);
         if (hasFalseLabel()) p.printAtom(falseLabel);
         p.endList();
+    }
+
+    @Override
+    public IRNode accept(FunctionInliningVisitor v) {
+        return null;
     }
 
     @Override

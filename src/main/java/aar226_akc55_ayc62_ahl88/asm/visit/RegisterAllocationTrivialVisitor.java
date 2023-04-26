@@ -625,7 +625,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
                     alignedFunction.set(i,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
                     // find end
                     int undoIndex = undoComment(alignedFunction,i+1);
-                    alignedFunction.set(undoIndex,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                    alignedFunction.set(undoIndex,new ASMArg2(ASMOpCodes.ADD, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
                 }
             }
         }

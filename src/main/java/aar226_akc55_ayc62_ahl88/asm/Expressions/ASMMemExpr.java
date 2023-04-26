@@ -21,7 +21,7 @@ public class ASMMemExpr extends ASMExpr{
 //            throw new InternalCompilerError("mem should not be null");
 //        }
         if (mem instanceof  ASMNameExpr name){
-            System.out.println("naming");
+//            System.out.println("naming");
             return "QWORD PTR " + name + "[rip] ";
         }
         return "QWORD PTR [ " + mem +" ]";

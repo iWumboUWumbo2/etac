@@ -1,0 +1,3 @@
+main(args:int[][]) {
+    x, y:int = 4, 4;
+}

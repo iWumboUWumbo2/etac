@@ -1,8 +1,7 @@
-//package aar226_akc55_ayc62_ahl88.cfg;
+//package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 //
 //import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
 //import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMBinOpExpr;
-//import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMMemExpr;
 //import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg1;
 //import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
 //import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg3;
@@ -16,31 +15,24 @@
 //import java.util.LinkedList;
 //import java.util.Queue;
 //
-//public class Worklist<T> {
+//public class WorklistIR {
+//    private Queue<CFGNode<IRStmt, IRTemp>> worklistNodes;
 //
-//    private Queue<CFGNode<T>> worklistNodes;
 //
-//
-//    public Worklist() {
+//    public WorklistIR(CFGGraph<IRStmt, IRTemp> graph) {
 //        worklistNodes = new LinkedList<>();
-//        ArrayList<CFGNode<T>> nodes = graph.getNodes();
+//        ArrayList<CFGNode<IRStmt, IRTemp>> nodes = graph.getNodes();
 //        worklistNodes.addAll(nodes);
 //    }
 //
-//    public void setUse(CFGNode<T> node) {
-//        HashSet<T> use = new HashSet<>();
-//        T stmt = node.getStmt();
+//    public void setUse(CFGNode<IRStmt, IRTemp> node) {
+//        HashSet<IRTemp> use = new HashSet<>();
+//        IRStmt stmt = node.getStmt();
 //
 //        // if [mov temp, expr] then don't add temp
 //        if ((stmt instanceof IRMove irmove &&
 //                irmove.target() instanceof IRTemp)) {
-//            use.addAll(getTemps((T) irmove.source(), new ArrayList<T>()));
-//            node.setUse(use);
-//            return;
-//        }
-//        if ((stmt instanceof ASMMov asmmov &&
-//                asmmov.getLeft() instanceof ASMAbstractReg)) {
-//            use.addAll(getTemps((T) asmmov.getRight(), new ArrayList<T>()));
+//            use.addAll(getTemps(irmove.source(), new ArrayList<>()));
 //            node.setUse(use);
 //            return;
 //        }
@@ -90,6 +82,8 @@
 //        node.setUse(use);
 //    }
 //
+//
+//
 //    public ArrayList<T> getTemps(T node, ArrayList<T> temps) {
 //        if (node instanceof ASMAbstractReg asmreg) {
 //            temps.add((T) asmreg);
@@ -113,16 +107,11 @@
 //        return temps;
 //    }
 //
-//    public void setDef(CFGNode<T> node) {
-//        HashSet<T> def = new HashSet<>();
+//    public void setDef(CFGNode<IRStmt, IRTemp> node) {
+//        HashSet<IRTemp> def = new HashSet<>();
 //        if (node.getStmt() instanceof IRMove irmove &&
 //                irmove.target() instanceof IRTemp irtemp) {
-//            def.add((T) irtemp);
-//            node.setDef(def);
-//        }
-//        if (node.getStmt() instanceof ASMMov asmmov &&
-//                asmmov.getLeft() instanceof ASMAbstractReg asmreg) {
-//            def.add((T) asmreg);
+//            def.add(irtemp);
 //            node.setDef(def);
 //        }
 //    }
@@ -179,7 +168,4 @@
 //
 //        // TODO: set up queue, and finish worklist algorithm
 //    }
-//
-//
-//
 //}

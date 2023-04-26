@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
@@ -74,7 +75,10 @@ public class IRFuncDecl extends IRNode_c {
         body.printSExp(p);
         p.endList();
     }
-
+    @Override
+    public IRFuncDecl accept(FunctionInliningVisitor v) {
+        return v.visit(this);
+    }
     public ArrayList<ASMInstruction> accept(AbstractASMVisitor v) {
         return v.visit(this);
     }

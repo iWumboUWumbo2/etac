@@ -3,6 +3,7 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
@@ -22,6 +23,8 @@ public interface IRNode {
     long getBestCost();
     void setbestInstructions(ArrayList<ASMInstruction> instrs);
     ArrayList<ASMInstruction> getBestInstructions();
+
+
 
     /**
      * Visit the children of this IR node.
@@ -51,4 +54,6 @@ public interface IRNode {
      * @param p the S-expression printer
      */
     void printSExp(SExpPrinter p);
+
+    IRNode accept(FunctionInliningVisitor v);
 }
