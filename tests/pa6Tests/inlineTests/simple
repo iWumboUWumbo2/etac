@@ -1,0 +1,93 @@
+    .file  "tests/pa6Tests/inlineTests/inLineFast.eta"
+    .intel_syntax noprefix
+    .text
+    .globl  _Imain_paai
+    .type	_Imain_paai, @function
+_Imain_paai:
+    enter 80, 0
+    push r12
+    push r13
+    push r14
+    mov r14, QWORD PTR [ rbp - 8 ]
+    mov r14, rdi
+    mov QWORD PTR [ rbp - 8 ], r14
+    # (MOVE (TEMP i) (CONST 0))
+    mov r14, QWORD PTR [ rbp - 48 ]
+    mov r14, 0
+    mov QWORD PTR [ rbp - 48 ], r14
+l0:
+    # (CJUMP (GEQ (TEMP i) (CONST 10000000)) l2)
+    mov r14, QWORD PTR [ rbp - 72 ]
+    mov r14, 10000000
+    mov QWORD PTR [ rbp - 72 ], r14
+    mov r14, QWORD PTR [ rbp - 48 ]
+    mov r13, QWORD PTR [ rbp - 72 ]
+    cmp r14, r13
+    mov QWORD PTR [ rbp - 48 ], r14
+    jge l2
+    # (MOVE (TEMP tl0) (TEMP i))
+    mov r14, QWORD PTR [ rbp - 56 ]
+    mov r13, QWORD PTR [ rbp - 48 ]
+    mov r14, r13
+    mov QWORD PTR [ rbp - 56 ], r14
+    # (MOVE (TEMP _ARG1) (TEMP tl0))
+    mov r14, QWORD PTR [ rbp - 24 ]
+    mov r13, QWORD PTR [ rbp - 56 ]
+    mov r14, r13
+    mov QWORD PTR [ rbp - 24 ], r14
+    # (MOVE (TEMP _Ifoo_ii_tp3_fi_n) (TEMP _ARG1))
+    mov r14, QWORD PTR [ rbp - 80 ]
+    mov r13, QWORD PTR [ rbp - 24 ]
+    mov r14, r13
+    mov QWORD PTR [ rbp - 80 ], r14
+    # (MOVE (TEMP _Ifoo_ii_tp2_fi_tl3) (TEMP _Ifoo_ii_tp3_fi_n))
+    mov r14, QWORD PTR [ rbp - 32 ]
+    mov r13, QWORD PTR [ rbp - 80 ]
+    mov r14, r13
+    mov QWORD PTR [ rbp - 32 ], r14
+    # (MOVE (TEMP _RV1) (TEMP _Ifoo_ii_tp2_fi_tl3))
+    mov r14, QWORD PTR [ rbp - 16 ]
+    mov r13, QWORD PTR [ rbp - 32 ]
+    mov r14, r13
+    mov QWORD PTR [ rbp - 16 ], r14
+    # (JUMP (NAME _Ifoo_iilb3_fi__Ifoo_iilb0_fi_))
+    jmp _Ifoo_iilb3_fi__Ifoo_iilb0_fi_
+_Ifoo_iilb3_fi__Ifoo_iilb0_fi_:
+    # (MOVE (TEMP tl1) (TEMP _RV1))
+    mov r14, QWORD PTR [ rbp - 40 ]
+    mov r13, QWORD PTR [ rbp - 16 ]
+    mov r14, r13
+    mov QWORD PTR [ rbp - 40 ], r14
+    # (CALL_STMT 1 (NAME _IunparseInt_aii) (TEMP tl1))
+    sub rsp, 8
+    mov r14, QWORD PTR [ rbp - 40 ]
+    mov rdi, r14
+    call _IunparseInt_aii
+    mov r14, QWORD PTR [ rbp - 16 ]
+    mov r14, rax
+    mov QWORD PTR [ rbp - 16 ], r14
+    add rsp, 8
+    # (MOVE (TEMP tl2) (TEMP _RV1))
+    mov r14, QWORD PTR [ rbp - 64 ]
+    mov r13, QWORD PTR [ rbp - 16 ]
+    mov r14, r13
+    mov QWORD PTR [ rbp - 64 ], r14
+    # (CALL_STMT 0 (NAME _Iprintln_pai) (TEMP tl2))
+    sub rsp, 8
+    mov r14, QWORD PTR [ rbp - 64 ]
+    mov rdi, r14
+    call _Iprintln_pai
+    sub rsp, 8
+    # (MOVE (TEMP i) (ADD (TEMP i) (CONST 1)))
+    mov r14, QWORD PTR [ rbp - 48 ]
+    add r14, 1
+    mov QWORD PTR [ rbp - 48 ], r14
+    # (JUMP (NAME l0))
+    jmp l0
+l2:
+    # (RETURN)
+    pop r14
+    pop r13
+    pop r12
+    leave
+    ret

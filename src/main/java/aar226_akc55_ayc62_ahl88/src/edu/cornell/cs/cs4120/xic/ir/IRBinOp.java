@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
@@ -336,5 +337,9 @@ public class IRBinOp extends IRExpr_c {
             default -> throw new InternalCompilerError("Unknow op type "
                     + opType.toString());
         }
+    }
+    @Override
+    public IRExpr accept(FunctionInliningVisitor v){
+        return v.visit(this);
     }
 }

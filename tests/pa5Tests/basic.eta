@@ -1,6 +1,17 @@
 use io;
 use conv;
 main(args:int[][]){
-    println(unparseInt(123456789988888));
-    println(unparseInt(98372));
+    //println(unparseInt(123456789988888));
+    //println(unparseInt(98372));
+    n1:int = 4;
+
+    g:int = singleSingle(5);
+    println(unparseInt(g));
+}
+
+
+
+
+singleSingle(n1:int):int{
+    return n1;
 }

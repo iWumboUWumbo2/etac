@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 
@@ -40,5 +41,9 @@ public class IRTemp extends IRExpr_c {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+    @Override
+    public IRExpr accept(FunctionInliningVisitor v){
+        return v.visit(this);
     }
 }

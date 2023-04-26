@@ -1,0 +1,7 @@
+a, b : int
+c, d, e, f : int[][][]
+
+foo() {
+    x, y : bool
+    a:bool, b:bool = true, true;
+}

@@ -1,7 +1,7 @@
 package aar226_akc55_ayc62_ahl88.visitors;
 
 import aar226_akc55_ayc62_ahl88.Main;
-import aar226_akc55_ayc62_ahl88.OptimizationTypes;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.Use;
@@ -27,7 +27,6 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
-import org.apache.commons.text.StringEscapeUtils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class IRVisitor implements Visitor<IRNode>{
         stringCnt = 1;
         compUnitName = name;
         string_consts = new ArrayList<>();
-        constantFold = Main.opts.isSet(OptimizationTypes.CONSTANT_FOLDING);
+        constantFold = Main.opts.isSet(OptimizationType.CONSTANT_FOLDING);
     }
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));

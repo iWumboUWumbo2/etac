@@ -2,8 +2,7 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 
 import aar226_akc55_ayc62_ahl88.Main;
-import aar226_akc55_ayc62_ahl88.OptimizationTypes;
-import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
@@ -52,7 +51,7 @@ public class IRLoweringVisitor extends IRVisitor {
         labelCnt = 0;
         tempCnt = 0;
         labelToNumber= new HashMap<>();
-        folding = Main.opts.isSet(OptimizationTypes.CONSTANT_FOLDING);
+        folding = Main.opts.isSet(OptimizationType.CONSTANT_FOLDING);
     }
     private HashMap<String,Long> labelToNumber;
 
@@ -435,7 +434,7 @@ public class IRLoweringVisitor extends IRVisitor {
     }
 
     // Create Basic Blocks And reorder all the body
-    private IRNode canon(IRFuncDecl node) {
+    public IRNode canon(IRFuncDecl node) {
         if (node.body() instanceof IRSeq irs){
             ArrayList<IRStmt> orderedStatements = new ArrayList<>();
             ArrayList<BasicBlock> unorderedBlocks = createBasicBlocksAndGraph(irs);
@@ -638,9 +637,11 @@ public class IRLoweringVisitor extends IRVisitor {
                     }
                 }
             }
-            for (String s : rightTemps) {
-                if (leftTemps.contains(s)) {
-                    return false;
+            for (IRNode stmt : rightStatement){
+                if (stmt instanceof IRMove mov && mov.target() instanceof IRTemp t){
+                    if (leftTemps.contains(t.name())){
+                        return false;
+                    }
                 }
             }
         }

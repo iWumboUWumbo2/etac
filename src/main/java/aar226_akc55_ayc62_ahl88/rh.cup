@@ -87,7 +87,6 @@ nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
 nonterminal ArrayList<Id>           record_access;
 
 
-
 precedence nonassoc IF;
 precedence nonassoc ELSE;
 // function call
@@ -103,8 +102,8 @@ precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 
 start with program;
 
-program ::= importUseStar:ius definitionStar:dl {:
-    RESULT = new Program(ius, dl,1,1);:}
+program ::=
+    importUseStar:ius definitionStar:dl {: RESULT = new Program(ius, dl,1,1);:}
     ;
 
 importUseStar ::=
@@ -129,12 +128,10 @@ definition ::=
     ;
 
 method ::= // Id b
-    IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts block:b{:
-    RESULT = new Method(i,ds,ts,b,ileft,iright);
-    :}
+    IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts block:b {:
+        RESULT = new Method(i,ds,ts,b,ileft,iright); :}
     | IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN block:b {: // Block b
-        RESULT = new Method(i,ds,new ArrayList<Type>(),b,ileft,iright); // NONE
-    :}
+        RESULT = new Method(i,ds,new ArrayList<Type>(),b,ileft,iright); // NONE :}
     ;
 
 emptyBracketDecl_star ::=
@@ -177,11 +174,9 @@ fullBracketPlus ::=
                          :}
     ;
 
-
-globalDecl ::= newGlob:ng {:
-    RESULT = ng;
-:}
-;
+globalDecl ::=
+    newGlob:ng {: RESULT = ng; :}
+    ;
 
 newGlob ::=
     emptyBracketDecl:ed {:
@@ -197,8 +192,8 @@ newGlob ::=
     :}
     | newGlob:gd SEMICOLON {:
         RESULT = gd;:}
-    | glob_type_list:tl GETS:g valueList:v {:
-        RESULT = new MultiGlobalDecl(tl,v,gleft,gright);:}
+    | glob_type_list:tl GETS valueList:v {:
+        RESULT = new MultiGlobalDecl(tl,v,tlleft,tlright);:}
     | identifier_plus:ip COLON emptyBracketType:t {:       // x, y : int
 //            throw new SyntaxError(ipleft,ipright,"new match");
              ArrayList<AnnotatedTypeDecl> declList = new ArrayList<AnnotatedTypeDecl>();
@@ -229,6 +224,7 @@ value ::=
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b,bleft,bright); :}
 //    | STRING_LITERAL:s {: new ArrayValueLiteral(s); :} can't assign global arrays which a string string is
     ;
+
 valueList ::=
      value:x {:
              ArrayList<Expr> temp = new ArrayList<Expr>();
@@ -348,7 +344,7 @@ stmt ::=
     // single or multiple TODO a = 4
     declaration_assign_stmt:das {:RESULT = das; :}
     | multi_declaration_assign_stmt:mdas {:RESULT = mdas;:}
-//    | multi_declaration_stmt:mds {: RESULT = mds; :}
+//    | multi_declaration_stmt:mds {: RESULT = mds; :}    //???
     | WHILE expr:e stmt:s {:RESULT = new While(e,s,eleft,eright);:}
     | IF expr:e stmt:s {:RESULT = new IfOnly(e,s,eleft,eright);:}
     | IF expr:e stmt:s1 ELSE stmt:s2 {:RESULT = new IfElse(e,s1,s2,eleft,eright);:}
@@ -361,7 +357,7 @@ multi_declaration_assign_stmt ::= type_list:tl right_side:rs{:RESULT = new Multi
 ;
 
 right_side ::=  GETS exprList:el {:RESULT = el;:}
-                | {:RESULT = null;:};
+                | {:RESULT = new ArrayList<Expr>();:};
 
 multi_declaration_stmt ::=
     // x, y : int

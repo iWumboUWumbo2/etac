@@ -2,6 +2,7 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
@@ -131,5 +132,9 @@ public class IRCompUnit extends IRNode_c {
         }
         for (IRFuncDecl func : functions.values()) func.printSExp(p);
         p.endList();
+    }
+    @Override
+    public IRCompUnit accept(FunctionInliningVisitor v) {
+        return v.visit(this);
     }
 }
