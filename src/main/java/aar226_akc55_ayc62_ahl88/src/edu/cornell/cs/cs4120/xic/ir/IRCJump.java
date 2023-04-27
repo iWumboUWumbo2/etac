@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCano
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * An intermediate representation for a conditional transfer of control CJUMP(expr, trueLabel,
@@ -89,6 +90,19 @@ public class IRCJump extends IRStmt {
         p.printAtom(trueLabel);
         if (hasFalseLabel()) p.printAtom(falseLabel);
         p.endList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRCJump ircJump = (IRCJump) o;
+        return Objects.equals(cond, ircJump.cond) && Objects.equals(trueLabel, ircJump.trueLabel) && Objects.equals(falseLabel, ircJump.falseLabel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cond, trueLabel, falseLabel);
     }
 
     @Override

@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCano
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * An intermediate representation for evaluating an expression for side effects, discarding the
@@ -63,6 +64,19 @@ public class IRExp extends IRStmt {
     @Override
     public IRStmt accept(FunctionInliningVisitor v) {
         return v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRExp irExp = (IRExp) o;
+        return Objects.equals(expr, irExp.expr);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expr);
     }
 
     @Override

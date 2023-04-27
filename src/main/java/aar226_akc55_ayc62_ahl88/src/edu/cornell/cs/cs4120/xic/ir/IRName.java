@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An intermediate representation for named memory address NAME(n) */
 public class IRName extends IRExpr_c {
@@ -31,6 +32,19 @@ public class IRName extends IRExpr_c {
         p.printAtom("NAME");
         p.printAtom(name);
         p.endList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRName irName = (IRName) o;
+        return Objects.equals(name, irName.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     @Override

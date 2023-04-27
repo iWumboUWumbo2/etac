@@ -10,6 +10,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /** RETURN statement */
 public class IRReturn extends IRStmt {
@@ -68,6 +69,19 @@ public class IRReturn extends IRStmt {
         p.printAtom("RETURN");
         for (IRExpr ret : rets) ret.printSExp(p);
         p.endList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRReturn irReturn = (IRReturn) o;
+        return Objects.equals(rets, irReturn.rets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rets);
     }
 
     @Override

@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCano
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * An intermediate representation for an expression evaluated under side effects ESEQ(stmt, expr)
@@ -75,6 +76,20 @@ public class IRESeq extends IRExpr_c {
     public ArrayList<ASMInstruction> accept(AbstractASMVisitor v) {
         return v.visit(this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRESeq ireSeq = (IRESeq) o;
+        return Objects.equals(stmt, ireSeq.stmt) && Objects.equals(expr, ireSeq.expr);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stmt, expr);
+    }
+
     @Override
     public IRExpr accept(FunctionInliningVisitor v){
         return v.visit(this);
