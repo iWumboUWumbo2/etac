@@ -38,10 +38,6 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
         return stmt;
     }
 
-    public void setStmt(T stmt) {
-        this.stmt = stmt;
-    }
-
     public ArrayList<CFGNode<T>> getChildren() {
         return children;
     }

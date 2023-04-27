@@ -337,14 +337,12 @@ public class IRLoweringVisitor extends IRVisitor {
             return true;
         }
         if (node.source() instanceof IRESeq eseqRight) {
-            ArrayList<IRNode> rightStatement = eseqRight.stmt().
-                    aggregateChildren(new FlattenIrVisitor());
-//            ArrayList<IRNode> extra = node.left().aggregateChildren(new FlattenIrVisitor());
+            ArrayList<IRNode> rightStatement = new FlattenIrVisitor().visit(eseqRight.stmt());
             ArrayList<IRNode> leftExpression;
             if (node.target() instanceof IRESeq eseqLeft) {
-                leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
+                leftExpression = new FlattenIrVisitor().visit(eseqLeft);
             } else {
-                leftExpression = node.target().aggregateChildren(new FlattenIrVisitor());
+                leftExpression = new FlattenIrVisitor().visit(node.target());
             }
             // Make sure right havs no mem
             for (IRNode n : rightStatement) {
@@ -602,14 +600,12 @@ public class IRLoweringVisitor extends IRVisitor {
     private boolean doesBinopCommunte(IRBinOp node){
         IRExpr right = node.right();
         if (right instanceof IRESeq eseqRight) {
-            ArrayList<IRNode> rightStatement = eseqRight.stmt().
-                    aggregateChildren(new FlattenIrVisitor());
-//            ArrayList<IRNode> extra = node.left().aggregateChildren(new FlattenIrVisitor());
+            ArrayList<IRNode> rightStatement = new FlattenIrVisitor().visit(eseqRight.stmt());
             ArrayList<IRNode> leftExpression;
             if (node.left() instanceof IRESeq eseqLeft) {
-                leftExpression = eseqLeft.aggregateChildren(new FlattenIrVisitor());
+                leftExpression = new FlattenIrVisitor().visit(eseqLeft);
             } else {
-                leftExpression = node.left().aggregateChildren(new FlattenIrVisitor());
+                leftExpression = new FlattenIrVisitor().visit(node.left());
             }
             // Make sure right havs no mem
             for (IRNode n : rightStatement) {

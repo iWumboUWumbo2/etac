@@ -330,22 +330,11 @@ public class Main {
 
                     IRs.put("initial", ir);
 
-
-
 //                    {
-//                        StringWriter out = new StringWriter();
-//                        PrintWriter pw = new PrintWriter(out);
-//
-//                        CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-//                        ir.printSExp(printer);
-//                        printer.close();
-//                        writeOutput(filename, out.toString(), "irnoLower");
-//                    }
-                    {
-                        CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
+//                        CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
 //                        System.out.print("Constant-folded?: ");
 //                        System.out.println(cv.visit(ir));
-                    }
+//                    }
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
 //                    System.out.println(ir);
@@ -354,22 +343,21 @@ public class Main {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
                     }
-
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
                         LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
+                        lva.worklist();
                         for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
                             System.out.println(node);
-                            System.out.println("Live nodes in:" + lva.getInMapping().get(node));
+                            System.out.println("Live in:" + lva.getInMapping().get(node));
+                            System.out.println("Live out: " + lva.getOutMapping().get(node));
                         }
-
                     }
-                    {
-                        CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
-
+//                    {
+//                        CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 //                        System.out.print("Canonical?: ");
 //                        System.out.println(cv.visit(ir));
-                    }
+//                    }
 
                     IRs.put("final", ir);
                     return ir;
@@ -380,10 +368,6 @@ public class Main {
                 else {
                     System.out.println("Why are we here");
                 }
-
-//                if (opts.isSet(OptimizationType.CONSTANT_FOLDING)) {
-//
-//                }
 
             } catch (EtaError e) {
                 e.printError(zhenFilename);
@@ -738,7 +722,7 @@ public class Main {
                 }
             }
 
-            System.out.println(opts);
+//            System.out.println(opts);
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);

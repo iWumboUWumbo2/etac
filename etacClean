@@ -6,6 +6,7 @@ find $DIR -name "*.typed" -exec rm -r {} \;
 find $DIR -name "*.ir" -exec rm -r {} \;
 find $DIR -name "*.s" -exec rm -r {} \;
 find $DIR -name "*.dot" -exec rm -r {} \;
+rm -r $DIR/build
 #rm  -r $DIR/*.lexed
 #rm  -r $DIR/*.parsed
 #rm  -r $DIR/*.typed
