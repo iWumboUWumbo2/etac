@@ -7,10 +7,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Stack;
+import java.util.*;
 
 public class CFGGraph<T> {
     private ArrayList<CFGNode<T>> nodes;
@@ -67,6 +64,28 @@ public class CFGGraph<T> {
                 cfgnode.setJumpChild( nodes.get(labelMap.get(asmname)));
             }
         }
+    }
+
+    // https://eli.thegreenplace.net/2015/directed-graph-traversal-orderings-and-applications-to-data-flow-analysis/
+    private void dfsWalk(CFGNode<T> node, ArrayList<CFGNode<T>> order, HashSet<CFGNode<T>> visited) {
+        visited.add(node);
+
+        for (var succ : node.getChildren()) {
+            if (!visited.contains(succ)) {
+                dfsWalk(succ, order, visited);
+            }
+        }
+
+        order.add(node);
+    }
+
+    public ArrayList<CFGNode<T>> reversePostorder() {
+        HashSet<CFGNode<T>> visited = new HashSet<>();
+        ArrayList<CFGNode<T>> order = new ArrayList<>();
+
+        dfsWalk(nodes.get(0), order, visited);
+        Collections.reverse(order);
+        return order;
     }
 
     @Override
