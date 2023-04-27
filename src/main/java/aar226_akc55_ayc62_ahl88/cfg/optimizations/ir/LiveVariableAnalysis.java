@@ -18,20 +18,8 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
                     Set<IRTemp> defSet = def(n);
 
                     Set<IRTemp> l_temp = new HashSet<>(outN);
-                    System.out.println("this is l_temp before: " + l_temp);
-                    System.out.println("this is def: " + defSet);
-                    for (IRTemp t : defSet){
-                        System.out.println(t + "in out: " + l_temp.contains(t));
-                    }
                     l_temp.removeAll(defSet);
-                    System.out.println("thi is l_temp after remove " + l_temp);
-
                     l_temp.addAll(useSet);
-                    System.out.println("this is node: " + n);
-                    System.out.println("this is useSet: " + useSet);
-                    System.out.println("this is def set: " + defSet);
-                    System.out.println("this is outN: " + outN);
-                    System.out.println("nextIn " + l_temp);
                     return l_temp;
                 },
                 (l1, l2) -> {
@@ -87,6 +75,10 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
         IRStmt stmt = node.getStmt();
         if (stmt instanceof IRMove move && move.target() instanceof IRTemp temp){
             defSet.add(temp);
+        }else if (stmt instanceof IRCallStmt call){
+            for (int i = 1; i<= call.n_returns();i++){
+                defSet.add(new IRTemp("_RV" + i));
+            }
         }
         return defSet;
     }

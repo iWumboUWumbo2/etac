@@ -83,12 +83,10 @@ public class BackwardIRDataflow<T> {
         return applied;
     }
 
-    public void worklist() {
+    public void workList() {
         HashSet<CFGNode<IRStmt>> set = new HashSet<>(graph.getNodes());
         ArrayDeque<CFGNode<IRStmt>> queue = new ArrayDeque<>(graph.getNodes());
-        System.out.println("starting loop");
         while (!queue.isEmpty()) {
-            System.out.println("looping");
             CFGNode<IRStmt> node = queue.pollLast();
             set.remove(node);
 
@@ -98,7 +96,6 @@ public class BackwardIRDataflow<T> {
             if (!oldIn.equals(newIn)) {
                 for (CFGNode<IRStmt> pred : node.getPredecessors()) {
                     if (!set.contains(pred)) {
-                        System.out.println(node + "added: " + pred);
                         set.add(pred);
                         queue.addFirst(pred);
                     }

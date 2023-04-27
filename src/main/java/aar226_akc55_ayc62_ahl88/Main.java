@@ -11,15 +11,12 @@ import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.BackwardIRDataflow;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
@@ -346,12 +343,17 @@ public class Main {
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
                         LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
-                        lva.worklist();
-                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
-                            System.out.println(node);
-                            System.out.println("Live in:" + lva.getInMapping().get(node));
-                            System.out.println("Live out: " + lva.getOutMapping().get(node));
-                        }
+                        lva.workList();
+                        // these prints don't work on eth
+//                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
+//                            System.out.println(node.toString().replaceAll("\n",""));
+//                            System.out.println("live in: ");
+//                            lva.getInMapping().get(node).forEach(t -> System.out.print(t.name() + ' '));
+//                            System.out.println();
+//                            System.out.println("live out: ");
+//                            lva.getOutMapping().get(node).forEach(t -> System.out.print(t.name() + ' '));
+//                            System.out.println();
+//                        }
                     }
 
                     IRs.put("final", ir);
