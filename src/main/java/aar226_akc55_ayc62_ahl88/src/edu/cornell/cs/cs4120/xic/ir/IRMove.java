@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCano
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An intermediate representation for a move statement MOVE(target, expr) */
 public class IRMove extends IRStmt {
@@ -67,6 +68,19 @@ public class IRMove extends IRStmt {
         target.printSExp(p);
         src.printSExp(p);
         p.endList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRMove irMove = (IRMove) o;
+        return Objects.equals(target, irMove.target) && Objects.equals(src, irMove.src);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(target, src);
     }
 
     @Override

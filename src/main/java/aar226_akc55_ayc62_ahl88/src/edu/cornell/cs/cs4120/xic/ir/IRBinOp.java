@@ -11,6 +11,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An intermediate representation for a binary operation OP(left, right) */
 public class IRBinOp extends IRExpr_c {
@@ -338,6 +339,20 @@ public class IRBinOp extends IRExpr_c {
                     + opType.toString());
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRBinOp irBinOp = (IRBinOp) o;
+        return type == irBinOp.type && Objects.equals(left, irBinOp.left) && Objects.equals(right, irBinOp.right);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, left, right);
+    }
+
     @Override
     public IRExpr accept(FunctionInliningVisitor v){
         return v.visit(this);

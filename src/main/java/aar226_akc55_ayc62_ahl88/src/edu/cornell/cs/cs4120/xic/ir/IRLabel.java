@@ -7,6 +7,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractA
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An intermediate representation for naming a memory address */
 public class IRLabel extends IRStmt {
@@ -38,6 +39,19 @@ public class IRLabel extends IRStmt {
         p.printAtom("LABEL");
         p.printAtom(name);
         p.endList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRLabel irLabel = (IRLabel) o;
+        return Objects.equals(name, irLabel.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     @Override

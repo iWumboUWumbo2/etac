@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An intermediate representation for a temporary register TEMP(name) */
 public class IRTemp extends IRExpr_c {
@@ -36,6 +37,14 @@ public class IRTemp extends IRExpr_c {
     @Override
     public ArrayList<ASMInstruction> accept(AbstractASMVisitor v) {
         return v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRTemp irTemp = (IRTemp) o;
+        return Objects.equals(name, irTemp.name);
     }
 
     @Override

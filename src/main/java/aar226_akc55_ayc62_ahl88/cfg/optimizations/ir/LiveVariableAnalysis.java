@@ -2,13 +2,11 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.BackwardIRDataflow;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
