@@ -343,16 +343,16 @@ public class Main {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
                     }
-//                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-//                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
-//                        lva.worklist();
-//                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
-//                            System.out.println(node);
-//                            System.out.println("Live in:" + lva.getInMapping().get(node));
-//                            System.out.println("Live out: " + lva.getOutMapping().get(node));
-//                        }
-//                    }
+                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
+                        lva.worklist();
+                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
+                            System.out.println(node);
+                            System.out.println("Live in:" + lva.getInMapping().get(node));
+                            System.out.println("Live out: " + lva.getOutMapping().get(node));
+                        }
+                    }
 
                     IRs.put("final", ir);
                     return ir;
