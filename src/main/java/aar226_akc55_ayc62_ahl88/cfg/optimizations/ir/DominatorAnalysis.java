@@ -7,15 +7,16 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRLabel;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 
 public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRStmt>>>{
+
+    HashMap<CFGNode<IRStmt>,HashSet<CFGNode<IRStmt>>> dominatorTree;
+
+    HashMap<CFGNode<IRStmt>,CFGNode<IRStmt>> immediateDominator;
     public DominatorAnalysis(CFGGraph<IRStmt> graph) {
         super(graph,
                 (n,inN)->{
@@ -44,6 +45,8 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
         CFGNode<IRStmt> startNode = graph.getNodes().get(0);
         startOutN.add(startNode);
         getOutMapping().put(startNode,startOutN);
+        dominatorTree = new HashMap<>();
+        immediateDominator = new HashMap<>();
     }
     @Override
     public void worklist() {
@@ -68,6 +71,43 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
                         set.add(succ);
                         queue.add(succ);
                     }
+                }
+            }
+        }
+    }
+
+    public HashMap<CFGNode<IRStmt>, HashSet<CFGNode<IRStmt>>> getDominatorTree() {
+        return dominatorTree;
+    }
+
+    public HashMap<CFGNode<IRStmt>, CFGNode<IRStmt>> getImmediateDominator() {
+        return immediateDominator;
+    }
+
+    public void createDominatorTreeAndImmediate(){
+        HashMap<CFGNode<IRStmt>,HashSetInf<CFGNode<IRStmt>>> copyOfIndegree = new HashMap<>();
+        for (CFGNode<IRStmt> node : outMapping.keySet()){
+            copyOfIndegree.put(node,new HashSetInf<>(outMapping.get(node)));
+        }
+        // Remove yourself
+        for (CFGNode<IRStmt> node: copyOfIndegree.keySet()){
+            copyOfIndegree.get(node).remove(node);
+            dominatorTree.put(node,new HashSet<>());
+        }
+        HashSet<CFGNode<IRStmt>> visited = new HashSet<>();
+        Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>();
+        queue.add(graph.getNodes().get(0));
+        immediateDominator.put(graph.getNodes().get(0),null);
+        visited.add(graph.getNodes().get(0));
+        while (!queue.isEmpty()){
+            CFGNode<IRStmt> top = queue.remove();
+            for (CFGNode<IRStmt> node: copyOfIndegree.keySet()){
+                copyOfIndegree.get(node).remove(top);
+                if (!visited.contains(node) && copyOfIndegree.get(node).size() == 0){
+                    visited.add(node);
+                    queue.add(node);
+                    immediateDominator.put(node,top);
+                    dominatorTree.get(top).add(node);
                 }
             }
         }
