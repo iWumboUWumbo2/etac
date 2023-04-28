@@ -11,17 +11,17 @@ import java.util.function.Supplier;
 
 public class ForwardIRDataflow<T> {
 
-    private BiFunction<CFGNode<IRStmt>,T,T> transferFunction;
+    protected BiFunction<CFGNode<IRStmt>,T,T> transferFunction;
 
-    private BinaryOperator<T> meetOperator;
+    protected BinaryOperator<T> meetOperator;
 
-    private CFGGraph<IRStmt> graph;
-    private Supplier<T> accum;
+    protected CFGGraph<IRStmt> graph;
+    protected Supplier<T> accum;
 
 
-    private HashMap<CFGNode<IRStmt>,T> inMapping;
+    protected HashMap<CFGNode<IRStmt>,T> inMapping;
 
-    private HashMap<CFGNode<IRStmt>,T> outMapping;
+    protected HashMap<CFGNode<IRStmt>,T> outMapping;
 
     public ForwardIRDataflow(CFGGraph<IRStmt> g,
                              BiFunction<CFGNode<IRStmt>,T, T> transfer,
@@ -39,25 +39,44 @@ public class ForwardIRDataflow<T> {
             outMapping.put(node,topElement);
         }
     }
-    private T meetBeforeTransfer(CFGNode<IRStmt> node){
+
+    public HashMap<CFGNode<IRStmt>, T> getInMapping() {
+        return inMapping;
+    }
+
+    public HashMap<CFGNode<IRStmt>, T> getOutMapping() {
+        return outMapping;
+    }
+
+    public CFGGraph<IRStmt> getGraph() {
+        return graph;
+    }
+
+    public void setGraph(CFGGraph<IRStmt> graph) {
+        this.graph = graph;
+    }
+
+    protected T meetBeforeTransfer(CFGNode<IRStmt> node){
         ArrayList<CFGNode<IRStmt>> preds = node.getPredecessors();
         T inN = accum.get();
         for (var pred : preds){
-            inN = meetOperator.apply(inN, outMapping.get(pred));
+            if (pred != null) {
+                inN = meetOperator.apply(inN, outMapping.get(pred));
+            }
         }
         inMapping.put(node, inN);
         return inN;
     }
 
-    private T applyTransfer(CFGNode<IRStmt> node) {
+    protected T applyTransfer(CFGNode<IRStmt> node) {
         T applied = transferFunction.apply(node, meetBeforeTransfer(node));
         outMapping.put(node, applied);
         return applied;
     }
 
-    private void worklist() {
+    protected void worklist() {
         HashSet<CFGNode<IRStmt>> set = new HashSet<>(graph.getNodes());
-        Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>(graph.getNodes());
+        Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>(graph.reversePostorder());
 
         while (!queue.isEmpty()) {
             var node = queue.poll();

@@ -44,7 +44,7 @@ public class CFGGraph<T> {
                 cfgnode.addPredecessor(nodes.get(i - 1));
             }
 
-            if (i != stmts.size() - 1) {
+            if (i != stmts.size() - 1 && !(nodes.get(i).stmt instanceof IRReturn)) {
                 cfgnode.setFallThroughChild(nodes.get(i + 1));
             }
 

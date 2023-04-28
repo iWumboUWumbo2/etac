@@ -1,0 +1,12 @@
+
+use io
+use conv
+
+main(args:int[][]){
+    n:int = 5;
+    if (n < 4){
+        println(unparseInt(0));
+    }else{
+        println(unparseInt(10));
+    }
+}
