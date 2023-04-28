@@ -74,7 +74,7 @@ public class ForwardIRDataflow<T> {
         return applied;
     }
 
-    protected void worklist() {
+    public void worklist() {
         HashSet<CFGNode<IRStmt>> set = new HashSet<>(graph.getNodes());
         Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>(graph.reversePostorder());
 

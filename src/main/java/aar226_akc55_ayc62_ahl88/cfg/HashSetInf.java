@@ -48,6 +48,16 @@ public class HashSetInf<E> extends HashSet<E> {
     }
 
     @Override
+    public String toString() {
+        if (infSize){
+            return "[INF]";
+        }
+        else{
+            return super.toString();
+        }
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), isInfSize());
     }

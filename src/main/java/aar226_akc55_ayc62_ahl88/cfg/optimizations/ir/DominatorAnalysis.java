@@ -3,6 +3,7 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRLabel;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
 
@@ -22,8 +23,8 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
                         return inN;
                     }
                     HashSetInf<CFGNode<IRStmt>> outN = new HashSetInf<>(false);
-                    outN.add(n);
                     outN.addAll(inN);
+                    outN.add(n);
                     return outN;
                 },
                 (l1,l2) -> {
@@ -34,7 +35,7 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
                         return l1;
                     }
                     HashSetInf<CFGNode<IRStmt>> res = new HashSetInf<>(l1);
-                    res.retainAll(l1);
+                    res.retainAll(l2);
                     return res;
                 },
                 () -> new HashSetInf<>(true),
@@ -45,7 +46,7 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
         getOutMapping().put(startNode,startOutN);
     }
     @Override
-    protected void worklist() {
+    public void worklist() {
         HashSet<CFGNode<IRStmt>> set = new HashSet<>(graph.getNodes());
         Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>(graph.reversePostorder());
         // Don't execute first start element Brittle
@@ -57,9 +58,13 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
             HashSetInf<CFGNode<IRStmt>> oldOut = outMapping.get(node);
             HashSetInf<CFGNode<IRStmt>> newOut = applyTransfer(node);
 
+//            System.out.println("working on: " + node.toString().replaceAll("\n",""));
+//            System.out.println("oldOut: " + oldOut);
+//            System.out.println("newOut: " + newOut);
+
             if (!oldOut.equals(newOut)) {
-                for (var succ : node.getChildren()) {
-                    if (!set.contains(succ)) {
+                for (CFGNode<IRStmt> succ : node.getChildren()) {
+                    if (succ != null && !set.contains(succ)) {
                         set.add(succ);
                         queue.add(succ);
                     }

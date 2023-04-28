@@ -11,6 +11,7 @@ import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DominatorAnalysis;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
@@ -326,16 +327,8 @@ public class Main {
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
 
 
-//                    {
-//                        CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
-//                        System.out.print("Constant-folded?: ");
-//                        System.out.println(cv.visit(ir));
-//                    }
-
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     IRs.put("initial", ir);
-
-//                    System.out.println(ir);
 
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
@@ -345,7 +338,14 @@ public class Main {
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
                         LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
                         lva.workList();
-                        // these prints don't work on eth
+
+                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
+                        dom.worklist();
+//                        for (CFGNode<IRStmt> node: dom.getOutMapping().keySet()){
+//                            System.out.println(node + " dominated by " + dom.getOutMapping().get(node));
+//                        }
+                    }
+                        // these prints don't work on eth LVA
 //                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
 //                            System.out.println(node.toString().replaceAll("\n",""));
 //                            System.out.println("live in: ");
@@ -355,7 +355,6 @@ public class Main {
 //                            lva.getOutMapping().get(node).forEach(t -> System.out.print(t.name() + ' '));
 //                            System.out.println();
 //                        }
-                    }
 
                     IRs.put("final", ir);
                     return ir;
@@ -392,8 +391,6 @@ public class Main {
             PrintWriter pw = new PrintWriter(out);
 
             CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-//            System.out.println(ir);
-//            System.out.println(ir instanceof IRCompUnit);
             ir.printSExp(printer);
 
             printer.close();

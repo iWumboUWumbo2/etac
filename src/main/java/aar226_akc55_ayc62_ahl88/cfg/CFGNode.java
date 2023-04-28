@@ -39,7 +39,8 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
 
     public void addPredecessor(CFGNode<T> pred) {
         if (predecessors.contains(pred)) {
-            throw new InternalCompilerError("UR TRYING TO ADD PRED THAT ALREADY EXISTS");
+//            System.out.println("predecessor already again");
+            return;
         }
         predecessors.add(pred);
     }

@@ -40,7 +40,7 @@ public class CFGGraph<T> {
             CFGNode<T> cfgnode = nodes.get(i);
             T stmt = cfgnode.getStmt();
 
-            if (i != 0) {
+            if (i != 0 && !(nodes.get(i-1).stmt instanceof IRReturn)) {
                 cfgnode.addPredecessor(nodes.get(i - 1));
             }
 
@@ -52,11 +52,16 @@ public class CFGGraph<T> {
             if (stmt instanceof IRJump irjump) {
                 irname = ((IRName) irjump.target()).name();
                 cfgnode.setJumpChild( nodes.get(labelMap.get(irname)) );
+                CFGNode<T> label = nodes.get(labelMap.get(irname));
+                label.addPredecessor(cfgnode);
             }
 
             if (stmt instanceof IRCJump ircjump) {
                 irname = ircjump.trueLabel();
                 cfgnode.setJumpChild( nodes.get(labelMap.get(irname)));
+                CFGNode<T> label = nodes.get(labelMap.get(irname));
+                label.addPredecessor(cfgnode);
+
             }
 
             if (stmt instanceof ASMAbstractJump asmjump) {
@@ -75,8 +80,8 @@ public class CFGGraph<T> {
     private void dfsWalk(CFGNode<T> node, ArrayList<CFGNode<T>> order, HashSet<CFGNode<T>> visited) {
         visited.add(node);
 
-        for (var succ : node.getChildren()) {
-            if (!visited.contains(succ)) {
+        for (CFGNode<T> succ : node.getChildren()) {
+            if (succ != null && !visited.contains(succ)) {
                 dfsWalk(succ, order, visited);
             }
         }

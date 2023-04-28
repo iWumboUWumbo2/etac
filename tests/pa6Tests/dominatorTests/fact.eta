@@ -2,11 +2,13 @@
 use io
 use conv
 
-main(args:int[][]){
+foo():int{
     n:int = 5;
+    res:int;
     if (n < 4){
-        println(unparseInt(0));
+        res = 10;
     }else{
-        println(unparseInt(10));
+        res = 20;
     }
+    return res;
 }
