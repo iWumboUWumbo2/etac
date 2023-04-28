@@ -70,10 +70,10 @@ public class CFGGraph<T> {
             }
         }
 
-        // set index
-        for (int i = 0; i < nodes.size(); i++) {
-            nodes.get(i).setIndex(i);
-        }
+//        // set index
+//        for (int i = 0; i < nodes.size(); i++) {
+//            nodes.get(i).setIndex(i);
+//        }
     }
 
     // https://eli.thegreenplace.net/2015/directed-graph-traversal-orderings-and-applications-to-data-flow-analysis/

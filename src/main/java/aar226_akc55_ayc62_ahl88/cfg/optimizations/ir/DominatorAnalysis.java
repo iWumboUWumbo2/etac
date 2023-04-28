@@ -17,6 +17,8 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
     HashMap<CFGNode<IRStmt>,HashSet<CFGNode<IRStmt>>> dominatorTree;
 
     HashMap<CFGNode<IRStmt>,CFGNode<IRStmt>> immediateDominator;
+
+    HashMap<CFGNode<IRStmt>,HashSet<CFGNode<IRStmt>>> dominanceFrontier;
     public DominatorAnalysis(CFGGraph<IRStmt> graph) {
         super(graph,
                 (n,inN)->{
@@ -47,6 +49,7 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
         getOutMapping().put(startNode,startOutN);
         dominatorTree = new HashMap<>();
         immediateDominator = new HashMap<>();
+        dominanceFrontier = new HashMap<>();
     }
     @Override
     public void worklist() {
@@ -112,4 +115,33 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
             }
         }
     }
+
+    public HashMap<CFGNode<IRStmt>, HashSet<CFGNode<IRStmt>>> getDominanceFrontier() {
+        return dominanceFrontier;
+    }
+
+    public void constructDF(){
+        computeDF(graph.getNodes().get(0));
+    }
+    private void computeDF(CFGNode<IRStmt> node){
+        HashSet<CFGNode<IRStmt>> S = new HashSet<>();
+        for (CFGNode<IRStmt> succ : node.getChildren()){
+            if (succ != null && immediateDominator.get(succ) != node){
+                S.add(succ);
+            }
+        }
+        for (CFGNode<IRStmt> domChild: dominatorTree.get(node)){
+            computeDF(domChild);
+            for (CFGNode<IRStmt> w : dominanceFrontier.get(domChild)){
+                if (!(dominatorTree.get(node).contains(w) || node == w)){
+                    S.add(w);
+                }
+            }
+        }
+        dominanceFrontier.put(node,S);
+    }
+
+//    public void placePhiFunctions(){
+//        for ()
+//    }
 }

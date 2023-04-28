@@ -10,15 +10,15 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
     final private int FALLTHROUGH = 0;
     final private int JUMP = 1;
 
-    private int index;
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
+//    private int index;
+//
+//    public int getIndex() {
+//        return index;
+//    }
+//
+//    public void setIndex(int index) {
+//        this.index = index;
+//    }
 
     T stmt;
 
