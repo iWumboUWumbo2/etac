@@ -325,7 +325,6 @@ public class Main {
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
 
-                    IRs.put("initial", ir);
 
 //                    {
 //                        CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
@@ -334,6 +333,8 @@ public class Main {
 //                    }
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
+                    IRs.put("initial", ir);
+
 //                    System.out.println(ir);
 
                     if (opts.isSet(OptimizationType.INLINING)) {
