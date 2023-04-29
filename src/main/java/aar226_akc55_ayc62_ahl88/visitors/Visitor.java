@@ -2,7 +2,6 @@ package aar226_akc55_ayc62_ahl88.visitors;
 
 
 import aar226_akc55_ayc62_ahl88.newast.Program;
-import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.Use;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.declarations.ArrAccessDecl;
@@ -26,7 +25,6 @@ import aar226_akc55_ayc62_ahl88.newast.stmt.*;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.DeclNoAssignStmt;
 import aar226_akc55_ayc62_ahl88.newast.stmt.declstmt.MultiDeclAssignStmt;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 
 public interface Visitor<T> {
 
@@ -70,6 +68,8 @@ public interface Visitor<T> {
 
     T visit(While node);
 
+    T visit(Break node);
+
     T visit(DeclAssignStmt node);
 
     T visit(DeclNoAssignStmt node);
@@ -86,7 +86,7 @@ public interface Visitor<T> {
 
     T visit(ArrAccessDecl node);
 
-    IRExpr visit(RecordAccess node);
+    T visit(RecordAccess node);
 
     T visit(NoTypeDecl node);
 
