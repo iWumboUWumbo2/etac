@@ -2,7 +2,6 @@ package aar226_akc55_ayc62_ahl88.visitors;
 
 
 import aar226_akc55_ayc62_ahl88.newast.Program;
-import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.Use;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.declarations.ArrAccessDecl;
@@ -19,6 +18,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.IntegerComparisonBinop
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.LogicalBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
+import aar226_akc55_ayc62_ahl88.newast.expr.recordaccessexpr.RecordAccess;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntegerNegExpr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
@@ -101,6 +101,11 @@ public class TypeCheckerVisitor implements Visitor<Void>{
     }
 
     @Override
+    public Void visit(RecordAccess node) {
+        return null;
+    }
+
+    @Override
     public Void visit(Block node) {
         return null;
     }
@@ -127,6 +132,11 @@ public class TypeCheckerVisitor implements Visitor<Void>{
 
     @Override
     public Void visit(While node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(Break node) {
         return null;
     }
 

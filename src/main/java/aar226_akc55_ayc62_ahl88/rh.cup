@@ -16,6 +16,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.*;
+import aar226_akc55_ayc62_ahl88.newast.expr.recordaccessexpr.*;
 
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 
@@ -308,7 +309,6 @@ expr ::=
 
     // IDS
     | IDENTIFIER:id {: RESULT = new Id(id, idleft, idright); :}
-    | IDENTIFIER:id
 
     // ARRAY LITERALS
     | OPEN_BRACE:ob CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Expr>(), obleft, obright);:}
@@ -321,15 +321,15 @@ expr ::=
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(new Id(id,idleft,idright), e, idleft, idright); :}
     | expr:e fullBracketPlus:i {: RESULT = new ArrayAccessExpr(e, i, eleft, eright); :}
 
-    | record_access:ra {: RESULT = new RecordAcess(ra, raleft, raright); :}
+    | record_access:ra {: RESULT = new RecordAccess(ra, raleft, raright); :}
     ;
 
 record_access ::= IDENTIFIER:i1 PERIOD IDENTIFIER:i2 {: ArrayList<Id> ids = new ArrayList<Id>();
-                                                        ids.add(new ID(i1, i1left, i1right));
-                                                        ids.add(new ID(i2, i2left, i2right));
+                                                        ids.add(new Id(i1, i1left, i1right));
+                                                        ids.add(new Id(i2, i2left, i2right));
                                                         RESULT = ids;
                                                         :}
-    | IDENTIFIER:i1 PERIOD record_access:ra {: ra.add(0, new ID(i1, i1left, i1right)) :};
+    | IDENTIFIER:i1 PERIOD record_access:ra {: ra.add(0, new Id(i1, i1left, i1right)); :};
 
 exprList ::=
     expr:x {:

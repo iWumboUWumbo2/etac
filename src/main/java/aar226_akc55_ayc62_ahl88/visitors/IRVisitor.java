@@ -572,6 +572,12 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRJump(new IRName(lh)),
                 new IRLabel(le));
     }
+
+    @Override
+    public IRStmt visit(Break node) {
+        return null;
+    }
+
     @Override
     public IRStmt visit(DeclAssignStmt node) {
         // might need to do call stmt
