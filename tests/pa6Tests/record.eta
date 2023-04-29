@@ -1,0 +1,8 @@
+record Point {
+    x,y,z: int
+}
+
+foo() {
+    y = Point(1, 2, 3);
+    z : int = y.x;
+}

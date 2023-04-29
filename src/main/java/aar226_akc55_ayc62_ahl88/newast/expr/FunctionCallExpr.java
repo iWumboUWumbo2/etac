@@ -41,6 +41,7 @@ public class FunctionCallExpr extends Expr {
         super (l, c);
         id = i;
         args = inArgs;
+        System.out.println(i);
     }
 
     @Override
@@ -50,6 +51,12 @@ public class FunctionCallExpr extends Expr {
         Type functionType = table.lookup(id);
         functionSig = functionType;
 
+        // Type check record
+        if (functionType.getType() == Type.TypeCheckingType.RECORD) {
+
+        }
+
+        // Type check function call
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {
             throw new SemanticError(id.getLine(), id.getColumn(), "identifier isn't function");
         }
