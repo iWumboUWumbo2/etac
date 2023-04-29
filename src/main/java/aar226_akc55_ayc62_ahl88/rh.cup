@@ -40,7 +40,7 @@ terminal            INT, BOOL;
 terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
   DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, AND, OR, EQUAL, NOT_EQUAL, GETS,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
-  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM, BREAK, NULL, RECORD;
+  COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM, BREAK, NULL, RECORD, PERIOD;
 
 nonterminal Program                 program;
 nonterminal ArrayList<Use>          importUseStar;
@@ -84,7 +84,7 @@ nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
 nonterminal RecordDef                  record;
 nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
 nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
-
+nonterminal ArrayList<Id>           record_access;
 
 
 precedence nonassoc IF;
@@ -96,6 +96,7 @@ precedence left EQUAL,NOT_EQUAL;
 precedence left LT,LEQ,GEQ,GT;
 precedence left PLUS,MINUS;
 precedence left TIMES,HI_MULT,DIVIDE,MODULO;
+precedence left PERIOD;
 precedence nonassoc NOT, UMINUS;// ??? negation?
 precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 
@@ -307,6 +308,7 @@ expr ::=
 
     // IDS
     | IDENTIFIER:id {: RESULT = new Id(id, idleft, idright); :}
+    | IDENTIFIER:id
 
     // ARRAY LITERALS
     | OPEN_BRACE:ob CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Expr>(), obleft, obright);:}
@@ -318,7 +320,16 @@ expr ::=
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new FunctionCallExpr(new Id(id,idleft,idright),new ArrayList<Expr>(), idleft, idright); :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(new Id(id,idleft,idright), e, idleft, idright); :}
     | expr:e fullBracketPlus:i {: RESULT = new ArrayAccessExpr(e, i, eleft, eright); :}
+
+    | record_access:ra {: RESULT = new RecordAcess(ra, raleft, raright); :}
     ;
+
+record_access ::= IDENTIFIER:i1 PERIOD IDENTIFIER:i2 {: ArrayList<Id> ids = new ArrayList<Id>();
+                                                        ids.add(new ID(i1, i1left, i1right));
+                                                        ids.add(new ID(i2, i2left, i2right));
+                                                        RESULT = ids;
+                                                        :}
+    | IDENTIFIER:i1 PERIOD record_access:ra {: ra.add(0, new ID(i1, i1left, i1right)) :};
 
 exprList ::=
     expr:x {:
