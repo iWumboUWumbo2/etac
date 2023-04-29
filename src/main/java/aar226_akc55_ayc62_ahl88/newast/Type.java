@@ -16,6 +16,7 @@ public class Type implements Printer {
         BOOL,
         INTARRAY, // Any Dimension
         BOOLARRAY, // Any Dimension
+        RECORDARRAY,
         UNKNOWNARRAY,
         UNKNOWN,
         UNIT,
@@ -70,6 +71,23 @@ public class Type implements Printer {
         else {
             tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
         }
+//        inputTypes = new ArrayList<>();
+//        outputTypes = new ArrayList<>();
+    }
+
+    public Type (String record,Dimension d,int l, int c) {
+//        super(l,c);
+        line = l;
+        col = c;
+        isInt = false;
+        dimensions = d;
+        recordName = record;
+        if (d.getDim() == 0) {
+            tct = TypeCheckingType.RECORD;
+        } else {
+            tct = TypeCheckingType.RECORDARRAY;
+        }
+
 //        inputTypes = new ArrayList<>();
 //        outputTypes = new ArrayList<>();
     }

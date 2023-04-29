@@ -53,6 +53,22 @@ public class FunctionCallExpr extends Expr {
 
         // Type check record
         if (functionType.getType() == Type.TypeCheckingType.RECORD) {
+            ArrayList<Type> recordFieldTypes = functionType.recordFieldTypes;
+            if (args.size() != recordFieldTypes.size()) {
+                throw new SemanticError(id.getLine(), id.getColumn(),
+                        "record field size does not match input size");
+            }
+            for (int i = 0; i < args.size(); i ++) {
+                Expr field_i = args.get(i);
+                Type fieldInputType = field_i.typeCheck(table);
+
+                if (!fieldInputType.sameType(recordFieldTypes.get(i))) {
+                    throw new SemanticError(field_i.getLine(), field_i.getColumn(),
+                            "incorrect record field input type");
+                }
+            }
+
+            return new Type(id.toString(), recordFieldTypes, getLine(), getColumn());
 
         }
 
