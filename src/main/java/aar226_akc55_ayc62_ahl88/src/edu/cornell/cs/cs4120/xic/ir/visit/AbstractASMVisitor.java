@@ -725,7 +725,8 @@ public class AbstractASMVisitor {
                     curBestInstructions = caseInstructions;
                     curBestCost = 1 + right.getBestCost();
                 }
-            } else if (right.isConstant() && isValidScale(((IRConst) right).value())) {
+//                right.isConstant()
+            } else if (right instanceof IRConst && isValidScale(((IRConst) right).value())) {
                 ASMAbstractReg leftReg = left.getAbstractReg();
                 ArrayList<ASMInstruction> bestLeftInstructions = left.getBestInstructions();
                 if (1 +left.getBestCost()< curBestCost) {
@@ -754,8 +755,8 @@ public class AbstractASMVisitor {
 //                ASMTempExpr addTemp = new ASMTempExpr(rTemp.name());
                 ASMTempExpr addTemp = (ASMTempExpr) right.getAbstractReg();
                 ArrayList<ASMInstruction> bestRightInstrsTopLevel = right.getBestInstructions();
-
-                if (leftLeft.isConstant() && isValidScale(((IRConst) leftLeft).value())) {
+//                leftLeft.isConstant()
+                if (leftLeft instanceof IRConst && isValidScale(((IRConst) leftLeft).value())) {
 //                    && leftRight instanceof IRTemp
                     ASMAbstractReg leftRightReg = leftRight.getAbstractReg();
                     ArrayList<ASMInstruction> leftRightInstrs = leftRight.getBestInstructions();
@@ -775,7 +776,8 @@ public class AbstractASMVisitor {
                         curBestInstructions = caseInstructions;
                         curBestCost = 1 +leftRight.getBestCost() + right.getBestCost();
                     }
-                } else if (leftRight.isConstant() && isValidScale(((IRConst) leftRight).value())) {
+//                    leftRight.isConstant()
+                } else if (leftRight instanceof IRConst && isValidScale(((IRConst) leftRight).value())) {
 //                     && leftLeft instanceof IRTemp
                     ArrayList<ASMInstruction> bestLeftLeftInstrs = leftLeft.getBestInstructions();
                     if (1 + leftLeft.getBestCost() + right.getBestCost()< curBestCost) {
@@ -807,7 +809,8 @@ public class AbstractASMVisitor {
 //                ASMTempExpr addTemp = new ASMTempExpr(lTemp.name());
                 ASMTempExpr addTemp = (ASMTempExpr) left.getAbstractReg();
                 ArrayList<ASMInstruction> bestLeftInstrs = left.getBestInstructions();
-                if (rightLeft.isConstant() && isValidScale(((IRConst) rightLeft).value())) {
+//                rightLeft.isConstant()
+                if (rightLeft instanceof IRConst && isValidScale(((IRConst) rightLeft).value())) {
 //                     && rightRight instanceof IRTemp
                     ArrayList<ASMInstruction> rightRightInstrs = rightRight.getBestInstructions();
                     if (1  + rightRight.getBestCost() + left.getBestCost() < curBestCost) {
@@ -828,7 +831,8 @@ public class AbstractASMVisitor {
                         curBestInstructions = caseInstructions;
                         curBestCost = 1;
                     }
-                } else if (rightRight.isConstant() && isValidScale(((IRConst) rightRight).value())) {
+//                    rightRight.isConstant()
+                } else if (rightRight instanceof IRConst && isValidScale(((IRConst) rightRight).value())) {
 //                     && rightLeft instanceof IRTemp
                     ArrayList<ASMInstruction> rightLeftInstrs = rightLeft.getBestInstructions();
                     if (1 + rightLeft.getBestCost() + left.getBestCost()< curBestCost) {
