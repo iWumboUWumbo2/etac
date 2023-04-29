@@ -2,6 +2,7 @@ use io
 use conv
 
 main(args: int[][]) {
-if (false) println("true")
+    x:bool = false;
+if (x) println("true")
     println("printed")
 }

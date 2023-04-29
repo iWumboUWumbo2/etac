@@ -8,10 +8,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractA
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** An intermediate representation for a compilation unit */
 public class IRCompUnit extends IRNode_c {
@@ -133,6 +130,20 @@ public class IRCompUnit extends IRNode_c {
         for (IRFuncDecl func : functions.values()) func.printSExp(p);
         p.endList();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRCompUnit that = (IRCompUnit) o;
+        return Objects.equals(name, that.name) && Objects.equals(functions, that.functions) && Objects.equals(ctors, that.ctors) && Objects.equals(dataMap, that.dataMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, functions, ctors, dataMap);
+    }
+
     @Override
     public IRCompUnit accept(FunctionInliningVisitor v) {
         return v.visit(this);

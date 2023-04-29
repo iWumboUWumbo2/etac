@@ -11,13 +11,13 @@ import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DominatorAnalysis;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
@@ -326,48 +326,49 @@ public class Main {
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                     IRNode ir = result.accept(new IRVisitor("CompUnit"));
 
-                    IRs.put("initial", ir);
-
-
-
-//                    {
-//                        StringWriter out = new StringWriter();
-//                        PrintWriter pw = new PrintWriter(out);
-//
-//                        CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-//                        ir.printSExp(printer);
-//                        printer.close();
-//                        writeOutput(filename, out.toString(), "irnoLower");
-//                    }
-                    {
-                        CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
-//                        System.out.print("Constant-folded?: ");
-//                        System.out.println(cv.visit(ir));
-                    }
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
-//                    System.out.println(ir);
+                    IRs.put("initial", ir);
 
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
                     }
 //                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-//                        CFGGraph<IRStmt,IRTemp> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-//                        LiveVariableAnalysis lva = new LiveVariableAnalysis();
-//                        lva.runLVA(stmtGraph);
-//                        for (CFGNode<IRStmt,IRTemp> node : stmtGraph.getNodes()){
-//                            System.out.println(node);
-//                            System.out.println("Live nodes in:" + node.getIn());
+//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
+//                        lva.workList();
+//
+//                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
+//                        dom.worklist();
+//                        dom.createDominatorTreeAndImmediate();
+//                        dom.constructDF();
+//
+//                        for (CFGNode<IRStmt> node: dom.getOutMapping().keySet()){
+//                            System.out.println(node + " dominated by: " + dom.getOutMapping().get(node));
 //                        }
 //
+//                        for (CFGNode<IRStmt> node: dom.getImmediateDominator().keySet()){
+//                            System.out.println(node + " imm dom is: " + dom.getImmediateDominator().get(node));
+//                        }
+//
+//                        for (CFGNode<IRStmt> node: dom.getDominatorTree().keySet()){
+//                            System.out.println(node + " dominates " + dom.getDominatorTree().get(node));
+//                        }
+//                        for (CFGNode<IRStmt> node: dom.getDominanceFrontier().keySet()){
+//                            System.out.println(node + " dominance Frontier: " + dom.getDominanceFrontier().get(node));
+//                        }
 //                    }
-                    {
-                        CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
-
-//                        System.out.print("Canonical?: ");
-//                        System.out.println(cv.visit(ir));
-                    }
+                        // these prints don't work on eth LVA
+//                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
+//                            System.out.println(node.toString().replaceAll("\n",""));
+//                            System.out.println("live in: ");
+//                            lva.getInMapping().get(node).forEach(t -> System.out.print(t.name() + ' '));
+//                            System.out.println();
+//                            System.out.println("live out: ");
+//                            lva.getOutMapping().get(node).forEach(t -> System.out.print(t.name() + ' '));
+//                            System.out.println();
+//                        }
 
                     IRs.put("final", ir);
                     return ir;
@@ -378,10 +379,6 @@ public class Main {
                 else {
                     System.out.println("Why are we here");
                 }
-
-//                if (opts.isSet(OptimizationType.CONSTANT_FOLDING)) {
-//
-//                }
 
             } catch (EtaError e) {
                 e.printError(zhenFilename);
@@ -408,8 +405,6 @@ public class Main {
             PrintWriter pw = new PrintWriter(out);
 
             CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-//            System.out.println(ir);
-//            System.out.println(ir instanceof IRCompUnit);
             ir.printSExp(printer);
 
             printer.close();
@@ -682,7 +677,7 @@ public class Main {
 
                         for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                             String funcName = map.getValue().name();
-                            CFGGraph<IRStmt,IRTemp> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                            CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
 
 //                            System.out.println(stmtGraph.CFGtoDOT());
                             writeOutputDot(filename, funcName, phase, stmtGraph.CFGtoDOT());
@@ -736,7 +731,7 @@ public class Main {
                 }
             }
 
-            System.out.println(opts);
+//            System.out.println(opts);
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);

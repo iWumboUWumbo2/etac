@@ -1,0 +1,15 @@
+use io
+use conv
+main(args : int[][]) {
+    x:int = 10;
+    y:int = 0;
+    while ( x > 0){
+        if ( y  % 2 == 0){
+            x = x-1;
+        }else{
+            x = x-2;
+        }
+        y = (y % 2) + 1;
+    }
+
+}

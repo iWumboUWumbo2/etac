@@ -27,6 +27,7 @@ public final class IRData {
         return name.equals(otherData.name) && Arrays.equals(data, otherData.data);
     }
 
+
     public int hashCode() {
         return name.hashCode() * 31 + Arrays.hashCode(data);
     }

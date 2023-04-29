@@ -8,6 +8,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.Aggregate
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An intermediate representation for a transfer of control */
 public class IRJump extends IRStmt {
@@ -49,6 +50,19 @@ public class IRJump extends IRStmt {
         p.printAtom("JUMP");
         target.printSExp(p);
         p.endList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRJump irJump = (IRJump) o;
+        return Objects.equals(target, irJump.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(target);
     }
 
     @Override

@@ -10,6 +10,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An IR function declaration */
 public class IRFuncDecl extends IRNode_c {
@@ -75,6 +76,20 @@ public class IRFuncDecl extends IRNode_c {
         body.printSExp(p);
         p.endList();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRFuncDecl that = (IRFuncDecl) o;
+        return Objects.equals(name, that.name) && Objects.equals(body, that.body) && Objects.equals(functionSig, that.functionSig);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, body, functionSig);
+    }
+
     @Override
     public IRFuncDecl accept(FunctionInliningVisitor v) {
         return v.visit(this);
