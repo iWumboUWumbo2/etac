@@ -3,9 +3,7 @@ use conv
 
 main(args: int[][]) {
     a: int[] = {1, 2, 3}
-    b: int[] = {2, 4, 6}
     x: int[f(a, 0)][f(a, 0)][f(a, 0)][][]
-    a[f(a,0)] = a[f(b,0)]
     println(unparseInt(length(x)))
     println(unparseInt(length(x[0])))
     println(unparseInt(length(x[0][0])))

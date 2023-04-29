@@ -62,6 +62,22 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     two_mult.eta;
     while01.eta;
 
+
+    arracc05.eta;
+    arracc07.eta;
+    arracc08.eta;
+    assign06.eta;
+    assign07.eta;
+    assign08.eta;
+    assign09.eta;
+    assign10.eta;
+    medley01.eta;
+
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
 }
 
 etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
@@ -122,6 +138,22 @@ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
     two_mult.eta;
     while01.eta;
 
+
+    arracc05.eta;
+    arracc07.eta;
+    arracc08.eta;
+    assign06.eta;
+    assign07.eta;
+    assign08.eta;
+    assign09.eta;
+    assign10.eta;
+    medley01.eta;
+
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
 }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
    
@@ -186,6 +218,21 @@ etac ("Test -target linux") "-libpath $(testpath) -target linux" {
    while01.eta;
 
 
+    arracc05.eta;
+    arracc07.eta;
+    arracc08.eta;
+    assign06.eta;
+    assign07.eta;
+    assign08.eta;
+    assign09.eta;
+    assign10.eta;
+    medley01.eta;
+
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
 }
 
 etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
@@ -251,4 +298,19 @@ etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
     two_mult.eta;
     while01.eta;
 
+    arracc05.eta;
+    arracc07.eta;
+    arracc08.eta;
+    assign06.eta;
+    assign07.eta;
+    assign08.eta;
+    assign09.eta;
+    assign10.eta;
+    medley01.eta;
+
+    localdecl13.eta;
+    localdecl14.eta;
+    multiassign06.eta;
+    multiassign07.eta;
+    multiassign08.eta;
 }

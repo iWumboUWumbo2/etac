@@ -575,14 +575,6 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRStmt visit(DeclAssignStmt node) {
         // might need to do call stmt
         IRExpr right = node.getExpression().accept(this);
-//        IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
-//                new IRESeq(new IRExp(right),new IRTemp("_RV1")): right;
-        String temp = nxtTemp();
-        IRMove extraMove = new IRMove(new IRTemp(temp),right);
-//        IRExpr exec = node.getExpression() instanceof FunctionCallExpr ?
-//                new IRTemp("_RV1"): new IRTemp(temp);
-        IRExpr exec = new IRTemp(temp);
-
         if (node.getDecl() instanceof AnnotatedTypeDecl atd){
             if (atd.type.isArray()){
                 if (atd.type.dimensions.allEmpty){ // random init is fine
@@ -617,7 +609,7 @@ public class IRVisitor implements Visitor<IRNode>{
             if (aad.getFuncParams() ==  null){ // a[e1][e2]
                 IRExpr arrIdIR = aad.getIdentifier().accept(this);
                 IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
-                return new IRSeq(extraMove,new IRMove(memComponent,exec));
+                return new IRMove(memComponent, right);
             }else{ // g1(e1,e2)[4][5]
                 String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
                 ArrayList<IRExpr> argsList = new ArrayList<>();
@@ -627,7 +619,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
                 IRESeq sideEffects = new IRESeq(funcCall, new IRTemp("_RV1"));
                 IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
-                return new IRSeq(extraMove,new IRMove(memComponent,exec));
+                return new IRMove(memComponent, right);
             }// find a[e1][e2]
         }else if (node.getDecl() instanceof NoTypeDecl){
             return new IRMove(node.getDecl().identifier.accept(this),right);
