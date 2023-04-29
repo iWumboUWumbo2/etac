@@ -27,6 +27,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRBinOp;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRConst;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.math.BigInteger;
@@ -1047,15 +1048,30 @@ public class IRVisitor implements Visitor<IRNode>{
         String lok = nxtLabel();
         String ler = nxtLabel();
         ArrayList<IRStmt> eseqBody = new ArrayList<>();
-
-        IRExpr exprRes = expr instanceof IRESeq ? new IRTemp(ta) : expr;
-        IRExpr indRes = curInd instanceof IRESeq ? new IRTemp(ti) : curInd;
-        if ((expr instanceof IRESeq)){
-            eseqBody.add(new IRMove(new IRTemp(ta), expr));
+        ArrayList<IRNode> indFlat = new FlattenIrVisitor().visit(curInd);
+        ArrayList<IRNode> exprFlat = new FlattenIrVisitor().visit(expr);
+        boolean eseq = false;
+        for (IRNode node : indFlat){
+            if (node instanceof IRESeq) {
+                eseq = true;
+                break;
+            }
         }
-        if (curInd instanceof IRESeq){
+        if (!eseq) {
+            for (IRNode node : exprFlat) {
+                if (node instanceof IRESeq){
+                    eseq = true;
+                    break;
+                }
+            }
+        }
+        IRExpr exprRes = eseq ? new IRTemp(ta) : expr;
+        IRExpr indRes = eseq ? new IRTemp(ti) : curInd;
+        if (eseq){
+            eseqBody.add(new IRMove(new IRTemp(ta), expr));
             eseqBody.add(new IRMove(new IRTemp(ti), curInd));
         }
+
         eseqBody.addAll(Arrays.asList(new IRCJump(
                                 new IRBinOp(IRBinOp.OpType.ULT,
                                         indRes,

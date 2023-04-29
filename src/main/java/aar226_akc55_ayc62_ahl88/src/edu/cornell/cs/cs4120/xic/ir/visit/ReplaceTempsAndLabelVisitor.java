@@ -36,8 +36,13 @@ public class ReplaceTempsAndLabelVisitor extends IRVisitor{
         if (n_ instanceof IRReturn irret) return replaceTemp(irret);
         if (n_ instanceof IRSeq irseq) return replaceTemp(irseq);
         if (n_ instanceof IRTemp irtem) return replaceTemp(irtem);
+        if (n_ instanceof IRPhi phi) return replaceTemp(phi);
 
         throw new Error("Why is node not found");
+    }
+
+    private IRNode replaceTemp(IRPhi phi) {
+        return phi;
     }
 
     private IRNode replaceTemp(IRTemp irtem) {

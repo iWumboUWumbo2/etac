@@ -1,0 +1,14 @@
+
+use io
+use conv
+
+foo():int{
+    n:int = 5;
+    res:int;
+    if (n < 4){
+        res = 10;
+    }else{
+        res = 20;
+    }
+    return res;
+}

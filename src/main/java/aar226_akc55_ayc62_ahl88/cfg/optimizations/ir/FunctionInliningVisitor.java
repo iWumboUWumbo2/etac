@@ -313,4 +313,9 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
     public IRExpr visit(IRTemp node) {
         return node;
     }
+
+    @Override
+    public IRNode visit(IRPhi node) {
+        return node;
+    }
 }

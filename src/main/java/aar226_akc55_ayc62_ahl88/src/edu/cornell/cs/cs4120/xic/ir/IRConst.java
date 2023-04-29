@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.SExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /** An intermediate representation for a 64-bit integer constant. CONST(n) */
 public class IRConst extends IRExpr_c {
@@ -47,6 +48,20 @@ public class IRConst extends IRExpr_c {
         p.printAtom(String.valueOf(value));
         p.endList();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRConst irConst = (IRConst) o;
+        return value == irConst.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
     @Override
     public IRExpr accept(FunctionInliningVisitor v){
         return v.visit(this);

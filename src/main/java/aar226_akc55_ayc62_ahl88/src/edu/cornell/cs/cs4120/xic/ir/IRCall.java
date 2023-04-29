@@ -11,6 +11,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /** An intermediate representation for a function call CALL(e_target, e_1, ..., e_n) */
 public class IRCall extends IRExpr_c {
@@ -92,6 +93,20 @@ public class IRCall extends IRExpr_c {
     public ArrayList<ASMInstruction> accept(AbstractASMVisitor v) {
         return v.visit(this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRCall irCall = (IRCall) o;
+        return Objects.equals(target, irCall.target) && Objects.equals(args, irCall.args);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(target, args);
+    }
+
     @Override
     public IRExpr accept(FunctionInliningVisitor v){
         return v.visit(this);

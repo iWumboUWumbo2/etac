@@ -1,0 +1,21 @@
+use io
+use conv;
+
+main(args:int[][]){
+
+
+}
+
+
+foo():int{
+    x:int = 4;
+    y:int = 5;
+
+    a:int,b:int = 1,2;
+    if (x + y > a + b){
+        println("true");
+    }
+
+    return y + x + a + b;
+
+}

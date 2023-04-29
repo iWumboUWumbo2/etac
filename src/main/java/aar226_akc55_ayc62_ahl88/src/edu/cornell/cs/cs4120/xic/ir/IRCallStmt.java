@@ -11,6 +11,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An intermediate representation for a call statement. t_1, t_2, _, t_4 = CALL(e_target, e_1, ...,
@@ -96,6 +97,19 @@ public class IRCallStmt extends IRStmt {
         target.printSExp(p);
         for (IRExpr arg : args) arg.printSExp(p);
         p.endList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IRCallStmt that = (IRCallStmt) o;
+        return Objects.equals(target, that.target) && Objects.equals(args, that.args) && Objects.equals(n_returns, that.n_returns);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(target, args, n_returns);
     }
 
     @Override
