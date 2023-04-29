@@ -24,7 +24,7 @@ public abstract class IntOutBinop extends BinopExpr {
     // Type Checking is In1, In2 both must be Int and output is Int
 
     @Override
-    public Type typeCheck(SymbolTable s){
+    public Type typeCheck(SymbolTable<Type> s){
         Expr e1 = getLeftExpr();
         Expr e2 = getRightExpr();
         Type t1 = e1.typeCheck(s);

@@ -45,7 +45,9 @@ public class Type implements Printer {
     public ArrayList<Type> inputTypes, outputTypes;
     public ArrayList<Type> multiTypes;
 
-    public String recordType;
+    public ArrayList<Type> recordFieldTypes;
+
+    public String recordName;
 
     public Type arrayType;
 
@@ -68,22 +70,18 @@ public class Type implements Printer {
         else {
             tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
         }
-        recordType = null;
 //        inputTypes = new ArrayList<>();
 //        outputTypes = new ArrayList<>();
     }
 
-    public Type (String record,Dimension d,int l, int c) {
+    public Type (String record, ArrayList<Type> types, int l, int c) {
 //        super(l,c);
         line = l;
         col = c;
         isInt = false;
-        dimensions = d;
-        recordType = record;
+        recordName = record;
         tct = TypeCheckingType.RECORD;
-
-//        inputTypes = new ArrayList<>();
-//        outputTypes = new ArrayList<>();
+        recordFieldTypes = new ArrayList<Type>(types);
     }
 
     public Type(ArrayList<Type> multiTypes) {
@@ -153,7 +151,22 @@ public class Type implements Printer {
             }
         }
         return true;
+    }
 
+    public boolean isSameRecord(Type rhs){
+        if (!(tct == TypeCheckingType.RECORD && rhs.getType() == TypeCheckingType.RECORD)){
+            throw new SemanticError(-1,-1, "both aren't functions");
+        }
+        ArrayList<Type> rhsIn = rhs.recordFieldTypes;
+        if (rhsIn.size() != recordFieldTypes.size()){
+            return false;
+        }
+        for (int i = 0; i< rhsIn.size();i++){
+            if (!recordFieldTypes.get(i).sameType(rhsIn.get(i))){
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean sameArray(Type rhs){
@@ -250,6 +263,10 @@ public class Type implements Printer {
                 || getType() == TypeCheckingType.UNDERSCORE
                 || rhs.getType() == TypeCheckingType.UNDERSCORE)) {
             return false;
+        }
+
+        if (getType() == TypeCheckingType.RECORD && rhs.getType() == TypeCheckingType.RECORD) {
+            return recordName.equals(rhs.recordName);
         }
 
         // type check array

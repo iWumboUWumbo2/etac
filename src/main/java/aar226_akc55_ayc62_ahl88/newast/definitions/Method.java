@@ -145,7 +145,7 @@ public class Method extends Definition {
         if (table.contains(id)){
             Type rhs = table.lookup(id);
             if (rhs.getType() != Type.TypeCheckingType.FUNC){
-                throw new  SemanticError(getLine(),getColumn(),"Another declaration in table that isn't method");
+                throw new SemanticError(getLine(),getColumn(),"Another declaration in table that isn't method");
             }
             if (!methodType.isSameFunc(rhs)) {
                 throw new SemanticError(getLine(), getColumn(), " Duplicate Function not exact same");
