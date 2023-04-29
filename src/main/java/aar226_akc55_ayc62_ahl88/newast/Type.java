@@ -1,11 +1,13 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
+import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * Class to represent a type
@@ -52,6 +54,7 @@ public class Type implements Printer {
 
     public Type arrayType;
 
+    public HashMap<String, Integer> recordFieldToIndex;
 
     /**
      * @param t type
@@ -92,14 +95,25 @@ public class Type implements Printer {
 //        outputTypes = new ArrayList<>();
     }
 
-    public Type (String record, ArrayList<Type> types, int l, int c) {
+    public ArrayList<Type> getInputTypes(ArrayList<AnnotatedTypeDecl> recordTypes){
+        ArrayList<Type> inputTypes = new ArrayList<>();
+        for (AnnotatedTypeDecl atd: recordTypes){
+            inputTypes.add(atd.type);
+        }
+        return inputTypes;
+    }
+    public Type (String record, ArrayList<AnnotatedTypeDecl> types, int l, int c) {
 //        super(l,c);
         line = l;
         col = c;
         isInt = false;
         recordName = record;
         tct = TypeCheckingType.RECORD;
-        recordFieldTypes = new ArrayList<Type>(types);
+        recordFieldTypes = new ArrayList<Type>(getInputTypes(types));
+        recordFieldToIndex = new HashMap<String, Integer>();
+        for (int i = 0; i < types.size(); i++) {
+            recordFieldToIndex.put(types.get(i).toString(), i);
+        }
     }
 
     public Type(ArrayList<Type> multiTypes) {

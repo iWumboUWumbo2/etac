@@ -39,33 +39,33 @@ public class RecordDef extends Definition {
         table.enterScope();
         Id old = table.currentParentFunction;
         table.currentParentFunction = recordName;
-        for (AnnotatedTypeDecl atd: recordTypes){
-            if (recordName.toString().equals(atd.identifier.toString())){
-                throw new SemanticError(getLine(),getColumn(),"field same name as record");
+        for (AnnotatedTypeDecl atd : recordTypes) {
+            if (recordName.toString().equals(atd.identifier.toString())) {
+                throw new SemanticError(getLine(), getColumn(), "field same name as record");
             }
-            if (table.contains(atd.identifier)){
-                throw new SemanticError(getLine(),getColumn(),"field already present");
+            if (table.contains(atd.identifier)) {
+                throw new SemanticError(getLine(), getColumn(), "field already present");
             }
-            table.add(atd.identifier,atd.type);
+            table.add(atd.identifier, atd.type);
         }
         table.currentParentFunction = old;
         table.exitScope();
 
-        if (currentFile.contains(recordName.toString())){
+        if (currentFile.contains(recordName.toString())) {
             throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
         }
         currentFile.add(recordName.toString());
 
-        Type recordType = new Type(recordName.toString(), getInputTypes(), getLine(), getColumn());
-        if (table.contains(recordName)){
+        Type recordType = new Type(recordName.toString(), recordTypes, getLine(), getColumn());
+        if (table.contains(recordName)) {
             Type rhs = table.lookup(recordName);
-            if (rhs.getType() != Type.TypeCheckingType.RECORD){
-                throw new SemanticError(getLine(),getColumn(),"Another declaration in table that isn't record");
+            if (rhs.getType() != Type.TypeCheckingType.RECORD) {
+                throw new SemanticError(getLine(), getColumn(), "Another declaration in table that isn't record");
             }
             if (!recordType.isSameRecord(rhs)) {
                 throw new SemanticError(getLine(), getColumn(), "Duplicate record not exact same");
             }
-        }else {
+        } else {
             table.add(recordName, recordType);
         }
 
