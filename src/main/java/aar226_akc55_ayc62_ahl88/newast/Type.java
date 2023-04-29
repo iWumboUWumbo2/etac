@@ -102,7 +102,7 @@ public class Type implements Printer {
         }
         return inputTypes;
     }
-    public Type (String record, ArrayList<AnnotatedTypeDecl> types, int l, int c) {
+    public Type (String record, ArrayList<AnnotatedTypeDecl> types, int l, int c, boolean forRecord) {
 //        super(l,c);
         line = l;
         col = c;
@@ -114,6 +114,16 @@ public class Type implements Printer {
         for (int i = 0; i < types.size(); i++) {
             recordFieldToIndex.put(types.get(i).toString(), i);
         }
+    }
+
+    public Type (String record, ArrayList<Type> types, int l, int c) {
+//        super(l,c);
+        line = l;
+        col = c;
+        isInt = false;
+        recordName = record;
+        tct = TypeCheckingType.RECORD;
+        recordFieldTypes = new ArrayList<Type>(types);
     }
 
     public Type(ArrayList<Type> multiTypes) {

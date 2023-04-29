@@ -56,7 +56,7 @@ public class RecordDef extends Definition {
         }
         currentFile.add(recordName.toString());
 
-        Type recordType = new Type(recordName.toString(), recordTypes, getLine(), getColumn());
+        Type recordType = new Type(recordName.toString(), recordTypes, getLine(), getColumn(), true);
         if (table.contains(recordName)) {
             Type rhs = table.lookup(recordName);
             if (rhs.getType() != Type.TypeCheckingType.RECORD) {
