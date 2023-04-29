@@ -78,6 +78,22 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     multiassign06.eta;
     multiassign07.eta;
     multiassign08.eta;
+
+
+
+    ex01.eta;
+    ack.eta;
+    primes.eta;
+    arrmedian.eta;
+    bestTimeToBuyStock.eta;
+    binsearch.eta;
+    moveslikejagger.eta;
+    recursion1.eta;
+    recursion2.eta;
+    recursion3.eta;
+    stringweird.eta;
+    trappingrainwater.eta;
+    validpalindrome.eta;
 }
 
 etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
@@ -154,6 +170,22 @@ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
     multiassign06.eta;
     multiassign07.eta;
     multiassign08.eta;
+
+
+
+    ex01.eta;
+    ack.eta;
+    primes.eta;
+    arrmedian.eta;
+    bestTimeToBuyStock.eta;
+    binsearch.eta;
+    moveslikejagger.eta;
+    recursion1.eta;
+    recursion2.eta;
+    recursion3.eta;
+    stringweird.eta;
+    trappingrainwater.eta;
+    validpalindrome.eta;
 }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
    
@@ -233,6 +265,21 @@ etac ("Test -target linux") "-libpath $(testpath) -target linux" {
     multiassign06.eta;
     multiassign07.eta;
     multiassign08.eta;
+
+
+    ex01.eta;
+    ack.eta;
+    primes.eta;
+    arrmedian.eta;
+    bestTimeToBuyStock.eta;
+    binsearch.eta;
+    moveslikejagger.eta;
+    recursion1.eta;
+    recursion2.eta;
+    recursion3.eta;
+    stringweird.eta;
+    trappingrainwater.eta;
+    validpalindrome.eta;
 }
 
 etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
@@ -313,4 +360,18 @@ etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
     multiassign06.eta;
     multiassign07.eta;
     multiassign08.eta;
+
+    ex01.eta;
+    ack.eta;
+    primes.eta;
+    arrmedian.eta;
+    bestTimeToBuyStock.eta;
+    binsearch.eta;
+    moveslikejagger.eta;
+    recursion1.eta;
+    recursion2.eta;
+    recursion3.eta;
+    stringweird.eta;
+    trappingrainwater.eta;
+    validpalindrome.eta;
 }

@@ -9,6 +9,7 @@ main(args: int[][]) {
 	printArr(a)
 	// set a[5] to 2010
 	a[a[plus5(a,1)]] = a[a[plus5(a,1)]]+1000
+	print("s");
 }
 plus5(a:int[],i:int):int{
 	a[i]=a[i]+5

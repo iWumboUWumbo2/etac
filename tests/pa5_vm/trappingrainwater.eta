@@ -1,0 +1,63 @@
+use io
+use conv
+trap(height:int[]): int {
+    leftToRight:int[length(height)]
+    rightToLeft:int[length(height)]
+
+    currMax : int = 0
+    i : int = 0
+    while (i < length(height)) {
+        if (height[i] > currMax) {
+            currMax = height[i]
+        }
+
+        leftToRight[i] = currMax
+        i = i + 1
+    }
+
+    currMax = 0
+    i = length(height) - 1
+    while (i > -1) {
+        if (height[i] > currMax) {
+                currMax = height[i]
+        }
+        rightToLeft[i] = (currMax)
+        i = i - 1
+    }
+
+    minimum : int[length(height)]
+    i = 0
+    while (i < length(height)) {
+        if (leftToRight[i] <= rightToLeft[i]) {
+            minimum[i] = leftToRight[i]
+        } else {
+            minimum[i] = rightToLeft[i]
+        }
+        i = i + 1
+    }
+
+    water : int[length(height)]
+    i = 0
+    while (i < length(height)) {
+        water[i] = (minimum[i] - height[i])
+        i = i + 1
+    }
+
+    sum : int = 0
+    i = 0
+    while (i < length(height)) {
+        sum = sum + water[i]
+        i = i + 1
+    }
+    return sum
+}
+
+main(args:int[][]){
+    a : int[] = {0,1,0,2,1,0,1,3,2,1,2,1}
+    b : int[] = {4,2,0,3,2,5}
+
+    c : int = trap(a)
+    println(unparseInt(c));
+    d : int = trap(b)
+    println(unparseInt(d));
+}
