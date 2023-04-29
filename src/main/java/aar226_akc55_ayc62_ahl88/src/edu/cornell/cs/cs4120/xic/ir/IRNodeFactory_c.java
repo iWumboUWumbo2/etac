@@ -83,6 +83,11 @@ public class IRNodeFactory_c implements IRNodeFactory {
     }
 
     @Override
+    public IRNode IRPhi(IRExpr target, List<IRExpr> results) {
+        return new IRPhi(target,results);
+    }
+
+    @Override
     public IRMove IRMove(IRExpr target, IRExpr expr) {
         return new IRMove(target, expr);
     }

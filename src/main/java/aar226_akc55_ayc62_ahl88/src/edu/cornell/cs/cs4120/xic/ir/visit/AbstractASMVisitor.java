@@ -1472,6 +1472,10 @@ public class AbstractASMVisitor {
         }
         return ASMDirectives.ZERO;
     }
+
+    public ArrayList<ASMInstruction> visit(IRPhi irPhi) {
+        throw new InternalCompilerError("PHI NOT IN ABSTRACT ASSEMBLY");
+    }
 //
 //    private ArrayList<ASMInstruction> BinopToInstructions(){
 //        ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());

@@ -141,7 +141,25 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
         dominanceFrontier.put(node,S);
     }
 
-//    public void placePhiFunctions(){
-//        for ()
-//    }
+    public void placePhiFunctions(){
+        HashMap<IRTemp,HashSet<CFGNode<IRStmt>>> defsites = new HashMap<>();
+        for (CFGNode<IRStmt> node : graph.getNodes()){
+            Set<IRTemp> tempsDefined =  LiveVariableAnalysis.def(node);
+            for (IRTemp t: tempsDefined){
+                if (!defsites.containsKey(t)){
+                    defsites.put(t, new HashSet<>());
+                }
+                defsites.get(t).add(node);
+            }
+        }
+        for (IRTemp a: defsites.keySet()){
+            Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>(defsites.get(a));
+            while (!queue.isEmpty()){
+                CFGNode<IRStmt> node = queue.poll();
+                for (CFGNode<IRStmt> y : dominanceFrontier.get(node)){
+
+                }
+            }
+        }
+    }
 }

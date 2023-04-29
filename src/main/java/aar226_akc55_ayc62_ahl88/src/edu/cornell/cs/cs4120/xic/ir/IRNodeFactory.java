@@ -70,6 +70,9 @@ public interface IRNodeFactory {
      */
     IRCallStmt IRCallStmt(IRExpr target, Long n_returns, List<IRExpr> args);
 
+
+    IRNode IRPhi(IRExpr target, List<IRExpr> results);
+
     /**
      * @param target the destination of this move
      * @param expr the expression whose value is to be moved

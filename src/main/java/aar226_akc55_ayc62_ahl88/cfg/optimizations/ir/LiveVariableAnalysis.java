@@ -62,6 +62,11 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
             for (IRExpr e : call.args()){
                 flattened.addAll(new FlattenIrVisitor().visit(e));
             }
+        }else if (stmt instanceof IRPhi phi){
+            flattened = new ArrayList<>();
+            for (IRExpr e : phi.getArgs()){
+                flattened.addAll(new FlattenIrVisitor().visit(e));
+            }
         }
         else{
             flattened = new ArrayList<>();
@@ -70,7 +75,7 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
     }
 
 
-    private static Set<IRTemp> def(CFGNode<IRStmt> node) {
+    public static Set<IRTemp> def(CFGNode<IRStmt> node) {
         HashSet<IRTemp> defSet = new HashSet<>();
         IRStmt stmt = node.getStmt();
         if (stmt instanceof IRMove move && move.target() instanceof IRTemp temp){
@@ -79,11 +84,13 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
             for (int i = 1; i<= call.n_returns();i++){
                 defSet.add(new IRTemp("_RV" + i));
             }
+        }else if (stmt instanceof IRPhi phi){
+            defSet.add((IRTemp) phi.getTarget());
         }
         return defSet;
     }
 
-    private static Set<IRTemp> usedTempsLVA(ArrayList<IRNode> nodes){
+    public static Set<IRTemp> usedTempsLVA(ArrayList<IRNode> nodes){
         HashSet<IRTemp> res = new HashSet<>();
         for (IRNode node : nodes){
             if (node instanceof IRTemp temp){

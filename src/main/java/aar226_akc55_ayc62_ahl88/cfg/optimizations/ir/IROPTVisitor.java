@@ -32,12 +32,13 @@ public interface IROPTVisitor<T> {
 
     T visit(IRName node);
 
-
     T visit(IRReturn node);
 
     T visit(IRSeq node);
 
     T visit(IRTemp node);
+
+    T visit(IRPhi node);
 
 
 
