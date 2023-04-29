@@ -85,7 +85,8 @@ nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
 nonterminal RecordDef                  record;
 nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
 nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
-nonterminal ArrayList<Id>           record_access;
+nonterminal RecordAccess           record_access;
+nonterminal ArrayList<Id>          id_period_plus;
 
 
 precedence nonassoc IF;
@@ -321,15 +322,28 @@ expr ::=
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(new Id(id,idleft,idright), e, idleft, idright); :}
     | expr:e fullBracketPlus:i {: RESULT = new ArrayAccessExpr(e, i, eleft, eright); :}
 
-    | record_access:ra {: RESULT = new RecordAccess(ra, raleft, raright); :}
+    | record_access:ra {: RESULT = ra; :}
     ;
 
-record_access ::= IDENTIFIER:i1 PERIOD IDENTIFIER:i2 {: ArrayList<Id> ids = new ArrayList<Id>();
-                                                        ids.add(new Id(i1, i1left, i1right));
-                                                        ids.add(new Id(i2, i2left, i2right));
-                                                        RESULT = ids;
-                                                        :}
-    | IDENTIFIER:i1 PERIOD record_access:ra {: ra.add(0, new Id(i1, i1left, i1right)); :};
+record_access ::= IDENTIFIER:i PERIOD id_period_plus:idp {:
+    idp.add(0, new Id(i,ileft,iright));
+    RESULT = new RecordAccess(idp, ileft, iright);
+    :}
+    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD id_period_plus:idp
+        {: RESULT = new RecordAccess(new FunctionCallExpr(
+            new Id(id, idleft, idright),e,idleft,idright),
+            idp, idleft, idright);
+        :};
+
+id_period_plus ::= IDENTIFIER:i {:
+    ArrayList<Id> idp = new ArrayList<Id>();
+    idp.add(new Id(i,ileft,iright));
+    RESULT = idp;
+    :}
+    | IDENTIFIER:i PERIOD id_period_plus:idp {:
+        idp.add(0, new Id(i,ileft,iright));
+        RESULT = idp;
+        :};
 
 exprList ::=
     expr:x {:

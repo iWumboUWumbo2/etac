@@ -18,10 +18,18 @@ import java.util.ArrayList;
 public class RecordAccess extends Expr {
 
     // Read This Left to Right
+    FunctionCallExpr recordDecl;
     ArrayList<Id> idList;
 
     public RecordAccess(ArrayList<Id> recordAccess, int l, int c){
         super (l, c);
+        recordDecl = null;
+        idList = recordAccess;
+    }
+
+    public RecordAccess(FunctionCallExpr recordDecl, ArrayList<Id> recordAccess, int l, int c) {
+        super(l, c);
+        this.recordDecl = recordDecl;
         idList = recordAccess;
     }
     private void typeCheckIndices(SymbolTable s) throws Error {
@@ -78,11 +86,21 @@ public class RecordAccess extends Expr {
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        for (int i = 0; i < idList.size();i++){
+        if (recordDecl != null) {
             p.startList();
-            if (i != idList.size()-2) p.printAtom(".");
         }
-        for (int i = 0; i< idList.size(); i++){
+        for (int i = 0; i < idList.size(); i++) {
+            p.startList();
+            // if not null the print
+            // if (null and not equals -2)
+            if (i != idList.size() - 2 || recordDecl != null) p.printAtom(".");
+        }
+        if (recordDecl != null) {
+            recordDecl.prettyPrint(p);
+            p.endList();
+        }
+
+        for (int i = 0; i < idList.size(); i++) {
             idList.get(i).prettyPrint(p);
             p.endList();
         }
