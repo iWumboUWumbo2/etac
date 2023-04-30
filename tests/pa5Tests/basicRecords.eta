@@ -1,0 +1,51 @@
+record Point {
+    x,y:int
+}
+
+createPoint(x: int, y: int): Point {
+    return Point(x, y)
+}
+
+main(args : int[][]) {
+    x : int = 5;
+    y : int = 6;
+
+    a : Point = createPoint(3,5)
+    b : Point = createPoint(x,y);
+    c : Point = createPoint(x,1);
+    d : Point = createPoint(9,x);
+    e : Point = createPoint(8, b.x);
+    f : Point = createPoint(a.x, 7);
+    g : Point = createPoint(c.x, d.y);
+    x : Point = createPoint(e.x, f.y);
+    y : Point = createPoint(g.y, c.x);
+
+    //println(unparseInt(a.x))
+    //println(unparseInt(a.y))
+    //println(unparseInt(b.x))
+    //println(unparseInt(b.y))
+    //println(unparseInt(c.x))
+    //println(unparseInt(c.y))
+    //println(unparseInt(d.x))
+    //println(unparseInt(d.y))
+    //println(unparseInt(e.x))
+    //println(unparseInt(e.y))
+    //println(unparseInt(f.x))
+    //println(unparseInt(f.y))
+    //println(unparseInt(g.x))
+    //println(unparseInt(g.y))
+    //println(unparseInt(x.x))
+    //println(unparseInt(x.y))
+    //println(unparseInt(y.x))
+    //println(unparseInt(y.y))
+
+    // 3 5
+    // 5 6
+    // 5 1
+    // 9 5
+    // 8 5
+    // 3 7
+    // 5 5
+    // 8 7
+    // 5 5
+}
