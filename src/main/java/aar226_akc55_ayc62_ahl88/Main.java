@@ -8,11 +8,9 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
-import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DominatorAnalysis;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -335,16 +333,19 @@ public class Main {
                         ir = ir.accept(fv);
                     }
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-                        stmtGraph.removeUnreachable();
-                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
-                        lva.workList();
-
-                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
-                        dom.worklist();
-                        dom.createDominatorTreeAndImmediate();
-                        dom.constructDF();
-                        dom.placePhiFunctions();
+//                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
+//                        stmtGraph.removeUnreachable();
+//                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
+//                        lva.workList();
+//
+//                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
+//                        dom.worklist();
+//                        dom.createDominatorTreeAndImmediate();
+//                        dom.constructDF();
+//                        dom.placePhiFunctions();
 //                        dom.renamingVariables();
 //                        writeOutputDot(filename, map.getKey(), "postPhi", stmtGraph.CFGtoDOT());
 //                        for (CFGNode<IRStmt> node: dom.getOutMapping().keySet()){

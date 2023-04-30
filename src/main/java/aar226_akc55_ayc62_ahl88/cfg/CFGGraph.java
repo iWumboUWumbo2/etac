@@ -41,11 +41,13 @@ public class CFGGraph<T> {
             CFGNode<T> cfgnode = nodes.get(i);
             T stmt = cfgnode.getStmt();
 
-            if (i != 0 && !(nodes.get(i-1).stmt instanceof IRReturn)) {
+            if (i != 0 && !(nodes.get(i-1).stmt instanceof IRReturn) &&
+                    !(nodes.get(i-1).stmt instanceof IRJump)) {
                 cfgnode.addPredecessor(nodes.get(i - 1));
             }
 
-            if (i != stmts.size() - 1 && !(nodes.get(i).stmt instanceof IRReturn)) {
+            if (i != stmts.size() - 1 && !(nodes.get(i).stmt instanceof IRReturn)
+            && !(nodes.get(i).stmt instanceof IRJump)) {
                 cfgnode.setFallThroughChild(nodes.get(i + 1));
             }
 
@@ -132,6 +134,14 @@ public class CFGGraph<T> {
             }
         }
         nodes = newGraph;
+    }
+
+    public ArrayList<T> getBackIR(){
+        ArrayList<T> res = new ArrayList<>();
+        for (CFGNode<T> node : nodes){
+            res.add(node.stmt);
+        }
+        return res;
     }
     @Override
     public String toString() {
