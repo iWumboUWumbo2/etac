@@ -343,8 +343,9 @@ public class Main {
                         domBlock.constructDF();
                         domBlock.placePhiFunctions();
                         domBlock.renamingVariables();
+//                        writeOutputDot(filename, map.getKey(), "inSSA", stmtGraphBlocks.CFGtoDOT());
                         DominatorBlockDataflow.unSSA(stmtGraphBlocks);
-//                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
+//                        writeOutputDot(filename, map.getKey(), "outSSA", stmtGraphBlocks.CFGtoDOT());
                         ArrayList<IRStmt> stmts =  stmtGraphBlocks.getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(map.getKey(),new IRSeq(stmts));
                         optFunc.functionSig = map.getValue().functionSig;
@@ -532,12 +533,12 @@ public class Main {
                 "Specify where to place generated diagnostic files.");
         Option asmDirOpt   = new Option ("d", true,
                 "Specify where to place generated assembly output files.");
-        Option optOpt   = new Option ("O", true,
+        Option optOpt   = new Option ("O", false,
                 "Disable optimizations.");
 
-        Option cfOptOpt = new Option ("Ocf", true,
+        Option cfOptOpt = new Option ("Ocf", false,
                 "Enable constant folding optimization.");
-        Option inlOptOpt = new Option ("Oinl", true,
+        Option inlOptOpt = new Option ("Oinl", false,
                 "Enable function inlining optimization.");
 
         optOpt.setOptionalArg(true);
