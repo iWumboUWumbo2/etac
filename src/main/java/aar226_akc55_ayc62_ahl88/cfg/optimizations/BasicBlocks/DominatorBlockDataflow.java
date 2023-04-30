@@ -200,22 +200,35 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
 
     public void rename(BasicBlockCFG block,HashMap<IRTemp, Integer> count,HashMap<IRTemp,Stack<Integer>> stacks){
         ArrayList<IRStmt> body = block.getBody();
+        HashMap<Integer,Set<IRTemp>> orgDefs = new HashMap<>();
         for (int i = 0; i< block.getBody().size();i++){
             IRStmt stmt = body.get(i);
             Set<IRTemp> used = LiveVariableAnalysis.use(stmt);
             Set<IRTemp> defs = LiveVariableAnalysis.def(stmt);
             used.retainAll(count.keySet());
             defs.retainAll(count.keySet());
+
+            Set<IRTemp> noReplace = new HashSet<>();
+            for (IRTemp use: used){
+                if (use.name().startsWith("_RV") || use.name().startsWith("_ARG")){
+                    noReplace.add(use);
+                }
+            }
+            used.removeAll(noReplace);
+            noReplace.clear();
+            for (IRTemp def: defs){
+                if (def.name().startsWith("_RV") || def.name().startsWith("_ARG")){
+                    noReplace.add(def);
+                }
+            }
+            defs.removeAll(noReplace);
+
             if (!(body.get(i) instanceof IRPhi)){
                 HashMap<String,String> replaceUsedMapping = new HashMap<>();
                 for (IRTemp x : used){
                     replaceUsedMapping.put(x.name(),x.name() +"_"+ stacks.get(x).peek());
                 }
-                System.out.println("stmt: " + stmt);
-                System.out.println("used: " + used);
-                System.out.println("mapping: " + replaceUsedMapping);
                 IRStmt afterUsedSwap =  replaceRHS(stmt,replaceUsedMapping);
-                System.out.println("afterswap:" + afterUsedSwap);
                 block.getBody().set(i,afterUsedSwap);
                 stmt = body.get(i);
             }
@@ -227,6 +240,7 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             }
             IRStmt afterDefSwap = replaceLHS(stmt,replaceDefMapping);
             block.getBody().set(i,afterDefSwap);
+            orgDefs.put(i,defs);
         }
         for (BasicBlockCFG succY: block.getChildren()){
             if (succY != null) {
@@ -242,9 +256,7 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             rename(childX,count,stacks);
         }
         for (int i = 0; i< block.getBody().size();i++){
-            IRStmt stmt = body.get(i);
-            Set<IRTemp> defs = LiveVariableAnalysis.def(stmt);
-            defs.retainAll(count.keySet());
+            Set<IRTemp> defs = orgDefs.get(i);
             for (IRTemp a: defs){
                 stacks.get(a).pop();
             }
@@ -289,6 +301,29 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             return stmt;
         }else{
             return stmt;
+        }
+    }
+    public static void unSSA(CFGGraphBasicBlock graph){
+        for (BasicBlockCFG block: graph.getNodes()){
+            ArrayList<IRStmt> nxtBody = new ArrayList<>();
+            for (IRStmt stmt: block.getBody()){
+                if (stmt instanceof IRPhi phi){
+                    for (int i = 0; i< block.getPredecessors().size();i++){
+                        BasicBlockCFG pred = block.getPredecessors().get(i);
+                        IRTemp use = (IRTemp) phi.getArgs().get(i);
+                        IRMove extraMove = new IRMove(phi.getTarget(),use);
+                        IRStmt lastStatementPred = pred.getBody().get(pred.getBody().size()-1);
+                        if (lastStatementPred instanceof IRJump || lastStatementPred instanceof IRCJump){
+                            pred.getBody().add(pred.getBody().size()-1,extraMove);
+                        }else{
+                            pred.getBody().add(extraMove);
+                        }
+                    }
+                }else{
+                    nxtBody.add(stmt);
+                }
+            }
+            block.body = nxtBody;
         }
     }
 }
