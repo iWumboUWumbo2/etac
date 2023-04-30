@@ -334,41 +334,24 @@ public class Main {
                         ir = ir.accept(fv);
                     }
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
+                        stmtGraph.removeUnreachable();
+                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock(stmtGraph.getBackIR());
                         DominatorBlockDataflow domBlock = new DominatorBlockDataflow(stmtGraphBlocks);
                         domBlock.worklist();
                         domBlock.createDominatorTreeAndImmediate();
-
-//                        System.out.println(domBlock.getDominatorTree());
-                        System.out.println(domBlock.getImmediateDominator());
-//                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
+                        domBlock.constructDF();
+                        domBlock.placePhiFunctions();
+                        domBlock.renamingVariables();
+//                        System.out.println(domBlock.getGraph());
+                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
 //                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
 //                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
 //                        stmtGraph.removeUnreachable();
 //                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
 //                        lva.workList();
 //
-//                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
-//                        dom.worklist();
-//                        dom.createDominatorTreeAndImmediate();
-//                        dom.constructDF();
-//                        dom.placePhiFunctions();
-//                        dom.renamingVariables();
-//                        writeOutputDot(filename, map.getKey(), "postPhi", stmtGraph.CFGtoDOT());
-//                        for (CFGNode<IRStmt> node: dom.getOutMapping().keySet()){
-//                            System.out.println(node + " dominated by: " + dom.getOutMapping().get(node));
-//                        }
-//
-//                        for (CFGNode<IRStmt> node: dom.getImmediateDominator().keySet()){
-//                            System.out.println(node + " imm dom is: " + dom.getImmediateDominator().get(node));
-//                        }
-//
-//                        for (CFGNode<IRStmt> node: dom.getDominatorTree().keySet()){
-//                            System.out.println(node + " dominates " + dom.getDominatorTree().get(node));
-//                        }
-//                        for (CFGNode<IRStmt> node: dom.getDominanceFrontier().keySet()){
-//                            System.out.println(node + " dominance Frontier: " + dom.getDominanceFrontier().get(node));
-//                        }
                     }
                         // these prints don't work on eth LVA
 //                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){

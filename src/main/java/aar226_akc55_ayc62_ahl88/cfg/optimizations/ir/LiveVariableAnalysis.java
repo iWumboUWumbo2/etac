@@ -14,8 +14,8 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
         super(
                 graph,
                 (n, outN) -> {
-                    Set<IRTemp> useSet = use(n);
-                    Set<IRTemp> defSet = def(n);
+                    Set<IRTemp> useSet = use(n.getStmt());
+                    Set<IRTemp> defSet = def(n.getStmt());
 
                     Set<IRTemp> l_temp = new HashSet<>(outN);
                     l_temp.removeAll(defSet);
@@ -33,8 +33,7 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
     }
 
 
-    public static Set<IRTemp> use(CFGNode<IRStmt> node) {
-        IRStmt stmt = node.getStmt();
+    public static Set<IRTemp> use(IRStmt stmt) {
 
         ArrayList<IRNode> flattened;
         // if [mov temp, expr] then don't add temp
@@ -75,9 +74,8 @@ public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
     }
 
 
-    public static Set<IRTemp> def(CFGNode<IRStmt> node) {
+    public static Set<IRTemp> def(IRStmt stmt) {
         HashSet<IRTemp> defSet = new HashSet<>();
-        IRStmt stmt = node.getStmt();
         if (stmt instanceof IRMove move && move.target() instanceof IRTemp temp){
             defSet.add(temp);
         }else if (stmt instanceof IRCallStmt call){

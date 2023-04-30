@@ -147,7 +147,7 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
         phiPlacedNodes = new HashMap();
         HashMap<IRTemp,HashSet<CFGNode<IRStmt>>> defsites = new HashMap<>();
         for (CFGNode<IRStmt> node : graph.getNodes()){
-            Set<IRTemp> tempsDefined =  LiveVariableAnalysis.def(node);
+            Set<IRTemp> tempsDefined =  LiveVariableAnalysis.def(node.getStmt());
             for (IRTemp t: tempsDefined){
                 if (!defsites.containsKey(t)){
                     defsites.put(t, new HashSet<>());
@@ -183,7 +183,7 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
                             phiCFG.addPredecessor(y);
                         }
                         graph.getNodes().add(graph.getNodes().indexOf(y),phiCFG);// Insert into graph
-                        Set<IRTemp> tempsY =  LiveVariableAnalysis.def(y);
+                        Set<IRTemp> tempsY =  LiveVariableAnalysis.def(y.getStmt());
                         if (!tempsY.contains(a)){
                             queue.add(y);
                         }
@@ -214,8 +214,8 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
 
     public void rename(CFGNode<IRStmt> node,HashMap<IRTemp, Integer> count,HashMap<IRTemp,Stack<Integer>> stacks){
         // block is single node
-        Set<IRTemp> used = LiveVariableAnalysis.use(node);
-        Set<IRTemp> defs = LiveVariableAnalysis.def(node);
+        Set<IRTemp> used = LiveVariableAnalysis.use(node.getStmt());
+        Set<IRTemp> defs = LiveVariableAnalysis.def(node.getStmt());
         used.retainAll(count.keySet());
         defs.retainAll(count.keySet());
         System.out.println("node: " + node);
