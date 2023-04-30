@@ -361,7 +361,11 @@ public class Type implements Printer {
     }
 
     private String getTypeAsString() {
-        return (isInt) ? "int" : "bool";
+        if (recordName != null) {
+            return recordName;
+        } else {
+            return (isInt) ? "int" : "bool";
+        }
     }
 
     @Override
