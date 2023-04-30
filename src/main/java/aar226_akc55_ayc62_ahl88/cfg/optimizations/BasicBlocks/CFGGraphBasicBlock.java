@@ -192,6 +192,15 @@ public class CFGGraphBasicBlock {
         result.append("}");
         return result.toString();
     }
+
+    public ArrayList<IRStmt> getBackIR(){
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        for (BasicBlockCFG bb : nodes) {
+            stmts.addAll(bb.getBody());
+        }
+        return stmts;
+    }
+
     public ArrayList<BasicBlockCFG> getNodes() {
         return nodes;
     }

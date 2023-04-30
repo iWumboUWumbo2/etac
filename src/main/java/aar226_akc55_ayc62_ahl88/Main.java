@@ -26,10 +26,7 @@ import org.apache.commons.cli.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -332,7 +329,9 @@ public class Main {
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
+                        IRs.put("inline",ir);
                     }
+                    HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
 //                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
@@ -344,16 +343,26 @@ public class Main {
                         domBlock.constructDF();
                         domBlock.placePhiFunctions();
                         domBlock.renamingVariables();
-//                        System.out.println(domBlock.getGraph());
-                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
+                        DominatorBlockDataflow.unSSA(stmtGraphBlocks);
+//                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
+                        ArrayList<IRStmt> stmts =  stmtGraphBlocks.getBackIR();
+                        IRFuncDecl optFunc = new IRFuncDecl(map.getKey(),new IRSeq(stmts));
+                        optFunc.functionSig = map.getValue().functionSig;
+                        cfgIR.put(map.getKey(),optFunc);
+                    }
+//                    String name,
+//                    Map<String, IRFuncDecl> functions,
+//                    List<String> ctors,
+//                    Map<String, IRData> dataMap
+                    ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
+                    IRs.put("postCFG",ir);
+//                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
 //                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
 //                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
 //                        stmtGraph.removeUnreachable();
 //                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
 //                        lva.workList();
-//
-                    }
-                        // these prints don't work on eth LVA
+//// these prints don't work on eth LVA
 //                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
 //                            System.out.println(node.toString().replaceAll("\n",""));
 //                            System.out.println("live in: ");
