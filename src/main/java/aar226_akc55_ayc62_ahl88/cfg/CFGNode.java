@@ -22,6 +22,10 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
 
     T stmt;
 
+    public void setStmt(T stmt) {
+        this.stmt = stmt;
+    }
+
     private ArrayList<CFGNode<T>> children;
 
     private ArrayList<CFGNode<T>> predecessors;

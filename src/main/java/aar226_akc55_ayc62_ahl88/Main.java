@@ -334,16 +334,19 @@ public class Main {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
                     }
-//                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-//                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
-//                        lva.workList();
-//
-//                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
-//                        dom.worklist();
-//                        dom.createDominatorTreeAndImmediate();
-//                        dom.constructDF();
-//
+                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                        stmtGraph.removeUnreachable();
+                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
+                        lva.workList();
+
+                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
+                        dom.worklist();
+                        dom.createDominatorTreeAndImmediate();
+                        dom.constructDF();
+                        dom.placePhiFunctions();
+//                        dom.renamingVariables();
+//                        writeOutputDot(filename, map.getKey(), "postPhi", stmtGraph.CFGtoDOT());
 //                        for (CFGNode<IRStmt> node: dom.getOutMapping().keySet()){
 //                            System.out.println(node + " dominated by: " + dom.getOutMapping().get(node));
 //                        }
@@ -358,7 +361,7 @@ public class Main {
 //                        for (CFGNode<IRStmt> node: dom.getDominanceFrontier().keySet()){
 //                            System.out.println(node + " dominance Frontier: " + dom.getDominanceFrontier().get(node));
 //                        }
-//                    }
+                    }
                         // these prints don't work on eth LVA
 //                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
 //                            System.out.println(node.toString().replaceAll("\n",""));
