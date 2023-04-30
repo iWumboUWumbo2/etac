@@ -155,6 +155,15 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             Aorg.put(node,new HashSet<>(tempsDefined));
             phiPlacedNodes.put(node,new HashMap<>());
         }
+        Set<IRTemp> noReplace = new HashSet<>();
+        for (IRTemp use: defsites.keySet()){
+            if (use.name().startsWith("_RV") || use.name().startsWith("_ARG")){
+                noReplace.add(use);
+            }
+        }
+        for (IRTemp retArg :  noReplace){
+            defsites.remove(retArg);
+        }
         for (IRTemp a: defsites.keySet()){
             Queue<BasicBlockCFG> queue = new ArrayDeque<>(defsites.get(a));
 //            System.out.println("starting: " + a);
