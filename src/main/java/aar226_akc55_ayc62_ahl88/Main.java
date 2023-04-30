@@ -8,11 +8,10 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
-import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.DominatorBlockDataflow;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DominatorAnalysis;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -334,31 +333,26 @@ public class Main {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
                     }
-//                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
+                        stmtGraph.removeUnreachable();
+                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock(stmtGraph.getBackIR());
+                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(stmtGraphBlocks);
+                        domBlock.worklist();
+                        domBlock.createDominatorTreeAndImmediate();
+                        domBlock.constructDF();
+                        domBlock.placePhiFunctions();
+                        domBlock.renamingVariables();
+//                        System.out.println(domBlock.getGraph());
+                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
 //                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
+//                        stmtGraph.removeUnreachable();
 //                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
 //                        lva.workList();
 //
-//                        DominatorAnalysis dom = new DominatorAnalysis(stmtGraph);
-//                        dom.worklist();
-//                        dom.createDominatorTreeAndImmediate();
-//                        dom.constructDF();
-//
-//                        for (CFGNode<IRStmt> node: dom.getOutMapping().keySet()){
-//                            System.out.println(node + " dominated by: " + dom.getOutMapping().get(node));
-//                        }
-//
-//                        for (CFGNode<IRStmt> node: dom.getImmediateDominator().keySet()){
-//                            System.out.println(node + " imm dom is: " + dom.getImmediateDominator().get(node));
-//                        }
-//
-//                        for (CFGNode<IRStmt> node: dom.getDominatorTree().keySet()){
-//                            System.out.println(node + " dominates " + dom.getDominatorTree().get(node));
-//                        }
-//                        for (CFGNode<IRStmt> node: dom.getDominanceFrontier().keySet()){
-//                            System.out.println(node + " dominance Frontier: " + dom.getDominanceFrontier().get(node));
-//                        }
-//                    }
+                    }
                         // these prints don't work on eth LVA
 //                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
 //                            System.out.println(node.toString().replaceAll("\n",""));

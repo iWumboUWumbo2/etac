@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMAbstractJump;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.lang.reflect.Array;
@@ -40,11 +41,13 @@ public class CFGGraph<T> {
             CFGNode<T> cfgnode = nodes.get(i);
             T stmt = cfgnode.getStmt();
 
-            if (i != 0 && !(nodes.get(i-1).stmt instanceof IRReturn)) {
+            if (i != 0 && !(nodes.get(i-1).stmt instanceof IRReturn) &&
+                    !(nodes.get(i-1).stmt instanceof IRJump)) {
                 cfgnode.addPredecessor(nodes.get(i - 1));
             }
 
-            if (i != stmts.size() - 1 && !(nodes.get(i).stmt instanceof IRReturn)) {
+            if (i != stmts.size() - 1 && !(nodes.get(i).stmt instanceof IRReturn)
+            && !(nodes.get(i).stmt instanceof IRJump)) {
                 cfgnode.setFallThroughChild(nodes.get(i + 1));
             }
 
@@ -98,6 +101,48 @@ public class CFGGraph<T> {
         return order;
     }
 
+    public void removeUnreachable(){
+        HashMap<CFGNode<T>, Integer> visitedIDs = new HashMap<>();
+        HashSet<CFGNode<T>> visited = new HashSet<>();
+
+        Stack<CFGNode<T>> stack = new Stack<>();
+        stack.push(nodes.get(0));
+        visited.add(nodes.get(0));
+        while (!stack.isEmpty()) {
+            CFGNode<T> popped = stack.pop();
+
+            for (CFGNode<T> child : popped.getChildren()){
+                if (child != null && !visited.contains(child)){
+                    visited.add(child);
+                    stack.push(child);
+                }
+            }
+        }
+        for (CFGNode<T> node : nodes) {
+            if (!visited.contains(node)) { // remove this node
+                for (CFGNode<T> child : node.getChildren()) {
+                    if (child != null) {
+                        child.removePredecessor(node);
+                    }
+                }
+            }
+        }
+        ArrayList<CFGNode<T>> newGraph = new ArrayList<>();
+        for (CFGNode<T> node : nodes){
+            if (visited.contains(node)){
+                newGraph.add(node);
+            }
+        }
+        nodes = newGraph;
+    }
+
+    public ArrayList<T> getBackIR(){
+        ArrayList<T> res = new ArrayList<>();
+        for (CFGNode<T> node : nodes){
+            res.add(node.stmt);
+        }
+        return res;
+    }
     @Override
     public String toString() {
         return nodes.toString();

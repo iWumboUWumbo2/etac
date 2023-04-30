@@ -1,0 +1,11 @@
+use io
+use conv
+f():int[]{
+    return "Hello World"
+}
+
+main(args:int[][]){
+    f()[2] = 'a'
+    f()[1] = 'n'
+    println(f())
+}
