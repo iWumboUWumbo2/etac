@@ -1,45 +1,42 @@
-//package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
+package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
+
+import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
+
+import java.util.*;
+
+public class DeadCodeElimination {
+    CFGGraph<IRStmt> graph;
+
+    public DeadCodeElimination(CFGGraph<IRStmt> graph) {
+        this.graph = graph;
+    }
+
+    public Set<IRTemp> getAllVariables() {
+        ArrayList<IRStmt> stmts = graph.getBackIR();
+        ArrayList<IRNode> flattened = new ArrayList<>();
+
+        for (IRStmt stmt : stmts) {
+            flattened.addAll(new FlattenIrVisitor().visit(stmt));
+        }
+
+        return LiveVariableAnalysis.usedTempsLVA(flattened);
+    }
+
+    private void runDCE() {
+//        Queue<IRStmt> W = new ArrayDeque<>();
 //
-//import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
-//import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
+//        for (IRStmt stmt : graph.getBackIR()) {
 //
-//import java.util.LinkedList;
-//import java.util.Queue;
-//
-//public class DeadCodeElimination<T> {
-//
-//    private Queue<CFGNode<T>> queue;
-//
-//    public DeadCodeElimination(CFGGraph<T> graph) {
-//        queue = new LinkedList<>();
-//        queue.addAll(graph.getNodes());
-//
-//        while (!queue.isEmpty()) {
-//            CFGNode<T> node = queue.poll();
-//            eliminate(node);
 //        }
-//    }
 //
-//    private void eliminate(CFGNode<T> node) {
-//        for (T temp : node.getDef()) {
-//            boolean a = node.getFallThroughChild() != null && node.getFallThroughChild().getIn().contains(temp);
-//            boolean b = node.getJumpChild() != null && node.getJumpChild().getIn().contains(temp);
-//
-//            if (!(a || b)) {
-//                if (node.getJumpChild() == null) {
-//                    for (CFGNode<T> pred : node.getPredecessors()) {
-//                        if (pred.getFallThroughChild() == node) {
-//                            pred.setFallThroughChild(node.getFallThroughChild());
-//                            node.getFallThroughChild().addPredecessor(pred);
-//                            node.getFallThroughChild().removePredecessor(pred);
-//                        } else if (pred.getJumpChild() == node) {
-//                            pred.setJumpChild(node.getJumpChild());
-//                            node.getJumpChild().addPredecessor(pred);
-//                            node.getJumpChild().removePredecessor(pred);
-//                        }
-//                    }
-//                }
-//            }
+//        while (!W.isEmpty()) {
+//            IRStmt
 //        }
-//    }
-//}
+    }
+
+}
