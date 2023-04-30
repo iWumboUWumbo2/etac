@@ -1,9 +1,12 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 public class BasicBlockCFG {
 
@@ -67,10 +70,85 @@ public class BasicBlockCFG {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        builder.append(" Block : ");
         for (IRStmt stmt: body){
             String escape = stmt.toString().replaceAll("\n","");
             builder.append(escape).append('\n');
         }
         return builder.toString();
     }
+
+    public Set<IRTemp> dataflowDef(){
+        HashSet<IRTemp> defSet = new HashSet<>();
+        for (IRStmt stmt: body){
+            if (stmt instanceof IRMove move && move.target() instanceof IRTemp temp){
+                defSet.add(temp);
+            }else if (stmt instanceof IRCallStmt call){
+                for (int i = 1; i<= call.n_returns();i++){
+                    defSet.add(new IRTemp("_RV" + i));
+                }
+            }else if (stmt instanceof IRPhi phi){
+                defSet.add((IRTemp) phi.getTarget());
+            }
+        }
+        return defSet;
+    }
+
+    public Set<IRTemp> dataflowUse(){
+        HashSet<IRTemp> res = new HashSet<>();
+        for (IRStmt stmt : body){
+            res.addAll(singleStmtUse(stmt));
+        }
+        return res;
+    }
+
+    private Set<IRTemp> singleStmtUse(IRStmt stmt) {
+
+        ArrayList<IRNode> flattened;
+        // if [mov temp, expr] then don't add temp
+        if (stmt instanceof IRMove irmove && irmove.target() instanceof IRTemp) {
+            flattened = new FlattenIrVisitor().visit(irmove.source());
+        }
+
+        // MEM
+        else if (stmt instanceof IRMove irmove && irmove.target() instanceof IRMem) {
+            flattened = new FlattenIrVisitor().visit(stmt);
+        }
+        // JUMP
+        else if (stmt instanceof IRCJump cjmp) {
+            flattened = new FlattenIrVisitor().visit(cjmp.cond());
+        }
+        // Return
+        else if (stmt instanceof IRReturn ret){
+            flattened = new ArrayList<>();
+            for (IRExpr e: ret.rets()){
+                flattened.addAll(new FlattenIrVisitor().visit(e));
+            }
+        }else if (stmt instanceof IRCallStmt call){
+            flattened = new ArrayList<>();
+            for (IRExpr e : call.args()){
+                flattened.addAll(new FlattenIrVisitor().visit(e));
+            }
+        }else if (stmt instanceof IRPhi phi){
+            flattened = new ArrayList<>();
+            for (IRExpr e : phi.getArgs()){
+                flattened.addAll(new FlattenIrVisitor().visit(e));
+            }
+        }
+        else{
+            flattened = new ArrayList<>();
+        }
+        return usedTempsDataFlow(flattened);
+    }
+
+    public static Set<IRTemp> usedTempsDataFlow(ArrayList<IRNode> nodes){
+        HashSet<IRTemp> res = new HashSet<>();
+        for (IRNode node : nodes){
+            if (node instanceof IRTemp temp){
+                res.add(temp);
+            }
+        }
+        return res;
+    }
+
 }

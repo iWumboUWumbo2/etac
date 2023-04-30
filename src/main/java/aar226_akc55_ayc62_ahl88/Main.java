@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.DominatorBlockDataflow;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.newast.Program;
@@ -334,8 +335,14 @@ public class Main {
                     }
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                         CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(stmtGraphBlocks);
+                        domBlock.worklist();
+                        domBlock.createDominatorTreeAndImmediate();
+
+//                        System.out.println(domBlock.getDominatorTree());
+                        System.out.println(domBlock.getImmediateDominator());
 //                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
-                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
 //                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
 //                        stmtGraph.removeUnreachable();
 //                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
