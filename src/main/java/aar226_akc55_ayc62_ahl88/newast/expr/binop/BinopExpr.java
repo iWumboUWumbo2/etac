@@ -78,6 +78,9 @@ public abstract class BinopExpr extends Expr {
             case MODULO:
                 out = "%";
                 break;
+            case PERIOD:
+                out = ".";
+                break;
             default:
                 throw new SyntaxError(getLine(),getColumn(),"Error in Binop Case Statement");
         }
@@ -98,6 +101,7 @@ public abstract class BinopExpr extends Expr {
 
     public IRBinOp.OpType getOpType(){
         switch (binopType) {
+            case PERIOD: return IRBinOp.OpType.PERIOD;
             case DIVIDE: return IRBinOp.OpType.DIV;
             case HIGHMULT: return IRBinOp.OpType.HMUL;
             case MINUS: return IRBinOp.OpType.SUB;
