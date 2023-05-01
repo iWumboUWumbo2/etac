@@ -322,6 +322,9 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             ArrayList<IRStmt> nxtBody = new ArrayList<>();
             for (IRStmt stmt: block.getBody()){
                 if (stmt instanceof IRPhi phi){
+//                    System.out.println(phi.getArgs().size());
+//                    System.out.println(phi.toString().replaceAll("\n",""));
+//                    System.out.println(block.getPredecessors().size());
                     for (int i = 0; i< block.getPredecessors().size();i++){
                         BasicBlockCFG pred = block.getPredecessors().get(i);
                         IRExpr use = phi.getArgs().get(i);

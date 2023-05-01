@@ -90,10 +90,10 @@ public class ConstantPropSSA {
         for (IRExpr arg : phi.getArgs()) {
             IRConst cons = (IRConst) arg;
             if (cons.value() != val) {
-                new Pair<>(false,0L);
+                return new Pair<>(false,0L);
             }
         }
-
+        System.out.println("phi is constant: " + phi);
         return new Pair<>(true,val);
     }
 }

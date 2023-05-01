@@ -344,17 +344,19 @@ public class Main {
                         CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock(stmtGraph.getBackIR());
                         DominatorBlockDataflow domBlock = new DominatorBlockDataflow(stmtGraphBlocks);
                         domBlock.convertToSSA();
-
+//                        writeOutputDot(filename, map.getKey(), "phi insert", stmtGraphBlocks.CFGtoDOT());
                         ArrayList<IRStmt> stmts =  stmtGraphBlocks.getBackIR();
                         funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),stmts);
                     }
-
-                    for (Pair<String,Type> func : funcToSSA.keySet()){
-                        ArrayList<IRStmt> funcStatements = funcToSSA.get(func);
-                        CFGGraph<IRStmt> singleStatementGraph = new CFGGraph<>(funcStatements);
-                        ArrayList<IRStmt> postConstantPropogate = new ConstantPropSSA(singleStatementGraph).workList();
-                        funcToSSA.put(func,postConstantPropogate);
+                    if (opts.isSet(OptimizationType.CONSTPROP)) {
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            ArrayList<IRStmt> funcStatements = funcToSSA.get(func);
+                            CFGGraph<IRStmt> singleStatementGraph = new CFGGraph<>(funcStatements);
+                            ArrayList<IRStmt> postConstantPropogate = new ConstantPropSSA(singleStatementGraph).workList();
+                            funcToSSA.put(func, postConstantPropogate);
+                        }
                     }
+
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,ArrayList<IRStmt>> kv : funcToSSA.entrySet()){
                         CFGGraphBasicBlock recreatedBlocks = new CFGGraphBasicBlock(kv.getValue());
@@ -533,6 +535,8 @@ public class Main {
                 "Enable constant folding optimization.");
         Option inlOptOpt = new Option ("Oinl", false,
                 "Enable function inlining optimization.");
+        Option constPropOpt = new Option ("Ocp", false,
+                "Constant Propagation optimization.");
 
         optOpt.setOptionalArg(true);
 
@@ -554,6 +558,7 @@ public class Main {
 
         options.addOption(cfOptOpt);
         options.addOption(inlOptOpt);
+        options.addOption(constPropOpt);
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
@@ -625,6 +630,9 @@ public class Main {
 
             if (cmd.hasOption("Oinl")) {
                 opts.setOptimizations(OptimizationType.INLINING);
+            }
+            if (cmd.hasOption("Ocp")) {
+                opts.setOptimizations(OptimizationType.CONSTPROP);
             }
 
             if (cmd.hasOption("sourcepath")) {
@@ -728,7 +736,7 @@ public class Main {
                 }
             }
 
-            System.out.println(opts);
+//            System.out.println(opts);
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);
