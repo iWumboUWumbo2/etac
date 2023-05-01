@@ -8,17 +8,21 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
+import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.ConstantPropSSA;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.DominatorBlockDataflow;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.newast.Program;
+import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.lr_parser;
@@ -331,48 +335,39 @@ public class Main {
                         ir = ir.accept(fv);
                         IRs.put("inline",ir);
                     }
-                    HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
+
+                    HashMap<Pair<String,Type>,ArrayList<IRStmt>> funcToSSA = new HashMap<>();
+                    HashMap<String,HashMap<IRTemp,IRTemp>> argReturnSSABacktoGood = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-//                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
                         stmtGraph.removeUnreachable();
                         CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock(stmtGraph.getBackIR());
                         DominatorBlockDataflow domBlock = new DominatorBlockDataflow(stmtGraphBlocks);
-                        domBlock.worklist();
-                        domBlock.createDominatorTreeAndImmediate();
-                        domBlock.constructDF();
-                        domBlock.placePhiFunctions();
-                        domBlock.renamingVariables();
-//                        writeOutputDot(filename, map.getKey(), "inSSA", stmtGraphBlocks.CFGtoDOT());
-                        DominatorBlockDataflow.unSSA(stmtGraphBlocks);
-//                        writeOutputDot(filename, map.getKey(), "outSSA", stmtGraphBlocks.CFGtoDOT());
+                        domBlock.convertToSSA();
+//                        writeOutputDot(filename, map.getKey(), "phi insert", stmtGraphBlocks.CFGtoDOT());
                         ArrayList<IRStmt> stmts =  stmtGraphBlocks.getBackIR();
-                        IRFuncDecl optFunc = new IRFuncDecl(map.getKey(),new IRSeq(stmts));
-                        optFunc.functionSig = map.getValue().functionSig;
-                        cfgIR.put(map.getKey(),optFunc);
+                        funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),stmts);
                     }
-//                    String name,
-//                    Map<String, IRFuncDecl> functions,
-//                    List<String> ctors,
-//                    Map<String, IRData> dataMap
+                    if (opts.isSet(OptimizationType.CONSTPROP)) {
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            ArrayList<IRStmt> funcStatements = funcToSSA.get(func);
+                            CFGGraph<IRStmt> singleStatementGraph = new CFGGraph<>(funcStatements);
+                            ArrayList<IRStmt> postConstantPropogate = new ConstantPropSSA(singleStatementGraph).workList();
+                            funcToSSA.put(func, postConstantPropogate);
+                        }
+                    }
+
+                    HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
+                    for (Map.Entry<Pair<String,Type>,ArrayList<IRStmt>> kv : funcToSSA.entrySet()){
+                        CFGGraphBasicBlock recreatedBlocks = new CFGGraphBasicBlock(kv.getValue());
+                        DominatorBlockDataflow.unSSA(recreatedBlocks);
+                        ArrayList<IRStmt> stmtss =  recreatedBlocks.getBackIR();
+                        IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(),new IRSeq(stmtss));
+                        optFunc.functionSig = kv.getKey().part2();
+                        cfgIR.put(kv.getKey().part1(),optFunc);
+                    }
+
                     ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-                    IRs.put("postCFG",ir);
-//                        writeOutputDot(filename, map.getKey(), "blocks", stmtGraphBlocks.CFGtoDOT());
-//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-//                        writeOutputDot(filename, map.getKey(), "nodes", stmtGraph.CFGtoDOT());
-//                        stmtGraph.removeUnreachable();
-//                        LiveVariableAnalysis lva = new LiveVariableAnalysis(stmtGraph);
-//                        lva.workList();
-//// these prints don't work on eth LVA
-//                        for (CFGNode<IRStmt> node : stmtGraph.getNodes()){
-//                            System.out.println(node.toString().replaceAll("\n",""));
-//                            System.out.println("live in: ");
-//                            lva.getInMapping().get(node).forEach(t -> System.out.print(t.name() + ' '));
-//                            System.out.println();
-//                            System.out.println("live out: ");
-//                            lva.getOutMapping().get(node).forEach(t -> System.out.print(t.name() + ' '));
-//                            System.out.println();
-//                        }
 
                     IRs.put("final", ir);
                     return ir;
@@ -540,6 +535,8 @@ public class Main {
                 "Enable constant folding optimization.");
         Option inlOptOpt = new Option ("Oinl", false,
                 "Enable function inlining optimization.");
+        Option constPropOpt = new Option ("Ocp", false,
+                "Constant Propagation optimization.");
 
         optOpt.setOptionalArg(true);
 
@@ -561,6 +558,7 @@ public class Main {
 
         options.addOption(cfOptOpt);
         options.addOption(inlOptOpt);
+        options.addOption(constPropOpt);
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
@@ -632,6 +630,9 @@ public class Main {
 
             if (cmd.hasOption("Oinl")) {
                 opts.setOptimizations(OptimizationType.INLINING);
+            }
+            if (cmd.hasOption("Ocp")) {
+                opts.setOptimizations(OptimizationType.CONSTPROP);
             }
 
             if (cmd.hasOption("sourcepath")) {
