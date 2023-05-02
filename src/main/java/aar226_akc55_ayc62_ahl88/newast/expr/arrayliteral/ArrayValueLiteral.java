@@ -55,9 +55,12 @@ public class ArrayValueLiteral extends Expr {
             if (!arrCheck.sameType(eType)) {
                 throw new SemanticError(e.getLine(), e.getColumn(), "array element type mismatch");
             }
-            if (t1.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
+            if ((t1.getType() == Type.TypeCheckingType.UNKNOWNARRAY ||
+                    t1.getType() == Type.TypeCheckingType.NULL ||
+                    t1.getType() == Type.TypeCheckingType.NULLARRAY) &&
                     (eType.getType() == Type.TypeCheckingType.BOOLARRAY ||
-                            eType.getType() == Type.TypeCheckingType.INTARRAY)){
+                            eType.getType() == Type.TypeCheckingType.INTARRAY ||
+                            eType.getType() == Type.TypeCheckingType.RECORDARRAY)){
                 arrCheck = eType;
             }
         }
@@ -76,8 +79,12 @@ public class ArrayValueLiteral extends Expr {
                 return new Type(Type.TypeCheckingType.INTARRAY,dim);
             }else if (arrCheck.getType() == Type.TypeCheckingType.BOOL){
                 return new Type(Type.TypeCheckingType.BOOLARRAY,dim);
+            }else if (arrCheck.getType() == Type.TypeCheckingType.RECORD){
+                return new Type(Type.TypeCheckingType.RECORDARRAY,dim);
             }else if (arrCheck.getType() == Type.TypeCheckingType.UNKNOWN){
                 return new Type(Type.TypeCheckingType.UNKNOWNARRAY,dim);
+            }else if (arrCheck.getType() == Type.TypeCheckingType.NULL){
+                return new Type(Type.TypeCheckingType.NULLARRAY,dim);
             }else{
                 throw new SemanticError(getLine(), getColumn(), "Not a basic type");
             }

@@ -3,10 +3,7 @@ package aar226_akc55_ayc62_ahl88.visitors;
 
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Use;
-import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
-import aar226_akc55_ayc62_ahl88.newast.declarations.ArrAccessDecl;
-import aar226_akc55_ayc62_ahl88.newast.declarations.NoTypeDecl;
-import aar226_akc55_ayc62_ahl88.newast.declarations.UnderScore;
+import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.definitions.Globdecl;
 import aar226_akc55_ayc62_ahl88.newast.definitions.Method;
 import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
@@ -91,6 +88,7 @@ public interface Visitor<T> {
     T visit(NoTypeDecl node);
 
     T visit(UnderScore node);
+    T visit(Null node);
 
     T visit(Use node);
 

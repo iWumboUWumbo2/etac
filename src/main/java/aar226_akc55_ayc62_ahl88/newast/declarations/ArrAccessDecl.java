@@ -115,6 +115,9 @@ public class ArrAccessDecl extends Decl{
                 } else if (identifierType.getType() == Type.TypeCheckingType.BOOLARRAY) {
                     nodeType = new Type(Type.TypeCheckingType.BOOL);
                     return nodeType;
+                } else if (identifierType.getType() == Type.TypeCheckingType.RECORDARRAY) {
+                    nodeType = new Type(Type.TypeCheckingType.RECORD);
+                    return nodeType;
                 } else {
                     throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                 }
@@ -149,6 +152,9 @@ public class ArrAccessDecl extends Decl{
                     return nodeType;
                 } else if (funcOutType.getType() == Type.TypeCheckingType.BOOLARRAY) {
                     nodeType = new Type(Type.TypeCheckingType.BOOL);
+                    return nodeType;
+                } else if (funcOutType.getType() == Type.TypeCheckingType.RECORDARRAY) {
+                    nodeType = new Type(Type.TypeCheckingType.RECORD);
                     return nodeType;
                 } else {
                     throw new SemanticError(getLine(), getColumn(), "somehow not an array");

@@ -191,6 +191,11 @@ public class TypeCheckerVisitor implements Visitor<Void>{
     }
 
     @Override
+    public Void visit(Null node) {
+        return null;
+    }
+
+    @Override
     public Void visit(Use node) {
         return null;
     }

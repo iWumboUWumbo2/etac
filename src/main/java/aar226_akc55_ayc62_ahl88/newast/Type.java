@@ -27,7 +27,9 @@ public class Type implements Printer {
         FUNC,
         UNDERSCORE,
         MULTIRETURN,
-        RECORD
+        RECORD,
+        NULL,
+        NULLARRAY
     }
     /**
      * @return Return line number for element
@@ -160,14 +162,33 @@ public class Type implements Printer {
     public boolean isArray() {
         return this.getType() == Type.TypeCheckingType.INTARRAY ||
                 this.getType() == Type.TypeCheckingType.BOOLARRAY ||
-                this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
+                this.getType() == Type.TypeCheckingType.UNKNOWNARRAY ||
+                this.getType() == TypeCheckingType.RECORDARRAY ||
+                this.getType() == TypeCheckingType.NULLARRAY;
     }
+
+    public boolean isNullable() {
+        return isArray() || getType() == TypeCheckingType.RECORD;
+    }
+
+    public boolean isRecord() {
+        return getType() == TypeCheckingType.RECORD;
+    }
+    public boolean isRecordArray() {
+        return getType() == TypeCheckingType.RECORDARRAY;
+    }
+
 
     public boolean isBasic(){
         return getType() == TypeCheckingType.INT
                 || getType() == TypeCheckingType.BOOL
                 || getType() == TypeCheckingType.UNKNOWN;
     }
+
+    public boolean isNull() {
+        return getType() == TypeCheckingType.NULL;
+    }
+
 
     public boolean isSameFunc(Type rhs){
         if (!(tct == TypeCheckingType.FUNC && rhs.getType() == TypeCheckingType.FUNC)){
@@ -295,6 +316,13 @@ public class Type implements Printer {
         if (getType() == TypeCheckingType.UNDERSCORE){
             return rhs.getType() != TypeCheckingType.MULTIRETURN;
         }
+
+        // type record = null
+        // type list = null
+        if ((isNullable() && rhs.isNull()) || (rhs.isNullable() && isNull())) {
+            return true;
+        }
+
         // if one of the types is ambiguous, then equality is true
         // otherwise, if both types are not ambiguous, we type check
         if (getType() != rhs.getType() &&
@@ -303,7 +331,9 @@ public class Type implements Printer {
                 || getType() == TypeCheckingType.UNKNOWNARRAY
                 || rhs.getType() == TypeCheckingType.UNKNOWNARRAY
                 || getType() == TypeCheckingType.UNDERSCORE
-                || rhs.getType() == TypeCheckingType.UNDERSCORE)) {
+                || rhs.getType() == TypeCheckingType.UNDERSCORE
+                || getType() == TypeCheckingType.NULLARRAY
+                || rhs.getType() == TypeCheckingType.NULLARRAY)) {
             return false;
         }
 
@@ -321,6 +351,19 @@ public class Type implements Printer {
                 return rhs.dimensions.getDim() <= this.dimensions.getDim();
             } else if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
                     this.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
+                return true;
+            // fail x:int[] = {null}
+            // pass x:Record[] = {null}
+            } else if (getType() == Type.TypeCheckingType.NULLARRAY &&
+                rhs.getType() != Type.TypeCheckingType.NULLARRAY ) {
+                if (rhs.isRecordArray()) return (this.dimensions.getDim() <= rhs.dimensions.getDim());
+                else return (this.dimensions.getDim() < rhs.dimensions.getDim());
+            } else if (rhs.getType() == Type.TypeCheckingType.NULLARRAY &&
+                getType() != Type.TypeCheckingType.NULLARRAY) {
+                if (this.isRecordArray()) return (rhs.dimensions.getDim() <= this.dimensions.getDim());
+                else return (rhs.dimensions.getDim() < this.dimensions.getDim());
+            } else if (rhs.getType() == Type.TypeCheckingType.NULLARRAY &&
+                    getType() == Type.TypeCheckingType.NULLARRAY) {
                 return true;
             }
             else {

@@ -822,6 +822,10 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRExpr visit(UnderScore node) {// no need to visit
         return new IRTemp("_");
     }
+    @Override
+    public IRExpr visit(Null node) {// no need to visit
+        return new IRTemp("null");
+    }
 
     @Override
     public IRStmt visit(Use node) { // no need to visit

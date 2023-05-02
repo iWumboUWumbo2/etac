@@ -72,6 +72,8 @@ public class ArrayAccessExpr extends Expr {
                     nodeType = new Type(Type.TypeCheckingType.BOOL);
                 else if (e.getType() == Type.TypeCheckingType.INTARRAY)
                     nodeType = new Type(Type.TypeCheckingType.INT);
+                else if (e.getType() == Type.TypeCheckingType.RECORDARRAY)
+                    nodeType = new Type(Type.TypeCheckingType.RECORD);
                 else
                     nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
                 return nodeType;

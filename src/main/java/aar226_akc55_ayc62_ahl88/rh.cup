@@ -312,6 +312,9 @@ expr ::=
     // IDS
     | IDENTIFIER:id {: RESULT = new Id(id, idleft, idright); :}
 
+    // NULL
+    | NULL:n {: RESULT = new Null(nleft, nright); :}
+
     // ARRAY LITERALS
     | OPEN_BRACE:ob CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Expr>(), obleft, obright);:}
     | OPEN_BRACE:ob exprList:x CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, obleft, obright);:}

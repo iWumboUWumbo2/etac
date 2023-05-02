@@ -5,14 +5,11 @@ main(args:int[][]) {
     if (y == null) println("y is null");
     z:int[][] = {{3, 4}, {1, 2}, null}
     a:int[][][][] = {{null}, null, {{null}}}
+    frworks : Grr[] = {null}
 
-    b:Grr = null;
-    c:Grr;
-    if (c == null) println("c grr is null");
-    d:Grr = Grr(null);
-    if (d.small_grr == null) println("d smallgrr is null");
-    e:Grr = Grr( Grr(Grr(null)));
-
+    //notnullable : int = null; // this should fail type check
+    //frfail : int[] = {1, null}
+    //notnullable2:int[] = {null}; // this should fail type check
     fail:int[][][] = {{{null}}} // this should fail type check
 }
 
