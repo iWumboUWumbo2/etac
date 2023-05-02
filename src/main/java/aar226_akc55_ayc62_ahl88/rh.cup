@@ -85,8 +85,8 @@ nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
 nonterminal RecordDef                  record;
 nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
 nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
-nonterminal RecordAccess           record_access;
-nonterminal ArrayList<Id>          id_period_plus;
+//nonterminal RecordAccess           record_access;
+//nonterminal ArrayList<Id>          id_period_plus;
 
 
 precedence nonassoc IF;
@@ -101,6 +101,7 @@ precedence left TIMES,HI_MULT,DIVIDE,MODULO;
 precedence left PERIOD;
 precedence nonassoc NOT, UMINUS;// ??? negation?
 precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
+precedence left PERIOD;
 
 start with program;
 
@@ -322,28 +323,29 @@ expr ::=
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new FunctionCallExpr(new Id(id,idleft,idright), e, idleft, idright); :}
     | expr:e fullBracketPlus:i {: RESULT = new ArrayAccessExpr(e, i, eleft, eright); :}
 
-    | record_access:ra {: RESULT = ra; :}
+    // Records
+    | expr:e PERIOD IDENTIFIER:id {: RESULT = new RecordAcessBinop(e, new Id(id, idleft, idright), eleft, eright); :}
     ;
 
-record_access ::= IDENTIFIER:i PERIOD id_period_plus:idp {:
-    idp.add(0, new Id(i,ileft,iright));
-    RESULT = new RecordAccess(idp, ileft, iright);
-    :}
-    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD id_period_plus:idp
-        {: RESULT = new RecordAccess(new FunctionCallExpr(
-            new Id(id, idleft, idright),e,idleft,idright),
-            idp, idleft, idright);
-        :};
+//record_access ::= IDENTIFIER:i PERIOD id_period_plus:idp {:
+//    idp.add(0, new Id(i,ileft,iright));
+//    RESULT = new RecordAccess(idp, ileft, iright);
+//    :}
+//    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD id_period_plus:idp
+//        {: RESULT = new RecordAccess(new FunctionCallExpr(
+//            new Id(id, idleft, idright),e,idleft,idright),
+//            idp, idleft, idright);
+//        :};
 
-id_period_plus ::= IDENTIFIER:i {:
-    ArrayList<Id> idp = new ArrayList<Id>();
-    idp.add(new Id(i,ileft,iright));
-    RESULT = idp;
-    :}
-    | IDENTIFIER:i PERIOD id_period_plus:idp {:
-        idp.add(0, new Id(i,ileft,iright));
-        RESULT = idp;
-        :};
+//id_period_plus ::= IDENTIFIER:i {:
+//    ArrayList<Id> idp = new ArrayList<Id>();
+//    idp.add(new Id(i,ileft,iright));
+//    RESULT = idp;
+//    :}
+//    | IDENTIFIER:i PERIOD id_period_plus:idp {:
+//        idp.add(0, new Id(i,ileft,iright));
+//        RESULT = idp;
+//        :};
 
 exprList ::=
     expr:x {:

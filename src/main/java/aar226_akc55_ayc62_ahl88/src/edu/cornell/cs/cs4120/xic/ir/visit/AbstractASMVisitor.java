@@ -167,6 +167,8 @@ public class AbstractASMVisitor {
             functionToInstructionList.put(curFunction,functionInstructions);
 //            replaceTemps(functionInstructions,curFunction);
 //            instructions.addAll(functionInstructions);
+//            System.out.println(func.body());
+//            System.out.println(functionInstructions);
         }
 
         return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping,functionsNameToSig);
@@ -1235,12 +1237,12 @@ public class AbstractASMVisitor {
              if (e instanceof IRTemp t){
                 tempNames.add(t.name());
              }else{
-                 System.out.println("return is not a temp? " + e);
-                 String nxtName = nxtTemp();
-                 tempNames.add(nxtName);
-//                 ASMTempExpr tmp = new ASMTempExpr(nxtName);
+                 ASMAbstractReg tmp = munchIRExpr(e);
+                 returnInstructions.addAll(e.getBestInstructions());
+                 tempNames.add(tmp.toString());
+//                 System.out.println("in return tile");
                  // need to translate
-                 throw new InternalCompilerError("return has an element that isn't a temp");
+//                 throw new InternalCompilerError("return has an element that isn't a temp");
              }
         }
 //        functionToTemps.get(curFunction).addAll(tempNames);
@@ -1256,21 +1258,6 @@ public class AbstractASMVisitor {
                                 new ASMTempExpr("_returnBase"),
                                 new ASMConstExpr(8L*(i-3))));
             };
-//
-//            if (i >2){
-//                if (i == 3){
-//                    returnInstructions.add(new ASMMov(new ASMRegisterExpr("rsi"),
-//                            new ASMTempExpr("_returnBase")));
-//                }
-//                System.out.println("greater than 3");
-//                // just in case we just put everything on the stack lol need intermediate
-//                // rcx <- [origin]
-//                returnInstructions.add(new ASMMov(new ASMRegisterExpr("rcx"),new ASMTempExpr(tempNames.get(i-1)))); // check this
-//                // [dest] <- rcx
-//                returnInstructions.add(new ASMMov(retI,new ASMRegisterExpr("rcx")));
-//            }else{
-//                returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i-1))));
-//            }
             returnInstructions.add(new ASMMov(retI,new ASMTempExpr(tempNames.get(i-1))));
         }
 
@@ -1285,6 +1272,7 @@ public class AbstractASMVisitor {
         String comm = node.toString().replaceAll("\n","");
         instructions.add(new ASMComment(comm,null));
         IRName functionName = (IRName) node.target();
+        instructions.add(new ASMComment("Add Padding",functionName.name()));
         int argSiz = node.args().size();
         ArrayList<String> tempNames = new ArrayList<>();
         //in case returns stop being temporaries in the future.
@@ -1294,16 +1282,18 @@ public class AbstractASMVisitor {
             if (e instanceof IRTemp t){
                 tempNames.add(t.name());
             }else{
-                System.out.println("call is not a temp? " + e);
-                String nxtName = nxtTemp();
-                tempNames.add(nxtName);
-                ASMTempExpr tmp = new ASMTempExpr(nxtName);
+//                System.out.println("call is not a temp? " + e);
+//                String nxtName = nxtTemp();
+//                tempNames.add(nxtName);
+                ASMAbstractReg tmp = munchIRExpr(e);
+                instructions.addAll(e.getBestInstructions());
+                tempNames.add(tmp.toString());
+//                System.out.println("in call tile");
                 // need to translate
-                throw new InternalCompilerError("return has an element that isn't a temp");
+//                throw new InternalCompilerError("return has an element that isn't a temp");
             }
         }
 //        functionToTemps.get(curFunction).addAll(tempNames);
-        instructions.add(new ASMComment("Add Padding",functionName.name()));
         // add extra stack space for returns
         if (node.n_returns() >2){
             instructions.add(new ASMSub(
@@ -1461,6 +1451,8 @@ public class AbstractASMVisitor {
             case LEQ -> ASMOpCodes.SETLE;
             case GEQ -> ASMOpCodes.SETGE;
             case UGE -> ASMOpCodes.SETAE;
+            // TODO: 4/30/2023  fix pls
+            case PERIOD -> ASMOpCodes.SETAE;
         };
     }
 

@@ -20,4 +20,10 @@ public enum OptimizationType {
             return "inl";
         }
     },
+    CONSTPROP {
+        @Override
+        public String toString() {
+            return "cp";
+        }
+    },
 }

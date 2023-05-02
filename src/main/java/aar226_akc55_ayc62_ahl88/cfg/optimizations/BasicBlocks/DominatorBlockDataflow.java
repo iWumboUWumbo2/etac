@@ -1,13 +1,9 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
-import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.BasicBlockCFG;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.ForwardBlockDataflow;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTemps;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.util.*;
@@ -53,6 +49,14 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
         dominatorTree = new HashMap<>();
         immediateDominator = new HashMap<>();
         dominanceFrontier = new HashMap<>();
+    }
+
+    public void convertToSSA(){
+        worklist();
+        createDominatorTreeAndImmediate();
+        constructDF();
+        placePhiFunctions();
+        renamingVariables();
     }
     @Override
     public void worklist() {
@@ -276,10 +280,10 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
     }
     public static IRStmt replaceLHS(IRStmt stmt, HashMap<String,String> mapping){
         if (stmt instanceof IRMove move && move.target() instanceof IRTemp temp){
-            IRExpr dest = (IRExpr) new ReplaceTemps(new IRNodeFactory_c(),mapping).visit(move.target());
+            IRExpr dest = (IRExpr) new ReplaceTempsWithTemps(new IRNodeFactory_c(),mapping).visit(move.target());
             return new IRMove(dest,move.source());
         }else if (stmt instanceof IRPhi phi){
-            IRExpr dest = (IRExpr) new ReplaceTemps(new IRNodeFactory_c(),mapping).visit(phi.getTarget());
+            IRExpr dest = (IRExpr) new ReplaceTempsWithTemps(new IRNodeFactory_c(),mapping).visit(phi.getTarget());
             return new IRPhi(dest,phi.getArgs());
         }
         return stmt;
@@ -289,37 +293,41 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             throw new InternalCompilerError("don't do replaceRHS for PHI");
         }
         if (stmt instanceof IRMove irmove && irmove.target() instanceof IRTemp) {
-            IRExpr source = (IRExpr) new ReplaceTemps(new IRNodeFactory_c(),mapping).visit(irmove.source());
+            IRExpr source = (IRExpr) new ReplaceTempsWithTemps(new IRNodeFactory_c(),mapping).visit(irmove.source());
             return new IRMove(irmove.target(),source);
         }
 
         // MEM
         else if (stmt instanceof IRMove irmove && irmove.target() instanceof IRMem) {
-            return (IRStmt) new ReplaceTemps(new IRNodeFactory_c(),mapping).visit(irmove);
+            return (IRStmt) new ReplaceTempsWithTemps(new IRNodeFactory_c(),mapping).visit(irmove);
         }
         // JUMP
         else if (stmt instanceof IRCJump cjmp) {
-            return (IRStmt) new ReplaceTemps(new IRNodeFactory_c(),mapping).visit(cjmp);
+            return (IRStmt) new ReplaceTempsWithTemps(new IRNodeFactory_c(),mapping).visit(cjmp);
         }
         // Return
         else if (stmt instanceof IRReturn ret){
-            ret.rets().replaceAll(node -> (IRExpr) new ReplaceTemps(new IRNodeFactory_c(), mapping).visit(node));
+            ret.rets().replaceAll(node -> (IRExpr) new ReplaceTempsWithTemps(new IRNodeFactory_c(), mapping).visit(node));
             return stmt;
         }else if (stmt instanceof IRCallStmt call){
-            call.args().replaceAll(node -> (IRExpr) new ReplaceTemps(new IRNodeFactory_c(), mapping).visit(node));
+            call.args().replaceAll(node -> (IRExpr) new ReplaceTempsWithTemps(new IRNodeFactory_c(), mapping).visit(node));
             return stmt;
         }else{
             return stmt;
         }
     }
     public static void unSSA(CFGGraphBasicBlock graph){
+
         for (BasicBlockCFG block: graph.getNodes()){
             ArrayList<IRStmt> nxtBody = new ArrayList<>();
             for (IRStmt stmt: block.getBody()){
                 if (stmt instanceof IRPhi phi){
+//                    System.out.println(phi.getArgs().size());
+//                    System.out.println(phi.toString().replaceAll("\n",""));
+//                    System.out.println(block.getPredecessors().size());
                     for (int i = 0; i< block.getPredecessors().size();i++){
                         BasicBlockCFG pred = block.getPredecessors().get(i);
-                        IRTemp use = (IRTemp) phi.getArgs().get(i);
+                        IRExpr use = phi.getArgs().get(i);
                         IRMove extraMove = new IRMove(phi.getTarget(),use);
                         IRStmt lastStatementPred = pred.getBody().get(pred.getBody().size()-1);
                         if (lastStatementPred instanceof IRJump || lastStatementPred instanceof IRCJump){

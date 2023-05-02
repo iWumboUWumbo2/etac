@@ -37,7 +37,9 @@ public class IRBinOp extends IRExpr_c {
         GT,
         LEQ,
         GEQ,
-        UGE;
+        UGE,
+        //todo fix this
+        PERIOD;
 
         @Override
         public String toString() {
@@ -82,6 +84,8 @@ public class IRBinOp extends IRExpr_c {
                     return "GEQ";
                 case UGE:
                     return "UGE";
+                case PERIOD:
+                    return "PERIOD";
             }
             throw new InternalCompilerError("Unknown op type");
         }

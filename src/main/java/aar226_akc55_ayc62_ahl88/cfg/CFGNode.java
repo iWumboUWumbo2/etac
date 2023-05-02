@@ -10,6 +10,8 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
     final private int FALLTHROUGH = 0;
     final private int JUMP = 1;
 
+    public boolean isDeleted;
+
 //    private int index;
 //
 //    public int getIndex() {
@@ -31,6 +33,7 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
     private ArrayList<CFGNode<T>> predecessors;
 
     public CFGNode(T stmt) {
+        isDeleted = false;
         this.predecessors = new ArrayList<>();
         this.children = new ArrayList<>(2);
         this.children.add(null);

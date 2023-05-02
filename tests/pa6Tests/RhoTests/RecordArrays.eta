@@ -29,5 +29,6 @@ main(args : int[][]) {
     k : Point = j.x[0]
 
     l : int = j.x[1].y
+//    ((J.X)[2]).Y
 
 }

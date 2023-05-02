@@ -12,6 +12,7 @@ import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr.ArrayAccessExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.RecordAcessBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
@@ -1111,4 +1112,8 @@ public class IRVisitor implements Visitor<IRNode>{
         return accessRecur(ind + 1, indexes, sol);
     }
 
+    // TODO: 5/1/2023 pls fix
+    public IRExpr visit(RecordAcessBinop node) {
+        return null;
+    };
 }
