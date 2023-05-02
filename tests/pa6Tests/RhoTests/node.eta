@@ -1,0 +1,27 @@
+use io
+use conv
+
+main(args:int[][]) {
+    Node node = Node(1, Node(2, Node(3, Node(4, null))))
+
+    Node temp_node = node;
+    while(temp_node != null) {
+        println(unparseInt(temp_node.int));
+        temp_node = temp_node.next;
+    }
+
+    Node temp_node_2 = node;
+    // test break
+    while(true) {
+        if (temp_node_2 == null) break;
+        println(unparseInt(temp_node_2.int));
+        temp_node_2 = temp_node_2.next;
+    }
+
+
+}
+
+record Node {
+    value: int
+    next: Node
+}

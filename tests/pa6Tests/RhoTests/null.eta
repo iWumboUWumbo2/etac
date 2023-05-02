@@ -1,0 +1,21 @@
+use io
+main(args:int[][]) {
+    x:int[] = null;
+    y:int[];
+    if (y == null) println("y is null");
+    z:int[][] = {{3, 4}, {1, 2}, null}
+    a:int[][][][] = {{null}, null, {{null}}}
+
+    b:Grr = null;
+    c:Grr;
+    if (c == null) println("c grr is null");
+    d:Grr = Grr(null);
+    if (d.small_grr == null) println("d smallgrr is null");
+    e:Grr = Grr( Grr(Grr(null)));
+
+    fail:int[][][] = {{{null}}} // this should fail type check
+}
+
+record Grr {
+    small_grr : Grr;
+}
