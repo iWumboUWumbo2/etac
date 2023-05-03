@@ -336,7 +336,7 @@ public class Main {
                         IRs.put("inline",ir);
                     }
 
-                    HashMap<Pair<String,Type>,ArrayList<IRStmt>> funcToSSA = new HashMap<>();
+                    HashMap<Pair<String,Type>,ArrayList<CFGNode<IRStmt>>> funcToSSA = new HashMap<>();
                     HashMap<String,HashMap<IRTemp,IRTemp>> argReturnSSABacktoGood = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
@@ -345,24 +345,24 @@ public class Main {
                         DominatorBlockDataflow domBlock = new DominatorBlockDataflow(stmtGraphBlocks);
                         domBlock.convertToSSA();
 //                        writeOutputDot(filename, map.getKey(), "phi insert", stmtGraphBlocks.CFGtoDOT());
-                        ArrayList<IRStmt> stmts =  stmtGraphBlocks.getBackIR();
+                        ArrayList<CFGNode<IRStmt>> stmts =  stmtGraphBlocks.getBackIR();
                         funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),stmts);
                     }
                     if (opts.isSet(OptimizationType.CONSTPROP)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            ArrayList<IRStmt> funcStatements = funcToSSA.get(func);
-                            CFGGraph<IRStmt> singleStatementGraph = new CFGGraph<>(funcStatements);
-                            ArrayList<IRStmt> postConstantPropogate = new ConstantPropSSA(singleStatementGraph).workList();
-                            funcToSSA.put(func, postConstantPropogate);
+                            ArrayList<CFGNode<IRStmt>> funcStatements = funcToSSA.get(func);
+                            CFGGraphBasicBlock singleStatementGraph = new CFGGraphBasicBlock(funcStatements);
+                            new ConstantPropSSA(singleStatementGraph).workList();
+                            funcToSSA.put(func, singleStatementGraph.getBackIR());
                         }
                     }
 
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
-                    for (Map.Entry<Pair<String,Type>,ArrayList<IRStmt>> kv : funcToSSA.entrySet()){
+                    for (Map.Entry<Pair<String,Type>,ArrayList<CFGNode<IRStmt>>> kv : funcToSSA.entrySet()){
                         CFGGraphBasicBlock recreatedBlocks = new CFGGraphBasicBlock(kv.getValue());
                         DominatorBlockDataflow.unSSA(recreatedBlocks);
-                        ArrayList<IRStmt> stmtss =  recreatedBlocks.getBackIR();
-                        IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(),new IRSeq(stmtss));
+                        ArrayList<CFGNode<IRStmt>> stmtss =  recreatedBlocks.getBackIR();
+                        IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
                         optFunc.functionSig = kv.getKey().part2();
                         cfgIR.put(kv.getKey().part1(),optFunc);
                     }
@@ -400,16 +400,17 @@ public class Main {
         try {
             IRNode ir = irbuild(zhenFilename);
 
-            StringWriter out = new StringWriter();
-            PrintWriter pw = new PrintWriter(out);
-
-            CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
-            ir.printSExp(printer);
-
-            printer.close();
+//            StringWriter out = new StringWriter();
+//            PrintWriter pw = new PrintWriter(out);
+//
+//            CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
+//            ir.printSExp(printer);
+//
+//            printer.close();
 
             if (shouldWrite) {
-                writeOutput(filename, out.toString(), "ir");
+                assert ir != null;
+                writeOutput(filename, ir.toString(), "ir");
             }
         }
         catch (EtaError e) {
@@ -426,19 +427,20 @@ public class Main {
         try {
             IRNode ir = irbuild(zhenFilename);
 
-            StringWriter out = new StringWriter();
-            PrintWriter pw = new PrintWriter(out);
+//            StringWriter out = new StringWriter();
+//            PrintWriter pw = new PrintWriter(out);
 
-            CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
+//            CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(pw);
 
             IRSimulator sim = new IRSimulator((IRCompUnit) ir);
             sim.call("_Imain_paai", 0);
-            ir.printSExp(printer);
+//            ir.printSExp(printer);
 
-            printer.close();
+//            printer.close();
 
             if (shouldWrite) {
-                writeOutput(filename, out.toString(), "ir");
+                assert ir != null;
+                writeOutput(filename, ir.toString(), "ir");
             }
         }
         catch (EtaError e) {
@@ -536,14 +538,16 @@ public class Main {
         Option inlOptOpt = new Option ("Oinl", false,
                 "Enable function inlining optimization.");
         Option constPropOpt = new Option ("Ocp", false,
-                "Constant Propagation optimization.");
+                "Constant propagation optimization.");
+        Option copyPropOpt = new Option ("Ocopy", false,
+                "Copy propagation optimization.");
+        Option dceOpt = new Option ("Odce", false,
+                "Dead code elimination optimization.");
 
         optOpt.setOptionalArg(true);
 
         Option targetOpt = new Option("target", true,
                 "Specify the operating system for which to generate code.");
-
-//        optOpt.setOptionalArg(true);
 
         options.addOption(helpOpt);
         options.addOption(reportOpt);
@@ -559,6 +563,8 @@ public class Main {
         options.addOption(cfOptOpt);
         options.addOption(inlOptOpt);
         options.addOption(constPropOpt);
+        options.addOption(copyPropOpt);
+        options.addOption(dceOpt);
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
@@ -631,8 +637,17 @@ public class Main {
             if (cmd.hasOption("Oinl")) {
                 opts.setOptimizations(OptimizationType.INLINING);
             }
+
             if (cmd.hasOption("Ocp")) {
                 opts.setOptimizations(OptimizationType.CONSTPROP);
+            }
+
+            if (cmd.hasOption("Ocopy")) {
+                opts.setOptimizations(OptimizationType.COPYPROP);
+            }
+
+            if (cmd.hasOption("Odce")) {
+                opts.setOptimizations(OptimizationType.DEAD_CODE_ELIMINATION);
             }
 
             if (cmd.hasOption("sourcepath")) {

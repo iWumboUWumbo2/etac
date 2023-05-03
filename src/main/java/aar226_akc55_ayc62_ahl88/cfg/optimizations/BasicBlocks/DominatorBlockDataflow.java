@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
+import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
@@ -183,10 +184,10 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                         IRPhi phi = new IRPhi(new IRTemp(a.name()),nums);
 
                         phiPlacedNodes.get(y).put(a,phi); // Aphi[y] <- Aphi[y] U a
-                        if (y.body.get(0) instanceof IRLabel){
-                            y.body.add(1,phi);
+                        if (y.body.get(0).getStmt() instanceof IRLabel){
+                            y.body.add(1,new CFGNode<>(phi));
                         }else{
-                            y.body.add(0,phi);
+                            y.body.add(0,new CFGNode<>(phi));
                         }
 //                        System.out.println("inserted phi"+ a +"at: " + y);
                         if (!Aorg.get(y).contains(a)){
@@ -212,10 +213,10 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
     }
 
     public void rename(BasicBlockCFG block,HashMap<IRTemp, Integer> count,HashMap<IRTemp,Stack<Integer>> stacks){
-        ArrayList<IRStmt> body = block.getBody();
+        ArrayList<CFGNode<IRStmt>> body = block.getBody();
         HashMap<Integer,Set<IRTemp>> orgDefs = new HashMap<>();
         for (int i = 0; i< block.getBody().size();i++){
-            IRStmt stmt = body.get(i);
+            IRStmt stmt = body.get(i).getStmt();
             Set<IRTemp> used = LiveVariableAnalysis.use(stmt);
             Set<IRTemp> defs = LiveVariableAnalysis.def(stmt);
             used.retainAll(count.keySet());
@@ -236,14 +237,14 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             }
             defs.removeAll(noReplace);
 
-            if (!(body.get(i) instanceof IRPhi)){
+            if (!(body.get(i).getStmt() instanceof IRPhi)){
                 HashMap<String,String> replaceUsedMapping = new HashMap<>();
                 for (IRTemp x : used){
                     replaceUsedMapping.put(x.name(),x.name() +"_"+ stacks.get(x).peek());
                 }
                 IRStmt afterUsedSwap =  replaceRHS(stmt,replaceUsedMapping);
-                block.getBody().set(i,afterUsedSwap);
-                stmt = body.get(i);
+                block.getBody().get(i).setStmt(afterUsedSwap);
+                stmt = body.get(i).getStmt();
             }
             HashMap<String,String> replaceDefMapping = new HashMap<>();
             for (IRTemp t : defs){
@@ -252,7 +253,7 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                 stacks.get(t).push(count.get(t));
             }
             IRStmt afterDefSwap = replaceLHS(stmt,replaceDefMapping);
-            block.getBody().set(i,afterDefSwap);
+            block.getBody().get(i).setStmt(afterDefSwap);
             orgDefs.put(i,defs);
         }
         for (BasicBlockCFG succY: block.getChildren()){
@@ -320,7 +321,8 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
 
         for (BasicBlockCFG block: graph.getNodes()){
             ArrayList<IRStmt> nxtBody = new ArrayList<>();
-            for (IRStmt stmt: block.getBody()){
+            for (CFGNode<IRStmt> node: block.getBody()){
+                IRStmt stmt = node.getStmt();
                 if (stmt instanceof IRPhi phi){
 //                    System.out.println(phi.getArgs().size());
 //                    System.out.println(phi.toString().replaceAll("\n",""));
@@ -329,11 +331,11 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                         BasicBlockCFG pred = block.getPredecessors().get(i);
                         IRExpr use = phi.getArgs().get(i);
                         IRMove extraMove = new IRMove(phi.getTarget(),use);
-                        IRStmt lastStatementPred = pred.getBody().get(pred.getBody().size()-1);
+                        IRStmt lastStatementPred = pred.getBody().get(pred.getBody().size()-1).getStmt();
                         if (lastStatementPred instanceof IRJump || lastStatementPred instanceof IRCJump){
-                            pred.getBody().add(pred.getBody().size()-1,extraMove);
+                            pred.getBody().add(pred.getBody().size()-1,new CFGNode<>(extraMove));
                         }else{
-                            pred.getBody().add(extraMove);
+                            pred.getBody().add(new CFGNode<>(extraMove));
                         }
                     }
                 }else{

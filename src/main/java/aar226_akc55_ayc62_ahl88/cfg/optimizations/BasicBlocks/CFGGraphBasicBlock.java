@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CFGGraphBasicBlock {
     private ArrayList<BasicBlockCFG> nodes;
@@ -18,6 +19,7 @@ public class CFGGraphBasicBlock {
                 stmt instanceof IRReturn ||
                 stmt instanceof IRLabel);
     }
+
     public CFGGraphBasicBlock(ArrayList<IRStmt> stmts){
         nodes = new ArrayList<>();
         labelMap = new HashMap<>();
@@ -35,7 +37,7 @@ public class CFGGraphBasicBlock {
                         labelToNumber.put(destName,1L);
                     }
                     curBlock.originLabels.add(destName);
-                    curBlock.body.add(stmt);
+                    curBlock.body.add(new CFGNode<>(stmt));
                 } else if (stmt instanceof IRCJump cjmp) {
                     curBlock.originLabels.add(cjmp.trueLabel());
                     if (labelToNumber.containsKey(cjmp.trueLabel())) {
@@ -49,9 +51,9 @@ public class CFGGraphBasicBlock {
 //                    } else {
 //                        labelToNumber.put(cjmp.falseLabel(), 1L);
 //                    }
-                    curBlock.body.add(stmt);
+                    curBlock.body.add(new CFGNode<>(stmt));
                 }else if (stmt instanceof IRReturn irr){
-                    curBlock.body.add(irr);
+                    curBlock.body.add(new CFGNode<>(irr));
                 }
                 if (curBlock.body.size() != 0){ // stuff here
                     nodes.add(curBlock);
@@ -60,14 +62,14 @@ public class CFGGraphBasicBlock {
                     curBlock = new BasicBlockCFG();
                     if (stmt instanceof IRLabel il){
                         curBlock.destLabels.add(il.name());
-                        curBlock.body.add(il);
+                        curBlock.body.add(new CFGNode<>(il));
                         labelMap.put(il.name(),ind);
                         if (!labelToNumber.containsKey(il.name())) {
                             labelToNumber.put(il.name(),0L);
                         }
                     }
                 }else if (stmt instanceof IRLabel il){
-                    curBlock.body.add(il);
+                    curBlock.body.add(new CFGNode<>(il));
                     curBlock.destLabels.add(il.name());
                     labelMap.put(il.name(),ind);
                     if (!labelToNumber.containsKey(il.name())) {
@@ -77,7 +79,7 @@ public class CFGGraphBasicBlock {
                     throw new InternalCompilerError("BRUH"); // pls try to get
                 }
             }else{
-                curBlock.body.add(stmt);
+                curBlock.body.add(new CFGNode<>(stmt));
             }
         }
         if (curBlock.body.size() != 0){
@@ -91,13 +93,13 @@ public class CFGGraphBasicBlock {
     private void buildDependencies(){
         for (int i = 0 ;i< nodes.size();i++){
             BasicBlockCFG cfgnode = nodes.get(i);
-            IRStmt lastStmtCurBlock = cfgnode.body.get(cfgnode.getBody().size()-1);
-            if (i != 0 && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1)) instanceof IRReturn)
-             && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1)) instanceof IRJump)){
+            IRStmt lastStmtCurBlock = cfgnode.body.get(cfgnode.getBody().size()-1).getStmt();
+            if (i != 0 && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRReturn)
+             && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRJump)){
                 cfgnode.addPredecessor(nodes.get(i-1));
             }
-            if (i != nodes.size()-1 && !(cfgnode.body.get(cfgnode.body.size()-1) instanceof IRReturn)
-                    && !(cfgnode.body.get(cfgnode.body.size()-1) instanceof IRJump)){
+            if (i != nodes.size()-1 && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRReturn)
+                    && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRJump)){
                 cfgnode.setFallThroughChild(nodes.get(i+1));
             }
             String irname;
@@ -193,8 +195,8 @@ public class CFGGraphBasicBlock {
         return result.toString();
     }
 
-    public ArrayList<IRStmt> getBackIR(){
-        ArrayList<IRStmt> stmts = new ArrayList<>();
+    public ArrayList<CFGNode<IRStmt>> getBackIR(){
+        ArrayList<CFGNode<IRStmt>> stmts = new ArrayList<>();
         for (BasicBlockCFG bb : nodes) {
             stmts.addAll(bb.getBody());
         }
@@ -204,4 +206,35 @@ public class CFGGraphBasicBlock {
     public ArrayList<BasicBlockCFG> getNodes() {
         return nodes;
     }
+
+    public void edgeSplit(BasicBlockCFG nodeA, BasicBlockCFG nodeB) {
+        if (!(nodeA.getChildren().size() > 1 || nodeB.getPredecessors().size() > 1)) {
+            return;
+        }
+
+        int nodeBIndexInNodeA = nodeA.getChildren().indexOf(nodeB); // A -> B
+        int nodeAIndexInNodeB = nodeB.getPredecessors().indexOf(nodeA); // B -> A
+
+        if (nodeBIndexInNodeA == -1 || nodeAIndexInNodeB == -1) {
+            throw new InternalCompilerError("There is no edge between nodes A and B");
+        }
+
+        BasicBlockCFG splitNode = new BasicBlockCFG();
+
+        nodeA.getChildren().set(nodeBIndexInNodeA, splitNode);
+        nodeB.getPredecessors().set(nodeAIndexInNodeB, splitNode);
+    }
+
+    public void removeDeletedNodes() {
+        for (BasicBlockCFG bb : getNodes()) {
+            ArrayList<CFGNode<IRStmt>> newBody = new ArrayList<>();
+            for (CFGNode<IRStmt> node : bb.getBody()) {
+                if (!node.isDeleted) {
+                    newBody.add(node);
+                }
+            }
+            bb.body = newBody;
+        }
+    }
+
 }
