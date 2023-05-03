@@ -1,0 +1,20 @@
+use io
+use conv
+deleteFirst(list : int[]) : int[] {
+    return {}
+}
+
+mergeTwoLists(list1 : int[], list2 : int[]) : int[] {
+    if(length(list1) == 0){
+        return list2;
+    }
+    return mergeTwoLists(deleteFirst(list1),{});
+}
+
+main(args : int[][]) {
+    //merges two sorted lists
+    a : int[] = {1,2,4}
+    b : int[] = {1,2,3}
+    x : int[] = mergeTwoLists(a,b); //1,1,2,2,3,4
+
+}

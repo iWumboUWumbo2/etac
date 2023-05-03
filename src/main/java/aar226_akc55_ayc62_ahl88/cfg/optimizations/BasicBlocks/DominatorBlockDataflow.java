@@ -19,6 +19,8 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
 
     HashSet<IRTemp> variables;
     HashMap<BasicBlockCFG, HashMap<IRTemp,IRPhi>> phiPlacedNodes;
+
+    public HashMap<String,String> retArgsReverseMapping;
     public DominatorBlockDataflow(CFGGraphBasicBlock graph) {
         super(graph,
                 (n,inN)->{
@@ -50,6 +52,7 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
         dominatorTree = new HashMap<>();
         immediateDominator = new HashMap<>();
         dominanceFrontier = new HashMap<>();
+        retArgsReverseMapping = new HashMap<>();
     }
 
     public void convertToSSA(){
@@ -160,15 +163,15 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             Aorg.put(node,new HashSet<>(tempsDefined));
             phiPlacedNodes.put(node,new HashMap<>());
         }
-        Set<IRTemp> noReplace = new HashSet<>();
-        for (IRTemp use: defsites.keySet()){
-            if (use.name().startsWith("_RV") || use.name().startsWith("_ARG")){
-                noReplace.add(use);
-            }
-        }
-        for (IRTemp retArg :  noReplace){
-            defsites.remove(retArg);
-        }
+//        Set<IRTemp> noReplace = new HashSet<>();
+//        for (IRTemp use: defsites.keySet()){
+//            if (use.name().startsWith("_RV") || use.name().startsWith("_ARG")){
+//                noReplace.add(use);
+//            }
+//        }
+//        for (IRTemp retArg :  noReplace){
+//            defsites.remove(retArg);
+//        }
         for (IRTemp a: defsites.keySet()){
             Queue<BasicBlockCFG> queue = new ArrayDeque<>(defsites.get(a));
 //            System.out.println("starting: " + a);
@@ -222,24 +225,27 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             used.retainAll(count.keySet());
             defs.retainAll(count.keySet());
 
-            Set<IRTemp> noReplace = new HashSet<>();
-            for (IRTemp use: used){
-                if (use.name().startsWith("_RV") || use.name().startsWith("_ARG")){
-                    noReplace.add(use);
-                }
-            }
-            used.removeAll(noReplace);
-            noReplace.clear();
-            for (IRTemp def: defs){
-                if (def.name().startsWith("_RV") || def.name().startsWith("_ARG")){
-                    noReplace.add(def);
-                }
-            }
-            defs.removeAll(noReplace);
+//            Set<IRTemp> noReplace = new HashSet<>();
+//            for (IRTemp use: used){
+//                if (use.name().startsWith("_RV") || use.name().startsWith("_ARG")){
+//                    noReplace.add(use);
+//                }
+//            }
+//            used.removeAll(noReplace);
+//            noReplace.clear();
+//            for (IRTemp def: defs){
+//                if (def.name().startsWith("_RV") || def.name().startsWith("_ARG")){
+//                    noReplace.add(def);
+//                }
+//            }
+//            defs.removeAll(noReplace);
 
             if (!(body.get(i).getStmt() instanceof IRPhi)){
                 HashMap<String,String> replaceUsedMapping = new HashMap<>();
                 for (IRTemp x : used){
+                    if ( x.name().startsWith("_RV") || x.name().startsWith("_ARG")){
+                        retArgsReverseMapping.put(x.name() +"_"+ stacks.get(x).peek(),x.name());
+                    }
                     replaceUsedMapping.put(x.name(),x.name() +"_"+ stacks.get(x).peek());
                 }
                 IRStmt afterUsedSwap =  replaceRHS(stmt,replaceUsedMapping);
@@ -249,6 +255,9 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             HashMap<String,String> replaceDefMapping = new HashMap<>();
             for (IRTemp t : defs){
                 count.put(t,count.get(t)+1);
+                if ( t.name().startsWith("_RV") || t.name().startsWith("_ARG")){
+                    retArgsReverseMapping.put(t.name() +"_"+ count.get(t),t.name());
+                }
                 replaceDefMapping.put(t.name(),t.name() +"_"+ count.get(t));
                 stacks.get(t).push(count.get(t));
             }
@@ -317,7 +326,7 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             return stmt;
         }
     }
-    public static void unSSA(CFGGraphBasicBlock graph){
+    public static void unSSA(CFGGraphBasicBlock graph,HashMap<String,String> mapping){
 
         for (BasicBlockCFG block: graph.getNodes()){
             ArrayList<CFGNode<IRStmt>> nxtBody = new ArrayList<>();
@@ -347,6 +356,13 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                 }
             }
             block.body = nxtBody;
+        }
+//        System.out.println(mapping);
+        for (BasicBlockCFG block: graph.getNodes()){
+            for (CFGNode<IRStmt> stmt : block.getBody()){
+                IRStmt replaced = (IRStmt) new ReplaceTempsWithTemps(new IRNodeFactory_c(),mapping).visit(stmt.getStmt());
+                stmt.setStmt(replaced);
+            }
         }
     }
 }

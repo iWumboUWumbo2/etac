@@ -95,7 +95,7 @@ etac ("Test --irgen -Ocf -Odce") "-libpath $(testpath) --irgen -Ocf -Odce" {
     validpalindrome.eta;
 }
 etac ("Test --irgen") "-libpath $(testpath) --irgen" {
-    
+
     arr_multdim_chain.eta;
     array_aliasing.eta;
     array_basicbitch_loop.eta;
@@ -187,7 +187,7 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
 }
 
 etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
-   
+
     arr_multdim_chain.eta;
     array_aliasing.eta;
     array_basicbitch_loop.eta;

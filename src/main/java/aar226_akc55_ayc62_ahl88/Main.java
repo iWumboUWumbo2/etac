@@ -15,6 +15,7 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CopyPropSSA;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.DominatorBlockDataflow;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeEliminationSSA;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
@@ -330,7 +331,6 @@ public class Main {
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     IRs.put("initial", ir);
-
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
@@ -352,6 +352,15 @@ public class Main {
                         funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),cleanedStmtGraphBlocks);
                         domBlocks.put(new Pair<>(map.getKey(),map.getValue().functionSig),domBlock);
                     }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename, func.part1(), "beforeDead", funcStatements.CFGtoDOT());
+                            new DeadCodeEliminationSSA(funcStatements).workList();
+//                            System.out.println("dead");
+//                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
+                        }
+                    }
                     if (opts.isSet(OptimizationType.CONSTPROP)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
                             CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
@@ -361,31 +370,21 @@ public class Main {
 //                            System.out.println("did constantProp");
                         }
                     }
-//                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+//                    if (opts.isSet(OptimizationType.COPYPROP)) {
 //                        for (Pair<String, Type> func : funcToSSA.keySet()) {
 //                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-////                            writeOutputDot(filename, func.part1(), "beforeCopyProp", funcStatements.CFGtoDOT());
+//                            writeOutputDot(filename, func.part1(), "beforeCopyProp", funcStatements.CFGtoDOT());
 //                            new CopyPropSSA(funcStatements).workList();
-////                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
+//                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
 ////                            System.out.println("did constantProp");
 //                        }
 //                    }
-                    if (opts.isSet(OptimizationType.COPYPROP)) {
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-                            writeOutputDot(filename, func.part1(), "beforeCopyProp", funcStatements.CFGtoDOT());
-                            new CopyPropSSA(funcStatements).workList();
-                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
-//                            System.out.println("did constantProp");
-                        }
-                    }
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
 //                        System.out.println(kv.getKey().part1());
-                        writeOutputDot(filename, kv.getKey().part1(), "before unssa", kv.getValue().CFGtoDOT());
-                        DominatorBlockDataflow.unSSA(kv.getValue());
-                        writeOutputDot(filename, kv.getKey().part1(), "after unssa", kv.getValue().CFGtoDOT());
-//                        writeOutputDot(filename, kv.getKey().part1(), "post unssa", kv.getValue().CFGtoDOT());
+//                        writeOutputDot(filename, kv.getKey().part1(), "before unssa", kv.getValue().CFGtoDOT());
+                        DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
+//                        writeOutputDot(filename, kv.getKey().part1(), "after unssa", kv.getValue().CFGtoDOT());
                         ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
                         optFunc.functionSig = kv.getKey().part2();
@@ -776,7 +775,7 @@ public class Main {
                 }
             }
 
-            System.out.println(opts);
+//            System.out.println(opts);
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);
