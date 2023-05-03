@@ -7,12 +7,12 @@ public enum OptimizationType {
             return "cf";
         }
     },
-//    DEAD_CODE_ELIMINATION {
-//        @Override
-//        public String toString() {
-//            return "dce";
-//        }
-//    },
+    DEAD_CODE_ELIMINATION {
+        @Override
+        public String toString() {
+            return "dce";
+        }
+    },
 
     INLINING {
         @Override
@@ -24,6 +24,13 @@ public enum OptimizationType {
         @Override
         public String toString() {
             return "cp";
+        }
+    },
+
+    COPYPROP {
+        @Override
+        public String toString() {
+            return "copy";
         }
     },
 }

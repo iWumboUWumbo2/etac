@@ -37,8 +37,12 @@ public class ReplaceTempWithConstAndFold extends IRVisitor{
         if (n_ instanceof IRSeq irseq) return replaceTempWithConst(irseq);
         if (n_ instanceof IRTemp irtem) return replaceTempWithConst(irtem);
         if (n_ instanceof IRPhi phi) return replaceTempWithConst(phi);
-
+        if (n_ instanceof IRdud dud) return replaceTempWithConst(dud);
         throw new Error("Why is node not found");
+    }
+
+    private IRNode replaceTempWithConst(IRdud dud) {
+        return dud;
     }
 
     private IRNode replaceTempWithConst(IRBinOp irbin) {
@@ -59,6 +63,14 @@ public class ReplaceTempWithConstAndFold extends IRVisitor{
         return ircstmt;
     }
     private IRNode replaceTempWithConst(IRCJump ircj){
+        if (folding && ircj.cond() instanceof IRConst cons){
+            if (cons.value() == 1){ //
+                return new IRJump(new IRName(ircj.trueLabel()));
+            }
+            else{
+                return new IRdud();
+            }
+        }
         return ircj;
     }
     private IRNode replaceTempWithConst(IRCompUnit icu){

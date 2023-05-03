@@ -1,0 +1,4 @@
+main(args:int[][]) {
+    a:int = 5;
+    b:bool =
+}

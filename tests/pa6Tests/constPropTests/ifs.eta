@@ -1,0 +1,21 @@
+use io
+use conv
+
+f(x:int):int {
+    return x + 1
+}
+
+main(args:int[][]) {
+    x:int = 1
+    y:int
+    z:int
+
+    if (x<2) {
+        y = 5+x
+    } else {
+        y = f(x)
+    }
+    z = y*y
+
+    println(unparseInt(z))
+}
