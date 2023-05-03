@@ -331,9 +331,13 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                         BasicBlockCFG pred = block.getPredecessors().get(i);
                         IRExpr use = phi.getArgs().get(i);
                         IRMove extraMove = new IRMove(phi.getTarget(),use);
-                        IRStmt lastStatementPred = pred.getBody().get(pred.getBody().size()-1).getStmt();
-                        if (lastStatementPred instanceof IRJump || lastStatementPred instanceof IRCJump){
-                            pred.getBody().add(pred.getBody().size()-1,new CFGNode<>(extraMove));
+                        if (pred.getBody().size() != 0) {
+                            IRStmt lastStatementPred = pred.getBody().get(pred.getBody().size() - 1).getStmt();
+                            if (lastStatementPred instanceof IRJump || lastStatementPred instanceof IRCJump) {
+                                pred.getBody().add(pred.getBody().size() - 1, new CFGNode<>(extraMove));
+                            } else {
+                                pred.getBody().add(new CFGNode<>(extraMove));
+                            }
                         }else{
                             pred.getBody().add(new CFGNode<>(extraMove));
                         }

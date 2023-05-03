@@ -343,7 +343,7 @@ public class Main {
                         CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock(stmtGraph.getBackIR());
 //                        writeOutputDot(filename, map.getKey(), "before remove jmp", stmtGraphBlocks.CFGtoDOT());
                         CFGGraphBasicBlock cleanedStmtGraphBlocks  = new CFGGraphBasicBlock(stmtGraphBlocks.optimizeJumpsAndLabels());
-                        System.out.println(map.getKey());
+//                        System.out.println(map.getKey());
 //                        writeOutputDot(filename, map.getKey(), "after remove jmp", cleanedStmtGraphBlocks.CFGtoDOT());
 //                        CFGGraphBasicBlock cleanedStmtGraphBlocks = stmtGraphBlocks;
                         DominatorBlockDataflow domBlock = new DominatorBlockDataflow(cleanedStmtGraphBlocks);
@@ -354,13 +354,17 @@ public class Main {
                     if (opts.isSet(OptimizationType.CONSTPROP)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
                             CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename, func.part1(), "after remove jmp", funcStatements.CFGtoDOT());
                             new ConstantPropSSA(funcStatements).workList();
 //                            System.out.println("did constantProp");
                         }
                     }
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
+//                        System.out.println(kv.getKey().part1());
+//                        writeOutputDot(filename, kv.getKey().part1(), "before unssa", kv.getValue().CFGtoDOT());
                         DominatorBlockDataflow.unSSA(kv.getValue());
+//                        writeOutputDot(filename, kv.getKey().part1(), "after unssa", kv.getValue().CFGtoDOT());
 //                        writeOutputDot(filename, kv.getKey().part1(), "post unssa", kv.getValue().CFGtoDOT());
                         ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));

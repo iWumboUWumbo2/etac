@@ -3,7 +3,7 @@
 etac ("Test --help") "--help" {
 
 }
-etac ("Test --irgen") "-libpath $(testpath) --irgen -Ocp" {
+etac ("Test --irgen -Ocf -Ocp") "-libpath $(testpath) --irgen -Ocf -Ocp" {
 
     arr_multdim_chain.eta;
     array_aliasing.eta;

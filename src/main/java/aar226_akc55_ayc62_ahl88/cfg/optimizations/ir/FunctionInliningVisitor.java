@@ -137,6 +137,11 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
         }
 
         HashMap<String,IRFuncDecl> reorderedBlocks = reorderFunctions(newIrFunc);
+        for (String inline: allowedInline){
+            if (!inline.equals("_Imain_paai")) {
+                reorderedBlocks.remove(inline);
+            }
+        }
         return new IRCompUnit(node.name(), reorderedBlocks,new ArrayList<>(),node.dataMap());
     }
 
