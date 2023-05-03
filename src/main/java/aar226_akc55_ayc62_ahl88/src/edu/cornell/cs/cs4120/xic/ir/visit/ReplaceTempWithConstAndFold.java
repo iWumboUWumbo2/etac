@@ -59,6 +59,14 @@ public class ReplaceTempWithConstAndFold extends IRVisitor{
         return ircstmt;
     }
     private IRNode replaceTempWithConst(IRCJump ircj){
+        if (folding && ircj.cond() instanceof IRConst cons){
+            if (cons.value() == 1){ //
+                return new IRJump(new IRName(ircj.trueLabel()));
+            }
+            else{
+                return new IRdud();
+            }
+        }
         return ircj;
     }
     private IRNode replaceTempWithConst(IRCompUnit icu){

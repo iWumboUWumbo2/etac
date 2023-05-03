@@ -297,7 +297,7 @@ public class CFGGraphBasicBlock {
         for (BasicBlockCFG bb : getNodes()) {
             ArrayList<CFGNode<IRStmt>> newBody = new ArrayList<>();
             for (CFGNode<IRStmt> node : bb.getBody()) {
-                if (!node.isDeleted) {
+                if (!node.isDeleted && !(node.getStmt() instanceof IRdud)) {
                     newBody.add(node);
                 }
             }

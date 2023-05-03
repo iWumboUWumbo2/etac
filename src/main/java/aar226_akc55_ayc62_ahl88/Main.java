@@ -11,6 +11,7 @@ import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.ConstantPropSSA;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CopyPropSSA;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.DominatorBlockDataflow;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
@@ -354,11 +355,21 @@ public class Main {
                     if (opts.isSet(OptimizationType.CONSTPROP)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
                             CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            writeOutputDot(filename, func.part1(), "after remove jmp", funcStatements.CFGtoDOT());
+//                            writeOutputDot(filename, func.part1(), "beforeProp", funcStatements.CFGtoDOT());
                             new ConstantPropSSA(funcStatements).workList();
+//                            writeOutputDot(filename, func.part1(), "afterProp", funcStatements.CFGtoDOT());
 //                            System.out.println("did constantProp");
                         }
                     }
+//                    if (opts.isSet(OptimizationType.COPYPROP)) {
+//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename, func.part1(), "beforeCopyProp", funcStatements.CFGtoDOT());
+//                            new CopyPropSSA(funcStatements).workList();
+//                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
+////                            System.out.println("did constantProp");
+//                        }
+//                    }
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
 //                        System.out.println(kv.getKey().part1());
@@ -756,7 +767,7 @@ public class Main {
                 }
             }
 
-//            System.out.println(opts);
+            System.out.println(opts);
         }
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);
