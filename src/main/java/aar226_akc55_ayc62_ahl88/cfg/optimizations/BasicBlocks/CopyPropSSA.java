@@ -52,7 +52,7 @@ public class CopyPropSSA {
             }
 
             if (s.getStmt() instanceof IRMove mov &&
-                    mov.source() instanceof IRTemp tsrc && mov.target() instanceof IRTemp tdest &&
+                    mov.source() instanceof IRTemp tsrc && mov.target() instanceof IRTemp tdest && !(tsrc.name().startsWith("_RV1"))&&
                     uses.containsKey(tdest)) {
 //                IRConst valueToProp = new IRConst(cons.value());
                 IRTemp valueToProp = new IRTemp(tsrc.name());

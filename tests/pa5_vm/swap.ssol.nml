@@ -7,10 +7,10 @@ main(args:int[][]){
     a:int = 1;
     b:int = 2;
     while (i < 2){
-        x:int  = a; // x = 1, x = 2
-        a = b; // a = 2, a = 1
-        b = x; // b = 1, b = 2
-        i = i + 1;  // i = 1, i = 2
+        x:int  = a;
+        a = b;
+        b = x;
+        i = i + 1;
     }
     println(unparseInt(a));
     println(unparseInt(b));
