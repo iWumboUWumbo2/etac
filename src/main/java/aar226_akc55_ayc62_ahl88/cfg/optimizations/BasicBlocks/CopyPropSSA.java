@@ -24,12 +24,10 @@ public class CopyPropSSA {
             for (CFGNode<IRStmt> node : bb.getBody()) {
                 Set<IRTemp> nodeUse = LiveVariableAnalysis.use(node.getStmt());
                 for (IRTemp t : nodeUse) {
-                    if (!(t.name().startsWith("_RV") || t.name().startsWith("_ARG"))) {
-                        if (!uses.containsKey(t)) {
-                            uses.put(t, new HashSet<>());
-                        }
-                        uses.get(t).add(node);
+                    if (!uses.containsKey(t)) {
+                        uses.put(t, new HashSet<>());
                     }
+                    uses.get(t).add(node);
                 }
             }
         }

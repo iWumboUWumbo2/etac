@@ -359,7 +359,6 @@ public class Main {
                             new DeadCodeEliminationSSA(funcStatements).workList();
 //                            System.out.println("dead");
 //                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
-//                            System.out.println("did constantProp");
                         }
                     }
                     if (opts.isSet(OptimizationType.CONSTPROP)) {

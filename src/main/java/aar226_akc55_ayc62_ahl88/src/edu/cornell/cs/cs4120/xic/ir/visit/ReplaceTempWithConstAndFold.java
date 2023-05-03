@@ -37,8 +37,12 @@ public class ReplaceTempWithConstAndFold extends IRVisitor{
         if (n_ instanceof IRSeq irseq) return replaceTempWithConst(irseq);
         if (n_ instanceof IRTemp irtem) return replaceTempWithConst(irtem);
         if (n_ instanceof IRPhi phi) return replaceTempWithConst(phi);
-
+        if (n_ instanceof IRdud dud) return replaceTempWithConst(dud);
         throw new Error("Why is node not found");
+    }
+
+    private IRNode replaceTempWithConst(IRdud dud) {
+        return dud;
     }
 
     private IRNode replaceTempWithConst(IRBinOp irbin) {
