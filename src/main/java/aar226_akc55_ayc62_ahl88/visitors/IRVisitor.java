@@ -36,7 +36,7 @@ import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
     private static final int WORD_BYTES = 8;
-    private static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
+    public static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
     private int labelCnt;
     private int tempCnt;
     private int stringCnt;

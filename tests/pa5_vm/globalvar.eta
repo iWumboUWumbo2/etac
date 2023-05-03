@@ -7,8 +7,11 @@ main (a : int[][]) {
 	g = -12;
 	println(unparseInt(g))
 	printBool(b1)
+	nxtFunc(1,2,3,4,5);
 }
 
+nxtFunc(a:int,b:int,c:int,d:int,e:int){
+}
 printBool(b:bool){
   if(b){
     println("true")

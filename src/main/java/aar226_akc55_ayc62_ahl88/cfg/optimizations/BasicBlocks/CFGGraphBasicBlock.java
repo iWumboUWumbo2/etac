@@ -9,7 +9,10 @@ import org.apache.commons.text.StringEscapeUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static aar226_akc55_ayc62_ahl88.visitors.IRVisitor.OUT_OF_BOUNDS;
+
 public class CFGGraphBasicBlock {
+    public static IRCallStmt outOfBounds = new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>());
     private ArrayList<BasicBlockCFG> nodes;
     private HashMap<String, Integer> labelMap;
     private HashMap<Integer, BasicBlockCFG> indToBasicBlock;
@@ -96,11 +99,14 @@ public class CFGGraphBasicBlock {
             BasicBlockCFG cfgnode = nodes.get(i);
             IRStmt lastStmtCurBlock = cfgnode.body.get(cfgnode.getBody().size()-1).getStmt();
             if (i != 0 && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRReturn)
-             && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRJump)){
+             && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRJump)
+
+            && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()).equals(outOfBounds))){
                 cfgnode.addPredecessor(nodes.get(i-1));
             }
             if (i != nodes.size()-1 && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRReturn)
-                    && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRJump)){
+                    && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRJump)
+                    && !((cfgnode.body.get(cfgnode.body.size()-1).getStmt()).equals(outOfBounds))){
                 cfgnode.setFallThroughChild(nodes.get(i+1));
             }
             String irname;

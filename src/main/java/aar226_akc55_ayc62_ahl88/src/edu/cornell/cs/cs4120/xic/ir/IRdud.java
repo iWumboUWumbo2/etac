@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class IRdud extends IRStmt{
 
     public IRdud(){
-        System.out.println("created a dud");
+//        System.out.println("created a dud");
     }
     @Override
     public IRNode accept(FunctionInliningVisitor v) {

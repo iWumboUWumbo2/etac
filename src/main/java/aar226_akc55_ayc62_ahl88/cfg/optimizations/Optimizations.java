@@ -36,6 +36,14 @@ public class Optimizations {
         return Arrays.toString(OptimizationType.values()) + "\n" + Arrays.toString(optimizations);
     }
 
+    public boolean allClear(){
+        for (Boolean opt : optimizations){
+            if (opt){
+                return false;
+            }
+        }
+        return true;
+    }
     public boolean isSet(OptimizationType opt) {
         return optimizations[opt.ordinal()];
     }

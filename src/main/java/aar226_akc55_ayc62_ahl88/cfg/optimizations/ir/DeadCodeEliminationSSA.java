@@ -40,6 +40,9 @@ public class DeadCodeEliminationSSA {
                 }
 
                 for (IRTemp temp : def) {
+                    if (!tempUseStmts.containsKey(temp)) {
+                        tempUseStmts.put(temp, new HashSet<>());
+                    }
                     tempDefStmts.put(temp, node);
                 }
             }
@@ -50,17 +53,14 @@ public class DeadCodeEliminationSSA {
         return stmt instanceof IRCallStmt;
     }
 
-    public void worklist() {
+    public void workList() {
         Queue<IRTemp> W = new ArrayDeque<>(vars);
-
-
         while (!W.isEmpty()) {
             IRTemp v = W.poll();
 
-
             if (tempUseStmts.get(v).isEmpty()) {
                 CFGNode<IRStmt> S = tempDefStmts.get(v);
-                if (!stmtHasSideEffects(S.getStmt())) {
+                if (S != null && !stmtHasSideEffects(S.getStmt())) {
                     S.isDeleted = true;
 
                     for (IRTemp xi : LiveVariableAnalysis.use(S.getStmt())) {
@@ -70,5 +70,6 @@ public class DeadCodeEliminationSSA {
                 }
             }
         }
+        graph.removeDeletedNodes();
     }
 }
