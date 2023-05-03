@@ -1,17 +1,2 @@
-use io
-use conv
-
-main(args:int[][]){
-
-    i:int = 0;
-    a:int = 1;
-    b:int = 2;
-    while (i < 2){
-        x:int  = a;
-        a = b;
-        b = x;
-        i = i + 1;
-    }
-    println(unparseInt(a));
-    println(unparseInt(b));
-}
+1
+2
