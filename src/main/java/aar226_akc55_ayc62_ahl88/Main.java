@@ -384,9 +384,8 @@ public class Main {
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
 //                        System.out.println(kv.getKey().part1());
 //                        writeOutputDot(filename, kv.getKey().part1(), "before unssa", kv.getValue().CFGtoDOT());
-                        DominatorBlockDataflow.unSSA(kv.getValue());
+                        DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
 //                        writeOutputDot(filename, kv.getKey().part1(), "after unssa", kv.getValue().CFGtoDOT());
-//                        writeOutputDot(filename, kv.getKey().part1(), "post unssa", kv.getValue().CFGtoDOT());
                         ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
                         optFunc.functionSig = kv.getKey().part2();
