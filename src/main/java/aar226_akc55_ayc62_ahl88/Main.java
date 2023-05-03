@@ -335,33 +335,34 @@ public class Main {
                         ir = ir.accept(fv);
                         IRs.put("inline",ir);
                     }
-
-                    HashMap<Pair<String,Type>,ArrayList<CFGNode<IRStmt>>> funcToSSA = new HashMap<>();
-                    HashMap<String,HashMap<IRTemp,IRTemp>> argReturnSSABacktoGood = new HashMap<>();
+                    HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
+                    HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                         CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
                         stmtGraph.removeUnreachable();
                         CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock(stmtGraph.getBackIR());
-                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(stmtGraphBlocks);
+//                        writeOutputDot(filename, map.getKey(), "before remove jmp", stmtGraphBlocks.CFGtoDOT());
+                        CFGGraphBasicBlock cleanedStmtGraphBlocks  = new CFGGraphBasicBlock(stmtGraphBlocks.optimizeJumpsAndLabels());
+                        System.out.println(map.getKey());
+//                        writeOutputDot(filename, map.getKey(), "after remove jmp", cleanedStmtGraphBlocks.CFGtoDOT());
+//                        CFGGraphBasicBlock cleanedStmtGraphBlocks = stmtGraphBlocks;
+                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(cleanedStmtGraphBlocks);
                         domBlock.convertToSSA();
-//                        writeOutputDot(filename, map.getKey(), "phi insert", stmtGraphBlocks.CFGtoDOT());
-                        ArrayList<CFGNode<IRStmt>> stmts =  stmtGraphBlocks.getBackIR();
-                        funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),stmts);
+                        funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),cleanedStmtGraphBlocks);
+                        domBlocks.put(new Pair<>(map.getKey(),map.getValue().functionSig),domBlock);
                     }
                     if (opts.isSet(OptimizationType.CONSTPROP)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            ArrayList<CFGNode<IRStmt>> funcStatements = funcToSSA.get(func);
-                            CFGGraphBasicBlock singleStatementGraph = new CFGGraphBasicBlock(funcStatements);
-                            new ConstantPropSSA(singleStatementGraph).workList();
-                            funcToSSA.put(func, singleStatementGraph.getBackIR());
+                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+                            new ConstantPropSSA(funcStatements).workList();
+//                            System.out.println("did constantProp");
                         }
                     }
-
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
-                    for (Map.Entry<Pair<String,Type>,ArrayList<CFGNode<IRStmt>>> kv : funcToSSA.entrySet()){
-                        CFGGraphBasicBlock recreatedBlocks = new CFGGraphBasicBlock(kv.getValue());
-                        DominatorBlockDataflow.unSSA(recreatedBlocks);
-                        ArrayList<CFGNode<IRStmt>> stmtss =  recreatedBlocks.getBackIR();
+                    for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
+                        DominatorBlockDataflow.unSSA(kv.getValue());
+//                        writeOutputDot(filename, kv.getKey().part1(), "post unssa", kv.getValue().CFGtoDOT());
+                        ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
                         optFunc.functionSig = kv.getKey().part2();
                         cfgIR.put(kv.getKey().part1(),optFunc);

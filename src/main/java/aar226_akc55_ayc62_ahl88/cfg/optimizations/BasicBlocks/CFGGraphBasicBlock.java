@@ -2,6 +2,7 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -195,12 +196,79 @@ public class CFGGraphBasicBlock {
         return result.toString();
     }
 
-    public ArrayList<CFGNode<IRStmt>> getBackIR(){
-        ArrayList<CFGNode<IRStmt>> stmts = new ArrayList<>();
-        for (BasicBlockCFG bb : nodes) {
-            stmts.addAll(bb.getBody());
+    public ArrayList<IRStmt> optimizeJumpsAndLabels(){
+        HashMap<String,Integer> labelCount = new HashMap<>();
+        ArrayList<BasicBlockCFG> original = nodes;
+        ArrayList<IRStmt> irs = new ArrayList<>();
+        for (BasicBlockCFG bb : original) {
+            for (CFGNode<IRStmt> stmt: bb.getBody()){
+                irs.add(stmt.getStmt());
+                if (stmt.getStmt() instanceof IRJump jmp){
+                    IRName targ = (IRName) jmp.target();
+                    if (!labelCount.containsKey(targ.name())){
+                        labelCount.put(targ.name(),0);
+                    }
+                    labelCount.put(targ.name(),labelCount.get(targ.name())+1);
+                }else if (stmt.getStmt() instanceof IRCJump cjmp){
+                    if (!labelCount.containsKey(cjmp.trueLabel())){
+                        labelCount.put(cjmp.trueLabel(),0);
+                    }
+                    labelCount.put(cjmp.trueLabel(),labelCount.get(cjmp.trueLabel()) + 1);
+                }else if (stmt.getStmt() instanceof IRLabel lab){
+                    if (!labelCount.containsKey(lab.name())){
+                        labelCount.put(lab.name(),0);
+                    }
+                }
+            }
         }
-        return stmts;
+        ArrayList<IRStmt> postJumpRemove = new ArrayList<>();
+        for (int i = 0; i< irs.size()-1;i++){
+            IRStmt cur = irs.get(i);
+            IRStmt nxt = irs.get(i+1);
+            if (cur instanceof IRJump jmp  && nxt instanceof IRLabel label){
+                if (jmp.target() instanceof IRName name && name.name().equals(label.name())){ // remove jump
+                    labelCount.put(name.name(),labelCount.get(name.name())-1);
+                    System.out.println("removed extra jump");
+                }else{
+                    postJumpRemove.add(cur);
+                }
+            }else if (cur instanceof  IRCJump cjmp && nxt instanceof  IRLabel label){
+                if (cjmp.trueLabel().equals(label.name())){
+                    System.out.println("removed extra cjmp");
+                    labelCount.put(cjmp.trueLabel(),labelCount.get(cjmp.trueLabel())-1);
+                }else{
+                    postJumpRemove.add(cur);
+                }
+            }else{
+                postJumpRemove.add(cur);
+            }
+        }
+        postJumpRemove.add(irs.get(irs.size()-1));
+
+        ArrayList<IRStmt> postLabelRemove = new ArrayList<>();
+        for (IRStmt node : postJumpRemove){
+            if (node instanceof IRLabel label){
+                if (!(labelCount.get(label.name()) == 0)){
+                    postLabelRemove.add(node);
+                }else{
+                    System.out.println("removed label");
+                }
+            }else{
+                postLabelRemove.add(node);
+            }
+        }
+
+        return postLabelRemove;
+    }
+
+    public ArrayList<IRStmt> getBackIR(){
+        ArrayList<IRStmt> irs = new ArrayList<>();
+        for (BasicBlockCFG bb : nodes) {
+            for (CFGNode<IRStmt> stmt : bb.getBody()) {
+                irs.add(stmt.getStmt());
+            }
+        }
+        return irs;
     }
 
     public ArrayList<BasicBlockCFG> getNodes() {

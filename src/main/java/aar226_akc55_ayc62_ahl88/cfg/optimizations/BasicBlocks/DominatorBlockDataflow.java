@@ -320,7 +320,7 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
     public static void unSSA(CFGGraphBasicBlock graph){
 
         for (BasicBlockCFG block: graph.getNodes()){
-            ArrayList<IRStmt> nxtBody = new ArrayList<>();
+            ArrayList<CFGNode<IRStmt>> nxtBody = new ArrayList<>();
             for (CFGNode<IRStmt> node: block.getBody()){
                 IRStmt stmt = node.getStmt();
                 if (stmt instanceof IRPhi phi){
@@ -339,7 +339,7 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                         }
                     }
                 }else{
-                    nxtBody.add(stmt);
+                    nxtBody.add(node);
                 }
             }
             block.body = nxtBody;
