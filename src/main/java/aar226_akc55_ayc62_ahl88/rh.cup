@@ -16,7 +16,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.*;
-import aar226_akc55_ayc62_ahl88.newast.expr.recordaccessexpr.*;
 
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 
