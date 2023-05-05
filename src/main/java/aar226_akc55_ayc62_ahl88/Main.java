@@ -9,9 +9,12 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
+import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
+import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyProp;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeEliminationSSA;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -21,6 +24,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSim
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.runtime.Symbol;
@@ -337,6 +341,37 @@ public class Main {
                         ir = ir.accept(fv);
                         IRs.put("inline",ir);
                     }
+
+                    HashMap<String,IRFuncDecl> copyPropIR = new HashMap<>();
+                    if (opts.isSet(OptimizationType.COPYPROP)) {
+                        for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                            IRFuncDecl func = map.getValue();
+                            CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
+                            CopyProp copyProp = new CopyProp(stmtGraph);
+                            copyProp.worklist();
+                            HashMap<CFGNode<IRStmt>, HashSetInf<Pair<IRTemp, IRTemp>>> outMapping =
+                                    copyProp.getOutMapping();
+                            for (int i = 0; i < stmtGraph.getNodes().size(); i++) {
+                                CFGNode<IRStmt> node = stmtGraph.getNodes().get(i);
+                                HashSetInf<Pair<IRTemp, IRTemp>> pairSet =  outMapping.get(node);
+                                HashMap<String, String> tempHashMap = new HashMap<>();
+                                for (Pair<IRTemp, IRTemp> pair : pairSet) {
+                                    tempHashMap.put(pair.part1().name(), pair.part2().name());
+                                }
+                                IRStmt visited = (IRStmt) new ReplaceTempsWithTemps(new IRNodeFactory_c(), tempHashMap).visit(node.getStmt());
+                                node.setStmt(visited);
+                            }
+                            IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(stmtGraph.getBackIR()));
+                            newFunc.functionSig = func.functionSig;
+//                            writeOutputDot(filename, func.name(), "afterCopy", stmtGraph.CFGtoDOT());
+                            copyPropIR.put(map.getKey(),newFunc);
+                        }
+
+                        ir = new IRCompUnit(((IRCompUnit) ir).name(),copyPropIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
+                        IRs.put("postCopy", ir);
+                    }
+
+
                     HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
                     HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
@@ -374,6 +409,7 @@ public class Main {
                             funcStatements.removeUnreachableNodes();
                         }
                     }
+
                     if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
                             CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
