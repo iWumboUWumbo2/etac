@@ -345,15 +345,17 @@ public class Main {
                     HashMap<String,IRFuncDecl> copyPropIR = new HashMap<>();
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                            System.out.println("doing copy" + map.getKey());
                             IRFuncDecl func = map.getValue();
                             CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
+//                            writeOutputDot(filename, func.name(), "beforeCopy", stmtGraph.CFGtoDOT());
                             CopyProp copyProp = new CopyProp(stmtGraph);
                             copyProp.worklist();
-                            HashMap<CFGNode<IRStmt>, HashSetInf<Pair<IRTemp, IRTemp>>> outMapping =
-                                    copyProp.getOutMapping();
+                            HashMap<CFGNode<IRStmt>, HashSetInf<Pair<IRTemp, IRTemp>>> inMapping =
+                                    copyProp.getInMapping();
                             for (int i = 0; i < stmtGraph.getNodes().size(); i++) {
                                 CFGNode<IRStmt> node = stmtGraph.getNodes().get(i);
-                                HashSetInf<Pair<IRTemp, IRTemp>> pairSet =  outMapping.get(node);
+                                HashSetInf<Pair<IRTemp, IRTemp>> pairSet =  inMapping.get(node);
                                 HashMap<String, String> tempHashMap = new HashMap<>();
                                 for (Pair<IRTemp, IRTemp> pair : pairSet) {
                                     tempHashMap.put(pair.part1().name(), pair.part2().name());
