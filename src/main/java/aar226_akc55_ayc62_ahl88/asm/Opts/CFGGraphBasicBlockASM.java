@@ -1,6 +1,5 @@
-package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
+package aar226_akc55_ayc62_ahl88.asm.Opts;
 
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
@@ -8,8 +7,8 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMAbstractJump;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
+import aar226_akc55_ayc62_ahl88.asm.Opts.BasicBlockASMCFG;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -241,5 +240,14 @@ public class CFGGraphBasicBlockASM {
     private void cleanChild(BasicBlockASMCFG child,BasicBlockASMCFG parent){
         int indexOfParent = child.getPredecessors().indexOf(parent);
         child.removePredecessor(parent);
+    }
+    public ArrayList<ASMInstruction> getBackASM(){
+        ArrayList<ASMInstruction> irs = new ArrayList<>();
+        for (BasicBlockASMCFG bb : nodes) {
+            for (CFGNode<ASMInstruction> stmt : bb.getBody()) {
+                irs.add(stmt.getStmt());
+            }
+        }
+        return irs;
     }
 }

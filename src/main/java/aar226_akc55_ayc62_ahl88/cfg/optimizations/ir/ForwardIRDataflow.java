@@ -3,6 +3,7 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -87,12 +88,28 @@ public class ForwardIRDataflow<T> {
 
             if (!oldOut.equals(newOut)) {
                 for (var succ : node.getChildren()) {
-                    if (!set.contains(succ)) {
+                    if (succ != null && !set.contains(succ)) {
                         set.add(succ);
                         queue.add(succ);
                     }
                 }
             }
         }
+    }
+
+    private HashMap<CFGNode<IRStmt>, String> mapToStr(HashMap<CFGNode<IRStmt>, T> map) {
+        HashMap<CFGNode<IRStmt>, String> res = new HashMap<>();
+        for (CFGNode<IRStmt> entry : map.keySet()) {
+            res.put(entry, map.get(entry).toString());
+        }
+        return res;
+    }
+
+    public HashMap<CFGNode<IRStmt>, String> inMapStr() {
+        return mapToStr(inMapping);
+    }
+
+    public HashMap<CFGNode<IRStmt>, String> outMapStr() {
+        return mapToStr(outMapping);
     }
 }
