@@ -1,1 +1,1 @@
-f(x:int[1]) {} //todo Line error is different location neeed to fina location
+f(x:int[1]) {}

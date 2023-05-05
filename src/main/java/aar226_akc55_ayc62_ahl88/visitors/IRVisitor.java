@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.definitions.Globdecl;
 import aar226_akc55_ayc62_ahl88.newast.definitions.Method;
 import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
+import aar226_akc55_ayc62_ahl88.newast.definitions.RecordDef;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr.ArrayAccessExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
@@ -16,7 +17,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.RecordAcessBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
-import aar226_akc55_ayc62_ahl88.newast.expr.recordaccessexpr.RecordAccess;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntegerNegExpr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
@@ -62,6 +62,22 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     private String nxtString() {
         return String.format("string_const%d", (stringCnt++));
+    }
+
+    // Rho -------------------------------------------------
+    // TODO: 5/1/2023 RecordAccess IR
+    public IRExpr visit(RecordAcessBinop node) {
+        return null;
+    }
+
+    // TODO: 5/1/2023 Break IR
+    public IRStmt visit(Break node) {
+        return null;
+    }
+
+    // TODO: 5/1/2023 Record Definition IR
+    public IRStmt visit(RecordDef node) {
+        return null;
     }
 
     @Override
@@ -481,7 +497,6 @@ public class IRVisitor implements Visitor<IRNode>{
         assert(node.getIndicies().size() >= 1);
         return accessRecur(0,node.getIndicies(),arrIR);
     }
-//
 
     @Override
     public IRStmt visit(Block node) {
@@ -553,6 +568,7 @@ public class IRVisitor implements Visitor<IRNode>{
         }
         return new IRReturn(IRRet);
     }
+
     @Override
     public IRStmt visit(While node) {
         String lh = nxtLabel();
@@ -572,11 +588,6 @@ public class IRVisitor implements Visitor<IRNode>{
                 bodyStmt,
                 new IRJump(new IRName(lh)),
                 new IRLabel(le));
-    }
-
-    @Override
-    public IRStmt visit(Break node) {
-        return null;
     }
 
     @Override
@@ -651,7 +662,6 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // UnderScore Can't
     }
-
 
     @Override
     public IRStmt visit(MultiDeclAssignStmt node) {
@@ -805,11 +815,6 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRExpr visit(ArrAccessDecl node) {// no need to visit
-        return null;
-    }
-
-    @Override
-    public IRExpr visit(RecordAccess node) {
         return null;
     }
 
@@ -1115,9 +1120,4 @@ public class IRVisitor implements Visitor<IRNode>{
 //                        )));
         return accessRecur(ind + 1, indexes, sol);
     }
-
-    // TODO: 5/1/2023 pls fix
-    public IRExpr visit(RecordAcessBinop node) {
-        return null;
-    };
 }

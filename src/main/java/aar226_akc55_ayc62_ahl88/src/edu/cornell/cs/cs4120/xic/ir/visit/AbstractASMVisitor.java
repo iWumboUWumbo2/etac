@@ -728,7 +728,6 @@ public class AbstractASMVisitor {
 
         if (mem.expr() instanceof IRBinOp memBinop && (memBinop.opType() == IRBinOp.OpType.ADD || memBinop.opType() == IRBinOp.OpType.SUB)) {
             // MEM (ADD BLAH, MUL(TEMP, CONST))
-            // TODO MEM (SUB BLAH, MUL(TEMP, CONST))
             IRExpr left = memBinop.left();
             IRExpr right = memBinop.right();
 
