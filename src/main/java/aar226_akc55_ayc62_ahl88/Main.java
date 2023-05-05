@@ -366,7 +366,7 @@ public class Main {
                             }
                             IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(stmtGraph.getBackIR()));
                             newFunc.functionSig = func.functionSig;
-//                            writeOutputDot(filename, func.name(), "afterCopy", stmtGraph.CFGtoDOT());
+                            writeOutputDot(filename, func.name(), "afterCopy", stmtGraph.CFGtoDOT(copyProp.inMapStr(), copyProp.outMapStr()));
                             copyPropIR.put(map.getKey(),newFunc);
                         }
 

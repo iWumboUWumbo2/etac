@@ -96,4 +96,20 @@ public class ForwardIRDataflow<T> {
             }
         }
     }
+
+    private HashMap<CFGNode<IRStmt>, String> mapToStr(HashMap<CFGNode<IRStmt>, T> map) {
+        HashMap<CFGNode<IRStmt>, String> res = new HashMap<>();
+        for (CFGNode<IRStmt> entry : map.keySet()) {
+            res.put(entry, map.get(entry).toString());
+        }
+        return res;
+    }
+
+    public HashMap<CFGNode<IRStmt>, String> inMapStr() {
+        return mapToStr(inMapping);
+    }
+
+    public HashMap<CFGNode<IRStmt>, String> outMapStr() {
+        return mapToStr(outMapping);
+    }
 }
