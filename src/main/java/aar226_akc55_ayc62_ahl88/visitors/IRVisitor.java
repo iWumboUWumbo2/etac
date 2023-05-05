@@ -77,8 +77,6 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String ta = nxtTemp();
         String ti = nxtTemp();
-        String lok = nxtLabel();
-        String ler = nxtLabel();
 
         IRESeq sol =
         new IRESeq( // 1d array need loop for further
