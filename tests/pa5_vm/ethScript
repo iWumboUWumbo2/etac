@@ -3,7 +3,7 @@
 etac ("Test --help") "--help" {
 
 }
-etac ("Test --irgen -Ocf -Odce") "-libpath $(testpath) --irgen -Ocf -Odce" {
+etac ("Test --irgen -Ocf -Ocopy") "-libpath $(testpath) --irgen -Ocf -Ocopy" {
 
     arr_multdim_chain.eta;
     array_aliasing.eta;
@@ -78,7 +78,7 @@ etac ("Test --irgen -Ocf -Odce") "-libpath $(testpath) --irgen -Ocf -Odce" {
     multiassign07.eta;
     multiassign08.eta;
 
-
+    swap.eta;
 
     ex01.eta;
     ack.eta;
@@ -96,6 +96,7 @@ etac ("Test --irgen -Ocf -Odce") "-libpath $(testpath) --irgen -Ocf -Odce" {
 }
 etac ("Test --irgen") "-libpath $(testpath) --irgen" {
 
+    swap.eta;
     arr_multdim_chain.eta;
     array_aliasing.eta;
     array_basicbitch_loop.eta;
@@ -152,7 +153,7 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     two_mult.eta;
     while01.eta;
 
-
+    swap.eta;
     arracc05.eta;
     arracc07.eta;
     arracc08.eta;
@@ -169,7 +170,7 @@ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
     multiassign07.eta;
     multiassign08.eta;
 
-
+    swap.eta;
 
     ex01.eta;
     ack.eta;
@@ -243,7 +244,7 @@ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
     tooDarr.eta;
     two_mult.eta;
     while01.eta;
-
+    swap.eta;
 
     arracc05.eta;
     arracc07.eta;
@@ -278,7 +279,10 @@ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
     validpalindrome.eta;
 }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
-   
+
+
+   swap.eta;
+
    arr_multdim_chain.eta;
    array_aliasing.eta;
    array_basicbitch_loop.eta;
@@ -373,7 +377,9 @@ etac ("Test -target linux") "-libpath $(testpath) -target linux" {
 }
 
 etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
-    
+
+    swap.eta;
+
     arr_multdim_chain.eta;
     array_aliasing.eta;
     array_basicbitch_loop.eta;

@@ -9,10 +9,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.ConstantPropSSA;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CopyPropSSA;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.DominatorBlockDataflow;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeEliminationSSA;
@@ -331,6 +328,10 @@ public class Main {
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     IRs.put("initial", ir);
+//                    if (opts.allClear()){ // Added if we only doing reg allocate
+//                        return ir;
+//                    }
+
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
@@ -339,9 +340,11 @@ public class Main {
                     HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
                     HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-                        stmtGraph.removeUnreachable();
-                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock(stmtGraph.getBackIR());
+//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        stmtGraph.removeUnreachable();
+                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                        stmtGraphBlocks.removeUnreachableNodes();
+                        stmtGraphBlocks.removeDeletedNodes();
 //                        writeOutputDot(filename, map.getKey(), "before remove jmp", stmtGraphBlocks.CFGtoDOT());
                         CFGGraphBasicBlock cleanedStmtGraphBlocks  = new CFGGraphBasicBlock(stmtGraphBlocks.optimizeJumpsAndLabels());
 //                        System.out.println(map.getKey());
@@ -368,17 +371,20 @@ public class Main {
                             new ConstantPropSSA(funcStatements).workList();
 //                            writeOutputDot(filename, func.part1(), "afterProp", funcStatements.CFGtoDOT());
 //                            System.out.println("did constantProp");
+                            funcStatements.removeUnreachableNodes();
                         }
                     }
-//                    if (opts.isSet(OptimizationType.COPYPROP)) {
-//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            writeOutputDot(filename, func.part1(), "beforeCopyProp", funcStatements.CFGtoDOT());
-//                            new CopyPropSSA(funcStatements).workList();
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename, func.part1(), "beforeDead", funcStatements.CFGtoDOT());
+                            new DeadCodeEliminationSSA(funcStatements).workList();
+//                            System.out.println("dead");
 //                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
-////                            System.out.println("did constantProp");
-//                        }
-//                    }
+                            funcStatements.removeUnreachableNodes();
+                        }
+                    }
+
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
 //                        System.out.println(kv.getKey().part1());
@@ -486,6 +492,10 @@ public class Main {
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
 //            System.out.println(comp.printInstructions());
+            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
+                CFGGraphBasicBlockASM asmgraph = new CFGGraphBasicBlockASM(kv.getValue());
+//                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate", asmgraph.CFGtoDOT());
+            }
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             StringWriter out = new StringWriter();
             out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");

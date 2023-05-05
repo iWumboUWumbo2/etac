@@ -98,13 +98,14 @@ public class CFGGraphBasicBlock {
         for (int i = 0 ;i< nodes.size();i++){
             BasicBlockCFG cfgnode = nodes.get(i);
             IRStmt lastStmtCurBlock = cfgnode.body.get(cfgnode.getBody().size()-1).getStmt();
-            if (i != 0 && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRReturn)
-             && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRJump)
-
-            && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()).equals(outOfBounds))){
+            if (i != 0
+                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRReturn)
+                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRJump)
+                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()).equals(outOfBounds))){
                 cfgnode.addPredecessor(nodes.get(i-1));
             }
-            if (i != nodes.size()-1 && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRReturn)
+            if (i != nodes.size()-1
+                    && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRReturn)
                     && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRJump)
                     && !((cfgnode.body.get(cfgnode.body.size()-1).getStmt()).equals(outOfBounds))){
                 cfgnode.setFallThroughChild(nodes.get(i+1));
@@ -310,5 +311,50 @@ public class CFGGraphBasicBlock {
             bb.body = newBody;
         }
     }
+    public void removeUnreachableNodes(){
+        HashMap<BasicBlockCFG, Integer> visitedIDs = new HashMap<>();
+        HashSet<BasicBlockCFG> visited = new HashSet<>();
+        Stack<BasicBlockCFG> stack = new Stack<>();
+        stack.push(nodes.get(0));
+        visited.add(nodes.get(0));
+        while (!stack.isEmpty()) {
+            BasicBlockCFG popped = stack.pop();
 
+            for (BasicBlockCFG child : popped.getChildren()){
+                if (child != null && !visited.contains(child)){
+                    visited.add(child);
+                    stack.push(child);
+                }
+            }
+        }
+        for (BasicBlockCFG node : nodes) {
+            if (!visited.contains(node)) { // remove this node
+                System.out.println("block Removed");
+                for (BasicBlockCFG child : node.getChildren()) {
+                    if (child != null) {
+                        cleanChild(child,node);
+                    }
+                }
+            }
+        }
+        ArrayList<BasicBlockCFG> newGraph = new ArrayList<>();
+        for (BasicBlockCFG node : nodes){
+            if (visited.contains(node)){
+                newGraph.add(node);
+            }
+        }
+        nodes = newGraph;
+    }
+    private void cleanChild(BasicBlockCFG child,BasicBlockCFG parent){
+        int indexOfParent = child.getPredecessors().indexOf(parent);
+        for (CFGNode<IRStmt> stmt: child.getBody()){
+            if (stmt.getStmt() instanceof IRPhi phi){
+                phi.getArgs().remove(indexOfParent);
+                if (phi.getArgs().size() == 0){
+                    stmt.isDeleted = true;
+                }
+            }
+        }
+        child.removePredecessor(parent);
+    }
 }

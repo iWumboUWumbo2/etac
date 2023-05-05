@@ -3,9 +3,8 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.ir;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.BasicBlockCFG;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCallStmt;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 
 import java.util.*;
 
@@ -50,7 +49,21 @@ public class DeadCodeEliminationSSA {
     }
 
     private boolean stmtHasSideEffects(IRStmt stmt) {
-        return stmt instanceof IRCallStmt;
+        if (stmt instanceof IRCallStmt){
+            return true;
+        }
+        ArrayList<IRNode> flat = new FlattenIrVisitor().visit(stmt);
+        for (IRNode node : flat){
+            if (node instanceof IRBinOp binop && binop.opType() == IRBinOp.OpType.DIV &&
+                    (!(binop.right() instanceof IRConst))){
+                return true;
+            }
+            if (node instanceof IRBinOp binop && binop.opType() == IRBinOp.OpType.DIV && binop.right() instanceof IRConst cons
+                    && cons.value() == 0){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void workList() {
