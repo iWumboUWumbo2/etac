@@ -8,10 +8,10 @@ record Point {
 main(args : int[][]) {
     a : Point = Point(1,2,3,true,false,true);
 
-    println(unparseInt(a.x))
-    println(unparseInt(a.y))
-    println(unparseInt(a.z))
-    println(unparseInt(a.a))
-    println(unparseInt(a.b))
-    println(unparseInt(a.c))
+    //println(unparseInt(a.x))
+    //println(unparseInt(a.y))
+    //println(unparseInt(a.z))
+    //println(unparseInt(a.a))
+    //println(unparseInt(a.b))
+    //println(unparseInt(a.c))
 }

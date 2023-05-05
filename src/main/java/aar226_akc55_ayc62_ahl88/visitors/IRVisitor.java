@@ -66,7 +66,11 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     // Rho -------------------------------------------------
-    // TODO: 5/1/2023 RecordAccess IR
+    // TODO: 5/1/2023 Record Definition IR
+    public IRStmt visit(RecordDef node) {
+        // I don't think we have to do anything here.
+        return null;
+    }
     public IRExpr visit(RecordAcessBinop node) {
         Expr eLeft = node.getLeftExpr();
         IRExpr irLeft = eLeft.accept(this);
@@ -91,11 +95,6 @@ public class IRVisitor implements Visitor<IRNode>{
             )
         );
         return sol;
-    }
-
-    // TODO: 5/1/2023 Record Definition IR
-    public IRStmt visit(RecordDef node) {
-        return null;
     }
 
     public IRStmt visit(Break node) {
@@ -435,6 +434,7 @@ public class IRVisitor implements Visitor<IRNode>{
         return new IRESeq(move, new IRTemp(x));
     }
 
+    // TODO: 5/1/2023 Deal with record constructors
     @Override
     public IRExpr visit(FunctionCallExpr node) {
         IRName func = new IRName(genABIFunc(node.getFunctionSig(),node.getId()));
@@ -960,16 +960,11 @@ public class IRVisitor implements Visitor<IRNode>{
     private IRStmt initArrayDecl(int ind, ArrayList<String> temps, IRExpr curHead){ // this is for a:int[4][3][] etc
         // a:int[e1][e2][][]
         if (ind == temps.size() || temps.get(ind) == null){
-//            System.out.println(ind);
-//            System.out.println(d.getDim());
-//            System.out.println(ind == d.getDim());
-//            System.out.println("here");
             return new IRMove(curHead,new IRConst(0)); // base case x: int[] x <- random val
         }
 
 //        Expr curExp = d.getIndices().get(ind);
 //        IRExpr irExp = curExp.accept(this);
-
 
         String tn = nxtTemp();
         String tm = nxtTemp();
@@ -998,7 +993,6 @@ public class IRVisitor implements Visitor<IRNode>{
         IRMove inc_pointer_to_head = new IRMove(curHead,add_8);
         // do all the top level shit first
         IRSeq top_level_Order = new IRSeq(tempNoDup,length_to_l1,malloc_move1,move_len,inc_pointer_to_head);
-
 
         // now time to recrusively alloc
         String lh = nxtLabel();
