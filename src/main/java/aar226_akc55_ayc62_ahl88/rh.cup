@@ -16,7 +16,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.*;
-
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 
 
@@ -84,11 +83,10 @@ nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
 nonterminal RecordDef                  record;
 nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
 nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
-//nonterminal RecordAccess           record_access;
-//nonterminal ArrayList<Id>          id_period_plus;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
+
 // function call
 precedence left OR;
 precedence left AND;
