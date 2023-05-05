@@ -6,9 +6,9 @@ import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.ASMData;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
+import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
-import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
@@ -493,7 +493,8 @@ public class Main {
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
 //            System.out.println(comp.printInstructions());
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
-                CFGGraphBasicBlockASM asmgraph = new CFGGraphBasicBlockASM(kv.getValue());
+                CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
+                CFGGraph<ASMInstruction> asmSingleStmt = new CFGGraph<>(asmBasicblocks.getBackASM());
 //                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate", asmgraph.CFGtoDOT());
             }
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);

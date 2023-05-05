@@ -1,10 +1,8 @@
-package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
+package aar226_akc55_ayc62_ahl88.asm.Opts;
 
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMTempExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
