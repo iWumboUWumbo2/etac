@@ -45,18 +45,19 @@ public class CopyProp extends ForwardIRDataflow<HashSetInf<Pair<IRTemp, IRTemp>>
     }
 
     private static HashSetInf<Pair<IRTemp, IRTemp>> lMinusDiff(HashSetInf<Pair<IRTemp, IRTemp>> l, CFGNode<IRStmt> node) {
-        if (l.isInfSize()) return new HashSetInf<>(true);
+        if (l.isInfSize()) return new HashSetInf<>(false);
 
         HashSetInf<Pair<IRTemp, IRTemp>> res = new HashSetInf<>(l);
         if (node.getStmt() instanceof IRMove move) {
             if (move.target() instanceof IRTemp temp) {
                 res.removeIf(e -> e.part1().equals(temp) || e.part2().equals(temp));
             }
-            if (move.source() instanceof IRCallStmt call) {
-                for (int i = 0; i < call.n_returns(); i++) {
-                    IRTemp t = new IRTemp("_RV" + i);
-                    res.removeIf(e -> e.part1().equals(t) || e.part2().equals(t));
-                }
+            return res;
+        }
+        if (node.getStmt() instanceof IRCallStmt call) {
+            for (int i = 1; i <= call.n_returns(); i++) {
+                IRTemp t = new IRTemp("_RV" + i);
+                res.removeIf(e -> e.part1().equals(t) || e.part2().equals(t));
             }
             return res;
         }

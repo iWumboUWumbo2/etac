@@ -15,13 +15,13 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyProp;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeEliminationSSA;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CopyPropReplaceVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
@@ -345,7 +345,7 @@ public class Main {
                     HashMap<String,IRFuncDecl> copyPropIR = new HashMap<>();
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-                            System.out.println("doing copy" + map.getKey());
+//                            System.out.println("doing copy" + map.getKey());
                             IRFuncDecl func = map.getValue();
                             CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
 //                            writeOutputDot(filename, func.name(), "beforeCopy", stmtGraph.CFGtoDOT());
@@ -353,6 +353,7 @@ public class Main {
                             copyProp.worklist();
                             HashMap<CFGNode<IRStmt>, HashSetInf<Pair<IRTemp, IRTemp>>> inMapping =
                                     copyProp.getInMapping();
+//                            System.out.println("inMapping: " + inMapping);
                             for (int i = 0; i < stmtGraph.getNodes().size(); i++) {
                                 CFGNode<IRStmt> node = stmtGraph.getNodes().get(i);
                                 HashSetInf<Pair<IRTemp, IRTemp>> pairSet =  inMapping.get(node);
@@ -360,7 +361,7 @@ public class Main {
                                 for (Pair<IRTemp, IRTemp> pair : pairSet) {
                                     tempHashMap.put(pair.part1().name(), pair.part2().name());
                                 }
-                                IRStmt visited = (IRStmt) new ReplaceTempsWithTemps(new IRNodeFactory_c(), tempHashMap).visit(node.getStmt());
+                                IRStmt visited = (IRStmt) new CopyPropReplaceVisitor(new IRNodeFactory_c(), tempHashMap).visit(node.getStmt());
                                 node.setStmt(visited);
                             }
                             IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(stmtGraph.getBackIR()));
@@ -372,72 +373,72 @@ public class Main {
                         ir = new IRCompUnit(((IRCompUnit) ir).name(),copyPropIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
                         IRs.put("postCopy", ir);
                     }
-
-
-                    HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
-                    HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
-                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-//                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-//                        stmtGraph.removeUnreachable();
-                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-                        stmtGraphBlocks.removeUnreachableNodes();
-                        stmtGraphBlocks.removeDeletedNodes();
-//                        writeOutputDot(filename, map.getKey(), "before remove jmp", stmtGraphBlocks.CFGtoDOT());
-                        CFGGraphBasicBlock cleanedStmtGraphBlocks  = new CFGGraphBasicBlock(stmtGraphBlocks.optimizeJumpsAndLabels());
-//                        System.out.println(map.getKey());
-//                        writeOutputDot(filename, map.getKey(), "after remove jmp", cleanedStmtGraphBlocks.CFGtoDOT());
-//                        CFGGraphBasicBlock cleanedStmtGraphBlocks = stmtGraphBlocks;
-                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(cleanedStmtGraphBlocks);
-                        domBlock.convertToSSA();
-                        funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),cleanedStmtGraphBlocks);
-                        domBlocks.put(new Pair<>(map.getKey(),map.getValue().functionSig),domBlock);
-                    }
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            writeOutputDot(filename, func.part1(), "beforeDead", funcStatements.CFGtoDOT());
-                            new DeadCodeEliminationSSA(funcStatements).workList();
-//                            System.out.println("dead");
-//                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
-                        }
-                    }
-                    if (opts.isSet(OptimizationType.CONSTPROP)) {
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            writeOutputDot(filename, func.part1(), "beforeProp", funcStatements.CFGtoDOT());
-                            new ConstantPropSSA(funcStatements).workList();
-//                            writeOutputDot(filename, func.part1(), "afterProp", funcStatements.CFGtoDOT());
-//                            System.out.println("did constantProp");
-                            funcStatements.removeUnreachableNodes();
-                        }
-                    }
-
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            writeOutputDot(filename, func.part1(), "beforeDead", funcStatements.CFGtoDOT());
-                            new DeadCodeEliminationSSA(funcStatements).workList();
-//                            System.out.println("dead");
-//                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
-                            funcStatements.removeUnreachableNodes();
-                        }
-                    }
-
-                    HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
-                    for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
-//                        System.out.println(kv.getKey().part1());
-//                        writeOutputDot(filename, kv.getKey().part1(), "before unssa", kv.getValue().CFGtoDOT());
-                        DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
-//                        writeOutputDot(filename, kv.getKey().part1(), "after unssa", kv.getValue().CFGtoDOT());
-                        ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
-                        IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
-                        optFunc.functionSig = kv.getKey().part2();
-                        cfgIR.put(kv.getKey().part1(),optFunc);
-                    }
-
-                    ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-
-                    IRs.put("final", ir);
+//
+//
+//                    HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
+//                    HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
+//                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+////                        CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+////                        stmtGraph.removeUnreachable();
+//                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+//                        stmtGraphBlocks.removeUnreachableNodes();
+//                        stmtGraphBlocks.removeDeletedNodes();
+////                        writeOutputDot(filename, map.getKey(), "before remove jmp", stmtGraphBlocks.CFGtoDOT());
+//                        CFGGraphBasicBlock cleanedStmtGraphBlocks  = new CFGGraphBasicBlock(stmtGraphBlocks.optimizeJumpsAndLabels());
+////                        System.out.println(map.getKey());
+////                        writeOutputDot(filename, map.getKey(), "after remove jmp", cleanedStmtGraphBlocks.CFGtoDOT());
+////                        CFGGraphBasicBlock cleanedStmtGraphBlocks = stmtGraphBlocks;
+//                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(cleanedStmtGraphBlocks);
+//                        domBlock.convertToSSA();
+//                        funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),cleanedStmtGraphBlocks);
+//                        domBlocks.put(new Pair<>(map.getKey(),map.getValue().functionSig),domBlock);
+//                    }
+//                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+////                            writeOutputDot(filename, func.part1(), "beforeDead", funcStatements.CFGtoDOT());
+//                            new DeadCodeEliminationSSA(funcStatements).workList();
+////                            System.out.println("dead");
+////                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
+//                        }
+//                    }
+//                    if (opts.isSet(OptimizationType.CONSTPROP)) {
+//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+////                            writeOutputDot(filename, func.part1(), "beforeProp", funcStatements.CFGtoDOT());
+//                            new ConstantPropSSA(funcStatements).workList();
+////                            writeOutputDot(filename, func.part1(), "afterProp", funcStatements.CFGtoDOT());
+////                            System.out.println("did constantProp");
+//                            funcStatements.removeUnreachableNodes();
+//                        }
+//                    }
+//
+//                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+////                            writeOutputDot(filename, func.part1(), "beforeDead", funcStatements.CFGtoDOT());
+//                            new DeadCodeEliminationSSA(funcStatements).workList();
+////                            System.out.println("dead");
+////                            writeOutputDot(filename, func.part1(), "afterCopyProp", funcStatements.CFGtoDOT());
+//                            funcStatements.removeUnreachableNodes();
+//                        }
+//                    }
+//
+//                    HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
+//                    for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
+////                        System.out.println(kv.getKey().part1());
+////                        writeOutputDot(filename, kv.getKey().part1(), "before unssa", kv.getValue().CFGtoDOT());
+//                        DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
+////                        writeOutputDot(filename, kv.getKey().part1(), "after unssa", kv.getValue().CFGtoDOT());
+//                        ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
+//                        IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
+//                        optFunc.functionSig = kv.getKey().part2();
+//                        cfgIR.put(kv.getKey().part1(),optFunc);
+//                    }
+//
+//                    ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
+//
+//                    IRs.put("final", ir);
                     return ir;
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
