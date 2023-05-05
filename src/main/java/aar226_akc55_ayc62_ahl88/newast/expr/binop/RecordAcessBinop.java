@@ -10,6 +10,7 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 public class RecordAcessBinop extends BinopExpr{
 
+    public String rightId;
     /**
      * @param in1 left Expression
      * @param in2 right Expression
@@ -36,12 +37,13 @@ public class RecordAcessBinop extends BinopExpr{
             throw new SemanticError(e2.getLine(), e2.getColumn(), "statements block must be of type int at");
         }
 
+        this.rightId = i.toString();
         // Type should be type of field of record
-        if (!t1.recordFieldToIndex.containsKey(i.toString())) {
+        if (!t1.recordFieldToIndex.containsKey(this.rightId)) {
             throw new SemanticError(e2.getLine(), e2.getColumn(), "Invalid field at ");
         }
 
-        int index = t1.recordFieldToIndex.get(i.toString());
+        int index = t1.recordFieldToIndex.get(this.rightId);
         return t1.recordFieldTypes.get(index);
     }
 

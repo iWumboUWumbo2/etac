@@ -68,17 +68,40 @@ public class IRVisitor implements Visitor<IRNode>{
     // Rho -------------------------------------------------
     // TODO: 5/1/2023 RecordAccess IR
     public IRExpr visit(RecordAcessBinop node) {
-        return null;
-    }
+        Expr eLeft = node.getLeftExpr();
+        IRExpr irLeft = eLeft.accept(this);
 
-    // TODO: 5/1/2023 Break IR
-    public IRStmt visit(Break node) {
-        return new IRSeq(new IRJump(new IRName(this.lastWhileExit)));
+        Expr eRight = node.getRightExpr();
+        Id field = (Id) eRight;
+        int index = eLeft.getNodeType().recordFieldToIndex.get(field.toString());
+
+        String ta = nxtTemp();
+        String ti = nxtTemp();
+        String lok = nxtLabel();
+        String ler = nxtLabel();
+
+        IRESeq sol =
+        new IRESeq( // 1d array need loop for further
+            new IRSeq(
+                new IRMove(new IRTemp(ta), irLeft),
+                new IRMove(new IRTemp(ti), new IRConst(index))
+            ),
+            new IRMem(
+                new IRBinOp(IRBinOp.OpType.ADD,
+                new IRTemp(ta),
+                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
+            )
+        );
+        return sol;
     }
 
     // TODO: 5/1/2023 Record Definition IR
     public IRStmt visit(RecordDef node) {
         return null;
+    }
+
+    public IRStmt visit(Break node) {
+        return new IRSeq(new IRJump(new IRName(this.lastWhileExit)));
     }
 
     @Override
