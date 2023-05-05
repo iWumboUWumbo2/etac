@@ -46,6 +46,7 @@ public class IRVisitor implements Visitor<IRNode>{
     private ArrayList<String> globalIds;
     private boolean constantFold;
     private ArrayList<IRData> string_consts;
+    private String lastWhileExit;
     public IRVisitor(String name) {
         labelCnt = 0;
         tempCnt = 0;
@@ -72,7 +73,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
     // TODO: 5/1/2023 Break IR
     public IRStmt visit(Break node) {
-        return null;
+        return new IRSeq(new IRJump(new IRName(this.lastWhileExit)));
     }
 
     // TODO: 5/1/2023 Record Definition IR
@@ -575,12 +576,17 @@ public class IRVisitor implements Visitor<IRNode>{
         String l1 = nxtLabel();
         String le = nxtLabel();
         IRExpr guardAccept = node.getGuard().accept(this);
-        if (constantFold &&  guardAccept instanceof IRConst c &&
+        if (constantFold && guardAccept instanceof IRConst c &&
                 c.value() == 0){
             return new IRSeq();
         }
         IRStmt condStmt = booleanAsControlFlow(node.getGuard(),l1,le);
+
+        String lastWhileExitOld = this.lastWhileExit;
+        this.lastWhileExit = le;
         IRStmt bodyStmt = node.getStmt().accept(this);
+        this.lastWhileExit = lastWhileExitOld;
+
         return new IRSeq(
                 new IRLabel(lh),
                 condStmt,
@@ -625,7 +631,7 @@ public class IRVisitor implements Visitor<IRNode>{
             throw new InternalCompilerError("Annotated can only be array or basic");
         }else if (node.getDecl() instanceof ArrAccessDecl aad){
             assert(aad.getIndices().size() >= 1);
-            if (aad.getFuncParams() ==  null){ // a[e1][e2]
+            if (aad.getFuncParams() == null){ // a[e1][e2]
                 IRExpr arrIdIR = aad.getIdentifier().accept(this);
                 IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
                 return new IRMove(memComponent, right);
@@ -658,7 +664,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         // ArrAccessDecl Can't
 
-        // No Type Decl  Can't
+        // No Type Decl Can't
 
         // UnderScore Can't
     }
@@ -721,7 +727,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 }
             }else if (d instanceof ArrAccessDecl aad){
                 assert(aad.getIndices().size() >= 1);
-                if (aad.getFuncParams() ==  null){ // a[e1][e2]
+                if (aad.getFuncParams() == null){ // a[e1][e2]
                     IRExpr arrIdIR = aad.getIdentifier().accept(this);
                     IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
                     order.add (new IRMove(memComponent,new IRTemp(curTemp)));
@@ -771,7 +777,7 @@ public class IRVisitor implements Visitor<IRNode>{
 
         String abiName = genABIFunc(node.getFunctionSig(), node.getId());
         // CREATE NODE
-        IRFuncDecl ret =  new IRFuncDecl(abiName, new IRSeq(stmtList));
+        IRFuncDecl ret = new IRFuncDecl(abiName, new IRSeq(stmtList));
         ret.functionSig = node.getFunctionSig();
         return ret;
     }
@@ -841,7 +847,7 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRCompUnit visit(Program node) {
 
         // Arun TODO
-        // Create  Comp Unit
+        // Create Comp Unit
         IRCompUnit compUnit = new IRCompUnit(compUnitName);
         globalIds = node.getGlobalsID();
         node.getDefinitions().forEach(definition -> {
@@ -869,27 +875,27 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     private IRStmt booleanAsControlFlow(Expr e, String lt, String lf) {
-        if (e instanceof BoolLiteral) { // C[true/false, t, f]  = JUMP(NAME(t/f))
+        if (e instanceof BoolLiteral) { // C[true/false, t, f] = JUMP(NAME(t/f))
             boolean val = ((BoolLiteral) e).boolVal;
             return new IRJump(new IRName(val ? lt : lf));
-        } else if (e instanceof AndBinop){ // C[e1 & e2, t, f]  = SEQ(C[e1,l1,f],l1,C[e2,t,f])
+        } else if (e instanceof AndBinop){ // C[e1 & e2, t, f] = SEQ(C[e1,l1,f],l1,C[e2,t,f])
             Expr e1 = ((AndBinop) e).getLeftExpr();
             Expr e2 = ((AndBinop) e).getRightExpr();
             String l1 = nxtLabel();
             IRStmt first = booleanAsControlFlow(e1,l1,lf);
             IRStmt second = booleanAsControlFlow(e2,lt,lf);
             return new IRSeq(first,new IRLabel(l1),second);
-        }else if (e instanceof OrBinop){ // C[e1 | e2, t, f]  = SEQ(C[e1,t,l1],l1,C[e2,t,f])
+        }else if (e instanceof OrBinop){ // C[e1 | e2, t, f] = SEQ(C[e1,t,l1],l1,C[e2,t,f])
             Expr e1 = ((OrBinop) e).getLeftExpr();
             Expr e2 = ((OrBinop) e).getRightExpr();
             String l1 = nxtLabel();
             IRStmt first = booleanAsControlFlow(e1,lt,l1);
             IRStmt second = booleanAsControlFlow(e2,lt,lf);
             return new IRSeq(first,new IRLabel(l1),second);
-        }else if (e instanceof NotUnop nt){ // C[!e, t, f]  = C[e, f, t]
+        }else if (e instanceof NotUnop nt){ // C[!e, t, f] = C[e, f, t]
             return booleanAsControlFlow(nt.getE(),lf,lt);
         }
-        IRExpr cond = e.accept(this);         // C[e, t, f]  = CJUMP(E[e], t, f)
+        IRExpr cond = e.accept(this); // C[e, t, f] = CJUMP(E[e], t, f)
         return new IRCJump(cond, lt, lf);
     }
 
@@ -1012,7 +1018,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String name = "_" + d.getIdentifier();
 
         if (e == null) {
-            irdata = new IRData(name,  new long[]{0});
+            irdata = new IRData(name, new long[]{0});
             return irdata;
         }
 
