@@ -98,13 +98,14 @@ public class CFGGraphBasicBlock {
         for (int i = 0 ;i< nodes.size();i++){
             BasicBlockCFG cfgnode = nodes.get(i);
             IRStmt lastStmtCurBlock = cfgnode.body.get(cfgnode.getBody().size()-1).getStmt();
-            if (i != 0 && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRReturn)
-             && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRJump)
-
-            && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()).equals(outOfBounds))){
+            if (i != 0
+                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRReturn)
+                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof IRJump)
+                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()).equals(outOfBounds))){
                 cfgnode.addPredecessor(nodes.get(i-1));
             }
-            if (i != nodes.size()-1 && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRReturn)
+            if (i != nodes.size()-1
+                    && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRReturn)
                     && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof IRJump)
                     && !((cfgnode.body.get(cfgnode.body.size()-1).getStmt()).equals(outOfBounds))){
                 cfgnode.setFallThroughChild(nodes.get(i+1));

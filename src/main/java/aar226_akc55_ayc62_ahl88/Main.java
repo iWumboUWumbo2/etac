@@ -9,10 +9,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CFGGraphBasicBlock;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.ConstantPropSSA;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.CopyPropSSA;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.DominatorBlockDataflow;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeEliminationSSA;
@@ -331,6 +328,10 @@ public class Main {
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     IRs.put("initial", ir);
+//                    if (opts.allClear()){ // Added if we only doing reg allocate
+//                        return ir;
+//                    }
+
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
@@ -491,6 +492,10 @@ public class Main {
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
 //            System.out.println(comp.printInstructions());
+            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
+                CFGGraphBasicBlockASM asmgraph = new CFGGraphBasicBlockASM(kv.getValue());
+//                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate", asmgraph.CFGtoDOT());
+            }
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             StringWriter out = new StringWriter();
             out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");

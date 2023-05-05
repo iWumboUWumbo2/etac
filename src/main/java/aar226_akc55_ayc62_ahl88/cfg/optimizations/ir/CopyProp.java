@@ -24,28 +24,28 @@ public class CopyProp extends ForwardIRDataflow<HashSetInf<Pair<IRTemp, IRTemp>>
                     if (l1.isInfSize()) return l2;
                     if (l2.isInfSize()) return l1;
 
-                    var union = new HashSetInf<>(l1);
-                    union.addAll(l2);
-                    return l2;
+                    var intersect = new HashSetInf<>(l1);
+                    intersect.retainAll(l2);
+                    return intersect;
                 },
-                HashSetInf::new,
-                new HashSetInf<>()
+                () -> new HashSetInf<>(true),
+                new HashSetInf<>(true)
         );
     }
 
     private static HashSetInf<Pair<IRTemp, IRTemp>> gen(CFGNode<IRStmt> node) {
         if (node.getStmt() instanceof IRMove move) {
             if (move.target() instanceof IRTemp tdest && move.source() instanceof IRTemp tsrc) {
-                HashSetInf<Pair<IRTemp, IRTemp>> setInf = new HashSetInf<>();
+                HashSetInf<Pair<IRTemp, IRTemp>> setInf = new HashSetInf<>(false);
                 setInf.add(new Pair<>(tdest, tsrc));
                 return setInf;
             }
         }
-        return new HashSetInf<>();
+        return new HashSetInf<>(false);
     }
 
     private static HashSetInf<Pair<IRTemp, IRTemp>> lMinusDiff(HashSetInf<Pair<IRTemp, IRTemp>> l, CFGNode<IRStmt> node) {
-        if (l.isInfSize()) return new HashSetInf<>();
+        if (l.isInfSize()) return new HashSetInf<>(true);
 
         HashSetInf<Pair<IRTemp, IRTemp>> res = new HashSetInf<>(l);
         if (node.getStmt() instanceof IRMove move) {
@@ -54,7 +54,7 @@ public class CopyProp extends ForwardIRDataflow<HashSetInf<Pair<IRTemp, IRTemp>>
             }
             if (move.source() instanceof IRCallStmt call) {
                 for (int i = 0; i < call.n_returns(); i++) {
-                    IRTemp t = new IRTemp("_RET" + i);
+                    IRTemp t = new IRTemp("_RV" + i);
                     res.removeIf(e -> e.part1().equals(t) || e.part2().equals(t));
                 }
             }
