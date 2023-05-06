@@ -52,22 +52,34 @@ public class ArrayValueLiteral extends Expr {
         Type arrCheck = t1;
         for (Expr e : values) {     // check all elements same type
             Type eType = e.typeCheck(s);
+
             if (!arrCheck.sameType(eType)) {
                 throw new SemanticError(e.getLine(), e.getColumn(), "array element type mismatch");
             }
-            if ((t1.getType() == Type.TypeCheckingType.UNKNOWNARRAY ||
-                    t1.getType() == Type.TypeCheckingType.NULL ||
-                    t1.getType() == Type.TypeCheckingType.NULLARRAY) &&
-                    (eType.getType() == Type.TypeCheckingType.BOOLARRAY ||
-                            eType.getType() == Type.TypeCheckingType.INTARRAY ||
-                            eType.getType() == Type.TypeCheckingType.RECORDARRAY)){
-                arrCheck = eType;
-            }
+//            if ((t1.getType() == Type.TypeCheckingType.UNKNOWNARRAY ||
+//                    t1.getType() == Type.TypeCheckingType.NULL ||
+//                    t1.getType() == Type.TypeCheckingType.NULLARRAY) &&
+//                    (eType.getType() == Type.TypeCheckingType.BOOLARRAY ||
+//                            eType.getType() == Type.TypeCheckingType.INTARRAY ||
+//                            eType.getType() == Type.TypeCheckingType.RECORDARRAY)){
+//                arrCheck = eType;
+//            }
+//            System.out.println("before greater type");
+//            System.out.println("arrchecktype: " + arrCheck.getType());
+//            if (arrCheck.isArray()) System.out.println("dim: " + arrCheck.dimensions.getDim());
+//            System.out.println("etype: " + eType.getType());
+//            if (eType.isArray()) System.out.println("etype dim: " + eType.dimensions.getDim());
+            arrCheck = arrCheck.greaterType(eType);
+//            System.out.println("after greater type");
+//            System.out.println("arrchecktype: " + arrCheck.getType());
+//            if (arrCheck.isArray()) System.out.println("dim: " + arrCheck.dimensions.getDim());
         }
 
+
+
         // if t1 is array, then return multidimensional array lit
-        if (t1.isArray()) {
-            long dim_num = t1.dimensions.getDim()+1;
+        if (arrCheck.isArray()) {
+            long dim_num = arrCheck.dimensions.getDim()+1;
             Dimension dim = new Dimension(dim_num, getLine(), getColumn());
             return new Type(arrCheck.getType(), dim);
 

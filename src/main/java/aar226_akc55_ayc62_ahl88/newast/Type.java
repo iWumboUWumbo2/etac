@@ -167,6 +167,9 @@ public class Type implements Printer {
                 this.getType() == TypeCheckingType.NULLARRAY;
     }
 
+    public boolean isNullArray() { return getType() == TypeCheckingType.NULLARRAY; }
+
+
     public boolean isNullable() {
         return isArray() || getType() == TypeCheckingType.RECORD;
     }
@@ -279,6 +282,17 @@ public class Type implements Printer {
         return this.getType() == Type.TypeCheckingType.UNKNOWNARRAY;
     }
 
+    public Type getGreaterDim(Type t1, Type t2) {
+        if ((t1.dimensions != null) && (t2.dimensions != null)
+                && (t1.dimensions.getDim() > t2.dimensions.getDim())) {
+//                System.out.println("here");
+            return t1;
+        } else {
+//            System.out.println("greaterdimt2:" + t2.dimensions.getDim());
+            return t2;
+        }
+    }
+
     /**
      * PRECONDITION: assume both types have passed sameType
      * @param t
@@ -286,27 +300,34 @@ public class Type implements Printer {
      */
     public Type greaterType(Type t) {
         if (!sameType(t)) throw new SemanticError(-1, -1,"U DONE FUCED UP");
-        // neither unknown
-        if (!(isUnknown() || isUnknownArray()) && !(t.isUnknown() || t.isUnknownArray())) {
+        // CASE 1: both null arrays
+        if (isNullArray() && t.isNullArray()) {
+            return getGreaterDim(this, t);
+        }
+        // CASE 2: one is null and the other is unknown
+        // {{{}}} {{{null}}}
+        else if (isNullArray() && t.isUnknownArray()) {
+            return getGreaterDim(t, this);
+        } else if (isUnknownArray() && t.isNullArray()) {
+            return getGreaterDim(this, t);
+        }
+        // CASE 3: neither unknown or null
+        else if (!(isUnknown() || isUnknownArray() || isNull() || isNullArray()) &&
+                !(t.isUnknown() || t.isUnknownArray() || t.isNull() || t.isNullArray())) {
             return this;
-        // both unknown
-        } else if ((isUnknown() || isUnknownArray()) && (t.isUnknown() || t.isUnknownArray())) {
+        // CASE 4: both unknown
+        } else if ((isUnknown() || isUnknownArray()) &&
+                (t.isUnknown() || t.isUnknownArray())) {
 //            System.out.println("this");
 //            System.out.println(dimensions.getDim());
 //            System.out.println("t");
 //            System.out.println(t.dimensions.getDim());
-            if ((dimensions != null) && (t.dimensions != null)
-                    && (dimensions.getDim() > t.dimensions.getDim())) {
-//                System.out.println("here");
-                return this;
-            } else {
-                return t;
-            }
+            return getGreaterDim(this, t);
         }
-        // this unknown
-        else if (isUnknown() || isUnknownArray()) {
+        // CASE 5: this unknown or null and the other is not
+        else if (isUnknown() || isUnknownArray() || isNull()|| isNullArray()) {
             return t;
-        // t unknown
+        // CASE 6: this
         } else {
             return this;
         }
