@@ -24,17 +24,29 @@ import java.util.function.Supplier;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.checkExprForTemp;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.flattenMem;
 
-public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractReg>> {
+public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractReg>,ASMInstruction> {
+    public LiveVariableAnalysisASM(CFGGraph<ASMInstruction> g) {
+        super(g,
+                (n,outN) ->{
+                    Set<ASMAbstractReg> useSet = usesInASM(n.getStmt());
+                    Set<ASMAbstractReg> defSet = defsInASM(n.getStmt());
 
-    public LiveVariableAnalysisASM(CFGGraph<IRStmt> g, BiFunction<CFGNode<IRStmt>, Set<ASMAbstractReg>, Set<ASMAbstractReg>> transfer, BinaryOperator<Set<ASMAbstractReg>> meet, Supplier<Set<ASMAbstractReg>> acc, Set<ASMAbstractReg> topElement) {
-        super(g, transfer, meet, acc, topElement);
+                    Set<ASMAbstractReg> l_temp = new HashSet<>(outN);
+                    l_temp.removeAll(defSet);
+                    l_temp.addAll(useSet);
+                    return l_temp;
+                },
+                (l1, l2) -> {
+                    Set<ASMAbstractReg> l1_temp = new HashSet<>(l1);
+                    l1_temp.addAll(l2);
+                    return l1_temp;
+                },
+                HashSet::new,
+                new HashSet<>()
+        );
     }
 
-    public static Set<ASMAbstractReg> usesInASM(ASMInstruction instr){
-        HashSet<ASMAbstractReg> useSet = new HashSet<>();
 
-        return useSet;
-    }
     public static Set<ASMAbstractReg> defsInASM(ASMInstruction instr) {
         HashSet<ASMAbstractReg> defSet = new HashSet<>();
         switch(instr.getOpCode()){
@@ -163,7 +175,7 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
         return defSet;
     }
 
-    public static Set<ASMAbstractReg> useInASM(ASMInstruction instr) {
+    public static Set<ASMAbstractReg> usesInASM(ASMInstruction instr) {
         HashSet<ASMAbstractReg> usedSet = new HashSet<>();
         switch(instr.getOpCode()){
             // RDX:RAX:= sign-extend of RAX.
