@@ -104,11 +104,11 @@ public class AbstractASMVisitor {
                 ASMAbstractReg tleft = munchIRExpr(c.left());
                 ASMAbstractReg tright = munchIRExpr(c.right());
                 ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-                if (c.left() instanceof IRConst cons){
+                if (c.left() instanceof IRConst cons && !isConstTooBig(cons)){
                     instructions.addAll(c.right().getBestInstructions());
                     instructions.add(new ASMMov(destTemp,tright));
                     instructions.add(new ASMXor(destTemp,new ASMConstExpr(cons.value())));
-                }else if (c.right() instanceof  IRConst cons){
+                }else if (c.right() instanceof  IRConst cons && !isConstTooBig(cons)){
                     instructions.addAll(c.left().getBestInstructions());
                     instructions.add(new ASMMov(destTemp,tleft));
                     instructions.add(new ASMXor(destTemp,new ASMConstExpr(cons.value())));
@@ -318,6 +318,10 @@ public class AbstractASMVisitor {
             }
         }
         return res;
+    }
+    private boolean isConstTooBig(IRConst cons){
+
+        return !(cons.value() <= Integer.MAX_VALUE && cons.value() >= Integer.MIN_VALUE);
     }
     private boolean isIMMTooBig(ASMConstExpr cons){
 
@@ -595,7 +599,7 @@ public class AbstractASMVisitor {
                 curBestCost = b.left().getBestCost() + b.right().getBestCost() + 1;
             }
             // lea t1 [5 + t2]
-            if (b.left() instanceof IRConst c){
+            if (b.left() instanceof IRConst c && !isConstTooBig(c)){
                 if (b.right().getBestCost() + 1 < curBestCost) {
                     ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.right().getBestInstructions());
                     caseInstructions.add(new ASMLEA(tempTemp,new ASMMemExpr(new ASMBinOpAddExpr(new ASMConstExpr(c.value()),b.right().getAbstractReg()))));
@@ -604,7 +608,7 @@ public class AbstractASMVisitor {
                 }
             }
             // lea t1 [t2 + 5]
-            if (b.right() instanceof IRConst c){
+            if (b.right() instanceof IRConst c && !isConstTooBig(c)){
                 if (b.left().getBestCost() + 1 < curBestCost) {
                     ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.left().getBestInstructions());
                     caseInstructions.add(new ASMLEA(tempTemp,new ASMMemExpr(new ASMBinOpAddExpr(b.left().getAbstractReg(),new ASMConstExpr(c.value())))));
