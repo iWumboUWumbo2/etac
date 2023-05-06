@@ -243,7 +243,11 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                         }
                     }
                 }else{
-                    throw new InternalCompilerError("not mem or temp" + arg2);
+                    if (arg2.getRight() instanceof ASMConstExpr ){
+
+                    }else {
+                        throw new InternalCompilerError("not mem or temp" + arg2);
+                    }
                 }
             }
             case MOVABS -> {
@@ -258,7 +262,11 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                         }
                     }
                 }else{
-                    throw new InternalCompilerError("not mem or temp" + arg2);
+                    if (arg2.getRight() instanceof ASMConstExpr ){
+
+                    }else {
+                        throw new InternalCompilerError("not mem or temp" + arg2);
+                    }
                 }
             }
             // AND r/m64
@@ -287,7 +295,9 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                         }
                     }
                 }else{
-                    throw new InternalCompilerError("not mem or temp" + arg2);
+                    if (!(arg2.getRight() instanceof ASMConstExpr)) {
+                        throw new InternalCompilerError("not mem temp or const" + arg2);
+                    }
                 }
             }
             case IMUL -> {
@@ -337,7 +347,7 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                         }
                     }
                 }else{
-                    throw new InternalCompilerError("not mem or temp" + arg2);
+                    throw new InternalCompilerError("not mem or temp Shifts" + arg2);
                 }
             }
             // LEA r64,m

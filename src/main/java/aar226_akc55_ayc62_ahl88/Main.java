@@ -7,6 +7,7 @@ import aar226_akc55_ayc62_ahl88.asm.ASMData;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
+import aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
@@ -533,8 +534,14 @@ public class Main {
 //            System.out.println(comp.printInstructions());
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
                 CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
+                asmBasicblocks.removeUnreachableNodes();
                 CFGGraph<ASMInstruction> asmSingleStmt = new CFGGraph<>(asmBasicblocks.getBackASM());
-//                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate", asmgraph.CFGtoDOT());
+                LiveVariableAnalysisASM lva = new LiveVariableAnalysisASM(asmSingleStmt);
+                lva.workList();
+                System.out.println("done lva");
+//                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate",
+//                        asmSingleStmt.CFGtoDOT(CFGGraph.HashmapString(lva.getInMapping(),true),
+//                                CFGGraph.HashmapString(lva.getOutMapping(),false)));
             }
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             StringWriter out = new StringWriter();

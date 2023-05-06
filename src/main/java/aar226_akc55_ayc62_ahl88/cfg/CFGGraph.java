@@ -1,6 +1,8 @@
 package aar226_akc55_ayc62_ahl88.cfg;
 
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMAbstractJump;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
@@ -223,6 +225,19 @@ public class CFGGraph<T> {
         return CFGtoDOT(new HashMap<>(), new HashMap<>());
     }
 
+
+    public static HashMap<CFGNode<ASMInstruction>,String> HashmapString(HashMap<CFGNode<ASMInstruction>,Set<ASMAbstractReg>> mapping, boolean inMap){
+        HashMap<CFGNode<ASMInstruction>,String> res = new HashMap<>();
+        for (CFGNode<ASMInstruction> node : mapping.keySet()){
+            StringBuilder builder = new StringBuilder(inMap ? "live in: " : "live out: ");
+            Set<ASMAbstractReg> regs = mapping.get(node);
+            for (ASMAbstractReg reg : regs){
+                builder.append(reg.toString());
+            }
+            res.put(node,builder.toString());
+        }
+        return res;
+    }
     public ArrayList<CFGNode<T>> getNodes() {
         return nodes;
     }
