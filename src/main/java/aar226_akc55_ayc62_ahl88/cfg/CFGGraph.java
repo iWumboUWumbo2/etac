@@ -1,6 +1,8 @@
 package aar226_akc55_ayc62_ahl88.cfg;
 
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMAbstractJump;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
@@ -18,7 +20,7 @@ import static aar226_akc55_ayc62_ahl88.visitors.IRVisitor.OUT_OF_BOUNDS;
 
 public class CFGGraph<T> {
     public static IRCallStmt outOfBounds = new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>());
-    public static ASMCall asmOut = new ASMCall(new ASMNameExpr("_eta_out_of_bounds"));
+    public static ASMCall asmOut = new ASMCall(new ASMNameExpr("_eta_out_of_bounds"),0,0);
 
     private ArrayList<CFGNode<T>> nodes;
     private HashMap<String, Integer> labelMap;
@@ -196,8 +198,8 @@ public class CFGGraph<T> {
             result.append("\t").append(visitedIDs.get(popped))
                 .append("\t [ label=\"")
                     .append("in:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
-                    .append("out:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
-                    .append(StringEscapeUtils.escapeJava(popped.toString()))
+                    .append(StringEscapeUtils.escapeJava(popped.toString())).append("\\n")
+                    .append("out:\t").append(StringEscapeUtils.escapeJava(out.getOrDefault(popped, ""))).append("\\n")
                 .append("\"]\n");
 
             for (CFGNode<T> child : popped.getChildren()) {
@@ -223,6 +225,19 @@ public class CFGGraph<T> {
         return CFGtoDOT(new HashMap<>(), new HashMap<>());
     }
 
+
+    public static HashMap<CFGNode<ASMInstruction>,String> HashmapString(HashMap<CFGNode<ASMInstruction>,Set<ASMAbstractReg>> mapping, boolean inMap){
+        HashMap<CFGNode<ASMInstruction>,String> res = new HashMap<>();
+        for (CFGNode<ASMInstruction> node : mapping.keySet()){
+            StringBuilder builder = new StringBuilder();
+            Set<ASMAbstractReg> regs = mapping.get(node);
+            for (ASMAbstractReg reg : regs){
+                builder.append(reg.toString()).append(" ");
+            }
+            res.put(node,builder.toString());
+        }
+        return res;
+    }
     public ArrayList<CFGNode<T>> getNodes() {
         return nodes;
     }

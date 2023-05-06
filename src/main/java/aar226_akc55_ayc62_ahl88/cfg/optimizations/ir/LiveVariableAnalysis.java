@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>> {
+public class LiveVariableAnalysis extends BackwardIRDataflow<Set<IRTemp>,IRStmt> {
     public LiveVariableAnalysis(CFGGraph<IRStmt> graph) {
         super(
                 graph,

@@ -16,8 +16,6 @@ public abstract class ASMInstruction {
         opCode = op;
     }
 
-    public abstract void createPrint(HashMap<String, Integer> location);
-
     public String opCodeToString(){
         return switch (opCode){
             case RET -> "ret ";
@@ -29,7 +27,6 @@ public abstract class ASMInstruction {
             case JLE -> "jle ";
             case JG -> "jg ";
             case JGE -> "jge ";
-            case JR -> "jr ";
             case CALL -> "call ";
             case LABEL -> "";
             case INC -> "inc ";
@@ -65,19 +62,6 @@ public abstract class ASMInstruction {
             case SETAE -> "setae ";
             case LEA -> "lea ";
         };
-    }
-    public String exprASMToString(ASMExpr expr, HashMap<String, Integer> location){
-        if (expr instanceof ASMTempExpr temp){
-//            System.out.println(temp.getName());
-//            System.out.println(location.get(temp.getName()));
-            return "QWORD PTR [rbp - " + location.get(temp.getName()) + "]";
-        }else if (expr instanceof ASMRegisterExpr reg){
-            return reg.getRegisterName();
-        }else if (expr instanceof ASMConstExpr cons){
-            return Long.toString(cons.getValue());
-        }else{
-            throw new Error("TODO");
-        }
     }
 
     public ASMOpCodes getOpCode() {

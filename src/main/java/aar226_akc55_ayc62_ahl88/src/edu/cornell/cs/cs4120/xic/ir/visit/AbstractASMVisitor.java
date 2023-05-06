@@ -2,12 +2,11 @@ package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
 import aar226_akc55_ayc62_ahl88.asm.*;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMComment;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.bitwise.*;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.incdec.ASMDec;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.incdec.ASMInc;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMovabs;
@@ -22,6 +21,7 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
+import org.apache.logging.log4j.core.appender.ScriptAppenderSelector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +65,8 @@ import java.util.Set;
  */
 
 public class AbstractASMVisitor {
+
+    final boolean debug = false;
     private int tempCnt = 0;
 
     private final HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
@@ -93,7 +95,9 @@ public class AbstractASMVisitor {
     public ArrayList<ASMInstruction> visit(IRCJump node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String comm = node.toString().replaceAll("\n","");
-        instructions.add(new ASMComment(comm,null));
+        if (debug) {
+            instructions.add(new ASMComment(comm, null));
+        }
 
         IRExpr condition = node.cond();
 
@@ -104,11 +108,11 @@ public class AbstractASMVisitor {
                 ASMAbstractReg tleft = munchIRExpr(c.left());
                 ASMAbstractReg tright = munchIRExpr(c.right());
                 ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-                if (c.left() instanceof IRConst cons){
+                if (c.left() instanceof IRConst cons && !isConstTooBig(cons)){
                     instructions.addAll(c.right().getBestInstructions());
                     instructions.add(new ASMMov(destTemp,tright));
                     instructions.add(new ASMXor(destTemp,new ASMConstExpr(cons.value())));
-                }else if (c.right() instanceof  IRConst cons){
+                }else if (c.right() instanceof  IRConst cons && !isConstTooBig(cons)){
                     instructions.addAll(c.left().getBestInstructions());
                     instructions.add(new ASMMov(destTemp,tleft));
                     instructions.add(new ASMXor(destTemp,new ASMConstExpr(cons.value())));
@@ -165,8 +169,11 @@ public class AbstractASMVisitor {
             String curFunction = func.name();
 //            functionToTemps.put(func.name(),new HashSet<>());
             ArrayList<ASMInstruction> functionInstructions = visit(func);
+            ArrayList<ASMInstruction> fixedBigConsts = fixConsts(functionInstructions);
 //            functionToTempsMapping.put(curFunction,functionToTemps.get(curFunction));
-            functionToInstructionList.put(curFunction,functionInstructions);
+            ArrayList<ASMInstruction> makeUnAbstractINstr = fixInstrsAbstract(fixedBigConsts);
+//            System.out.println("after abstract");
+            functionToInstructionList.put(curFunction,makeUnAbstractINstr);
 //            replaceTemps(functionInstructions,curFunction);
 //            instructions.addAll(functionInstructions);
 //            System.out.println(func.body());
@@ -174,6 +181,161 @@ public class AbstractASMVisitor {
         }
 
         return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping,functionsNameToSig);
+    }
+
+    public static ArrayList<ASMInstruction> fixInstrsAbstract(ArrayList<ASMInstruction> instrs){
+        ArrayList<ASMInstruction> res = new ArrayList<>();
+        for (ASMInstruction instr: instrs){
+            if (instr instanceof ASMArg0 arg0){
+                switch (arg0.getOpCode()) {
+                    case RET -> {
+                        ASMRet ret = (ASMRet) instr;
+                        res.add(new ASMRet(ret.rets));
+                    }
+                    case LEAVE -> res.add(new ASMLeave());
+                    case CQTO -> res.add(new ASMCQTO());
+                }
+            }else if (instr instanceof ASMArg1 arg1){
+                ASMExpr l = arg1.getLeft();
+                switch(arg1.getOpCode()){
+                    case CALL -> {
+                        ASMCall call = (ASMCall) arg1;
+                        res.add(new ASMCall(l,call.numParams,call.numReturns));
+                    }
+                    case DEC -> res.add(new ASMDec(l));
+                    case IDIV -> res.add(new ASMIDiv(l));
+                    case INC  -> res.add(new ASMInc(l));
+                    case JMP -> res.add(new ASMJumpAlways(l));
+                    case JE -> res.add(new ASMJumpEqual(l));
+                    case JGE-> res.add(new ASMJumpGE(l));
+                    case JG ->res.add(new ASMJumpGT(l));
+                    case JLE ->res.add(new ASMJumpLE(l));
+                    case JL -> res.add(new ASMJumpLT(l));
+                    case JNE ->res.add(new ASMJumpNotEqual(l));
+                    case JB->res.add(new ASMJumpULT(l));
+                    case NOT -> res.add(new ASMNot(l));
+                    case POP ->res.add(new ASMPop(l));
+                    case PUSH -> res.add(new ASMPush(l));
+                    case SETB -> res.add(new ASMSetb(l));
+                    case SETE ->res.add(new ASMSete(l));
+                    case SETG -> res.add(new ASMSetg(l));
+                    case SETGE ->res.add(new ASMSetge(l));
+                    case SETL -> res.add(new ASMSetl(l));
+                    case SETLE ->res.add(new ASMSetle(l));
+                    case SETNE -> res.add(new ASMSetne(l));
+                    case SETAE -> throw new InternalCompilerError("NO AE");
+                }
+
+            }else if (instr instanceof ASMArg2 arg2){
+                ASMExpr l = arg2.getLeft();
+                ASMExpr r = arg2.getRight();
+                switch(arg2.getOpCode()){
+                    case ADD -> res.add(new ASMAdd(l,r));
+                    case AND -> res.add(new ASMAnd(l,r));
+                    case CMP ->res.add(new ASMCmp(l,r));
+                    case ENTER -> res.add(new ASMEnter(l,r));
+                    case LEA -> res.add(new ASMLEA(l,r));
+                    case MOV -> res.add(new ASMMov(l,r));
+                    case MOVABS -> res.add(new ASMMovabs(l,r));
+                    case OR -> res.add(new ASMOr(l,r));
+                    case SAR ->res.add(new ASMSar(l,r));
+                    case SHL ->res.add(new ASMShl(l,r));
+                    case SHR ->res.add(new ASMShr(l,r));
+                    case SUB ->res.add(new ASMSub(l,r));
+                    case TEST -> res.add(new ASMTest(l,r));
+                    case XOR ->res.add(new ASMXor(l,r));
+                }
+            }else if (instr instanceof ASMArg3 arg3){
+                switch(arg3.getOpCode()){
+                    case IMUL: res.add(new ASMIMul(arg3.getA1(),arg3.getA2(),arg3.getA3()));
+                }
+            }else{
+                res.add(instr);
+            }
+
+        }
+        return res;
+    }
+    ArrayList<ASMInstruction> fixConsts(ArrayList<ASMInstruction> instrs){
+        ArrayList<ASMInstruction> res = new ArrayList<>();
+        for (ASMInstruction instr: instrs){
+            if (instr instanceof ASMArg1 arg1){
+                if (arg1.getLeft() instanceof ASMConstExpr cons && isIMMTooBig(cons)){
+                    String usedReg = nxtTemp();
+                    ASMTempExpr reg = new ASMTempExpr(usedReg);
+                    ASMMovabs extraMove = new ASMMovabs(reg,cons);
+                    res.add(extraMove);
+                    res.add(new ASMArg1(arg1.getOpCode(),new ASMTempExpr(usedReg)));
+                }else{
+                    res.add(instr);
+                }
+            }else if (instr instanceof ASMArg2 arg2){
+                ASMExpr left;
+                ASMExpr right;
+                if (arg2.getRight() instanceof ASMConstExpr cons && isIMMTooBig(cons)){
+                    String usedReg = nxtTemp();
+                    ASMTempExpr reg = new ASMTempExpr(usedReg);
+                    ASMMovabs extraMove = new ASMMovabs(reg,cons);
+                    res.add(extraMove);
+                    right = reg;
+                }else{
+                    right = arg2.getRight();
+                }
+                if (arg2.getLeft() instanceof ASMConstExpr cons && isIMMTooBig(cons)){
+                    String usedReg = nxtTemp();
+                    ASMTempExpr reg = new ASMTempExpr(usedReg);
+                    ASMMovabs extraMove = new ASMMovabs(reg,cons);
+                    res.add(extraMove);
+                    left = reg;
+                }else{
+                    left = arg2.getLeft();
+                }
+                res.add(new ASMArg2(arg2.getOpCode(),left,right));
+            }else if (instr instanceof ASMArg3 arg3){
+                ASMExpr left;
+                ASMExpr mid;
+                ASMExpr right;
+                if (arg3.getA3() instanceof ASMConstExpr cons && isIMMTooBig(cons)){
+                    String usedReg = nxtTemp();
+                    ASMTempExpr reg = new ASMTempExpr(usedReg);
+                    ASMMovabs extraMove = new ASMMovabs(reg,cons);
+                    res.add(extraMove);
+                    right = reg;
+                }else{
+                    right = arg3.getA3();
+                }
+                if (arg3.getA2() instanceof ASMConstExpr cons && isIMMTooBig(cons)){
+                    String usedReg = nxtTemp();
+                    ASMTempExpr reg = new ASMTempExpr(usedReg);
+                    ASMMovabs extraMove = new ASMMovabs(reg,cons);
+                    res.add(extraMove);
+                    mid = reg;
+                }else{
+                    mid = arg3.getA2();
+                }
+                if (arg3.getA1() instanceof ASMConstExpr cons && isIMMTooBig(cons)){
+                    String usedReg = nxtTemp();
+                    ASMTempExpr reg = new ASMTempExpr(usedReg);
+                    ASMMovabs extraMove = new ASMMovabs(reg,cons);
+                    res.add(extraMove);
+                    left = reg;
+                }else{
+                    left = arg3.getA1();
+                }
+                res.add(new ASMArg3(arg3.getOpCode(),left,mid,right));
+            }else{
+                res.add(instr);
+            }
+        }
+        return res;
+    }
+    private boolean isConstTooBig(IRConst cons){
+
+        return !(cons.value() <= Integer.MAX_VALUE && cons.value() >= Integer.MIN_VALUE);
+    }
+    private boolean isIMMTooBig(ASMConstExpr cons){
+
+        return !(cons.getValue() <= Integer.MAX_VALUE && cons.getValue() >= Integer.MIN_VALUE);
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
@@ -247,7 +409,9 @@ public class AbstractASMVisitor {
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String comm = jump.toString().replaceAll("\n","");
-        instructions.add(new ASMComment(comm,null));
+        if (debug) {
+            instructions.add(new ASMComment(comm, null));
+        }
         if (jump.target() instanceof IRName name) {
             instructions.add(new ASMJumpAlways(new ASMNameExpr(name.name())));
         }
@@ -264,7 +428,9 @@ public class AbstractASMVisitor {
         IRExpr source = node.source();
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String nodeUnFlat = node.toString();
-        instructions.add(new ASMComment(nodeUnFlat.replaceAll("\n",""),null));
+        if (debug) {
+            instructions.add(new ASMComment(nodeUnFlat.replaceAll("\n", ""), null));
+        }
 
         // TEMP TEMP
         if (dest instanceof IRTemp t1 && source instanceof IRTemp t2) { // random case for testing atm
@@ -447,7 +613,7 @@ public class AbstractASMVisitor {
                 curBestCost = b.left().getBestCost() + b.right().getBestCost() + 1;
             }
             // lea t1 [5 + t2]
-            if (b.left() instanceof IRConst c){
+            if (b.left() instanceof IRConst c && !isConstTooBig(c)){
                 if (b.right().getBestCost() + 1 < curBestCost) {
                     ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.right().getBestInstructions());
                     caseInstructions.add(new ASMLEA(tempTemp,new ASMMemExpr(new ASMBinOpAddExpr(new ASMConstExpr(c.value()),b.right().getAbstractReg()))));
@@ -456,7 +622,7 @@ public class AbstractASMVisitor {
                 }
             }
             // lea t1 [t2 + 5]
-            if (b.right() instanceof IRConst c){
+            if (b.right() instanceof IRConst c && !isConstTooBig(c)){
                 if (b.left().getBestCost() + 1 < curBestCost) {
                     ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(b.left().getBestInstructions());
                     caseInstructions.add(new ASMLEA(tempTemp,new ASMMemExpr(new ASMBinOpAddExpr(b.left().getAbstractReg(),new ASMConstExpr(c.value())))));
@@ -1213,7 +1379,9 @@ public class AbstractASMVisitor {
         //
         ArrayList<ASMInstruction> returnInstructions = new ArrayList<>();
         String comm = node.toString().replaceAll("\n","");
-        returnInstructions.add(new ASMComment(comm,null));
+        if (debug) {
+            returnInstructions.add(new ASMComment(comm, null));
+        }
         int returnSize = node.rets().size();
 
         ArrayList<String> tempNames = new ArrayList<>();
@@ -1249,15 +1417,17 @@ public class AbstractASMVisitor {
         // leave
         // ret
         returnInstructions.add(new ASMLeave());
-        returnInstructions.add(new ASMRet());
+        returnInstructions.add(new ASMRet(returnSize));
         return returnInstructions;
     }
     public ArrayList<ASMInstruction> visit(IRCallStmt node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String comm = node.toString().replaceAll("\n","");
-        instructions.add(new ASMComment(comm,null));
+        if (debug) {
+            instructions.add(new ASMComment(comm, null));
+        }
         IRName functionName = (IRName) node.target();
-        instructions.add(new ASMComment("Add Padding",functionName.name()));
+        instructions.add(new ASMComment("Add Padding", functionName.name()));
         int argSiz = node.args().size();
         ArrayList<String> tempNames = new ArrayList<>();
         //in case returns stop being temporaries in the future.
@@ -1317,7 +1487,7 @@ public class AbstractASMVisitor {
         }
         // Align by 16 bytes I have no idea how
         functionsNameToSig.put(functionName.name(),new Pair<>(argSiz,node.n_returns().intValue()));
-        instructions.add(new ASMCall(new ASMNameExpr(functionName.name())));
+        instructions.add(new ASMCall(new ASMNameExpr(functionName.name()),argSiz,node.n_returns()));
 
         if (argSiz > 6 && node.n_returns() <= 2){
             instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),
@@ -1457,272 +1627,5 @@ public class AbstractASMVisitor {
     public ArrayList<ASMInstruction> visit(IRPhi irPhi) {
         throw new InternalCompilerError("PHI NOT IN ABSTRACT ASSEMBLY");
     }
-//
-//    private ArrayList<ASMInstruction> BinopToInstructions(){
-//        ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
-//        ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
-//        switch (binop.opType()) {
-//            case ADD:
-//                if ( binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMAdd(destTemp, l2));
-//                }
-//                break;
-//            case MUL:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMIMul(destTemp, l2));
-//                }
-//                break;
-//            case DIV: // rax/div, store result in rax and remainder in rdx
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 3 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 3;
-////                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
-//                    curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
-//                    curBestInstructions.add(new ASMCQTO());
-//                    curBestInstructions.add(new ASMIDiv(l2));
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//            case SUB:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMArg2(ASMOpCodes.SUB, destTemp, l2));
-//                }
-//                break;
-//            case HMUL: // TODO: fix this
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 3 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 3;
-//
-//                    curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
-//                    curBestInstructions.add(new ASMIMul(l2));
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
-//                }
-//                break;
-//            case MOD: // rax/div, store result in rax and remainder in rdx
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 3 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 3;
-////                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
-//                    curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
-//                    curBestInstructions.add(new ASMCQTO());
-//                    curBestInstructions.add(new ASMIDiv(l2));
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
-//                }
-//                break;
-//            case AND:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMAnd(destTemp, l2));
-//                }
-//                break;
-//            case OR:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMOr(destTemp, l2));
-//                }
-//                break;
-//            case XOR:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMXor(destTemp, l2));
-//                }
-//                break;
-//            case LSHIFT: // logical left shift
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMShl(destTemp, l2));
-//                }
-//                break;
-//            case RSHIFT: // logical right shift
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMShr(destTemp, l2));
-//                }
-//                break;
-//            case ARSHIFT:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 2 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 2;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMSar(destTemp, l2));
-//                }
-//                break;
-//            case EQ:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 4 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 4;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMCmp(destTemp, l2));
-//                    curBestInstructions.add(new ASMSete(new ASMRegisterExpr("al")));
-//                    curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//            case NEQ:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 4 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 4;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMCmp(destTemp, l2));
-//                    curBestInstructions.add(new ASMSetne(new ASMRegisterExpr("al")));
-//                    curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
-////                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//            case LT:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 4 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 4;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMCmp(destTemp, l2));
-//                    curBestInstructions.add(new ASMSetl(new ASMRegisterExpr("al")));
-//                    curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
-////                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//            case ULT:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 4 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 4;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMCmp(destTemp, l2));
-//                    curBestInstructions.add(new ASMSetb(new ASMRegisterExpr("al")));
-//                    curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
-//                    //                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//            case GT:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 4 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 4;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMCmp(destTemp, l2));
-//                    curBestInstructions.add(new ASMSetg(new ASMRegisterExpr("al")));
-//                    curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
-////                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//            case LEQ:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 4 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 4;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMCmp(destTemp, l2));
-//                    curBestInstructions.add(new ASMSetle(new ASMRegisterExpr("al")));
-//                    curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
-////                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//            case GEQ:
-//                if (binop.left().getBestCost() +
-//                        binop.right().getBestCost() + 4 < curBestCost) {
-//                    curBestCost = binop.left().getBestCost() +
-//                            binop.right().getBestCost() + 4;
-//                    curBestInstructions.add(new ASMMov(destTemp, l1));
-//                    curBestInstructions.add(new ASMCmp(destTemp, l2));
-//                    curBestInstructions.add(new ASMSetge(new ASMRegisterExpr("al")));
-//                    curBestInstructions.add(new ASMAnd(new ASMRegisterExpr("rax"), new ASMConstExpr(1)));
-////                instrs.add(new ASMAnd(al, new ASMConstExpr(1))); in clang but not in gcc
-//                    curBestInstructions.add(new ASMMov(destTemp, new ASMRegisterExpr("rax")));
-//                }
-//                break;
-//        }
-//    }
 
 }
-
-//    int index = numParams;
-//            while (index < seq.stmts().size()){
-//        IRStmt stmt = seq.stmts().get(index);
-//        bodyInstructions.addAll(stmt.accept(this));
-//        if (stmt instanceof IRCallStmt call){
-//        int rvMoves = Math.toIntExact(call.n_returns());
-//        for (int i = 1; i <= rvMoves;i++){
-//        int getInd = (rvMoves + i-1);
-//        IRMove nameAndArg = (IRMove) body.stmts().get(getInd);
-//        IRTemp name = (IRTemp) nameAndArg.target();
-//        ASMTempExpr retName = new ASMTempExpr(name.name());
-//        if (i == 1){
-//        bodyInstructions.add(new ASMMov(retName,new ASMRegisterExpr("rax")));
-//        }else if (i == 2){
-//        bodyInstructions.add(new ASMMov(retName,new ASMRegisterExpr("rdx")));
-//        }else{
-//        bodyInstructions.add(new ASMPop(retName));
-//        }
-//        }
-//        index += rvMoves+1;
-//        }else{
-//        index++;
-//        }
-//        }
-//             (+- (temp) (* temp const))
-//        if (
-//                m.expr() instanceof IRBinOp b &&
-//                twoOpAddSub(b) &&
-//                b.left() instanceof IRTemp base &&
-//                b.right() instanceof IRBinOp bop &&
-//                bop.opType() == IRBinOp.OpType.MUL &&
-//                bop.left() instanceof IRTemp index &&
-//                bop.right() instanceof IRConst scale &&
-//                isValidScale(scale.value())
-//                ) {
-//                if (1 < curBestCost) {
-//        ArrayList<ASMInstruction> caseInstructions = new ArrayList<>();
-//        if (b.opType() == IRBinOp.OpType.ADD) {
-//        caseInstructions.add(new ASMMov(new ASMMemExpr(new ASMBinOpAddExpr(
-//        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
-//        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name())))),
-//        new ASMConstExpr(c.value())));
-//        } else {
-//        System.out.println("used new one mem const sub");
-//        caseInstructions.add(new ASMMov(new ASMMemExpr(new ASMBinOpSubExpr(
-//        new ASMTempExpr(base.name()), new ASMBinOpMultExpr(
-//        new ASMConstExpr(scale.value()), new ASMTempExpr(index.name())))),
-//        new ASMConstExpr(c.value())));
-//        }
-//        curBestInstructions = caseInstructions;
-//        curBestCost = 1;
-//        }
-//        }

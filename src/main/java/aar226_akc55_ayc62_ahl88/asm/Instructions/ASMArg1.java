@@ -10,14 +10,9 @@ import java.util.HashMap;
 public class ASMArg1 extends ASMInstruction {
 
     private ASMExpr left;
-    private String leftPrint;
     public ASMArg1(ASMOpCodes op, ASMExpr arg1){
         super(op);
         left = arg1;
-    }
-    @Override
-    public void createPrint(HashMap<String, Integer> location) {
-        leftPrint = exprASMToString(left,location);
     }
     @Override
     public String toString(){
@@ -29,5 +24,20 @@ public class ASMArg1 extends ASMInstruction {
     @Override
     public ArrayList<ASMInstruction> accept(RegisterAllocationTrivialVisitor regVisitor) {
         return regVisitor.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ASMArg1 asmArg1 = (ASMArg1) o;
+
+        return left.equals(asmArg1.left);
+    }
+
+    @Override
+    public int hashCode() {
+        return left.hashCode();
     }
 }

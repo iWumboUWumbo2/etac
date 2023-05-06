@@ -11,9 +11,6 @@ public class ASMArg0 extends ASMInstruction{
         super(op);
     }
     @Override
-    public void createPrint(HashMap<String, Integer> location) {
-    }
-    @Override
     public String toString(){
         return opCodeToString();
     }
@@ -21,4 +18,5 @@ public class ASMArg0 extends ASMInstruction{
     public ArrayList<ASMInstruction> accept(RegisterAllocationTrivialVisitor regVisitor) {
         return regVisitor.visit(this);
     }
+
 }

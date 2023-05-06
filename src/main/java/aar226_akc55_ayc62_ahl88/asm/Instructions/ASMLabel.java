@@ -19,9 +19,6 @@ public class ASMLabel extends ASMInstruction {
     }
 
     @Override
-    public void createPrint(HashMap<String, Integer> location) {
-    }
-    @Override
     public String toString(){
         return opCodeToString() + label+":";
     }

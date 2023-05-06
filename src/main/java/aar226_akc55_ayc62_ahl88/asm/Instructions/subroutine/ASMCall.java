@@ -5,7 +5,12 @@ import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMExpr;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 
 public class ASMCall extends ASMArg1 {
-    public ASMCall(ASMExpr label) {
+
+    public long numParams;
+    public long numReturns;
+    public ASMCall(ASMExpr label,long param, long rets) {
         super(ASMOpCodes.CALL, label);
+        numParams = param;
+        numReturns = rets;
     }
 }
