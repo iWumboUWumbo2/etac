@@ -74,8 +74,13 @@ public class IRLoweringVisitor extends IRVisitor {
         if (n_ instanceof IRReturn irret) return canon(irret);
         if (n_ instanceof IRSeq irseq) return canon(irseq);
         if (n_ instanceof IRTemp irtem) return canon(irtem);
+        if (n_ instanceof IRdud dud) return canon(dud);
 
         throw new Error("Why is node not found");
+    }
+
+    private IRNode canon(IRdud dud) {
+        return dud;
     }
 
     private boolean hasNoUnmarkedPredecessors(BasicBlock block,ArrayList<BasicBlock> blocks) {

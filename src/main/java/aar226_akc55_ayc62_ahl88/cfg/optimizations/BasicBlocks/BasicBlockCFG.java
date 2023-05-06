@@ -17,7 +17,7 @@ public class BasicBlockCFG {
     HashSet<String> originLabels;
 
     HashSet<String> destLabels;
-    ArrayList<IRStmt> body;
+    ArrayList<CFGNode<IRStmt>> body;
 
     private ArrayList<BasicBlockCFG> children;
 
@@ -33,7 +33,7 @@ public class BasicBlockCFG {
         this.body = new ArrayList<>();
     }
 
-    public ArrayList<IRStmt> getBody() {return body; }
+    public ArrayList<CFGNode<IRStmt>> getBody() { return body; }
 
     public BasicBlockCFG getFallThroughChild() {
         return children.get(FALLTHROUGH);
@@ -71,7 +71,8 @@ public class BasicBlockCFG {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(" Block : ");
-        for (IRStmt stmt: body){
+        for (CFGNode<IRStmt> node: body){
+            IRStmt stmt = node.getStmt();
             String escape = stmt.toString().replaceAll("\n","");
             builder.append(escape).append('\n');
         }
@@ -80,7 +81,8 @@ public class BasicBlockCFG {
 
     public Set<IRTemp> dataflowDef(){
         HashSet<IRTemp> defSet = new HashSet<>();
-        for (IRStmt stmt: body){
+        for (CFGNode<IRStmt> node: body){
+            IRStmt stmt = node.getStmt();
             if (stmt instanceof IRMove move && move.target() instanceof IRTemp temp){
                 defSet.add(temp);
             }else if (stmt instanceof IRCallStmt call){
@@ -96,7 +98,8 @@ public class BasicBlockCFG {
 
     public Set<IRTemp> dataflowUse(){
         HashSet<IRTemp> res = new HashSet<>();
-        for (IRStmt stmt : body){
+        for (CFGNode<IRStmt> node: body){
+            IRStmt stmt = node.getStmt();
             res.addAll(singleStmtUse(stmt));
         }
         return res;

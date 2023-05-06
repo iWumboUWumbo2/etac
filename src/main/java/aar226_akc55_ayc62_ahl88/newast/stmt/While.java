@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
+import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
@@ -36,12 +37,13 @@ public class While extends Stmt {
         }
 
         table.enterScope();
-//        System.out.println("WHILE CONTEXT: \n");
+        // Save old var
+        Boolean oldParentLoop = table.parentLoop;
+        table.parentLoop = true;
+        // Typecheck stmts
         Type cond1 = stmt.typeCheck(table);
-//        if (!(stmt instanceof Block)) {
-//            table.printContext();
-//        }
-//        System.out.println("\nEND WHILE CONTEXT. \n");
+        // Restore old var
+        table.parentLoop = oldParentLoop;
         table.exitScope();
 
         if (!isRType(cond1)){

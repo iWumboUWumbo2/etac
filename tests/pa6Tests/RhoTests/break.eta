@@ -1,0 +1,10 @@
+main(args : int[][]) {
+    a : int = 5;
+    break;
+    while a < 100 {
+        a = a + 5;
+        if a > 51 {
+            a = 1000;
+        }
+    }
+}

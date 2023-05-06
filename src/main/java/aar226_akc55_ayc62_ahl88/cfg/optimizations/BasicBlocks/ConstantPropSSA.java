@@ -13,30 +13,36 @@ import java.util.*;
 public class ConstantPropSSA {
 
 
-    CFGGraph<IRStmt> graph;
+    CFGGraphBasicBlock graph;
 
     // ASSUME SSA
-    public ConstantPropSSA(CFGGraph<IRStmt> graph){
+    public ConstantPropSSA(CFGGraphBasicBlock graph){
         this.graph = graph;
     }
 
-    public ArrayList<IRStmt> workList(){
+    public void workList(){
         HashMap<IRTemp, HashSet<CFGNode<IRStmt>>> uses = new HashMap<>();
 
-        for (CFGNode<IRStmt> node : graph.getNodes()){
-            Set<IRTemp> nodeUse = LiveVariableAnalysis.use(node.getStmt());
-            for (IRTemp t : nodeUse){
-                if (!(t.name().startsWith("_RV") || t.name().startsWith("_ARG"))){
-                    if (!uses.containsKey(t)){
-                        uses.put(t,new HashSet<>());
+        for (BasicBlockCFG bb : graph.getNodes()) {
+            for (CFGNode<IRStmt> node : bb.getBody()) {
+                Set<IRTemp> nodeUse = LiveVariableAnalysis.use(node.getStmt());
+                for (IRTemp t : nodeUse) {
+                    if (!uses.containsKey(t)) {
+                        uses.put(t, new HashSet<>());
                     }
                     uses.get(t).add(node);
                 }
             }
         }
 
-        HashSet<CFGNode<IRStmt>> set = new HashSet<>(graph.getNodes());
-        Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>(graph.reversePostorder());
+//        HashSet<CFGNode<IRStmt>> set = new HashSet<>(graph.getNodes());
+//        Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>(graph.reversePostorder());
+        ArrayList<BasicBlockCFG> bbs = graph.reversePostorder();
+        Queue<CFGNode<IRStmt>> queue = new ArrayDeque<>();
+
+        for (BasicBlockCFG bb : bbs) {
+            queue.addAll(bb.getBody());
+        }
 
         while (!queue.isEmpty()){
             CFGNode<IRStmt> s = queue.poll();
@@ -47,9 +53,10 @@ public class ConstantPropSSA {
                     s.setStmt(nxtStatement);
                 }
             }
+
             if (s.getStmt() instanceof IRMove mov && mov.source() instanceof
                     IRConst cons && mov.target() instanceof IRTemp temp && uses.containsKey(temp)){
-                IRConst valueToProp =new IRConst(cons.value());
+                IRConst valueToProp = new IRConst(cons.value());
                 Pair<IRTemp,IRConst> pairMap = new Pair<>(temp,valueToProp);
                 s.isDeleted = true;
 //                System.out.println(temp);
@@ -65,13 +72,8 @@ public class ConstantPropSSA {
                 }
             }
         }
-        ArrayList<IRStmt> res = new ArrayList<>();
-        for (CFGNode<IRStmt> node : graph.getNodes()){
-            if (!node.isDeleted){
-                res.add(node.getStmt());
-            }
-        }
-        return res;
+
+        graph.removeDeletedNodes();
     }
     private Pair<Boolean,Long> isPhiConst(IRPhi phi){
         if (phi.getArgs().size() == 0) {

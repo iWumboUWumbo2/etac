@@ -10,12 +10,12 @@ import aar226_akc55_ayc62_ahl88.newast.definitions.MultiGlobalDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayaccessexpr.ArrayAccessExpr;
 import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
+import aar226_akc55_ayc62_ahl88.newast.expr.binop.RecordAcessBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.EquivalenceBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.IntegerComparisonBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.boolbop.LogicalBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.IntOutBinop;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.intbop.PlusBinop;
-import aar226_akc55_ayc62_ahl88.newast.expr.recordaccessexpr.RecordAccess;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.NotUnop;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.IntegerNegExpr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.*;
@@ -83,7 +83,7 @@ public interface Visitor<T> {
 
     T visit(ArrAccessDecl node);
 
-    T visit(RecordAccess node);
+    T visit(RecordAcessBinop node);
 
     T visit(NoTypeDecl node);
 

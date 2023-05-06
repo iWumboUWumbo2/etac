@@ -465,7 +465,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
      * @param expr checking if ASMexpr has temp
      * @param temps returns the set of temps
      */
-    private void checkExprForTemp(ASMExpr expr, HashSet<String> temps){
+    public static void checkExprForTemp(ASMExpr expr, HashSet<String> temps){
         if (expr == null){
             return;
         }
@@ -495,7 +495,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
      * @param mem
      * @return
      */
-    private ArrayList<ASMExpr> flattenMem(ASMMemExpr mem){
+    public static ArrayList<ASMExpr> flattenMem(ASMMemExpr mem){
         ArrayList<ASMExpr> res = new ArrayList<>();
         if (mem.getMem() instanceof ASMBinOpExpr binop){
             res.addAll(flattenBinop(binop));
@@ -513,7 +513,7 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
      * @param binop
      * @return
      */
-    private ArrayList<ASMExpr> flattenBinop(ASMBinOpExpr binop){
+    public static ArrayList<ASMExpr> flattenBinop(ASMBinOpExpr binop){
         ArrayList<ASMExpr> res = new ArrayList<>();
         if (binop.getLeft() instanceof ASMBinOpExpr leftBinop){
             res.addAll(flattenBinop(leftBinop));

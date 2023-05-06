@@ -23,6 +23,7 @@ public class RecordDef extends Definition {
         this.recordTypes = recordTypes;
     }
 
+    // Todo fix
     public Type typeCheck(SymbolTable<Type> table) {
         return null;
     }
@@ -31,10 +32,6 @@ public class RecordDef extends Definition {
     }
 
     public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
-        // table keeps track of var names and methods
-        // recordTable keeps track of record names
-        // currentFile keeps track of
-
         // Check if fields have the same names or same as record name.
         table.enterScope();
         Id old = table.currentParentFunction;

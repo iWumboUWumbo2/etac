@@ -1,0 +1,341 @@
+*****IRE1*****
+(TEMP temp)
+*****IRE2*****
+(ESEQ
+(SEQ
+(MOVE (TEMP t4) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc) (ADD (MUL (TEMP t4) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t3) (TEMP _RV1))
+(MOVE (MEM (TEMP t3)) (TEMP t4))
+(MOVE
+(MEM (ADD (TEMP t3) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t5) (TEMP list))
+(MOVE (TEMP t6) (TEMP counter))
+(CJUMP (ULT (TEMP t6) (MEM (SUB (TEMP t5) (CONST 8)))) l3 l4)
+(LABEL l4)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l3))
+(MEM (ADD (TEMP t5) (MUL (TEMP t6) (CONST 8)))))))
+(ADD (TEMP t3) (CONST 8)))
+*****SOL*****
+(ESEQ
+(SEQ
+(SEQ
+(MOVE (TEMP t7) (MEM (SUB (TEMP temp) (CONST 8))))
+(MOVE
+(TEMP t8)
+(MEM
+(SUB
+(ESEQ
+(SEQ
+(MOVE (TEMP t4) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc)
+(ADD (MUL (TEMP t4) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t3) (TEMP _RV1))
+(MOVE (MEM (TEMP t3)) (TEMP t4))
+(MOVE
+(MEM (ADD (TEMP t3) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t5) (TEMP list))
+(MOVE (TEMP t6) (TEMP counter))
+(CJUMP (ULT (TEMP t6) (MEM (SUB (TEMP t5) (CONST 8)))) l3 l4)
+(LABEL l4)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l3))
+(MEM (ADD (TEMP t5) (MUL (TEMP t6) (CONST 8)))))))
+(ADD (TEMP t3) (CONST 8)))
+(CONST 8))))
+(MOVE (TEMP t9) (ADD (TEMP t7) (TEMP t8)))
+(SEQ
+(CALL_STMT 1 (NAME _eta_alloc) (ADD (MUL (TEMP t9) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t10) (TEMP _RV1)))
+(MOVE (MEM (TEMP t10)) (TEMP t9))
+(MOVE (TEMP t10) (ADD (TEMP t10) (CONST 8))))
+(SEQ
+(MOVE (TEMP t11) (CONST 0))
+(LABEL l5)
+(CJUMP (LT (TEMP t11) (TEMP t7)) l6 l7)
+(LABEL l6)
+(MOVE (MEM (ADD (MUL (CONST 8) (TEMP t11)) (TEMP t10)))
+(MEM (ADD (MUL (CONST 8) (TEMP t11)) (TEMP temp))))
+(MOVE (TEMP t11) (ADD (TEMP t11) (CONST 1)))
+(JUMP (NAME l5))
+(LABEL l7))
+(SEQ
+(MOVE (TEMP t12) (CONST 0))
+(LABEL l8)
+(CJUMP (LT (TEMP t12) (TEMP t8)) l9 l10)
+(LABEL l9)
+(MOVE
+(MEM (ADD (MUL (CONST 8) (ADD (TEMP t12) (TEMP t7))) (TEMP t10)))
+(MEM
+(ADD
+(MUL (CONST 8) (TEMP t12))
+(ESEQ
+(SEQ
+(MOVE (TEMP t4) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc)
+(ADD (MUL (TEMP t4) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t3) (TEMP _RV1))
+(MOVE (MEM (TEMP t3)) (TEMP t4))
+(MOVE
+(MEM (ADD (TEMP t3) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t5) (TEMP list))
+(MOVE (TEMP t6) (TEMP counter))
+(CJUMP (ULT (TEMP t6) (MEM (SUB (TEMP t5) (CONST 8)))) l3 l4)
+(LABEL l4)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l3))
+(MEM (ADD (TEMP t5) (MUL (TEMP t6) (CONST 8)))))))
+(ADD (TEMP t3) (CONST 8))))))
+(MOVE (TEMP t12) (ADD (TEMP t12) (CONST 1)))
+(JUMP (NAME l8))
+(LABEL l10)))
+(TEMP t10))
+*****IRE1*****
+(ESEQ
+(SEQ
+(MOVE (TEMP t16) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc) (ADD (MUL (TEMP t16) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t15) (TEMP _RV1))
+(MOVE (MEM (TEMP t15)) (TEMP t16))
+(MOVE
+(MEM (ADD (TEMP t15) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t17) (TEMP list1))
+(MOVE (TEMP t18) (CONST 0))
+(CJUMP (ULT (TEMP t18) (MEM (SUB (TEMP t17) (CONST 8)))) l15 l16)
+(LABEL l16)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l15))
+(MEM (ADD (TEMP t17) (MUL (TEMP t18) (CONST 8)))))))
+(ADD (TEMP t15) (CONST 8)))
+*****IRE2*****
+(ESEQ
+(CALL_STMT 1 (NAME _ImergeTwoLists_aiaiai)
+(ESEQ (CALL_STMT 1 (NAME _IdeleteFirst_aiai) (TEMP list1)) (TEMP _RV1))
+(TEMP list2))
+(TEMP _RV1))
+*****SOL*****
+(ESEQ
+(SEQ
+(SEQ
+(MOVE
+(TEMP t19)
+(MEM
+(SUB
+(ESEQ
+(SEQ
+(MOVE (TEMP t16) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc)
+(ADD (MUL (TEMP t16) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t15) (TEMP _RV1))
+(MOVE (MEM (TEMP t15)) (TEMP t16))
+(MOVE
+(MEM (ADD (TEMP t15) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t17) (TEMP list1))
+(MOVE (TEMP t18) (CONST 0))
+(CJUMP (ULT (TEMP t18) (MEM (SUB (TEMP t17) (CONST 8)))) l15 l16)
+(LABEL l16)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l15))
+(MEM (ADD (TEMP t17) (MUL (TEMP t18) (CONST 8)))))))
+(ADD (TEMP t15) (CONST 8)))
+(CONST 8))))
+(MOVE
+(TEMP t20)
+(MEM
+(SUB
+(ESEQ
+(CALL_STMT 1 (NAME _ImergeTwoLists_aiaiai)
+(ESEQ (CALL_STMT 1 (NAME _IdeleteFirst_aiai) (TEMP list1)) (TEMP _RV1))
+(TEMP list2))
+(TEMP _RV1))
+(CONST 8))))
+(MOVE (TEMP t21) (ADD (TEMP t19) (TEMP t20)))
+(SEQ
+(CALL_STMT 1 (NAME _eta_alloc) (ADD (MUL (TEMP t21) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t22) (TEMP _RV1)))
+(MOVE (MEM (TEMP t22)) (TEMP t21))
+(MOVE (TEMP t22) (ADD (TEMP t22) (CONST 8))))
+(SEQ
+(MOVE (TEMP t23) (CONST 0))
+(LABEL l17)
+(CJUMP (LT (TEMP t23) (TEMP t19)) l18 l19)
+(LABEL l18)
+(MOVE
+(MEM (ADD (MUL (CONST 8) (TEMP t23)) (TEMP t22)))
+(MEM
+(ADD
+(MUL (CONST 8) (TEMP t23))
+(ESEQ
+(SEQ
+(MOVE (TEMP t16) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc)
+(ADD (MUL (TEMP t16) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t15) (TEMP _RV1))
+(MOVE (MEM (TEMP t15)) (TEMP t16))
+(MOVE
+(MEM (ADD (TEMP t15) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t17) (TEMP list1))
+(MOVE (TEMP t18) (CONST 0))
+(CJUMP (ULT (TEMP t18) (MEM (SUB (TEMP t17) (CONST 8)))) l15 l16)
+(LABEL l16)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l15))
+(MEM (ADD (TEMP t17) (MUL (TEMP t18) (CONST 8)))))))
+(ADD (TEMP t15) (CONST 8))))))
+(MOVE (TEMP t23) (ADD (TEMP t23) (CONST 1)))
+(JUMP (NAME l17))
+(LABEL l19))
+(SEQ
+(MOVE (TEMP t24) (CONST 0))
+(LABEL l20)
+(CJUMP (LT (TEMP t24) (TEMP t20)) l21 l22)
+(LABEL l21)
+(MOVE
+(MEM (ADD (MUL (CONST 8) (ADD (TEMP t24) (TEMP t19))) (TEMP t22)))
+(MEM
+(ADD
+(MUL (CONST 8) (TEMP t24))
+(ESEQ
+(CALL_STMT 1 (NAME _ImergeTwoLists_aiaiai)
+(ESEQ (CALL_STMT 1 (NAME _IdeleteFirst_aiai) (TEMP list1)) (TEMP _RV1))
+(TEMP list2))
+(TEMP _RV1)))))
+(MOVE (TEMP t24) (ADD (TEMP t24) (CONST 1)))
+(JUMP (NAME l20))
+(LABEL l22)))
+(TEMP t22))
+*****IRE1*****
+(ESEQ
+(SEQ
+(MOVE (TEMP t26) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc) (ADD (MUL (TEMP t26) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t25) (TEMP _RV1))
+(MOVE (MEM (TEMP t25)) (TEMP t26))
+(MOVE
+(MEM (ADD (TEMP t25) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t27) (TEMP list2))
+(MOVE (TEMP t28) (CONST 0))
+(CJUMP (ULT (TEMP t28) (MEM (SUB (TEMP t27) (CONST 8)))) l23 l24)
+(LABEL l24)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l23))
+(MEM (ADD (TEMP t27) (MUL (TEMP t28) (CONST 8)))))))
+(ADD (TEMP t25) (CONST 8)))
+*****IRE2*****
+(ESEQ
+(CALL_STMT 1 (NAME _ImergeTwoLists_aiaiai)
+(ESEQ (CALL_STMT 1 (NAME _IdeleteFirst_aiai) (TEMP list2)) (TEMP _RV1))
+(TEMP list1))
+(TEMP _RV1))
+*****SOL*****
+(ESEQ
+(SEQ
+(SEQ
+(MOVE
+(TEMP t29)
+(MEM
+(SUB
+(ESEQ
+(SEQ
+(MOVE (TEMP t26) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc)
+(ADD (MUL (TEMP t26) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t25) (TEMP _RV1))
+(MOVE (MEM (TEMP t25)) (TEMP t26))
+(MOVE
+(MEM (ADD (TEMP t25) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t27) (TEMP list2))
+(MOVE (TEMP t28) (CONST 0))
+(CJUMP (ULT (TEMP t28) (MEM (SUB (TEMP t27) (CONST 8)))) l23 l24)
+(LABEL l24)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l23))
+(MEM (ADD (TEMP t27) (MUL (TEMP t28) (CONST 8)))))))
+(ADD (TEMP t25) (CONST 8)))
+(CONST 8))))
+(MOVE
+(TEMP t30)
+(MEM
+(SUB
+(ESEQ
+(CALL_STMT 1 (NAME _ImergeTwoLists_aiaiai)
+(ESEQ (CALL_STMT 1 (NAME _IdeleteFirst_aiai) (TEMP list2)) (TEMP _RV1))
+(TEMP list1))
+(TEMP _RV1))
+(CONST 8))))
+(MOVE (TEMP t31) (ADD (TEMP t29) (TEMP t30)))
+(SEQ
+(CALL_STMT 1 (NAME _eta_alloc) (ADD (MUL (TEMP t31) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t32) (TEMP _RV1)))
+(MOVE (MEM (TEMP t32)) (TEMP t31))
+(MOVE (TEMP t32) (ADD (TEMP t32) (CONST 8))))
+(SEQ
+(MOVE (TEMP t33) (CONST 0))
+(LABEL l25)
+(CJUMP (LT (TEMP t33) (TEMP t29)) l26 l27)
+(LABEL l26)
+(MOVE
+(MEM (ADD (MUL (CONST 8) (TEMP t33)) (TEMP t32)))
+(MEM
+(ADD
+(MUL (CONST 8) (TEMP t33))
+(ESEQ
+(SEQ
+(MOVE (TEMP t26) (CONST 1))
+(CALL_STMT 1 (NAME _eta_alloc)
+(ADD (MUL (TEMP t26) (CONST 8)) (CONST 8)))
+(MOVE (TEMP t25) (TEMP _RV1))
+(MOVE (MEM (TEMP t25)) (TEMP t26))
+(MOVE
+(MEM (ADD (TEMP t25) (CONST 8)))
+(ESEQ
+(SEQ
+(MOVE (TEMP t27) (TEMP list2))
+(MOVE (TEMP t28) (CONST 0))
+(CJUMP (ULT (TEMP t28) (MEM (SUB (TEMP t27) (CONST 8)))) l23 l24)
+(LABEL l24)
+(CALL_STMT 0 (NAME _eta_out_of_bounds))
+(LABEL l23))
+(MEM (ADD (TEMP t27) (MUL (TEMP t28) (CONST 8)))))))
+(ADD (TEMP t25) (CONST 8))))))
+(MOVE (TEMP t33) (ADD (TEMP t33) (CONST 1)))
+(JUMP (NAME l25))
+(LABEL l27))
+(SEQ
+(MOVE (TEMP t34) (CONST 0))
+(LABEL l28)
+(CJUMP (LT (TEMP t34) (TEMP t30)) l29 l30)
+(LABEL l29)
+(MOVE
+(MEM (ADD (MUL (CONST 8) (ADD (TEMP t34) (TEMP t29))) (TEMP t32)))
+(MEM
+(ADD
+(MUL (CONST 8) (TEMP t34))
+(ESEQ
+(CALL_STMT 1 (NAME _ImergeTwoLists_aiaiai)
+(ESEQ (CALL_STMT 1 (NAME _IdeleteFirst_aiai) (TEMP list2)) (TEMP _RV1))
+(TEMP list1))
+(TEMP _RV1)))))
+(MOVE (TEMP t34) (ADD (TEMP t34) (CONST 1)))
+(JUMP (NAME l28))
+(LABEL l30)))
+(TEMP t32))
+Constant-folded?: true
+Canonical?: false

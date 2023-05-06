@@ -87,7 +87,7 @@ public class ForwardBlockDataflow<T> {
 
             if (!oldOut.equals(newOut)) {
                 for (BasicBlockCFG succ : node.getChildren()) {
-                    if (!set.contains(succ)) {
+                    if (succ != null && !set.contains(succ)) {
                         set.add(succ);
                         queue.add(succ);
                     }
