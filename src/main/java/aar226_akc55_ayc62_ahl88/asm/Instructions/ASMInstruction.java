@@ -29,7 +29,6 @@ public abstract class ASMInstruction {
             case JLE -> "jle ";
             case JG -> "jg ";
             case JGE -> "jge ";
-            case JR -> "jr ";
             case CALL -> "call ";
             case LABEL -> "";
             case INC -> "inc ";
