@@ -5,12 +5,17 @@ main(args:int[][]) {
     if (y == null) println("y is null");
     z:int[][] = {{3, 4}, {1, 2}, null}
     a:int[][][][] = {{null}, null, {{null}}}
-    frworks : Grr[] = {null}
+    frworks : Grr[] = {null, Grr(null)}
+    frworks = {Grr(null), null}
+    neestedRecord : Grr[][] = {null, {null}, {Grr(null)}}
+    // neestedRecord = {{{null}}}      // fail type check
+    //a = {{{null}}, null, {{{null}}}} // fail type check
+    //a = {{{{null}}}}                 // fail type checkv
+    //notnullable : int = null;        // fail type check
+    //frfail : int[] = {1, null}       // fail type check
+    //notnullable2:int[] = {null};     // fail type check
+    //fail:int[][][] = {{{null}}}      // fail type check
 
-    //notnullable : int = null; // this should fail type check
-    //frfail : int[] = {1, null}
-    //notnullable2:int[] = {null}; // this should fail type check
-    fail:int[][][] = {{{null}}} // this should fail type check
 }
 
 record Grr {
