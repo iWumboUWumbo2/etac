@@ -26,4 +26,19 @@ public class ASMMemExpr extends ASMExpr{
         }
         return "QWORD PTR [ " + mem +" ]";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ASMMemExpr that = (ASMMemExpr) o;
+
+        return mem.equals(that.mem);
+    }
+
+    @Override
+    public int hashCode() {
+        return mem.hashCode();
+    }
 }

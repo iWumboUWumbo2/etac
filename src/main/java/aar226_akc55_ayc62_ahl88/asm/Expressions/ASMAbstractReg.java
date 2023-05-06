@@ -4,5 +4,4 @@ public abstract class ASMAbstractReg extends ASMExpr{
 
     @Override
     public abstract int hashCode();
-
 }
