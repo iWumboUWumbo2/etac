@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMAbstractJump;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.jumps.ASMJumpAlways;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import org.apache.commons.text.StringEscapeUtils;
@@ -161,7 +162,7 @@ public class CFGGraph<T> {
         return nodes.toString();
     }
 
-    public String CFGtoDOT() {
+    public String CFGtoDOT(HashMap<CFGNode<T>, String> in, HashMap<CFGNode<T>, String> out) {
         StringBuilder result = new StringBuilder();
 
         // Assume first node is start node
@@ -193,7 +194,10 @@ public class CFGGraph<T> {
             }
 
             result.append("\t").append(visitedIDs.get(popped))
-                .append("\t [ label=\"").append(StringEscapeUtils.escapeJava(popped.toString()))
+                .append("\t [ label=\"")
+                    .append("in:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
+                    .append("out:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
+                    .append(StringEscapeUtils.escapeJava(popped.toString()))
                 .append("\"]\n");
 
             for (CFGNode<T> child : popped.getChildren()) {
@@ -213,6 +217,10 @@ public class CFGGraph<T> {
 
         result.append("}");
         return result.toString();
+    }
+
+    public String CFGtoDOT() {
+        return CFGtoDOT(new HashMap<>(), new HashMap<>());
     }
 
     public ArrayList<CFGNode<T>> getNodes() {
