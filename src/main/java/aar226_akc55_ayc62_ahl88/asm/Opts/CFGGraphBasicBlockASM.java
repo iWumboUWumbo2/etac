@@ -17,7 +17,7 @@ import java.util.*;
 import static aar226_akc55_ayc62_ahl88.visitors.IRVisitor.OUT_OF_BOUNDS;
 
 public class CFGGraphBasicBlockASM {
-    public static ASMCall outOfBounds = new ASMCall(new ASMNameExpr(OUT_OF_BOUNDS));
+    public static ASMCall outOfBounds = new ASMCall(new ASMNameExpr(OUT_OF_BOUNDS),0,0);
     private ArrayList<BasicBlockASMCFG> nodes;
     private HashMap<String, Integer> labelMap;
     private HashMap<Integer, BasicBlockASMCFG> indToBasicBlock;

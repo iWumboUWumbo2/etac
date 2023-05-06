@@ -184,14 +184,20 @@ public class AbstractASMVisitor {
         for (ASMInstruction instr: instrs){
             if (instr instanceof ASMArg0 arg0){
                 switch (arg0.getOpCode()) {
-                    case RET -> res.add(new ASMRet());
+                    case RET -> {
+                        ASMRet ret = (ASMRet) instr;
+                        res.add(new ASMRet(ret.rets));
+                    }
                     case LEAVE -> res.add(new ASMLeave());
                     case CQTO -> res.add(new ASMCQTO());
                 }
             }else if (instr instanceof ASMArg1 arg1){
                 ASMExpr l = arg1.getLeft();
                 switch(arg1.getOpCode()){
-                    case CALL -> res.add(new ASMCall(l));
+                    case CALL -> {
+                        ASMCall call = (ASMCall) arg1;
+                        res.add(new ASMCall(l,call.numParams,call.numReturns));
+                    }
                     case DEC -> res.add(new ASMDec(l));
                     case IDIV -> res.add(new ASMIDiv(l));
                     case INC  -> res.add(new ASMInc(l));
@@ -1402,7 +1408,7 @@ public class AbstractASMVisitor {
         // leave
         // ret
         returnInstructions.add(new ASMLeave());
-        returnInstructions.add(new ASMRet());
+        returnInstructions.add(new ASMRet(returnSize));
         return returnInstructions;
     }
     public ArrayList<ASMInstruction> visit(IRCallStmt node) {
@@ -1470,7 +1476,7 @@ public class AbstractASMVisitor {
         }
         // Align by 16 bytes I have no idea how
         functionsNameToSig.put(functionName.name(),new Pair<>(argSiz,node.n_returns().intValue()));
-        instructions.add(new ASMCall(new ASMNameExpr(functionName.name())));
+        instructions.add(new ASMCall(new ASMNameExpr(functionName.name()),argSiz,node.n_returns()));
 
         if (argSiz > 6 && node.n_returns() <= 2){
             instructions.add(new ASMAdd(new ASMRegisterExpr("rsp"),

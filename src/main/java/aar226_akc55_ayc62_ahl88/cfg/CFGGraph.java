@@ -18,7 +18,7 @@ import static aar226_akc55_ayc62_ahl88.visitors.IRVisitor.OUT_OF_BOUNDS;
 
 public class CFGGraph<T> {
     public static IRCallStmt outOfBounds = new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>());
-    public static ASMCall asmOut = new ASMCall(new ASMNameExpr("_eta_out_of_bounds"));
+    public static ASMCall asmOut = new ASMCall(new ASMNameExpr("_eta_out_of_bounds"),0,0);
 
     private ArrayList<CFGNode<T>> nodes;
     private HashMap<String, Integer> labelMap;
