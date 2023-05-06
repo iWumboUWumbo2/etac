@@ -1,11 +1,27 @@
 use io;
 use conv;
+// Good test to screw others
 main(args:int[][]){
 
    a:int = 999981923891291234;
-
-   b:int = a + 99998192389129123
+    c:int = 102398471023423409;
+   b:int = 12304918234801 * (a + 99998192389129123) - 1203849120349123 * c;
 
    println(unparseInt(a));
+   _ = foo(1230987102983712);
+}
 
+
+foo(n:int):int{
+    println(unparseInt(n));
+    b:int = 10293874012983740;
+
+    c:int = gg();
+
+    println(unparseInt(c + b));
+    return 102394871029387409 + b;
+}
+
+gg():int{
+    return 1928730129387198;
 }
