@@ -26,18 +26,4 @@ public class ASMArg1 extends ASMInstruction {
         return regVisitor.visit(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ASMArg1 asmArg1 = (ASMArg1) o;
-
-        return left.equals(asmArg1.left);
-    }
-
-    @Override
-    public int hashCode() {
-        return left.hashCode();
-    }
 }
