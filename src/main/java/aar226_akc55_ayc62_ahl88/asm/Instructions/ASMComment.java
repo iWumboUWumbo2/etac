@@ -29,11 +29,6 @@ public class ASMComment extends ASMInstruction{
     }
 
     @Override
-    public void createPrint(HashMap<String, Integer> location) {
-
-    }
-
-    @Override
     public ArrayList<ASMInstruction> accept(RegisterAllocationTrivialVisitor regVisitor) {
         return regVisitor.visit(this);
     }

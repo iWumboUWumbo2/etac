@@ -13,8 +13,6 @@ public class ASMArg2 extends ASMInstruction {
 
     private ASMExpr left;
     private ASMExpr right;
-    private String leftPrint;
-    private String rightPrint;
     public ASMArg2(ASMOpCodes op, ASMExpr arg1, ASMExpr arg2){
         super(op);
         left = arg1;
@@ -29,20 +27,6 @@ public class ASMArg2 extends ASMInstruction {
         return right;
     }
 
-    public String getLeftPrint() {
-        return leftPrint;
-    }
-
-    public String getRightPrint() {
-        return rightPrint;
-    }
-
-    @Override
-    public void createPrint(HashMap<String, Integer> location) {
-        leftPrint = exprASMToString(left,location);
-        rightPrint = exprASMToString(right, location);
-    }
-
     @Override
     public ArrayList<ASMInstruction> accept(RegisterAllocationTrivialVisitor regVisitor) {
         return regVisitor.visit(this);
@@ -54,4 +38,21 @@ public class ASMArg2 extends ASMInstruction {
         return opCodeToString() + left +", " + right;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ASMArg2 arg2 = (ASMArg2) o;
+
+        if (!left.equals(arg2.left)) return false;
+        return right.equals(arg2.right);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = left.hashCode();
+        result = 31 * result + right.hashCode();
+        return result;
+    }
 }
