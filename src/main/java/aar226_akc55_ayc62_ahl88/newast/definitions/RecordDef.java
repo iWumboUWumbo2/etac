@@ -23,9 +23,8 @@ public class RecordDef extends Definition {
         this.recordTypes = recordTypes;
     }
 
-    // Todo fix
     public Type typeCheck(SymbolTable<Type> table) {
-        return null;
+        return nodeType;
     }
     public IRNode accept(IRVisitor visitor) {
         return null;
