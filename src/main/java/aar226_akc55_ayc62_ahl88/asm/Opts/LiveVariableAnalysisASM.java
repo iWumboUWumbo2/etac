@@ -171,10 +171,20 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
             case LABEL, COMMENT,CMP,RET -> {
             }
         }
+
         defSet.removeIf(e-> e instanceof ASMNameExpr);
         return defSet;
     }
 
+    private static void flattenAndAdd(ASMMemExpr mem, HashSet<ASMAbstractReg> usedSet) {
+        ArrayList<ASMExpr> flat = flattenMem(mem);
+        for (ASMExpr e : flat){
+            if (e instanceof ASMAbstractReg abs){
+                usedSet.add(abs);
+            }
+        }
+    }
+    
     public static Set<ASMAbstractReg> usesInASM(ASMInstruction instr) {
         HashSet<ASMAbstractReg> usedSet = new HashSet<>();
         switch(instr.getOpCode()){
@@ -190,12 +200,7 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                 if (arg1.getLeft() instanceof ASMAbstractReg temp){
                     usedSet.add(temp);
                 }else if (arg1.getLeft() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
+                    flattenAndAdd(mem, usedSet);
                 }else{
                     throw new InternalCompilerError("not mem or temp" + arg1);
                 }
@@ -209,12 +214,7 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                 if (arg1.getLeft() instanceof ASMAbstractReg temp){
                     usedSet.add(temp);
                 }else if (arg1.getLeft() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
+                    flattenAndAdd(mem, usedSet);
                 }else{
                     throw new InternalCompilerError("not mem or temp" + arg1);
                 }
@@ -231,44 +231,37 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
             //sub rsp, 8*l
             case ENTER,LEAVE -> {
             }
-            case MOV -> {
+            case MOV, MOVABS -> {
                 ASMArg2 arg2 = (ASMArg2) instr;
                 if (arg2.getRight() instanceof ASMAbstractReg abs){
                     usedSet.add(abs);
                 }else if (arg2.getRight() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
+                    flattenAndAdd(mem, usedSet);
                 }else{
-                    if (arg2.getRight() instanceof ASMConstExpr ){
-
-                    }else {
+                    if (!(arg2.getRight() instanceof ASMConstExpr)){
                         throw new InternalCompilerError("not mem or temp" + arg2);
                     }
                 }
             }
-            case MOVABS -> {
-                ASMArg2 arg2 = (ASMArg2) instr;
-                if (arg2.getRight() instanceof ASMAbstractReg abs){
-                    usedSet.add(abs);
-                }else if (arg2.getRight() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
-                }else{
-                    if (arg2.getRight() instanceof ASMConstExpr ){
-
-                    }else {
-                        throw new InternalCompilerError("not mem or temp" + arg2);
-                    }
-                }
-            }
+//            case MOVABS -> {
+//                ASMArg2 arg2 = (ASMArg2) instr;
+//                if (arg2.getRight() instanceof ASMAbstractReg abs){
+//                    usedSet.add(abs);
+//                }else if (arg2.getRight() instanceof ASMMemExpr mem){
+//                    ArrayList<ASMExpr> flat = flattenMem(mem);
+//                    for (ASMExpr e : flat){
+//                        if (e instanceof ASMAbstractReg abs){
+//                            usedSet.add(abs);
+//                        }
+//                    }
+//                }else{
+//                    if (arg2.getRight() instanceof ASMConstExpr ){
+//
+//                    }else {
+//                        throw new InternalCompilerError("not mem or temp" + arg2);
+//                    }
+//                }
+//            }
             // AND r/m64
             case ADD, SUB, AND, OR, XOR,TEST,CMP -> {
                 ASMArg2 arg2 = (ASMArg2) instr;
@@ -276,24 +269,14 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                 if (arg2.getLeft() instanceof ASMAbstractReg abs){
                     usedSet.add(abs);
                 }else if (arg2.getLeft() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
+                    flattenAndAdd(mem, usedSet);
                 }else{
                     throw new InternalCompilerError("not mem or temp" + arg2);
                 }
                 if (arg2.getRight() instanceof ASMAbstractReg abs){
                     usedSet.add(abs);
                 }else if (arg2.getRight() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
+                    flattenAndAdd(mem, usedSet);
                 }else{
                     if (!(arg2.getRight() instanceof ASMConstExpr)) {
                         throw new InternalCompilerError("not mem temp or const" + arg2);
@@ -310,24 +293,14 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                     if (arg3.getA1() instanceof ASMAbstractReg abs){
                         usedSet.add(abs);
                     }else if (arg3.getA1() instanceof ASMMemExpr mem){
-                        ArrayList<ASMExpr> flat = flattenMem(mem);
-                        for (ASMExpr e : flat){
-                            if (e instanceof ASMAbstractReg abs){
-                                usedSet.add(abs);
-                            }
-                        }
+                        flattenAndAdd(mem, usedSet);
                     }else{
                         throw new InternalCompilerError("not mem or temp" + arg3);
                     }
                     if (arg3.getA2() instanceof ASMAbstractReg abs){
                         usedSet.add(abs);
                     }else if (arg3.getA2() instanceof ASMMemExpr mem){
-                        ArrayList<ASMExpr> flat = flattenMem(mem);
-                        for (ASMExpr e : flat){
-                            if (e instanceof ASMAbstractReg abs){
-                                usedSet.add(abs);
-                            }
-                        }
+                        flattenAndAdd(mem, usedSet);
                     }else{
                         throw new InternalCompilerError("not mem or temp" + arg3);
                     }
@@ -340,12 +313,7 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
                 if (arg2.getLeft() instanceof ASMAbstractReg abs){
                     usedSet.add(abs);
                 }else if (arg2.getLeft() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
+                    flattenAndAdd(mem, usedSet);
                 }else{
                     throw new InternalCompilerError("not mem or temp Shifts" + arg2);
                 }
@@ -354,12 +322,7 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
             case LEA -> {
                 ASMArg2 arg2 = (ASMArg2) instr;
                 if (arg2.getRight() instanceof ASMMemExpr mem){
-                    ArrayList<ASMExpr> flat = flattenMem(mem);
-                    for (ASMExpr e : flat){
-                        if (e instanceof ASMAbstractReg abs){
-                            usedSet.add(abs);
-                        }
-                    }
+                    flattenAndAdd(mem, usedSet);
                 }else{
                     throw new InternalCompilerError("not mem or temp" + arg2);
                 }
