@@ -437,6 +437,50 @@ public class IRVisitor implements Visitor<IRNode>{
     // TODO: 5/1/2023 Deal with record constructors
     @Override
     public IRExpr visit(FunctionCallExpr node) {
+        // check if node.id is in symbol table as a record
+        // essentially create array
+        Type nodeType = node.getFunctionSig();
+        if (nodeType.getType() == Type.TypeCheckingType.RECORD) {
+            String t = nxtTemp();   // temp label for malloc
+            ArrayList<Expr> values = node.getArgs();
+            long n = values.size();
+
+            // 8*n+8
+            IRBinOp size = new IRBinOp(IRBinOp.OpType.ADD,
+                    new IRBinOp(IRBinOp.OpType.MUL,
+                            new IRConst(n),
+                            new IRConst(WORD_BYTES)),
+                    new IRConst(WORD_BYTES));
+
+            // CALL(NAME(malloc), size)
+            IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"),1L, size);
+
+            // reg[t] <- call malloc
+            IRMove malloc_move = new IRMove(new IRTemp(t), new IRTemp("_RV1"));
+
+            IRMove size_move = new IRMove(new IRMem(new IRTemp(t)), new IRConst(n));
+
+            List<IRStmt> seq_list = new ArrayList<>(List.of(alloc_call, malloc_move, size_move));
+
+            for(int i = 0; i < n; i++) {
+                IRExpr ire = values.get(i).accept(this);
+                IRMove move_elmnt = new IRMove(new IRMem(new IRBinOp(
+                        IRBinOp.OpType.ADD,
+                        new IRTemp(t),
+                        new IRConst(8L*(i+1)))),
+                        ire );
+                seq_list.add(move_elmnt);
+            }
+
+            IRSeq ir_seq = new IRSeq(seq_list);
+
+            return new IRESeq(ir_seq,
+                    new IRBinOp(IRBinOp.OpType.ADD,
+                            new IRTemp(t),
+                            new IRConst(WORD_BYTES)));
+        }
+
+        // normal non-record stuff
         IRName func = new IRName(genABIFunc(node.getFunctionSig(),node.getId()));
         ArrayList<IRExpr> paramListIR = new ArrayList<>();
         for (Expr param: node.getArgs()){
