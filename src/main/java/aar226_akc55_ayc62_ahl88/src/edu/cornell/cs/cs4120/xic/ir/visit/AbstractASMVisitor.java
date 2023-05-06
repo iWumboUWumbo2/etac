@@ -65,6 +65,8 @@ import java.util.Set;
  */
 
 public class AbstractASMVisitor {
+
+    final boolean debug = false;
     private int tempCnt = 0;
 
     private final HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
@@ -93,7 +95,9 @@ public class AbstractASMVisitor {
     public ArrayList<ASMInstruction> visit(IRCJump node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String comm = node.toString().replaceAll("\n","");
-        instructions.add(new ASMComment(comm,null));
+        if (debug) {
+            instructions.add(new ASMComment(comm, null));
+        }
 
         IRExpr condition = node.cond();
 
@@ -405,7 +409,9 @@ public class AbstractASMVisitor {
     public ArrayList<ASMInstruction> visit(IRJump jump) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String comm = jump.toString().replaceAll("\n","");
-        instructions.add(new ASMComment(comm,null));
+        if (debug) {
+            instructions.add(new ASMComment(comm, null));
+        }
         if (jump.target() instanceof IRName name) {
             instructions.add(new ASMJumpAlways(new ASMNameExpr(name.name())));
         }
@@ -422,7 +428,9 @@ public class AbstractASMVisitor {
         IRExpr source = node.source();
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String nodeUnFlat = node.toString();
-        instructions.add(new ASMComment(nodeUnFlat.replaceAll("\n",""),null));
+        if (debug) {
+            instructions.add(new ASMComment(nodeUnFlat.replaceAll("\n", ""), null));
+        }
 
         // TEMP TEMP
         if (dest instanceof IRTemp t1 && source instanceof IRTemp t2) { // random case for testing atm
@@ -1372,7 +1380,9 @@ public class AbstractASMVisitor {
         //
         ArrayList<ASMInstruction> returnInstructions = new ArrayList<>();
         String comm = node.toString().replaceAll("\n","");
-        returnInstructions.add(new ASMComment(comm,null));
+        if (debug) {
+            returnInstructions.add(new ASMComment(comm, null));
+        }
         int returnSize = node.rets().size();
 
         ArrayList<String> tempNames = new ArrayList<>();
@@ -1414,9 +1424,11 @@ public class AbstractASMVisitor {
     public ArrayList<ASMInstruction> visit(IRCallStmt node) {
         ArrayList<ASMInstruction> instructions = new ArrayList<>();
         String comm = node.toString().replaceAll("\n","");
-        instructions.add(new ASMComment(comm,null));
+        if (debug) {
+            instructions.add(new ASMComment(comm, null));
+        }
         IRName functionName = (IRName) node.target();
-        instructions.add(new ASMComment("Add Padding",functionName.name()));
+        instructions.add(new ASMComment("Add Padding", functionName.name()));
         int argSiz = node.args().size();
         ArrayList<String> tempNames = new ArrayList<>();
         //in case returns stop being temporaries in the future.

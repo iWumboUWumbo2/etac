@@ -94,3 +94,8 @@ main(args : int[][]) {
     }
 
 }
+
+foo(){
+    x:int = 5;
+    println(unparseInt(x));
+}

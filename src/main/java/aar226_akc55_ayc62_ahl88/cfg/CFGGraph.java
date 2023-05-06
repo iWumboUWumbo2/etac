@@ -198,8 +198,8 @@ public class CFGGraph<T> {
             result.append("\t").append(visitedIDs.get(popped))
                 .append("\t [ label=\"")
                     .append("in:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
-                    .append("out:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
-                    .append(StringEscapeUtils.escapeJava(popped.toString()))
+                    .append(StringEscapeUtils.escapeJava(popped.toString())).append("\\n")
+                    .append("out:\t").append(StringEscapeUtils.escapeJava(out.getOrDefault(popped, ""))).append("\\n")
                 .append("\"]\n");
 
             for (CFGNode<T> child : popped.getChildren()) {
@@ -229,10 +229,10 @@ public class CFGGraph<T> {
     public static HashMap<CFGNode<ASMInstruction>,String> HashmapString(HashMap<CFGNode<ASMInstruction>,Set<ASMAbstractReg>> mapping, boolean inMap){
         HashMap<CFGNode<ASMInstruction>,String> res = new HashMap<>();
         for (CFGNode<ASMInstruction> node : mapping.keySet()){
-            StringBuilder builder = new StringBuilder(inMap ? "live in: " : "live out: ");
+            StringBuilder builder = new StringBuilder();
             Set<ASMAbstractReg> regs = mapping.get(node);
             for (ASMAbstractReg reg : regs){
-                builder.append(reg.toString());
+                builder.append(reg.toString()).append(" ");
             }
             res.put(node,builder.toString());
         }

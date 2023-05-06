@@ -538,7 +538,6 @@ public class Main {
                 CFGGraph<ASMInstruction> asmSingleStmt = new CFGGraph<>(asmBasicblocks.getBackASM());
                 LiveVariableAnalysisASM lva = new LiveVariableAnalysisASM(asmSingleStmt);
                 lva.workList();
-                System.out.println("done lva");
 //                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate",
 //                        asmSingleStmt.CFGtoDOT(CFGGraph.HashmapString(lva.getInMapping(),true),
 //                                CFGGraph.HashmapString(lva.getOutMapping(),false)));
