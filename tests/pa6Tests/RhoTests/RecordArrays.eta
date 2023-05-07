@@ -1,3 +1,6 @@
+use io
+use conv
+
 record Point {
     x : int
     y : int
@@ -17,18 +20,57 @@ main(args : int[][]) {
 
     f : int[] = {b.y, c.x};
 
-    g : Point[] = {a, Point(111111,111111111111), c}
+    //g : Point[] = {a, Point(111111,111111111111), c}
 
     h : Point[a.y];
     h[0] = c;
 
-    //i : int[] = {g[0].x, g[1].y, g[2].x, g[2].y};
+    i : int[] = {g[0].x, g[1].y, g[2].x, g[2].y};
 
-    j : PointArr = PointArr(g);
+    //j : PointArr = PointArr(g);
 
-    k : Point = j.x[0]
+    //k : Point = j.x[0]
 
-    l : int = j.x[1].y
-//    ((J.X)[2]).Y
+    //l : int = k.y
+
+    println(unparseInt(a.x)) // 2, 3
+    println(unparseInt(a.y))
+    println()
+
+    println(unparseInt(b.x)) // 4,5
+    println(unparseInt(b.y))
+    println()
+
+    println(unparseInt(c.x)) // 6,7
+    println(unparseInt(c.y))
+    println()
+
+    println(unparseInt(e[0][0])) // 4
+    println()
+
+    println(unparseInt(f[0])) // 5,6
+    println(unparseInt(f[1]))
+    println()
+
+    println(unparseInt(g[0].x)) //2,3,111111,111111111111,6,7
+    println(unparseInt(g[0].y))
+    println(unparseInt(g[1].x))
+    println(unparseInt(g[1].y))
+    println(unparseInt(g[2].x))
+    println(unparseInt(g[2].y))
+    println()
+
+    println(unparseInt(length(h))) // 3
+    println()
+
+    //println(unparseInt(i[0])) //2, 111111111111, 6,7 ,4
+    //println(unparseInt(i[0]))
+    //println(unparseInt(i[0]))
+    //println(unparseInt(i[0]))
+    //println(unparseInt(length(i)))
+    //println()
+
+    //println(unparseInt(l)) // 3
+
 
 }

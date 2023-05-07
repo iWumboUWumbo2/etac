@@ -8,5 +8,4 @@ foo() {
     c, d:int = 4, 4;
     x, y, z = true, false, true;
     e, f, g : int = 1, 2, 3; // pass parse, fail typecheck
-
 }

@@ -1,3 +1,6 @@
+use io
+use conv
+
 record Point {
     x,y:int
 }
@@ -17,27 +20,27 @@ main(args : int[][]) {
     e : Point = createPoint(8, b.x);
     f : Point = createPoint(a.x, 7);
     g : Point = createPoint(c.x, d.y);
-    x : Point = createPoint(e.x, f.y);
-    y : Point = createPoint(g.y, c.x);
+    h : Point = createPoint(e.x, f.y);
+    i : Point = createPoint(g.y, c.x);
 
-    //println(unparseInt(a.x))
-    //println(unparseInt(a.y))
-    //println(unparseInt(b.x))
-    //println(unparseInt(b.y))
-    //println(unparseInt(c.x))
-    //println(unparseInt(c.y))
-    //println(unparseInt(d.x))
-    //println(unparseInt(d.y))
-    //println(unparseInt(e.x))
-    //println(unparseInt(e.y))
-    //println(unparseInt(f.x))
-    //println(unparseInt(f.y))
-    //println(unparseInt(g.x))
-    //println(unparseInt(g.y))
-    //println(unparseInt(x.x))
-    //println(unparseInt(x.y))
-    //println(unparseInt(y.x))
-    //println(unparseInt(y.y))
+    println(unparseInt(a.x))
+    println(unparseInt(a.y))
+    println(unparseInt(b.x))
+    println(unparseInt(b.y))
+    println(unparseInt(c.x))
+    println(unparseInt(c.y))
+    println(unparseInt(d.x))
+    println(unparseInt(d.y))
+    println(unparseInt(e.x))
+    println(unparseInt(e.y))
+    println(unparseInt(f.x))
+    println(unparseInt(f.y))
+    println(unparseInt(g.x))
+    println(unparseInt(g.y))
+    println(unparseInt(h.x))
+    println(unparseInt(h.y))
+    println(unparseInt(i.x))
+    println(unparseInt(i.y))
 
     // 3 5
     // 5 6

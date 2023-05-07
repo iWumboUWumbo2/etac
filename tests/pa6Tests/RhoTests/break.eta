@@ -1,3 +1,6 @@
+use io
+use conv
+
 main(args : int[][]) {
     a : int = 5;
     break;
@@ -5,6 +8,8 @@ main(args : int[][]) {
         a = a + 5;
         if a > 51 {
             a = 1000;
+            break;
         }
     }
+    println(unparseInt(a));
 }
