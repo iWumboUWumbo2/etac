@@ -129,7 +129,7 @@ public class Type implements Printer {
         isInt = false;
         recordName = record;
         tct = TypeCheckingType.RECORD;
-        recordFieldTypes = new ArrayList<Type>(types);
+        recordFieldTypes = types;
     }
 
     public Type(ArrayList<Type> multiTypes) {

@@ -22,9 +22,9 @@ public class RecordAccessDecl extends Decl {
     public RecordAccessDecl(ArrayList<Decl> decls, int l, int c) {
         super(decls.get(0).identifier, l,c);
         this.decls = decls;
-        for (int i = 0; i < decls.size(); i ++) {
-            System.out.println("decls: " + decls.get(i));
-        }
+//        for (int i = 0; i < decls.size(); i ++) {
+//            System.out.println("decls: " + decls.get(i));
+//        }
     }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
@@ -43,31 +43,6 @@ public class RecordAccessDecl extends Decl {
 
     }
 
-    /**
-     * @param t
-     * @param d
-     * @param table
-     * @return new type with dimension d
-     */
-    public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
-        if (t.isRecord()) {
-            return table.lookup(new Id(t.recordName, getColumn(), getLine()));
-        } else if (t.isRecordArray() && d.getDim() == 0) {
-            Type temp = table.lookup(new Id(t.recordName, getColumn(), getLine()));
-            temp.setType(Type.TypeCheckingType.RECORD);
-            return temp;
-        } else if (t.isRecordArray() && d.getDim() != 0) {
-            Type temp = table.lookup(new Id(t.recordName, getColumn(), getLine()));
-            temp.dimensions = d;
-            temp.setType(Type.TypeCheckingType.RECORDARRAY);
-            return temp;
-        } else {
-            t.dimensions = d;
-            return t;
-        }
-    }
-
-
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         ArrayList<Type> declTypes =  new ArrayList<Type>();
@@ -83,35 +58,35 @@ public class RecordAccessDecl extends Decl {
         Type accessType = decls.get(0).typeCheck(table);
         for (int i = 0; i < size-1; i++) {
             Decl nextDecl = decls.get(i+1);
-            if (accessType.recordName != null) {
-                System.out.println("RecordAccessDecl");
-                System.out.println(accessType.recordName);
-                System.out.println(accessType.getType());
-
-            }
+//            if (accessType.recordName != null) {
+//                System.out.println("RecordAccessDecl");
+//                System.out.println(accessType.recordName);
+//                System.out.println(accessType.getType());
+//
+//            }
 
             if (accessType.getType() != Type.TypeCheckingType.RECORD) {
                 throw new SemanticError(accessType.getLine(), accessType.getColumn(), "statements block must be of type record at");
             }
 
-            if (accessType.getType() == Type.TypeCheckingType.RECORD) {
-                System.out.println("record name: " + accessType.recordName);
-                System.out.println("record name: " + accessType.recordName);
-                if (accessType.recordFieldToIndex == null) System.out.println("why be it null");
-            }
+//            if (accessType.getType() == Type.TypeCheckingType.RECORD) {
+//                System.out.println("record name: " + accessType.recordName);
+//                System.out.println("record name: " + accessType.recordName);
+//                if (accessType.recordFieldToIndex == null) System.out.println("why be it null");
+//            }
 
 
             String rightId = nextDecl.identifier.toString();
             if (nextDecl instanceof NoTypeDecl) {
 
-                System.out.println(accessType.recordFieldToIndex);
+//                System.out.println(accessType.recordFieldToIndex);
                 if (!accessType.recordFieldToIndex.containsKey(rightId)) {
                     throw new SemanticError(nextDecl.getLine(), nextDecl.getColumn(), "Invalid field at ");
                 }
 
                 int index = accessType.recordFieldToIndex.get(rightId);
                 Type temp =  accessType.recordFieldTypes.get(index);
-                accessType = correctType(temp, temp.dimensions, table);
+                accessType = correctType(temp, new Dimension(0, getLine(), getColumn()), table);
 
             //arr[4].a[4].x
             } else if (nextDecl instanceof ArrAccessDecl arracc) {
@@ -156,6 +131,7 @@ public class RecordAccessDecl extends Decl {
                 }
             }
         }
+
         nodeType = accessType;
         return accessType;
     }
