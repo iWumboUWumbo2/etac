@@ -255,27 +255,27 @@ public class Type implements Printer {
             return dimensions.equalsDimension(rhs.dimensions);
         }
     }
-    public boolean sameBasic(Type rhs){
-        if (!(isBasic() && rhs.isBasic())){
-            throw new SemanticError(getLine(), getColumn(), "we shouldn't be in same basic checker");
-        }
-        TypeCheckingType lhsType = getType();
-        TypeCheckingType rhsType = rhs.getType();
-
-        if (lhsType == TypeCheckingType.UNKNOWN || rhsType == TypeCheckingType.UNKNOWN){
-            return true;
-        }
-        else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.INT){
-            return true;
-        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
-            return true;
-        }else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.BOOL){
-            return false;
-        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
-            return false;
-        }
-        throw new SemanticError(getLine(), getColumn(), "somehow we missed a case in same basic");
-    }
+//    public boolean sameBasic(Type rhs){
+//        if (!(isBasic() && rhs.isBasic())){
+//            throw new SemanticError(getLine(), getColumn(), "we shouldn't be in same basic checker");
+//        }
+//        TypeCheckingType lhsType = getType();
+//        TypeCheckingType rhsType = rhs.getType();
+//
+//        if (lhsType == TypeCheckingType.UNKNOWN || rhsType == TypeCheckingType.UNKNOWN){
+//            return true;
+//        }
+//        else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.INT){
+//            return true;
+//        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
+//            return true;
+//        }else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.BOOL){
+//            return false;
+//        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
+//            return false;
+//        }
+//        throw new SemanticError(getLine(), getColumn(), "somehow we missed a case in same basic");
+//    }
 
     public boolean isUnknown() {
         return this.getType() == Type.TypeCheckingType.UNKNOWN;

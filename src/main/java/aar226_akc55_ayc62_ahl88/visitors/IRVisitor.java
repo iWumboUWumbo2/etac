@@ -30,6 +30,7 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -66,7 +67,6 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     // Rho -------------------------------------------------
-    // TODO: 5/1/2023 Record Definition IR
     public IRStmt visit(RecordDef node) {
         // I don't think we have to do anything here.
         return null;
@@ -434,7 +434,6 @@ public class IRVisitor implements Visitor<IRNode>{
         return new IRESeq(move, new IRTemp(x));
     }
 
-    // TODO: 5/1/2023 Deal with record constructors
     @Override
     public IRExpr visit(FunctionCallExpr node) {
         // check if node.id is in symbol table as a record
@@ -661,6 +660,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 new IRLabel(le));
     }
 
+    //todo decl assign for record fields, i.e. a.x = 5
     @Override
     public IRStmt visit(DeclAssignStmt node) {
         // might need to do call stmt
@@ -692,8 +692,10 @@ public class IRVisitor implements Visitor<IRNode>{
                 }
             }else if (atd.type.isBasic()){
                 return new IRMove(new IRTemp(atd.identifier.toString()),right);
+            } else if (atd.type.isRecord()) {
+                return new IRMove(new IRTemp(atd.identifier.toString()),right);
             }
-            throw new InternalCompilerError("Annotated can only be array or basic");
+            throw new InternalCompilerError("Annotated can only be array, basic, or record.");
         }else if (node.getDecl() instanceof ArrAccessDecl aad){
             assert(aad.getIndices().size() >= 1);
             if (aad.getFuncParams() == null){ // a[e1][e2]
@@ -910,8 +912,6 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRCompUnit visit(Program node) {
-
-        // Arun TODO
         // Create Comp Unit
         IRCompUnit compUnit = new IRCompUnit(compUnitName);
         globalIds = node.getGlobalsID();
@@ -997,7 +997,9 @@ public class IRVisitor implements Visitor<IRNode>{
             }
             build.append((t.getType() == Type.TypeCheckingType.INTARRAY) ? "i":"b");
             return build.toString();
-        }else{
+        } else if (t.getType() == Type.TypeCheckingType.RECORD) {
+            return "r" + StringEscapeUtils.unescapeJava(t.recordName).length() + StringEscapeUtils.escapeJava(t.recordName);
+        } else{
             throw new Error("WE SHOULD NOT BE IN GENTYPE");
         }
     }
