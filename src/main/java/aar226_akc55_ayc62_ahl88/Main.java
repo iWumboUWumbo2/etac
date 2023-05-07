@@ -539,9 +539,8 @@ public class Main {
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
                 CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
                 asmBasicblocks.removeUnreachableNodes();
-                LiveVariableAnalysisASM lva = new LiveVariableAnalysisASM(asmBasicblocks);
-                lva.workList();
-//                GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
+                GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
+                getColors.MainFunc();
 //                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate",
 //                        asmBasicblocks.CFGtoDOT(HashmapBlockString(lva.getInMapping(),true),
 //                                HashmapBlockString(lva.getOutMapping(),false)));

@@ -23,8 +23,6 @@ public class GraphColorAllocator {
 
     LiveVariableAnalysisASM LVA;
 
-    int K = Color.values().length;
-
     HashSet<ASMAbstractReg> precolored;
     HashSet<ASMAbstractReg> initial;
     HashSet<ASMAbstractReg> simplifyWorklist;
@@ -53,9 +51,30 @@ public class GraphColorAllocator {
     HashMap<ASMAbstractReg,ASMRegisterExpr> color;
 
     ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "rsi", "rdi"));
+    int K = validColors.size();
 
     public GraphColorAllocator(CFGGraphBasicBlockASM g){
         progBlock = g;
+        precolored = new HashSet<>();
+        initial = new HashSet<>();
+        simplifyWorklist = new HashSet<>();
+        freezeWorklist = new HashSet<>();
+        spillWorklist = new HashSet<>();
+        spilledNodes = new HashSet<>();
+        coalescedNodes = new HashSet<>();
+        coloredNodes = new HashSet<>();
+        selectStack = new Stack<>();
+        coalescedMoves = new HashSet<>();
+        constrainedMoves = new HashSet<>();
+        frozenMoves = new HashSet<>();
+        worklistMoves = new HashSet<>();
+        activeMoves = new HashSet<>();
+        adjSet = new HashSet<>();
+        adjList = new HashMap<>();
+        degree = new HashMap<>();
+        moveList = new HashMap<>();
+        alias = new HashMap<>();
+        color = new HashMap<>();
     }
 
     public void MainFunc(){
@@ -105,11 +124,16 @@ public class GraphColorAllocator {
                 ASMInstruction instr = b.getBody().get(i).getStmt();
                 Set<ASMAbstractReg> uses =  usesInASM(instr);
                 Set<ASMAbstractReg> defs = defsInASM(instr);
-                if (instr instanceof ASMMov mov) {
+                if (instr instanceof ASMMov mov
+                        && mov.getLeft() instanceof ASMAbstractReg
+                        && mov.getRight() instanceof ASMAbstractReg) {
                     live.removeAll(uses);
                     Set<ASMAbstractReg> combined = new HashSet<>(uses);
                     combined.addAll(defs);
                     for (ASMAbstractReg n : combined){
+                        if (!moveList.containsKey(n)){
+                            moveList.put(n,new HashSet<>());
+                        }
                         moveList.get(n).add(mov);
                     }
                     worklistMoves.add(mov);
@@ -299,7 +323,7 @@ public class GraphColorAllocator {
     }
 
     private ASMAbstractReg GetAlias(ASMAbstractReg n) {
-        if (!coalescedMoves.contains(n)) {
+        if (coalescedNodes.contains(n)) {
             return GetAlias(alias.get(n));
         }
         else {
@@ -381,11 +405,23 @@ public class GraphColorAllocator {
             adjSet.add(new Pair<>(v, u));
 
             if (!precolored.contains(u)) {
+                if (!adjList.containsKey(u)){
+                    adjList.put(u,new HashSet<>());
+                }
+                if (!degree.containsKey(u)){
+                    degree.put(u,0);
+                }
                 adjList.get(u).add(v);
                 degree.put(u, degree.get(u) + 1);
             }
 
             if (!precolored.contains(v)) {
+                if (!adjList.containsKey(v)){
+                    adjList.put(v,new HashSet<>());
+                }
+                if (!degree.containsKey(v)){
+                    degree.put(v,0);
+                }
                 adjList.get(v).add(u);
                 degree.put(v, degree.get(v) + 1);
             }
