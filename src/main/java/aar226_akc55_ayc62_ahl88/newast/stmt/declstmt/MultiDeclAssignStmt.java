@@ -91,6 +91,19 @@ public class MultiDeclAssignStmt extends Stmt {
             declarationTypes.add(curDeclType);
         }
 
+        if (expressions.size() == 0) {
+
+            for (int i = 0; i < decls.size(); i ++) {
+                Decl decl_i = decls.get(i);
+                if ((decl_i instanceof AnnotatedTypeDecl)) {
+                    table.add(decl_i.identifier, declarationTypes.get(i)); // add the identifier and the type only if new type
+                }
+            }
+
+            nodeType = new Type(Type.TypeCheckingType.UNIT);
+            return nodeType;
+        }
+
         for (Expr e: expressions){
             Type curExprType = e.typeCheck(table);
             if (curExprType.getType() == Type.TypeCheckingType.MULTIRETURN) {
