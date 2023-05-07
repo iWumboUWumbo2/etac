@@ -56,7 +56,7 @@ public class GraphColorAllocator {
 
     HashMap<ASMAbstractReg,ASMRegisterExpr> color;
 
-    ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "rsi", "rdi","r13","r14","r15"));
+    ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "rsi", "rdi"));
     int K = validColors.size();
     public boolean failed = false;
 

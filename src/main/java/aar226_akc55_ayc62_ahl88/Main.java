@@ -507,7 +507,6 @@ public class Main {
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
 
-            System.out.println(comp.printInstructions());
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
                 StringWriter out = new StringWriter();
                 ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
@@ -526,6 +525,11 @@ public class Main {
 
             if (opts.isSet(OptimizationType.REGALLOC)) {
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
+                    CFGGraph<ASMInstruction> singleNode = new CFGGraph<>(kv.getValue());
+                    LVASINGLEASM single = new LVASINGLEASM(singleNode);
+                    single.workList();
+                    writeOutputDot(filename, kv.getKey(), "SINGLELVA", singleNode.CFGtoDOT(CFGGraph.HashmapString(single.getInMapping(),true),
+                            CFGGraph.HashmapString(single.getOutMapping(),false)));
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
                     asmBasicblocks.removeUnreachableNodes();
                     GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);

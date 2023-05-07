@@ -263,6 +263,9 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                         throw new InternalCompilerError("not mem or temp" + arg2);
                     }
                 }
+                if (arg2.getLeft() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }
             }
 //            case MOVABS -> {
 //                ASMArg2 arg2 = (ASMArg2) instr;
