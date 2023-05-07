@@ -1,12 +1,14 @@
 package aar226_akc55_ayc62_ahl88.asm.Opts;
 
 import aar226_akc55_ayc62_ahl88.Main;
+import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg1;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg3;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
@@ -18,6 +20,8 @@ import java.util.stream.IntStream;
 
 import static aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM.*;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.flattenMem;
+import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.tempsToRegs;
+import static aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor.fixInstrsAbstract;
 
 public class GraphColorAllocator {
 
@@ -52,8 +56,9 @@ public class GraphColorAllocator {
 
     HashMap<ASMAbstractReg,ASMRegisterExpr> color;
 
-    ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "rsi", "rdi"));
+    ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "rsi", "rdi","r13","r14","r15"));
     int K = validColors.size();
+    public boolean failed = false;
 
     public GraphColorAllocator(CFGGraphBasicBlockASM g){
         progBlock = g;
@@ -123,6 +128,7 @@ public class GraphColorAllocator {
         AssignColors();
         if (!spilledNodes.isEmpty()) {
             System.out.println("spilled nodes");
+            failed = true;
 //            RewriteProgram();
 //            MainFunc();
         }else{
@@ -467,4 +473,42 @@ public class GraphColorAllocator {
         return combo;
     }
 
+    public ArrayList<ASMInstruction> replaceTemp(){
+        HashMap <String, String> colorMapping = new HashMap<>();
+        for (Map.Entry<ASMAbstractReg,ASMRegisterExpr> kv : color.entrySet()){
+            colorMapping.put(kv.getKey().toString(),kv.getValue().getRegisterName());
+        }
+        ArrayList<ASMInstruction> res = new ArrayList<>();
+        for (BasicBlockASMCFG block : progBlock.getNodes()){
+            for (CFGNode<ASMInstruction> node : block.getBody()){
+                ASMInstruction instr = node.getStmt();
+                ASMInstruction fixedInstr = fixInstruction(instr,colorMapping);
+                if (fixedInstr.getOpCode() == ASMOpCodes.CALL){
+                    ASMCall call = (ASMCall) instr;
+                    fixedInstr = new ASMCall(call.getLeft(),call.numParams,call.numReturns);
+                }
+                res.add(fixedInstr);
+            }
+        }
+
+        return fixInstrsAbstract(res);
+    }
+
+    public ASMInstruction fixInstruction(ASMInstruction instr, HashMap <String, String> mapping){
+        if (instr instanceof ASMArg1 arg1){
+            ASMExpr left = tempsToRegs(arg1.getLeft(), mapping);
+            return new ASMArg1(arg1.getOpCode(),left);
+        }else if (instr instanceof ASMArg2 arg2){
+            ASMExpr left = tempsToRegs(arg2.getLeft(),mapping);
+            ASMExpr right = tempsToRegs(arg2.getRight(),mapping);
+            return new ASMArg2(arg2.getOpCode(),left,right);
+        }else if (instr instanceof ASMArg3 arg3){
+            ASMExpr a1 = tempsToRegs(arg3.getA1(),mapping);
+            ASMExpr a2 = tempsToRegs(arg3.getA2(),mapping);
+            ASMExpr a3 = tempsToRegs(arg3.getA3(),mapping);
+            return new ASMArg3(arg3.getOpCode(),a1,a2,a3);
+        }else{
+            return instr;
+        }
+    }
 }

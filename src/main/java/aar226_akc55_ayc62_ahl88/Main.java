@@ -505,32 +505,24 @@ public class Main {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
-//            System.out.println(comp.printInstructions());
-
-//            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
-//                StringWriter out = new StringWriter();
-//                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
-//                for (ASMInstruction instr : abstractInstrs){
-//                    if (!(instr instanceof ASMLabel)){
-//                        out.write(INDENT_SFILE + instr + '\n');
-//                    }else{
-//                        out.write(instr+"\n");
-//                    }
-//                }
-//                writeOutputAsm(filename, out.toString(), "abstract");
-//                out.close();
-//            }
+            ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
+            boolean failed = false;
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
                 CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
                 asmBasicblocks.removeUnreachableNodes();
                 GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
                 getColors.MainFunc();
-//                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate",
-//                        asmBasicblocks.CFGtoDOT(HashmapBlockString(lva.getInMapping(),true),
-//                                HashmapBlockString(lva.getOutMapping(),false)));
-
+                if (getColors.failed){
+                    failed = true;
+                    break;
+                }else{
+                    postAlloc.addAll(getColors.replaceTemp());
+                }
             }
-            ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
+            if (failed) {
+                System.out.println("doing trivial");
+                postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
+            }
             StringWriter out = new StringWriter();
             out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");
             out.write(INDENT_SFILE+".intel_syntax noprefix\n");
