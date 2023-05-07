@@ -56,6 +56,8 @@ public class Type implements Printer {
 
     public Type arrayType;
 
+    public boolean isRecord;
+
     public HashMap<String, Integer> recordFieldToIndex;
 
     /**
@@ -87,6 +89,7 @@ public class Type implements Printer {
         isInt = false;
         dimensions = d;
         recordName = record;
+        isRecord = true;
         if (d.getDim() == 0) {
             tct = TypeCheckingType.RECORD;
         } else {
@@ -111,6 +114,7 @@ public class Type implements Printer {
         isInt = false;
         recordName = record;
         tct = TypeCheckingType.RECORD;
+        isRecord = forRecord;
         recordFieldTypes = new ArrayList<Type>(getInputTypes(types));
         recordFieldToIndex = new HashMap<String, Integer>();
         for (int i = 0; i < types.size(); i++) {

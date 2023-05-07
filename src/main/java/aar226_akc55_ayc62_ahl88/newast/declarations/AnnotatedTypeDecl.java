@@ -35,7 +35,14 @@ public class AnnotatedTypeDecl extends Decl{
             throw new SemanticError(getLine(), getColumn(), "variable has already been seen");
         }
         type.dimensions.typeCheck(table); // get side effects
-        nodeType = type;
+
+        if (type.isRecord) {
+            nodeType = table.lookup(new Id(type.recordName, getColumn(), getLine()));
+            nodeType.dimensions = type.dimensions;
+        } else {
+            nodeType = type;
+        }
+        type = nodeType;
         return type;
     }
 

@@ -60,8 +60,9 @@ public class RecordAccessDecl extends Decl {
             }
 
 
-            Id rightId = nextDecl.identifier;
+            String rightId = nextDecl.identifier.toString();
             if (nextDecl instanceof NoTypeDecl) {
+                System.out.println(accessType.recordFieldToIndex);
                 if (!accessType.recordFieldToIndex.containsKey(rightId)) {
                     throw new SemanticError(nextDecl.getLine(), nextDecl.getColumn(), "Invalid field at ");
                 }
