@@ -3,7 +3,15 @@ record Node {
     next: Node
 }
 
+record Sus {
+    suss : Node[]
+}
+
 main(args:int[][]) {
     n:Node = Node(1, null)
-    n.value = 3
+    susList:Sus[] = {};
+    susList[0].suss[0].next.value = 20
+    susList[0].suss[0] = n
+
 }
+
