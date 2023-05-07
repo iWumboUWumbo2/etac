@@ -83,6 +83,8 @@ nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
 nonterminal RecordDef                  record;
 nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
 nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
+nonterminal ArrayList<Decl> recordaccessdeclarray;
+nonterminal RecordAccessDecl recordaccessdecl;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -367,6 +369,42 @@ fullBracketAss ::=
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN fullBracketPlus:indi{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), e,indi, idleft, idright); :}
 ;
 
+recordaccessdeclarray ::=
+    recordaccessdeclarray:rad PERIOD IDENTIFIER:i {:
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        RESULT = rad; :}
+    | recordaccessdeclarray:rad PERIOD fullBracketAss:fb {:
+        rad.add(fb);
+        RESULT = rad; :}
+    | IDENTIFIER:i PERIOD fullBracketAss:fb {:
+        ArrayList<Decl> rad = new ArrayList<Decl>();
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        rad.add(fb);
+        RESULT = rad; :}
+    | fullBracketAss:fb PERIOD IDENTIFIER:i {:
+        ArrayList<Decl> rad = new ArrayList<Decl>();
+        rad.add(fb);
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        RESULT = rad; :}
+    | IDENTIFIER:i1 PERIOD IDENTIFIER:i {:
+        ArrayList<Decl> rad = new ArrayList<Decl>();
+        rad.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left,i1right));
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        RESULT = rad; :}
+    | fullBracketAss:fb PERIOD fullBracketAss:fb1 {:
+        ArrayList<Decl> rad = new ArrayList<Decl>();
+        rad.add(fb);
+        rad.add(fb1);
+        RESULT = rad; :}
+;
+
+recordaccessdecl ::= recordaccessdeclarray:rad
+    {: RESULT = new RecordAccessDecl(rad, radleft, radright);
+    :}
+;
+
+
+
 // x:int, y, b:bool, z
 type_list ::=
     UNDERSCORE:u COMMA IDENTIFIER:i2 {:
@@ -461,6 +499,55 @@ type_list ::=
     | type_list:tl COMMA fullBracketAss:fb {:
         tl.add(fb);
         RESULT = tl; :}
+    // RECORD ACCESS DECLS
+    | recordaccessdecl:rd1 COMMA recordaccessdecl:rd2 {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(rd1);
+        temp.add(rd2);
+        RESULT = temp; :}
+    | recordaccessdecl:rd COMMA IDENTIFIER:i {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(rd);
+        temp.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        RESULT = temp; :}
+    | IDENTIFIER:i COMMA recordaccessdecl:rd {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        temp.add(rd);
+        RESULT = temp; :}
+    | recordaccessdecl:rd COMMA UNDERSCORE:u {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(rd);
+        temp.add(new UnderScore(uleft,uright));
+        RESULT = temp; :}
+    | UNDERSCORE:u COMMA recordaccessdecl:rd {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(new UnderScore(uleft,uright));
+        temp.add(rd);
+        RESULT = temp; :}
+    | recordaccessdecl:rd COMMA IDENTIFIER:i1 COLON emptyBracketType:t1{:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(rd);
+        temp.add(new AnnotatedTypeDecl(new Id(i1,i1left,i1right),t1, i1left, i1right));
+        RESULT = temp; :}
+    | IDENTIFIER:i1 COLON emptyBracketType:t1 COMMA recordaccessdecl:rd {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(new AnnotatedTypeDecl(new Id(i1,i1left,i1right),t1, i1left, i1right));
+        temp.add(rd);
+        RESULT = temp; :}
+   | recordaccessdecl:rd COMMA fullBracketAss:fb {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(rd);
+        temp.add(fb);
+        RESULT = temp; :}
+   | fullBracketAss:fb COMMA recordaccessdecl:rd {:
+        ArrayList<Decl> temp = new ArrayList<Decl>();
+        temp.add(fb);
+        temp.add(rd);
+        RESULT = temp; :}
+   | type_list:tl COMMA recordaccessdecl:rd {:
+       tl.add(rd);
+       RESULT = tl; :}
 ;
 
 declaration_assign_stmt ::=
@@ -479,6 +566,9 @@ declaration_assign_stmt ::=
         RESULT = new DeclAssignStmt(tempUnder,e,gleft,gright);:}
     | fullBracketType:d GETS expr:e {:
     RESULT = new DeclAssignStmt(d,e,dleft,dright);
+    :}
+    | recordaccessdecl:rd GETS expr:e {:
+    RESULT = new DeclAssignStmt(rd, e, rdleft, rdright);
     :}
 ;
 

@@ -1,0 +1,9 @@
+record Node {
+    value: int
+    next: Node
+}
+
+main(args:int[][]) {
+    n:Node = Node(1, null)
+    n.value = 3
+}

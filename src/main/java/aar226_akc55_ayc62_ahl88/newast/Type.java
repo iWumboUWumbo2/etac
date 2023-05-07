@@ -114,8 +114,10 @@ public class Type implements Printer {
         recordFieldTypes = new ArrayList<Type>(getInputTypes(types));
         recordFieldToIndex = new HashMap<String, Integer>();
         for (int i = 0; i < types.size(); i++) {
-            recordFieldToIndex.put(types.get(i).toString(), i);
+            recordFieldToIndex.put(types.get(i).identifier.toString(), i);
+//            System.out.println("recirdfieldtoindex: "+types.get(i).identifier.toString());
         }
+        System.out.println(recordFieldToIndex);
     }
 
     public Type (String record, ArrayList<Type> types, int l, int c) {

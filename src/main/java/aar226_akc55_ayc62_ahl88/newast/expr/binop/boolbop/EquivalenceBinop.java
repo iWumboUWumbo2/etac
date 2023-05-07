@@ -8,7 +8,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 
 /**
  * Abstract class for all equivalence binary expressions ( == , != )
- * Can be used for both integer and Boolean and array inputs
+ * Can be used for both integer and Boolean and array and record inputs
  */
 public abstract class EquivalenceBinop extends BoolOutBinop {
     /**
@@ -33,7 +33,9 @@ public abstract class EquivalenceBinop extends BoolOutBinop {
 
         if (t1.getType() == Type.TypeCheckingType.INT ||
                 t1.getType() == Type.TypeCheckingType.BOOL ||
-                t1.getType() == Type.TypeCheckingType.UNKNOWN) {
+                t1.getType() == Type.TypeCheckingType.UNKNOWN ||
+                t1.getType() == Type.TypeCheckingType.RECORD ||
+                t1.getType() == Type.TypeCheckingType.NULL) {
             if (!t1.sameType(t2)) {
                 throw new SemanticError(e2.getLine(),e2.getColumn(),  "equivalence e2 does not match e1");
             } else {
