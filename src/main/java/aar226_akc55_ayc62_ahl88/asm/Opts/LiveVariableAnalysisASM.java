@@ -58,7 +58,7 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
 
     // for backwards its gen[ns] = gen[n] U (gen[s] - kill[n]) kill[ns]  = kill[s] U kill[n]
     public static Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> blockFunc(BasicBlockASMCFG block){
-        Set<ASMAbstractReg> genns = usesInASM(block.getBody().get(block.getBody().size()-1).getStmt());
+        Set<ASMAbstractReg> genns = usesInASMFunc(block.getBody().get(block.getBody().size()-1).getStmt(),block.function);
         Set<ASMAbstractReg> killns = defsInASM(block.getBody().get(block.getBody().size()-1).getStmt());
         for (int i = block.getBody().size()-2;i>=0;i--){
             CFGNode<ASMInstruction> n = block.getBody().get(i);
@@ -66,7 +66,8 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
             genns.addAll(usesInASM(n.getStmt()));
             killns.addAll(defsInASM(n.getStmt()));
         }
-        if (block.start){
+//        && !block.function.equals("_Imain_paai")
+        if (block.start ){
             for (String reg : calleSaved){
                 genns.add(new ASMRegisterExpr(reg));
             }
@@ -373,5 +374,168 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
         usedSet.removeIf(e-> e instanceof ASMNameExpr);
         return usedSet;
     }
+    public static Set<ASMAbstractReg> usesInASMFunc(ASMInstruction instr,String funcName) {
+        HashSet<ASMAbstractReg> usedSet = new HashSet<>();
+        switch(instr.getOpCode()){
+            // RDX:RAX:= sign-extend of RAX.
+            case CQTO -> {
+                usedSet.add(new ASMRegisterExpr("rax"));
+            }
+            // IDIV r/m64 RAX := Quotient, RDX := Remainder.
+            case IDIV -> {
+                ASMArg1 arg1 = (ASMArg1) instr;
+                usedSet.add(new ASMRegisterExpr("rax"));
+                usedSet.add(new ASMRegisterExpr("rdx"));
+                if (arg1.getLeft() instanceof ASMAbstractReg temp){
+                    usedSet.add(temp);
+                }else if (arg1.getLeft() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }else{
+                    throw new InternalCompilerError("not mem or temp" + arg1);
+                }
+            }
+            // INC/DEC r/m64
+            // NOT r/m64
+            // PUSH r/m64
+            // POP r64
+            case INC,DEC,NOT,POP, PUSH-> { // INC r/m64 // NOT r/m64
+                ASMArg1 arg1 = (ASMArg1) instr;
+                if (arg1.getLeft() instanceof ASMAbstractReg temp){
+                    usedSet.add(temp);
+                }else if (arg1.getLeft() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }else{
+                    throw new InternalCompilerError("not mem or temp" + arg1);
+                }
+            }
 
+            // SETCC r/m8
+            // REG "AL" -> "RAX" Might change AL since RAX used too much
+            // doesn't use anything but CC
+            case SETE, SETNE, SETL, SETLE, SETG, SETGE, SETB, SETAE -> {
+            }
+
+            //push rbp
+            //mov rbp, rsp
+            //sub rsp, 8*l
+            case ENTER,LEAVE -> {
+            }
+            case MOV, MOVABS -> {
+                ASMArg2 arg2 = (ASMArg2) instr;
+                if (arg2.getRight() instanceof ASMAbstractReg abs){
+                    usedSet.add(abs);
+                }else if (arg2.getRight() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }else{
+                    if (!(arg2.getRight() instanceof ASMConstExpr)){
+                        throw new InternalCompilerError("not mem or temp" + arg2);
+                    }
+                }
+                if (arg2.getLeft() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }
+            }
+            // AND r/m64
+            case ADD, SUB, AND, OR, XOR,TEST,CMP -> {
+                ASMArg2 arg2 = (ASMArg2) instr;
+
+                if (arg2.getLeft() instanceof ASMAbstractReg abs){
+                    usedSet.add(abs);
+                }else if (arg2.getLeft() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }else{
+                    throw new InternalCompilerError("not mem or temp" + arg2);
+                }
+                if (arg2.getRight() instanceof ASMAbstractReg abs){
+                    usedSet.add(abs);
+                }else if (arg2.getRight() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }else{
+                    if (!(arg2.getRight() instanceof ASMConstExpr)) {
+                        throw new InternalCompilerError("not mem temp or const" + arg2);
+                    }
+                }
+            }
+            case IMUL -> {
+                ASMArg3 arg3 = (ASMArg3) instr;
+                //IMUL r/m64 RDX:RAX := RAX * r/m64.
+                if (arg3.getA2() == null && arg3.getA3() == null){ //1
+                    usedSet.add(new ASMRegisterExpr("rax"));
+                    //IMUL r64, r/m64
+                }else if (arg3.getA3() == null){ //2
+                    if (arg3.getA1() instanceof ASMAbstractReg abs){
+                        usedSet.add(abs);
+                    }else if (arg3.getA1() instanceof ASMMemExpr mem){
+                        flattenAndAdd(mem, usedSet);
+                    }else{
+                        throw new InternalCompilerError("not mem or temp" + arg3);
+                    }
+                    if (arg3.getA2() instanceof ASMAbstractReg abs){
+                        usedSet.add(abs);
+                    }else if (arg3.getA2() instanceof ASMMemExpr mem){
+                        flattenAndAdd(mem, usedSet);
+                    }else{
+                        throw new InternalCompilerError("not mem or temp" + arg3);
+                    }
+                }else{
+                    throw new InternalCompilerError("all three non null");
+                }
+            }
+            case SHL, SHR, SAR -> {
+                ASMArg2 arg2 = (ASMArg2) instr;
+                if (arg2.getLeft() instanceof ASMAbstractReg abs){
+                    usedSet.add(abs);
+                }else if (arg2.getLeft() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }else{
+                    throw new InternalCompilerError("not mem or temp Shifts" + arg2);
+                }
+            }
+            // LEA r64,m
+            case LEA -> {
+                ASMArg2 arg2 = (ASMArg2) instr;
+                if (arg2.getRight() instanceof ASMMemExpr mem){
+                    flattenAndAdd(mem, usedSet);
+                }else{
+                    throw new InternalCompilerError("not mem or temp" + arg2);
+                }
+            }
+            // Always Name
+            case JMP,JB, JE, JNE, JL, JLE, JG, JGE -> {
+            }
+
+            // caller saved rax, rcx, rdx, rsi, rdi, and r8–r11
+            case CALL -> {
+                ASMCall call = (ASMCall)  instr;
+                ArrayList<String> params = new ArrayList<>(List.of(
+                        "rdi", "rsi", "rdx", "rcx", "r8", "r9"));
+
+                long numParams = call.numReturns  > 2 ?
+                        call.numParams + 1 : call.numParams;
+                long subSet = Math.min(6,numParams);
+                for (int i = 0; i< subSet;i++){
+                    usedSet.add(new ASMRegisterExpr(params.get(i)));
+                }
+            }
+            case RET -> {
+                ASMRet ret = (ASMRet) instr;
+                if (ret.rets >= 2){
+                    usedSet.add(new ASMRegisterExpr("rdx"));
+                    usedSet.add(new ASMRegisterExpr("rax"));
+                }else if (ret.rets == 1){
+                    usedSet.add(new ASMRegisterExpr("rax"));
+                }
+//                if (!funcName.equals("_Imain_paai")) {
+                    for (String reg : calleSaved) {
+                        usedSet.add(new ASMRegisterExpr(reg));
+                    }
+//                }
+
+            }
+            case LABEL, COMMENT -> {
+            }
+        }
+        usedSet.removeIf(e-> e instanceof ASMNameExpr);
+        return usedSet;
+    }
 }

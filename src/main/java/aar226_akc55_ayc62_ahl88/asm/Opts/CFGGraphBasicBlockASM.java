@@ -24,19 +24,22 @@ public class CFGGraphBasicBlockASM {
     private HashMap<Integer, BasicBlockASMCFG> indToBasicBlock;
     private HashMap<String,Long> labelToNumber;
 
+    public String funcName;
+
     private boolean stop(ASMInstruction stmt){
         return (stmt instanceof ASMAbstractJump ||
                 stmt instanceof ASMRet ||
                 stmt instanceof ASMLabel);
     }
 
-    public CFGGraphBasicBlockASM(ArrayList<ASMInstruction> stmts){
+    public CFGGraphBasicBlockASM(ArrayList<ASMInstruction> stmts, String func){
+        funcName = func;
         nodes = new ArrayList<>();
         labelMap = new HashMap<>();
         indToBasicBlock = new HashMap<>();
         labelToNumber = new HashMap<>();
         int ind = 0;
-        BasicBlockASMCFG curBlock = new BasicBlockASMCFG();
+        BasicBlockASMCFG curBlock = new BasicBlockASMCFG(funcName);
         curBlock.start = true;
         for (ASMInstruction stmt: stmts){
             if (stop(stmt)){
@@ -65,7 +68,7 @@ public class CFGGraphBasicBlockASM {
                     nodes.add(curBlock);
                     indToBasicBlock.put(ind,curBlock);
                     ind++;
-                    curBlock = new BasicBlockASMCFG();
+                    curBlock = new BasicBlockASMCFG(funcName);
                     if (stmt instanceof ASMLabel il){
                         curBlock.destLabels.add(il.getLabel());
                         curBlock.body.add(new CFGNode<>(il));

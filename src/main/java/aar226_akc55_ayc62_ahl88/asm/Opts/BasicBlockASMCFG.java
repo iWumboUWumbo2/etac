@@ -13,6 +13,7 @@ public class BasicBlockASMCFG {
     final private int JUMP = 1;
 
     public boolean start;
+    public String function;
     HashSet<String> originLabels;
 
     HashSet<String> destLabels;
@@ -22,7 +23,8 @@ public class BasicBlockASMCFG {
 
     private ArrayList<BasicBlockASMCFG> predecessors;
 
-    public BasicBlockASMCFG(){
+    public BasicBlockASMCFG(String funcName){
+        function = funcName;
         start = false;
         this.originLabels = new HashSet<>();
         this.destLabels = new HashSet<>();
