@@ -12,8 +12,11 @@ public class SymbolTable<T> {
 
     public boolean parentLoop;
 
+    public HashMap<String, T> allRecordTypes;
+
     public SymbolTable() {
         this.scopes = new ArrayList<>();
+        allRecordTypes = new HashMap<String, T>();
         parentLoop = false;
     }
 

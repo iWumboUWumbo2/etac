@@ -63,6 +63,7 @@ public class RecordDef extends Definition {
             }
         } else {
             table.add(recordName, recordType);
+            table.allRecordTypes.put(recordName.toString(), recordType);
         }
 
         nodeType = new Type(Type.TypeCheckingType.UNIT);

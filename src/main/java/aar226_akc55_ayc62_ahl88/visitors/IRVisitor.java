@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88.visitors;
 
 import aar226_akc55_ayc62_ahl88.Main;
+import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -35,6 +36,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class IRVisitor implements Visitor<IRNode>{
@@ -48,13 +50,16 @@ public class IRVisitor implements Visitor<IRNode>{
     private boolean constantFold;
     private ArrayList<IRData> string_consts;
     private String lastWhileExit;
-    public IRVisitor(String name) {
+
+    public HashMap<String, Type> allRecordTypes;
+    public IRVisitor(String name, SymbolTable<Type> s) {
         labelCnt = 0;
         tempCnt = 0;
         stringCnt = 1;
         compUnitName = name;
         string_consts = new ArrayList<>();
         constantFold = Main.opts.isSet(OptimizationType.CONSTANT_FOLDING);
+        allRecordTypes = s.allRecordTypes;
     }
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
@@ -77,7 +82,9 @@ public class IRVisitor implements Visitor<IRNode>{
 
         Expr eRight = node.getRightExpr();
         Id field = (Id) eRight;
-        int index = eLeft.getNodeType().recordFieldToIndex.get(field.toString());
+
+        Type recordType = allRecordTypes.get(eLeft.getNodeType().recordName);
+        int index = recordType.recordFieldToIndex.get(field.toString());
 
         String ta = nxtTemp();
         String ti = nxtTemp();

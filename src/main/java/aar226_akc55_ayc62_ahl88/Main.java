@@ -327,8 +327,9 @@ public class Main {
             try {
                 if (filename.endsWith(".eta")) {
                     Program result = (Program) p.parse().value;
-                    result.typeCheck(new SymbolTable<>(), zhenFilename);
-                    IRNode ir = result.accept(new IRVisitor("CompUnit"));
+                    SymbolTable s = new SymbolTable<>();
+                    result.typeCheck(s, zhenFilename);
+                    IRNode ir = result.accept(new IRVisitor("CompUnit", s));
 
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
