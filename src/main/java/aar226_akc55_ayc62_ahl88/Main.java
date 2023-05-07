@@ -506,20 +506,40 @@ public class Main {
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
-            boolean failed = false;
+
+            System.out.println(comp.printInstructions());
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
-                CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
-                asmBasicblocks.removeUnreachableNodes();
-                GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
-                getColors.MainFunc();
-                if (getColors.failed){
-                    failed = true;
-                    break;
-                }else{
-                    postAlloc.addAll(getColors.replaceTemp());
+                StringWriter out = new StringWriter();
+                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
+                for (ASMInstruction instr : abstractInstrs){
+                    if (!(instr instanceof ASMLabel)){
+                        out.write(INDENT_SFILE + instr + '\n');
+                    }else{
+                        out.write(instr+"\n");
+                    }
+                }
+                writeOutputAsm(filename, out.toString(), "abstract");
+                out.close();
+            }
+
+            boolean failed = false;
+
+            if (opts.isSet(OptimizationType.REGALLOC)) {
+                for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
+                    CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
+                    asmBasicblocks.removeUnreachableNodes();
+                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
+                    getColors.MainFunc();
+                    if (getColors.failed) {
+                        failed = true;
+                        break;
+                    } else {
+                        postAlloc.addAll(getColors.replaceTemp());
+                    }
                 }
             }
-            if (failed) {
+
+            if (failed || !opts.isSet(OptimizationType.REGALLOC))  {
                 System.out.println("doing trivial");
                 postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             }
@@ -604,6 +624,8 @@ public class Main {
                 "Copy propagation optimization.");
         Option dceOpt = new Option ("Odce", false,
                 "Dead code elimination optimization.");
+        Option regOpt = new Option ("Oreg", false,
+                "Register allocation optimization.");
 
         optOpt.setOptionalArg(true);
 
@@ -626,6 +648,7 @@ public class Main {
         options.addOption(constPropOpt);
         options.addOption(copyPropOpt);
         options.addOption(dceOpt);
+        options.addOption(regOpt);
 
         options.addOption(sourcepathOpt);
         options.addOption(libpathOpt);
@@ -709,6 +732,10 @@ public class Main {
 
             if (cmd.hasOption("Odce")) {
                 opts.setOptimizations(OptimizationType.DEAD_CODE_ELIMINATION);
+            }
+
+            if (cmd.hasOption("Oreg")) {
+                opts.setOptimizations(OptimizationType.REGALLOC);
             }
 
             if (cmd.hasOption("sourcepath")) {
