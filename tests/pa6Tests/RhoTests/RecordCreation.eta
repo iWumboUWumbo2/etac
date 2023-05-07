@@ -10,7 +10,7 @@ record Point {
 
 main(args : int[][]) {
     a : Point = Point(1,2,3,true,false,true);
-    b : int = Point(1,2,4,true,false,true).z;
+    b : int = Point(1,2,4,true,false,true).x;
     println(unparseInt(a.x))
     println(unparseInt(a.y))
     println(unparseInt(a.z))
