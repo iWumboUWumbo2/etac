@@ -21,7 +21,6 @@ public class GraphColorAllocator {
 
     CFGGraphBasicBlockASM progBlock;
 
-    CFGGraph<ASMInstruction> progSingle;
     LiveVariableAnalysisASM LVA;
 
     int K = Color.values().length;
@@ -55,9 +54,12 @@ public class GraphColorAllocator {
 
     ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "rsi", "rdi"));
 
+    public GraphColorAllocator(CFGGraphBasicBlockASM g){
+        progBlock = g;
+    }
 
     public void MainFunc(){
-        LVA = new LiveVariableAnalysisASM(progSingle);
+        LVA = new LiveVariableAnalysisASM(progBlock);
         LVA.workList();
         
         Build();
@@ -77,8 +79,12 @@ public class GraphColorAllocator {
 
         AssignColors();
         if (!spilledNodes.isEmpty()) {
-            RewriteProgram(spilledNodes);
-            MainFunc();
+            System.out.println("spilled nodes");
+//            RewriteProgram();
+//            MainFunc();
+        }else{
+            System.out.println("no spilled");
+            System.out.println(color);
         }
     }
 
@@ -94,8 +100,7 @@ public class GraphColorAllocator {
 
     public void Build(){
         for (BasicBlockASMCFG b : progBlock.getNodes()){
-            CFGNode<ASMInstruction> last = b.getBody().get(b.getBody().size()-1);
-            Set<ASMAbstractReg> live = LVA.getOutMapping().get(last);
+            Set<ASMAbstractReg> live = LVA.getOutMapping().get(b);
             for (int i = b.getBody().size() - 1; i >= 0; i--) {
                 ASMInstruction instr = b.getBody().get(i).getStmt();
                 Set<ASMAbstractReg> uses =  usesInASM(instr);
@@ -387,8 +392,16 @@ public class GraphColorAllocator {
         }
     }
 
-    private void RewriteProgram(HashSet<ASMAbstractReg> spilledNodes) {
-        throw new InternalCompilerError("TODO REWRITE");
+    private void RewriteProgram() {
+        HashSet<ASMAbstractReg> newTemps = new HashSet<>();
+
+
+
+
+        spilledNodes.clear();
+        initial = union(union(coloredNodes,coalescedNodes),newTemps);
+        coloredNodes.clear();
+        coalescedNodes.clear();
     }
 
 

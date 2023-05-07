@@ -12,6 +12,7 @@ import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.BackwardIRDataflow;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,12 +25,13 @@ import java.util.function.Supplier;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.checkExprForTemp;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.flattenMem;
 
-public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractReg>,ASMInstruction> {
-    public LiveVariableAnalysisASM(CFGGraph<ASMInstruction> g) {
+public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbstractReg>> {
+    public LiveVariableAnalysisASM(CFGGraphBasicBlockASM g) {
         super(g,
                 (n,outN) ->{
-                    Set<ASMAbstractReg> useSet = usesInASM(n.getStmt());
-                    Set<ASMAbstractReg> defSet = defsInASM(n.getStmt());
+                    Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> res = blockFunc(n);
+                    Set<ASMAbstractReg> useSet = res.part1();
+                    Set<ASMAbstractReg> defSet = res.part2();
 
                     Set<ASMAbstractReg> l_temp = new HashSet<>(outN);
                     l_temp.removeAll(defSet);
@@ -46,7 +48,23 @@ public class LiveVariableAnalysisASM extends BackwardIRDataflow<Set<ASMAbstractR
         );
     }
 
+    /**
+     * Creates Gen[pn] and kill[pn]
+     * @param block
+     * @return
+     */
+    public static Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> blockFunc(BasicBlockASMCFG block){
+        Set<ASMAbstractReg> genpn = usesInASM(block.getBody().get(0).getStmt());
+        Set<ASMAbstractReg> killpn = defsInASM(block.getBody().get(0).getStmt());
+        for (int i = 1; i< block.getBody().size();i++){
+            CFGNode<ASMInstruction> n = block.getBody().get(i);
+            genpn.removeAll(defsInASM(n.getStmt()));
+            genpn.addAll(usesInASM(n.getStmt()));
+            killpn.addAll(defsInASM(n.getStmt()));
+        }
+        return new Pair<>(genpn,killpn);
 
+    }
     public static Set<ASMAbstractReg> defsInASM(ASMInstruction instr) {
         HashSet<ASMAbstractReg> defSet = new HashSet<>();
         switch(instr.getOpCode()){
