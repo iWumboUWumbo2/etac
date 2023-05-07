@@ -517,7 +517,7 @@ public class Main {
                         out.write(instr+"\n");
                     }
                 }
-                writeOutputAsm(filename, out.toString(), "abstract");
+                writeOutputAsm(filename + kv.getKey(), out.toString(), "abstract");
                 out.close();
             }
 

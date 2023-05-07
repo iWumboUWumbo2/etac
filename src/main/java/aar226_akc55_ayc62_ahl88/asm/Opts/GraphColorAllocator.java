@@ -443,17 +443,66 @@ public class GraphColorAllocator {
         }
     }
 
-    private void RewriteProgram() {
-        HashSet<ASMAbstractReg> newTemps = new HashSet<>();
 
 
 
+    private int tempCnt;
 
-        spilledNodes.clear();
-        initial = union(union(coloredNodes,coalescedNodes),newTemps);
-        coloredNodes.clear();
-        coalescedNodes.clear();
+    private String nxtTemp() {
+        return String.format("_tgc%d", (tempCnt++));
     }
+
+    /**
+     * procedure RewriteProgram()
+     * Allocate memory locations for each v ∈ spilledNodes,
+     * Create a new temporary vi for each definition and each use,
+     * In the program (instructions), insert a store after each definition of a vi , a fetch before each use of a vi .
+     * Put all the vi into a set newTemps.
+     * spilledNodes ← {}
+     * initial ← coloredNodes ∪ coalescedNodes ∪ newTemps coloredNodes ← {}
+     * coalescedNodes ← {}
+     */
+//    private ArrayList<ASMInstruction> RewriteProgram() {
+//        HashSet<ASMAbstractReg> newTemps = new HashSet<>();
+//
+//        ArrayList<ASMInstruction> instrs = replaceTemp();
+//
+//        HashMap<ASMAbstractReg, ASMTempExpr> tempMap = new HashMap<>();
+//
+//        ArrayList<ASMInstruction> newInstrs = new ArrayList<>();
+//
+//        for (ASMInstruction instr : instrs) {
+//            Set<ASMAbstractReg> used = usesInASM(instr);
+//            Set<ASMAbstractReg> def = defsInASM(instr);
+//
+//            HashSet<ASMAbstractReg> spilledDef = intersect(def, spilledNodes);
+//            HashSet<ASMAbstractReg> spilledUse = intersect(used, spilledNodes);
+//
+//            if (!spilledDef.isEmpty()) {
+//                for (ASMAbstractReg v : spilledDef) {
+//                    ASMTempExpr vi = new ASMTempExpr(nxtTemp());
+//                    tempMap.put(v, vi);
+//
+//                    newInstrs.add(new ASMMov(vi, v));
+//                }
+//            }
+//
+//            if (!spilledUse.isEmpty()) {
+//                for (ASMAbstractReg v : spilledUse) {
+//                    newInstrs.add(new ASMMov(v, tempMap.get(v)));
+//                }
+//            }
+//
+//            newInstrs.add(instr);
+//        }
+//
+//        spilledNodes.clear();
+//        initial = union(union(coloredNodes,coalescedNodes),newTemps);
+//        coloredNodes.clear();
+//        coalescedNodes.clear();
+//
+//        return newInstrs;
+//    }
 
 
 //    private boolean isMove(ASMInstruction instr){
@@ -461,17 +510,19 @@ public class GraphColorAllocator {
 //    }
 
 
-    public static <T> HashSet<T> union(HashSet<T> left, HashSet<T> right) {
+    public static <T> HashSet<T> union(Set<T> left, Set<T> right) {
         HashSet<T> combo = new HashSet<T>(left);
         combo.addAll(right);
         return combo;
     }
 
-    public static <T> HashSet<T> intersect(HashSet<T> left, HashSet<T> right) {
+    public static <T> HashSet<T> intersect(Set<T> left, Set<T> right) {
         HashSet<T> combo = new HashSet<T>(left);
         combo.retainAll(right);
         return combo;
     }
+
+
 
     public ArrayList<ASMInstruction> replaceTemp(){
         HashMap <String, String> colorMapping = new HashMap<>();
