@@ -1,16 +1,21 @@
 package aar226_akc55_ayc62_ahl88.asm.Opts;
 
 import aar226_akc55_ayc62_ahl88.Main;
+import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg1;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg3;
-import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.*;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.arithmetic.ASMLEA;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPop;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
@@ -56,11 +61,13 @@ public class GraphColorAllocator {
 
     HashMap<ASMAbstractReg,ASMRegisterExpr> color;
 
-    ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "rsi", "rdi"));
+    ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "r13","r14","r15","rsi", "rdi"));
     int K = validColors.size();
     public boolean failed = false;
+    ASMCompUnit compUnit;
 
-    public GraphColorAllocator(CFGGraphBasicBlockASM g){
+    String funcName;
+    public GraphColorAllocator(CFGGraphBasicBlockASM g, ArrayList<String> inlinedFunctions, ASMCompUnit comp, String curFunc){
         progBlock = g;
         precolored = new HashSet<>();
         initial = new HashSet<>();
@@ -82,6 +89,8 @@ public class GraphColorAllocator {
         moveList = new HashMap<>();
         alias = new HashMap<>();
         color = new HashMap<>();
+        compUnit = comp;
+        funcName = curFunc;
         initTemps();
     }
 
@@ -538,11 +547,46 @@ public class GraphColorAllocator {
                     ASMCall call = (ASMCall) instr;
                     fixedInstr = new ASMCall(call.getLeft(),call.numParams,call.numReturns);
                 }
-                res.add(fixedInstr);
+                if (fixedInstr.getOpCode() == ASMOpCodes.MOV || fixedInstr.getOpCode() == ASMOpCodes.MOVABS){
+                    ASMArg2 arg2 = (ASMArg2) fixedInstr;
+                    if (arg2.getLeft() instanceof ASMRegisterExpr realL &&
+                            arg2.getRight() instanceof ASMRegisterExpr realR && realL.equals(realR)){
+
+                    }else{
+                        res.add(fixedInstr);
+                    }
+                }else {
+                    res.add(fixedInstr);
+                }
             }
         }
 
-        return fixInstrsAbstract(res);
+        ArrayList<ASMInstruction> fixedInstrs = fixInstrsAbstract(res);
+        return  fixedInstrs;
+//        ArrayList<ASMInstruction> finalOutput = new ArrayList<>();
+//        HashMap<String, Pair<Integer,Integer>> funcSigs = compUnit.getAllFunctionsSigs();
+//        funcSigs.put("_Imain_paai",new Pair<>(1,0));
+//        long numArgs = funcSigs.get(funcName).part1();
+//        for (ASMInstruction instr: fixedInstrs){
+//            if (instr instanceof ASMEnter enter){
+//                finalOutput.add(instr);
+//                for (int i = 1; i <= numArgs; i++) {
+//                    if (colorMapping.containsKey("_ARG" + i)){
+//                        finalOutput.add(new ASMPush(new ASMRegisterExpr(colorMapping.get("_ARG" + i))));
+//                    }
+//                }
+//            }else if (instr instanceof ASMLeave leave){
+//                for (long i = numArgs; i >= 1; i--) {
+//                    if (colorMapping.containsKey("_ARG" + i)) {
+//                        finalOutput.add(new ASMPop(new ASMRegisterExpr(colorMapping.get("_ARG" + i))));
+//                    }
+//                }
+//                finalOutput.add(instr);
+//            }else{
+//                finalOutput.add(instr);
+//            }
+//        }
+//        return fixAllStackAlignmentsColor(finalOutput,colorMapping);
     }
 
     public ASMInstruction fixInstruction(ASMInstruction instr, HashMap <String, String> mapping){
@@ -561,5 +605,56 @@ public class GraphColorAllocator {
         }else{
             return instr;
         }
+    }
+    /**
+     * Returns whether we need stack alignment or stack. Assumes We found number of temps required already
+     * @param calledFunction
+     * @return true if we need to insert stackalignment.
+     */
+    private boolean doWeNeedstackAlignmentColor(String calledFunction, HashMap<String,String> colorMapping) {
+        int paramCount = compUnit.getAllFunctionsSigs().get(calledFunction).part1();
+        int returnCount = compUnit.getAllFunctionsSigs().get(calledFunction).part2();
+        int returnSpace = Math.max(returnCount - 2, 0);
+        int argSpace = Math.max(paramCount - (returnCount > 2 ? 5 : 6), 0);
+        int paramAdd = 0;
+
+        HashMap<String, Pair<Integer,Integer>> funcSigs = compUnit.getAllFunctionsSigs();
+        funcSigs.put("_Imain_paai",new Pair<>(1,0));
+        long numArgs = funcSigs.get(funcName).part1();
+        for (int i = 1; i<= numArgs;i++){
+            if (colorMapping.containsKey("_ARG" + i)){
+                paramAdd++;
+            }
+        }
+
+        int stackSize =  paramAdd + returnSpace + argSpace;
+        // rip, rbp, r12, r13, r14
+        return (stackSize & 1) != 0;
+    }
+
+    private ArrayList<ASMInstruction> fixAllStackAlignmentsColor(ArrayList<ASMInstruction> instrs, HashMap<String,String> colorMap) {
+        ArrayList<ASMInstruction> alignedFunction = new ArrayList<>(instrs);
+        for (int i = 0 ;i< alignedFunction.size();i++){
+            ASMInstruction instr = alignedFunction.get(i);
+            if (instr instanceof ASMComment comment && comment.getComment().equals("Add Padding")){
+                if (doWeNeedstackAlignmentColor(comment.getFunctionName(),colorMap)){
+                    alignedFunction.set(i,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                    // find end
+                    int undoIndex = undoCommentColor(alignedFunction,i+1);
+                    alignedFunction.set(undoIndex,new ASMArg2(ASMOpCodes.ADD, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
+                }
+            }
+        }
+        return alignedFunction;
+
+    }
+    private int undoCommentColor(ArrayList<ASMInstruction> instructionsList, int startIndex){
+        for (int i = startIndex;i < instructionsList.size();i++){
+            ASMInstruction instr = instructionsList.get(i);
+            if (instr instanceof ASMComment comment && comment.getComment().equals("Undo Padding")){
+                return i;
+            }
+        }
+        throw new InternalCompilerError("did align properly and replace undo");
     }
 }

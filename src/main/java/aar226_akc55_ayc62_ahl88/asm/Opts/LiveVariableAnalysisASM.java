@@ -26,6 +26,8 @@ import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisito
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.flattenMem;
 
 public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbstractReg>> {
+
+    static ArrayList<String> calleSaved = new ArrayList<>(List.of("rbp", "rsp", "rbx", "r12", "r13", "r14", "r15"));
     public LiveVariableAnalysisASM(CFGGraphBasicBlockASM g) {
         super(g,
                 (n,outN) ->{
@@ -64,7 +66,11 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
             genns.addAll(usesInASM(n.getStmt()));
             killns.addAll(defsInASM(n.getStmt()));
         }
-
+        if (block.start){
+            for (String reg : calleSaved){
+                genns.add(new ASMRegisterExpr(reg));
+            }
+        }
         return new Pair<>(genns,killns);
 
     }
@@ -97,7 +103,6 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                 if (arg1.getLeft() instanceof ASMAbstractReg temp){
                     defSet.add(temp);
                 }
-                defSet.add(new ASMRegisterExpr("rsp"));
                 // TODO RSP????
             }
             // SETCC r/m8
@@ -267,25 +272,6 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                     flattenAndAdd(mem, usedSet);
                 }
             }
-//            case MOVABS -> {
-//                ASMArg2 arg2 = (ASMArg2) instr;
-//                if (arg2.getRight() instanceof ASMAbstractReg abs){
-//                    usedSet.add(abs);
-//                }else if (arg2.getRight() instanceof ASMMemExpr mem){
-//                    ArrayList<ASMExpr> flat = flattenMem(mem);
-//                    for (ASMExpr e : flat){
-//                        if (e instanceof ASMAbstractReg abs){
-//                            usedSet.add(abs);
-//                        }
-//                    }
-//                }else{
-//                    if (arg2.getRight() instanceof ASMConstExpr ){
-//
-//                    }else {
-//                        throw new InternalCompilerError("not mem or temp" + arg2);
-//                    }
-//                }
-//            }
             // AND r/m64
             case ADD, SUB, AND, OR, XOR,TEST,CMP -> {
                 ASMArg2 arg2 = (ASMArg2) instr;
@@ -376,6 +362,10 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                 }else if (ret.rets == 1){
                     usedSet.add(new ASMRegisterExpr("rax"));
                 }
+                for (String reg : calleSaved){
+                    usedSet.add(new ASMRegisterExpr(reg));
+                }
+
             }
             case LABEL, COMMENT -> {
             }

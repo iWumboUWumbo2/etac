@@ -12,7 +12,7 @@ public class BasicBlockASMCFG {
     final private int FALLTHROUGH = 0;
     final private int JUMP = 1;
 
-
+    public boolean start;
     HashSet<String> originLabels;
 
     HashSet<String> destLabels;
@@ -23,6 +23,7 @@ public class BasicBlockASMCFG {
     private ArrayList<BasicBlockASMCFG> predecessors;
 
     public BasicBlockASMCFG(){
+        start = false;
         this.originLabels = new HashSet<>();
         this.destLabels = new HashSet<>();
         this.predecessors = new ArrayList<>();

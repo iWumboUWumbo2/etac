@@ -29,7 +29,7 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
     private String extraJmps() {
         return String.format("_extra_jump_%d", (extraJmp++));
     }
-    ArrayList<String> allowedInline;
+    public ArrayList<String> allowedInline;
 
     public FunctionInliningVisitor() {
         tempCnt = 0;

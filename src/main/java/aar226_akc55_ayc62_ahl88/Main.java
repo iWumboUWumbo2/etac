@@ -504,6 +504,9 @@ public class Main {
         try {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
+            FunctionInliningVisitor fv = new FunctionInliningVisitor();
+            fv.visit((IRCompUnit) ir);
+            ArrayList<String> inlineAbleFunctions = fv.allowedInline;
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
 
@@ -517,7 +520,7 @@ public class Main {
                         out.write(instr+"\n");
                     }
                 }
-                writeOutputAsm(filename + kv.getKey(), out.toString(), "abstract");
+//                writeOutputAsm(filename, out.toString(), "abstract" + kv.getKey());
                 out.close();
             }
 
@@ -528,11 +531,11 @@ public class Main {
                     CFGGraph<ASMInstruction> singleNode = new CFGGraph<>(kv.getValue());
                     LVASINGLEASM single = new LVASINGLEASM(singleNode);
                     single.workList();
-                    writeOutputDot(filename, kv.getKey(), "SINGLELVA", singleNode.CFGtoDOT(CFGGraph.HashmapString(single.getInMapping(),true),
-                            CFGGraph.HashmapString(single.getOutMapping(),false)));
+//                    writeOutputDot(filename, kv.getKey(), "SINGLELVA", singleNode.CFGtoDOT(CFGGraph.HashmapString(single.getInMapping(),true),
+//                            CFGGraph.HashmapString(single.getOutMapping(),false)));
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
                     asmBasicblocks.removeUnreachableNodes();
-                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
+                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks,inlineAbleFunctions, comp, kv.getKey());
                     getColors.MainFunc();
                     if (getColors.failed) {
                         failed = true;

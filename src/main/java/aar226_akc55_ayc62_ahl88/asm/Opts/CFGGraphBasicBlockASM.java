@@ -23,6 +23,7 @@ public class CFGGraphBasicBlockASM {
     private HashMap<String, Integer> labelMap;
     private HashMap<Integer, BasicBlockASMCFG> indToBasicBlock;
     private HashMap<String,Long> labelToNumber;
+
     private boolean stop(ASMInstruction stmt){
         return (stmt instanceof ASMAbstractJump ||
                 stmt instanceof ASMRet ||
@@ -36,6 +37,7 @@ public class CFGGraphBasicBlockASM {
         labelToNumber = new HashMap<>();
         int ind = 0;
         BasicBlockASMCFG curBlock = new BasicBlockASMCFG();
+        curBlock.start = true;
         for (ASMInstruction stmt: stmts){
             if (stop(stmt)){
                 if (stmt instanceof ASMJumpAlways jmp){
