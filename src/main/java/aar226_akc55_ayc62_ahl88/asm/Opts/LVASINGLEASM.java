@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.asm.Opts;
 
+
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg1;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
@@ -25,13 +26,12 @@ import java.util.function.Supplier;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.checkExprForTemp;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.flattenMem;
 
-public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbstractReg>> {
-    public LiveVariableAnalysisASM(CFGGraphBasicBlockASM g) {
+public class LVASINGLEASM extends BackwardIRDataflow<Set<ASMAbstractReg>,ASMInstruction> {
+    public LVASINGLEASM(CFGGraph<ASMInstruction> g) {
         super(g,
-                (n,outN) ->{
-                    Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> res = blockFunc(n);
-                    Set<ASMAbstractReg> useSet = res.part1();
-                    Set<ASMAbstractReg> defSet = res.part2();
+                (n, outN) -> {
+                    Set<ASMAbstractReg> useSet = usesInASM(n.getStmt());
+                    Set<ASMAbstractReg> defSet = defsInASM(n.getStmt());
 
                     Set<ASMAbstractReg> l_temp = new HashSet<>(outN);
                     l_temp.removeAll(defSet);
@@ -46,27 +46,6 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                 HashSet::new,
                 new HashSet<>()
         );
-    }
-
-    /**
-     * Creates Gen[pn] and kill[pn]
-     * @param block
-     * @return
-     */
-
-    // for backwards its gen[ns] = gen[n] U (gen[s] - kill[n]) kill[ns]  = kill[s] U kill[n]
-    public static Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> blockFunc(BasicBlockASMCFG block){
-        Set<ASMAbstractReg> genns = usesInASM(block.getBody().get(block.getBody().size()-1).getStmt());
-        Set<ASMAbstractReg> killns = defsInASM(block.getBody().get(block.getBody().size()-1).getStmt());
-        for (int i = block.getBody().size()-2;i>=0;i--){
-            CFGNode<ASMInstruction> n = block.getBody().get(i);
-            genns.removeAll(defsInASM(n.getStmt()));
-            genns.addAll(usesInASM(n.getStmt()));
-            killns.addAll(defsInASM(n.getStmt()));
-        }
-
-        return new Pair<>(genns,killns);
-
     }
     public static Set<ASMAbstractReg> defsInASM(ASMInstruction instr) {
         HashSet<ASMAbstractReg> defSet = new HashSet<>();
@@ -144,7 +123,7 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                 if (arg3.getA2() == null && arg3.getA3() == null){ //1
                     defSet.add(new ASMRegisterExpr("rdx"));
                     defSet.add(new ASMRegisterExpr("rax"));
-               //IMUL r64, r/m64
+                    //IMUL r64, r/m64
                 }else if (arg3.getA3() == null){ //2
                     if (arg3.getA1() instanceof ASMAbstractReg abs){
                         defSet.add(abs);
@@ -205,7 +184,7 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
             }
         }
     }
-    
+
     public static Set<ASMAbstractReg> usesInASM(ASMInstruction instr) {
         HashSet<ASMAbstractReg> usedSet = new HashSet<>();
         switch(instr.getOpCode()){

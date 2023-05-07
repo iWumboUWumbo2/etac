@@ -8,6 +8,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
 import aar226_akc55_ayc62_ahl88.asm.Opts.GraphColorAllocator;
+import aar226_akc55_ayc62_ahl88.asm.Opts.LVASINGLEASM;
 import aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
@@ -38,6 +39,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+
+import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockString;
 
 public class Main {
     enum Target {
@@ -536,10 +539,13 @@ public class Main {
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
                 CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
                 asmBasicblocks.removeUnreachableNodes();
-                GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
+                LiveVariableAnalysisASM lva = new LiveVariableAnalysisASM(asmBasicblocks);
+                lva.workList();
+//                GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks);
 //                writeOutputDot(filename, kv.getKey(), "preRegisterAllocate",
-//                        asmSingleStmt.CFGtoDOT(CFGGraph.HashmapString(lva.getInMapping(),true),
-//                                CFGGraph.HashmapString(lva.getOutMapping(),false)));
+//                        asmBasicblocks.CFGtoDOT(HashmapBlockString(lva.getInMapping(),true),
+//                                HashmapBlockString(lva.getOutMapping(),false)));
+
             }
             ArrayList<ASMInstruction> postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             StringWriter out = new StringWriter();
