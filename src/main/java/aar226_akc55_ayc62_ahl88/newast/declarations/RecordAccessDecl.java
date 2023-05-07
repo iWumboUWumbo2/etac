@@ -28,10 +28,45 @@ public class RecordAccessDecl extends Decl {
     }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-//        Expr accessExpr = new RecordAcessBinop(leftExpr,
-//                new Id(rightId, getLine(), getColumn()), getLine(), getColumn());
-//        accessExpr.prettyPrint(p);
+        int size = decls.size();
+        for (int i = 0; i < size; i++) {
+            p.startList();
+            p.printAtom(".");
+        }
+        decls.get(0).prettyPrint(p);
+
+        for (int i = 1; i < size; i++) {
+            decls.get(i).prettyPrint(p);
+            p.endList();
+        }
+        p.endList();
+
     }
+
+    /**
+     * @param t
+     * @param d
+     * @param table
+     * @return new type with dimension d
+     */
+    public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
+        if (t.isRecord()) {
+            return table.lookup(new Id(t.recordName, getColumn(), getLine()));
+        } else if (t.isRecordArray() && d.getDim() == 0) {
+            Type temp = table.lookup(new Id(t.recordName, getColumn(), getLine()));
+            temp.setType(Type.TypeCheckingType.RECORD);
+            return temp;
+        } else if (t.isRecordArray() && d.getDim() != 0) {
+            Type temp = table.lookup(new Id(t.recordName, getColumn(), getLine()));
+            temp.dimensions = d;
+            temp.setType(Type.TypeCheckingType.RECORDARRAY);
+            return temp;
+        } else {
+            t.dimensions = d;
+            return t;
+        }
+    }
+
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
@@ -48,6 +83,12 @@ public class RecordAccessDecl extends Decl {
         Type accessType = decls.get(0).typeCheck(table);
         for (int i = 0; i < size-1; i++) {
             Decl nextDecl = decls.get(i+1);
+            if (accessType.recordName != null) {
+                System.out.println("RecordAccessDecl");
+                System.out.println(accessType.recordName);
+                System.out.println(accessType.getType());
+
+            }
 
             if (accessType.getType() != Type.TypeCheckingType.RECORD) {
                 throw new SemanticError(accessType.getLine(), accessType.getColumn(), "statements block must be of type record at");
@@ -62,14 +103,15 @@ public class RecordAccessDecl extends Decl {
 
             String rightId = nextDecl.identifier.toString();
             if (nextDecl instanceof NoTypeDecl) {
+
                 System.out.println(accessType.recordFieldToIndex);
                 if (!accessType.recordFieldToIndex.containsKey(rightId)) {
                     throw new SemanticError(nextDecl.getLine(), nextDecl.getColumn(), "Invalid field at ");
                 }
 
                 int index = accessType.recordFieldToIndex.get(rightId);
-                accessType =  accessType.recordFieldTypes.get(index);
-
+                Type temp =  accessType.recordFieldTypes.get(index);
+                accessType = correctType(temp, temp.dimensions, table);
 
             //arr[4].a[4].x
             } else if (nextDecl instanceof ArrAccessDecl arracc) {
@@ -81,7 +123,7 @@ public class RecordAccessDecl extends Decl {
                 Type arrType =  accessType.recordFieldTypes.get(index);
 
                 if (!arrType.isArray()) {
-                    throw new SemanticError(getLine(), getColumn(), "variable is not an array");
+                    throw new SemanticError(getLine(), getColumn(), "record field is not an array");
                 }
                 ArrayList<Expr> indices = arracc.getIndices();
                 for (Expr e : indices) {
@@ -99,23 +141,22 @@ public class RecordAccessDecl extends Decl {
                 Dimension newDim = new Dimension(d.getDim() - indices.size(), d.getLine(), d.getColumn());
                 if (newDim.getDim() == 0) {
                     if (arrType.getType() == Type.TypeCheckingType.INTARRAY) {
-                        nodeType = new Type(Type.TypeCheckingType.INT);
-                        accessType =  nodeType;
+                        accessType = new Type(Type.TypeCheckingType.INT);
                     } else if (arrType.getType() == Type.TypeCheckingType.BOOLARRAY) {
-                        nodeType = new Type(Type.TypeCheckingType.BOOL);
-                        accessType = nodeType;
+                        accessType = new Type(Type.TypeCheckingType.BOOL);
                     } else if (arrType.getType() == Type.TypeCheckingType.RECORDARRAY) {
-                        nodeType = new Type(Type.TypeCheckingType.RECORD);
-                        accessType = nodeType;
+//                        nodeType = new Type(Type.TypeCheckingType.RECORD);
+//                        nodeType = table.lookup(new Id(arrType.recordName, getColumn(), getLine()));
+                        accessType = correctType(arrType, newDim, table);
                     } else {
                         throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                     }
                 } else {
-                    accessType = new Type(arrType.getType(), newDim);
+                    accessType = correctType(arrType, newDim, table);
                 }
             }
         }
-
+        nodeType = accessType;
         return accessType;
     }
 

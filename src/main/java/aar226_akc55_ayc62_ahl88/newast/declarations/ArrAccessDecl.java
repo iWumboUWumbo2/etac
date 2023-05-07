@@ -86,12 +86,39 @@ public class ArrAccessDecl extends Decl{
         }
     }
 
+    /**
+     * @param t
+     * @param d
+     * @param table
+     * @return new type with dimension d
+     */
+    public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
+        if (t.isRecord()) {
+            return table.lookup(new Id(t.recordName, getColumn(), getLine()));
+        } else if (t.isRecordArray() && d.getDim() == 0) {
+            Type temp = table.lookup(new Id(t.recordName, getColumn(), getLine()));
+            temp.setType(Type.TypeCheckingType.RECORD);
+            return temp;
+        } else if (t.isRecordArray() && d.getDim() != 0) {
+            Type temp = table.lookup(new Id(t.recordName, getColumn(), getLine()));
+            temp.dimensions = d;
+            temp.setType(Type.TypeCheckingType.RECORDARRAY);
+            return temp;
+        } else {
+            t.dimensions = d;
+            return t;
+        }
+    }
+
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         Type identifierType = table.lookup(identifier);
         functionSig = identifierType;
         if (identifierType.getType() != Type.TypeCheckingType.FUNC) {
             if (!identifierType.isArray()) {
+                System.out.println("SUS variable is not an array");
+                System.out.println(identifier.toString());
+                System.out.println(identifierType);
                 throw new SemanticError(getLine(), getColumn(), "variable is not an array");
             }
 
@@ -116,14 +143,15 @@ public class ArrAccessDecl extends Decl{
                     nodeType = new Type(Type.TypeCheckingType.BOOL);
                     return nodeType;
                 } else if (identifierType.getType() == Type.TypeCheckingType.RECORDARRAY) {
-                    nodeType = new Type(Type.TypeCheckingType.RECORD);
+                    nodeType = correctType(identifierType, newDim, table);
+//                    nodeType = new Type(Type.TypeCheckingType.RECORD);
                     return nodeType;
                 } else {
                     throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                 }
             }
+            nodeType = correctType(identifierType, newDim, table);
 
-            nodeType = new Type(identifierType.getType(), newDim);
         }else{
             if (identifierType.outputTypes.size() != 1){
                 throw new SemanticError(identifier.getLine(), identifierType.getColumn(), "Function has more than one type for array access");
@@ -154,13 +182,15 @@ public class ArrAccessDecl extends Decl{
                     nodeType = new Type(Type.TypeCheckingType.BOOL);
                     return nodeType;
                 } else if (funcOutType.getType() == Type.TypeCheckingType.RECORDARRAY) {
-                    nodeType = new Type(Type.TypeCheckingType.RECORD);
+                    nodeType = correctType(funcOutType, newDim, table);
+//                    nodeType = new Type(Type.TypeCheckingType.RECORD);
                     return nodeType;
                 } else {
                     throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                 }
             }
-            nodeType = new Type(funcOutType.getType(), newDim);
+            nodeType = correctType(funcOutType, newDim, table);
+//            nodeType = new Type(funcOutType.getType(), newDim);
         }
         return nodeType;
     }

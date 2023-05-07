@@ -36,9 +36,13 @@ public class AnnotatedTypeDecl extends Decl{
         }
         type.dimensions.typeCheck(table); // get side effects
 
-        if (type.isRecord) {
+        if (type.isRecord()) {
             nodeType = table.lookup(new Id(type.recordName, getColumn(), getLine()));
             nodeType.dimensions = type.dimensions;
+        } else if (type.isRecordArray()) {
+            nodeType = table.lookup(new Id(type.recordName, getColumn(), getLine()));
+            nodeType.dimensions = type.dimensions;
+            nodeType.setType(Type.TypeCheckingType.RECORDARRAY);
         } else {
             nodeType = type;
         }

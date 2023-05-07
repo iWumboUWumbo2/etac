@@ -51,11 +51,14 @@ public class DeclAssignStmt extends Stmt{
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         Type declType = decl.typeCheck(table);
-//        System.out.println(decl.identifier);
-//        System.out.println(declType);
+        System.out.println("LHS: " + decl.identifier);
+        System.out.println(declType);
+        System.out.println(declType.recordName);
+        System.out.println(declType.dimensions.getDim());
         Type exprType = expression.typeCheck(table);
-//        System.out.println("rhs type: "+exprType.getType());
-//        if (exprType.isArray()) System.out.println("rhs dim: "+exprType.dimensions.getDim());
+        System.out.println("rhs type: "+exprType.getType());
+        System.out.println(exprType.recordName);
+        if (exprType.isArray()) System.out.println("rhs dim: "+exprType.dimensions.getDim());
         if (!declType.sameType(exprType)) {
             throw new SemanticError(expression.getLine(), expression.getColumn(),"expression type not the same as declaration type");
         }

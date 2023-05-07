@@ -404,6 +404,8 @@ public class Type implements Printer {
     }
     public TypeCheckingType getType() {return tct;}
 
+    public void setType(TypeCheckingType type) { tct = type; }
+
 
     //todo
     public String toString(){
