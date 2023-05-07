@@ -20,13 +20,13 @@ public class RecordAcessBinop extends BinopExpr{
     public RecordAcessBinop(Expr in1, Id in2, int l, int c) {
         super(BinopEnum.PERIOD, in1, in2, l, c);
     }
+
+    //todo fix null
     @Override
     public Type typeCheck(SymbolTable s){
         Expr e1 = getLeftExpr();
         Expr e2 = getRightExpr();
         Type t1 = e1.typeCheck(s);
-
-        // Doulbe check unknown part a:Point[] = {}
 
         //b:Point = {}[0]
         if (t1.getType() != Type.TypeCheckingType.RECORD) {
@@ -38,13 +38,20 @@ public class RecordAcessBinop extends BinopExpr{
         }
 
         this.rightId = i.toString();
-        // Type should be type of field of record
-        if (!t1.recordFieldToIndex.containsKey(this.rightId)) {
-            throw new SemanticError(e2.getLine(), e2.getColumn(), "Invalid field at ");
-        }
+        Id recordId = new Id(t1.recordName,0,0);
 
-        int index = t1.recordFieldToIndex.get(this.rightId);
-        return t1.recordFieldTypes.get(index);
+        if (s.contains(recordId)) {
+            Type recordType = (Type) s.lookup(recordId);
+
+            if (recordType.recordFieldToIndex.containsKey(rightId)) {
+                int index = recordType.recordFieldToIndex.get(this.rightId);
+                return recordType.recordFieldTypes.get(index);
+            } else {
+                throw new SemanticError(e2.getLine(), e2.getColumn(), "Invalid field at ");
+            }
+        } else {
+            throw new SemanticError(e2.getLine(), e2.getColumn(), "Not valid record.");
+        }
     }
 
     @Override
