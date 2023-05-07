@@ -9,9 +9,21 @@ record Sus {
 
 main(args:int[][]) {
     n:Node = Node(1, null)
-    susList:Sus[] = {};
-    susList[0].suss[0].next.value = 20
+    n.value = 3
+    n.next = n;
+    n.next = n.next;
+
+    sus:Sus = Sus( {n, n, n} )
+    sus.suss[0] = n
+    sus.suss[0].value = 1;
+    sus.suss[0].next = n;
+    sus.suss[0].next.value = 20;
+
+    susList:Sus[] = {}
     susList[0].suss[0] = n
+    susList[0].suss[0].value = 1;
+    susList[0].suss[0].next = n;
+    susList[0].suss[0].next.value = 20;
 
 }
 

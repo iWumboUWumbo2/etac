@@ -34,14 +34,21 @@ public class AnnotatedTypeDecl extends Decl{
         if (table.contains(identifier)) {
             throw new SemanticError(getLine(), getColumn(), "variable has already been seen");
         }
+//        System.out.println("here1");
         type.dimensions.typeCheck(table); // get side effects
+//        System.out.println("here2");
 
         if (type.isRecord()) {
-            nodeType = table.lookup(new Id(type.recordName, getColumn(), getLine()));
+            Type recordType = table.lookup(new Id(type.recordName, getLine(),getColumn()));
+            nodeType = new Type(recordType.recordName, recordType.recordFieldTypes, type.getLine(), type.getColumn());
             nodeType.dimensions = type.dimensions;
+            nodeType.recordFieldToIndex = recordType.recordFieldToIndex;
+            nodeType.setType(Type.TypeCheckingType.RECORD);
         } else if (type.isRecordArray()) {
-            nodeType = table.lookup(new Id(type.recordName, getColumn(), getLine()));
+            Type recordType = table.lookup(new Id(type.recordName, getLine(),getColumn()));
+            nodeType = new Type(recordType.recordName, recordType.recordFieldTypes, type.getLine(), type.getColumn());
             nodeType.dimensions = type.dimensions;
+            nodeType.recordFieldToIndex = recordType.recordFieldToIndex;
             nodeType.setType(Type.TypeCheckingType.RECORDARRAY);
         } else {
             nodeType = type;

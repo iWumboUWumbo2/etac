@@ -41,7 +41,7 @@ public class FunctionCallExpr extends Expr {
         super (l, c);
         id = i;
         args = inArgs;
-        System.out.println(i);
+//        System.out.println(i);
     }
 
     @Override
@@ -72,6 +72,7 @@ public class FunctionCallExpr extends Expr {
 
         // Type check function call
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {
+//            System.out.println(functionType.getType());
             throw new SemanticError(id.getLine(), id.getColumn(), "identifier isn't function");
         }
         if (functionType.outputTypes.size() == 0) {
