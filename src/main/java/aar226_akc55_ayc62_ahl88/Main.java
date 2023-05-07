@@ -536,6 +536,20 @@ public class Main {
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
 //            System.out.println(comp.printInstructions());
+
+//            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
+//                StringWriter out = new StringWriter();
+//                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
+//                for (ASMInstruction instr : abstractInstrs){
+//                    if (!(instr instanceof ASMLabel)){
+//                        out.write(INDENT_SFILE + instr + '\n');
+//                    }else{
+//                        out.write(instr+"\n");
+//                    }
+//                }
+//                writeOutputAsm(filename, out.toString(), "abstract");
+//                out.close();
+//            }
             for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
                 CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue());
                 asmBasicblocks.removeUnreachableNodes();
@@ -568,6 +582,7 @@ public class Main {
             if (shouldWrite) {
                 writeOutputAsm(filename, out.toString(), "s");
             }
+            out.close();
         }
         catch (EtaError e) {
             e.printError(zhenFilename);

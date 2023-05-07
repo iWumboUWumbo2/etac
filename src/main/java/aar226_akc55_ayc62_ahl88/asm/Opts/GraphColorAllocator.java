@@ -1,8 +1,10 @@
 package aar226_akc55_ayc62_ahl88.asm.Opts;
 
 import aar226_akc55_ayc62_ahl88.Main;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMRegisterExpr;
+import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg1;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg2;
+import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMArg3;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.mov.ASMMov;
 import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
@@ -14,8 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM.defsInASM;
-import static aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM.usesInASM;
+import static aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM.*;
+import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.flattenMem;
 
 public class GraphColorAllocator {
 
@@ -75,16 +77,39 @@ public class GraphColorAllocator {
         moveList = new HashMap<>();
         alias = new HashMap<>();
         color = new HashMap<>();
+        initTemps();
     }
 
+   public void initTemps(){
+        HashSet<ASMAbstractReg> temps = new HashSet<>();
+        for (BasicBlockASMCFG b : progBlock.getNodes()) {
+            for (CFGNode<ASMInstruction> instr : b.getBody()) {
+                ASMInstruction unwrapped = instr.getStmt();
+                temps.addAll(defsInASM(unwrapped));
+                temps.addAll(usesInASM(unwrapped));
+            }
+        }
+        for (ASMAbstractReg reg : temps){
+            adjList.put(reg,new HashSet<>());
+            degree.put(reg,0);
+            moveList.put(reg,new HashSet<>());
+            if (reg instanceof ASMRegisterExpr real){
+                precolored.add(real);
+                color.put(real,real);
+            }else if (reg instanceof ASMTempExpr fake){
+                initial.add(fake);
+            }else{
+                throw new InternalCompilerError("how we here");
+            }
+        }
+   }
     public void MainFunc(){
         LVA = new LiveVariableAnalysisASM(progBlock);
         LVA.workList();
-        
         Build();
         MakeWorklist();
 
-        do {
+        while (!allEmpty()){
             if (!simplifyWorklist.isEmpty()) {
                 Simplify();
             } else if (!worklistMoves.isEmpty()) {
@@ -94,16 +119,15 @@ public class GraphColorAllocator {
             } else if (!spillWorklist.isEmpty()) {
                 SelectSpill();
             }
-        } while (allEmpty());
-
+        }
         AssignColors();
         if (!spilledNodes.isEmpty()) {
             System.out.println("spilled nodes");
 //            RewriteProgram();
 //            MainFunc();
         }else{
-            System.out.println("no spilled");
-            System.out.println(color);
+//            System.out.println("no spilled");
+//            System.out.println(color);
         }
     }
 
@@ -131,9 +155,6 @@ public class GraphColorAllocator {
                     Set<ASMAbstractReg> combined = new HashSet<>(uses);
                     combined.addAll(defs);
                     for (ASMAbstractReg n : combined){
-                        if (!moveList.containsKey(n)){
-                            moveList.put(n,new HashSet<>());
-                        }
                         moveList.get(n).add(mov);
                     }
                     worklistMoves.add(mov);
@@ -265,7 +286,7 @@ public class GraphColorAllocator {
         else {
             uv = new Pair<>(x, y);
         }
-
+        worklistMoves.remove(m);
         ASMAbstractReg u = uv.part1();
         ASMAbstractReg v = uv.part2();
 
@@ -405,23 +426,11 @@ public class GraphColorAllocator {
             adjSet.add(new Pair<>(v, u));
 
             if (!precolored.contains(u)) {
-                if (!adjList.containsKey(u)){
-                    adjList.put(u,new HashSet<>());
-                }
-                if (!degree.containsKey(u)){
-                    degree.put(u,0);
-                }
                 adjList.get(u).add(v);
                 degree.put(u, degree.get(u) + 1);
             }
 
             if (!precolored.contains(v)) {
-                if (!adjList.containsKey(v)){
-                    adjList.put(v,new HashSet<>());
-                }
-                if (!degree.containsKey(v)){
-                    degree.put(v,0);
-                }
                 adjList.get(v).add(u);
                 degree.put(v, degree.get(v) + 1);
             }

@@ -197,7 +197,7 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
         return defSet;
     }
 
-    private static void flattenAndAdd(ASMMemExpr mem, HashSet<ASMAbstractReg> usedSet) {
+    public static void flattenAndAdd(ASMMemExpr mem, HashSet<ASMAbstractReg> usedSet) {
         ArrayList<ASMExpr> flat = flattenMem(mem);
         for (ASMExpr e : flat){
             if (e instanceof ASMAbstractReg abs){
