@@ -66,6 +66,7 @@ public class FunctionCallExpr extends Expr {
                 }
             }
 
+            nodeType = functionType;
             return new Type(id.toString(), recordFieldTypes, getLine(), getColumn());
         }
 
