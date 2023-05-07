@@ -3,12 +3,14 @@ use conv
 
 main(args : int[][]) {
     a : int = 5;
-    break;
     while a < 100 {
         a = a + 5;
         if a > 51 {
             a = 1000;
-            break;
+            if a == 1000 {
+                a = 2000;
+                break;
+            }
         }
     }
     println(unparseInt(a));

@@ -1606,8 +1606,8 @@ public class AbstractASMVisitor {
             case LEQ -> ASMOpCodes.SETLE;
             case GEQ -> ASMOpCodes.SETGE;
             case UGE -> ASMOpCodes.SETAE;
-            // TODO: 4/30/2023  fix pls
-            case PERIOD -> ASMOpCodes.SETAE;
+//            // TODO: 4/30/2023  fix pls
+//            case PERIOD -> ASMOpCodes.SETAE;
         };
     }
 

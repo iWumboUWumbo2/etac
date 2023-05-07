@@ -101,7 +101,6 @@ public abstract class BinopExpr extends Expr {
 
     public IRBinOp.OpType getOpType(){
         switch (binopType) {
-            case PERIOD: return IRBinOp.OpType.PERIOD;
             case DIVIDE: return IRBinOp.OpType.DIV;
             case HIGHMULT: return IRBinOp.OpType.HMUL;
             case MINUS: return IRBinOp.OpType.SUB;
