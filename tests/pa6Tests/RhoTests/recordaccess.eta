@@ -24,6 +24,5 @@ main(args:int[][]) {
     susList[0].suss[0].value = 1;
     susList[0].suss[0].next = n;
     susList[0].suss[0].next.value = 20;
-
 }
 

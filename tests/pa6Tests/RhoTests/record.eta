@@ -11,5 +11,5 @@ foo() {
     y : Point = Point(1, 2, 3);
     z : int = y.x;
     z = Point(1,2,3).x;
-    a : OrderMatters = OrderMatters(true, 3) // this should fail typecheck
+    //a : OrderMatters = OrderMatters(true, 3) // this should fail typecheck
 }

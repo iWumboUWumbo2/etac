@@ -9,9 +9,7 @@ public class SymbolTable<T> {
 
     private ArrayList<HashMap<String, T>> scopes;
     public Id currentParentFunction;
-
     public boolean parentLoop;
-
     public HashMap<String, T> allRecordTypes;
 
     public SymbolTable() {
