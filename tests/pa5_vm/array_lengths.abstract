@@ -1,0 +1,147 @@
+_Imain_paai:
+    enter 0, 0
+    # Add Padding
+    mov _ASMReg_t0, 32
+    mov rdi, _ASMReg_t0
+    call _eta_alloc
+    mov _RV1, rax
+    # Undo Padding
+    mov t0_1, _RV1
+    mov QWORD PTR [ t0_1 ], 3
+    mov QWORD PTR [ t0_1 + 8 ], 1
+    mov QWORD PTR [ t0_1 + 16 ], 2
+    mov QWORD PTR [ t0_1 + 24 ], 3
+    mov _ASMReg_t13, 8
+    mov _ASMReg_t12, _RV1
+    add _ASMReg_t12, _ASMReg_t13
+    mov QWORD PTR _a1[rip] , _ASMReg_t12
+    # Add Padding
+    mov _ASMReg_t14, 24
+    mov rdi, _ASMReg_t14
+    call _eta_alloc
+    mov _RV1, rax
+    # Undo Padding
+    mov t1_1, _RV1
+    mov QWORD PTR [ t1_1 ], 2
+    lea tl3_1, QWORD PTR [ _RV1 + 8 ]
+    # Add Padding
+    mov _ASMReg_t18, 16
+    mov rdi, _ASMReg_t18
+    call _eta_alloc
+    mov _RV1, rax
+    # Undo Padding
+    mov t2_1, _RV1
+    mov QWORD PTR [ t2_1 ], 1
+    mov QWORD PTR [ t2_1 + 8 ], 4
+    mov _ASMReg_t25, 8
+    mov _ASMReg_t24, _RV1
+    add _ASMReg_t24, _ASMReg_t25
+    mov QWORD PTR [ tl3_1 ], _ASMReg_t24
+    lea tl5_1, QWORD PTR [ t1_1 + 16 ]
+    # Add Padding
+    mov _ASMReg_t28, 32
+    mov rdi, _ASMReg_t28
+    call _eta_alloc
+    mov _RV1, rax
+    # Undo Padding
+    mov t3_1, _RV1
+    mov QWORD PTR [ t3_1 ], 3
+    mov QWORD PTR [ t3_1 + 8 ], 5
+    mov QWORD PTR [ t3_1 + 16 ], 6
+    mov QWORD PTR [ t3_1 + 24 ], 7
+    mov _ASMReg_t41, 8
+    mov _ASMReg_t40, _RV1
+    add _ASMReg_t40, _ASMReg_t41
+    mov QWORD PTR [ tl5_1 ], _ASMReg_t40
+    mov _ASMReg_t44, 8
+    mov _ASMReg_t43, t1_1
+    add _ASMReg_t43, _ASMReg_t44
+    mov QWORD PTR _a2[rip] , _ASMReg_t43
+    # Add Padding
+    mov _ASMReg_t45, 992
+    mov rdi, _ASMReg_t45
+    call _eta_alloc
+    mov _RV1, rax
+    # Undo Padding
+    mov t6_1, _RV1
+    mov QWORD PTR [ t6_1 ], 123
+    lea a3_1, QWORD PTR [ _RV1 + 8 ]
+    mov t8_2, 0
+l0:
+    mov _ASMReg_t49, 123
+    cmp t8_2, _ASMReg_t49
+    jge l2
+    mov QWORD PTR [ a3_1 + t8_2 * 8 ], 0
+    lea t8_3, QWORD PTR [ t8_2 + 1 ]
+    mov t8_2, t8_3
+    jmp l0
+l2:
+    # Add Padding
+    mov _ASMReg_t56, 104
+    mov rdi, _ASMReg_t56
+    call _eta_alloc
+    mov _RV1, rax
+    # Undo Padding
+    mov t12_1, _RV1
+    mov QWORD PTR [ t12_1 ], 12
+    lea a4_1, QWORD PTR [ _RV1 + 8 ]
+    mov t14_2, 0
+l3:
+    mov _ASMReg_t60, 12
+    cmp t14_2, _ASMReg_t60
+    jge l5
+    # Add Padding
+    mov _ASMReg_t61, 40
+    mov rdi, _ASMReg_t61
+    call _eta_alloc
+    mov _RV1, rax
+    # Undo Padding
+    mov t16_2, _RV1
+    mov QWORD PTR [ t16_2 ], 4
+    mov _ASMReg_t68, 8
+    mov _ASMReg_t67, _RV1
+    add _ASMReg_t67, _ASMReg_t68
+    mov QWORD PTR [ a4_1 + t14_2 * 8 ], _ASMReg_t67
+    mov t18_3, 0
+l6:
+    mov _ASMReg_t69, 4
+    cmp t18_3, _ASMReg_t69
+    jge l8
+    mov _ASMReg_t72, QWORD PTR [ a4_1 + t14_2 * 8 ]
+    mov QWORD PTR [ _ASMReg_t72 + t18_3 * 8 ], 0
+    lea t18_4, QWORD PTR [ t18_3 + 1 ]
+    mov t18_3, t18_4
+    jmp l6
+l8:
+    lea t14_3, QWORD PTR [ t14_2 + 1 ]
+    mov t14_2, t14_3
+    jmp l3
+l5:
+    mov _ASMReg_t83, QWORD PTR _a1[rip] 
+    mov t19_1, QWORD PTR [ _ASMReg_t83 - 8 ]
+    mov tl9_1, t19_1
+    mov _IprInt_pi_tp6_fi_x_1, tl9_1
+    # Add Padding
+    mov rdi, _IprInt_pi_tp6_fi_x_1
+    call _IunparseInt_aii
+    mov _RV1, rax
+    # Undo Padding
+    # Add Padding
+    mov rdi, _RV1
+    call _Iprintln_pai
+    # Undo Padding
+    mov _ASMReg_t87, QWORD PTR _a2[rip] 
+    mov t20_1, QWORD PTR [ _ASMReg_t87 - 8 ]
+    mov tl10_1, t20_1
+    mov _IprInt_pi_tp9_fi_x_1, tl10_1
+    # Add Padding
+    mov rdi, _IprInt_pi_tp9_fi_x_1
+    call _IunparseInt_aii
+    mov _RV1, rax
+    # Undo Padding
+    # Add Padding
+    mov rdi, _RV1
+    call _Iprintln_pai
+    # Undo Padding
+    leave 
+    ret 

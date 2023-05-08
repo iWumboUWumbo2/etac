@@ -33,4 +33,11 @@ public enum OptimizationType {
             return "copy";
         }
     },
+
+    REGALLOC {
+        @Override
+        public String toString() {
+            return "reg";
+        }
+    }
 }

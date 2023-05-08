@@ -1,0 +1,11 @@
+main(args:int[][]) {
+    a:int = foo();
+}
+
+foo():int {
+    return fact(5);
+}
+
+fact(n:int):int {
+    return n;
+}
