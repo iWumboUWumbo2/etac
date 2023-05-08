@@ -31,12 +31,16 @@ main(args : int[][]) {
 
     k : Point = j.x[0]
 
+<<<<<<< HEAD
     pee : int = j.x[0].x
 
+=======
+>>>>>>> 0c92129123b3ba6679ec87eecf9ddfe7750d1134
     l : int = k.y
 
     println(unparseInt(a.x)) // 2, 3
     println(unparseInt(a.y))
+<<<<<<< HEAD
     //println()
 
     println(unparseInt(b.x)) // 4,5
@@ -53,6 +57,19 @@ main(args : int[][]) {
     println(unparseInt(f[0])) // 5,6
     println(unparseInt(f[1]))
     //println()
+=======
+
+    println(unparseInt(b.x)) // 4,5
+    println(unparseInt(b.y))
+
+    println(unparseInt(c.x)) // 6,7
+    println(unparseInt(c.y))
+
+    println(unparseInt(e[0][0])) // 4
+
+    println(unparseInt(f[0])) // 5,6
+    println(unparseInt(f[1]))
+>>>>>>> 0c92129123b3ba6679ec87eecf9ddfe7750d1134
 
     println(unparseInt(g[0].x)) //2,3,111111,111111111111,6,7
     println(unparseInt(g[0].y))
@@ -60,19 +77,23 @@ main(args : int[][]) {
     println(unparseInt(g[1].y))
     println(unparseInt(g[2].x))
     println(unparseInt(g[2].y))
+<<<<<<< HEAD
     //println()
 
     println(unparseInt(length(h))) // 3
     //println()
+=======
 
-    //println(unparseInt(i[0])) //2, 111111111111, 6,7 ,4
-    //println(unparseInt(i[0]))
-    //println(unparseInt(i[0]))
-    //println(unparseInt(i[0]))
-    //println(unparseInt(length(i)))
-    //println()
+    println(unparseInt(length(h))) // 3
+>>>>>>> 0c92129123b3ba6679ec87eecf9ddfe7750d1134
 
-    //println(unparseInt(l)) // 3
+    println(unparseInt(i[0])) //2, 111111111111, 6,7 ,4
+    println(unparseInt(i[0]))
+    println(unparseInt(i[0]))
+    println(unparseInt(i[0]))
+    println(unparseInt(length(i)))
+
+    println(unparseInt(l)) // 3
 
 
 }

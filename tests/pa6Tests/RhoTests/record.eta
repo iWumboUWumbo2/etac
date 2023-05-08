@@ -24,8 +24,11 @@ main(args:int[][]) {
     Point(1,2,3).x = 3
     z : int = y.x;
     z = Point(1,2,3).x;
+<<<<<<< HEAD
     println(unparseInt(z));
     println(unparseInt(y.x));
     println(unparseInt(y.y));
+=======
+>>>>>>> 0c92129123b3ba6679ec87eecf9ddfe7750d1134
     //a : OrderMatters = OrderMatters(true, 3) // this should fail typecheck
 }

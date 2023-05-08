@@ -22,9 +22,6 @@ public class RecordAccessDecl extends Decl {
     public RecordAccessDecl(ArrayList<Decl> decls, int l, int c) {
         super(decls.get(0).identifier, l,c);
         this.decls = decls;
-//        for (int i = 0; i < decls.size(); i ++) {
-//            System.out.println("decls: " + decls.get(i));
-//        }
     }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
