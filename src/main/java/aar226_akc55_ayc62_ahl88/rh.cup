@@ -373,6 +373,16 @@ recordaccessdeclarray ::=
     recordaccessdeclarray:rad PERIOD IDENTIFIER:i {:
         rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
         RESULT = rad; :}
+    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD IDENTIFIER:i {:
+        ArrayList<Decl> rad = new ArrayList<Decl>();
+        rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright));
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        RESULT = rad; :}
+    | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD fullBracketAss:fb {:
+        ArrayList<Decl> rad = new ArrayList<Decl>();
+        rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright));
+        rad.add(fb);
+        RESULT = rad; :}
     | recordaccessdeclarray:rad PERIOD fullBracketAss:fb {:
         rad.add(fb);
         RESULT = rad; :}

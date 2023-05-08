@@ -1,15 +1,31 @@
+use io
+use conv
+
 record Point {
     x,y,z: int
 }
 
+
+record PointArr {
+    x : Point[]
+}
 record OrderMatters{
     x: int
     y: bool
 }
 
-foo() {
+main(args:int[][]) {
     y : Point = Point(1, 2, 3);
+    x : Point = Point(4, 5, 6);
+    a : Point = Point(4, 5, 6);
+
+    PointArr({x,y}).x[0] = a;
+
+    Point(1,2,3).x = 3
     z : int = y.x;
     z = Point(1,2,3).x;
-    a : OrderMatters = OrderMatters(true, 3) // this should fail typecheck
+    println(unparseInt(z));
+    println(unparseInt(y.x));
+    println(unparseInt(y.y));
+    //a : OrderMatters = OrderMatters(true, 3) // this should fail typecheck
 }

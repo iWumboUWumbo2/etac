@@ -2,11 +2,14 @@ package aar226_akc55_ayc62_ahl88.newast.declarations;
 
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
+import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
+
+import java.util.ArrayList;
 
 
 /**
@@ -16,6 +19,9 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
  * Not: a:int, bob:bool[]
  */
 public class NoTypeDecl extends Decl{
+
+    ArrayList<Expr> args;
+
     /**
      * @param i Identifier Input
      * @param l Line Number
@@ -25,9 +31,21 @@ public class NoTypeDecl extends Decl{
         super(i,l, c);
     }
 
+    public NoTypeDecl(Id i, ArrayList<Expr> args, int l, int c) {
+        super (i, l, c);
+        this.args = args;
+    }
+
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        identifier.prettyPrint(p);
+        if (args != null) {
+            p.startList();
+            identifier.prettyPrint(p);
+            args.forEach(e -> e.prettyPrint(p));
+            p.endList();
+        } else {
+            identifier.prettyPrint(p);
+        }
     }
 
     @Override
