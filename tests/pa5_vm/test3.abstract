@@ -1,0 +1,44 @@
+_Imain_paai:
+    enter 0, 0
+    mov i_2, 0
+l3:
+    mov _ASMReg_t0, 10
+    cmp i_2, _ASMReg_t0
+    jge l5
+    mov _Inothing_p_tp6_fi_c_3, 1
+    mov _Inothing_p_tp7_fi_d_3, 1
+    mov _Inothing_p_tp4_fi_a_3, 0
+_Inothing_plb6_fi_l0:
+    mov _ASMReg_t1, 50
+    cmp _Inothing_p_tp4_fi_a_3, _ASMReg_t1
+    jge _Inothing_plb7_fi_l2
+    mov _Inothing_p_tp5_fi_b_5, _Inothing_p_tp6_fi_c_3
+    lea _Inothing_p_tp6_fi_c_4, QWORD PTR [ _Inothing_p_tp6_fi_c_3 + _Inothing_p_tp7_fi_d_3 ]
+    mov _ASMReg_t4, 1
+    mov _ASMReg_t3, _Inothing_p_tp5_fi_b_5
+    sub _ASMReg_t3, _ASMReg_t4
+    mov _Inothing_p_tp7_fi_d_4, _ASMReg_t3
+    mov _ASMReg_t6, _Inothing_p_tp5_fi_b_5
+    add _ASMReg_t6, _Inothing_p_tp6_fi_c_4
+    lea _Inothing_p_tp6_fi_c_5, QWORD PTR [ _ASMReg_t6 + _Inothing_p_tp7_fi_d_4 ]
+    lea _Inothing_p_tp4_fi_a_4, QWORD PTR [ _Inothing_p_tp4_fi_a_3 + 1 ]
+    mov _Inothing_p_tp6_fi_c_3, _Inothing_p_tp6_fi_c_5
+    mov _Inothing_p_tp7_fi_d_3, _Inothing_p_tp7_fi_d_4
+    mov _Inothing_p_tp4_fi_a_3, _Inothing_p_tp4_fi_a_4
+    jmp _Inothing_plb6_fi_l0
+_Inothing_plb7_fi_l2:
+    lea i_3, QWORD PTR [ i_2 + 1 ]
+    mov i_2, i_3
+    jmp l3
+l5:
+    # Add Padding
+    mov rdi, i_2
+    call _IunparseInt_aii
+    mov _RV1, rax
+    # Undo Padding
+    # Add Padding
+    mov rdi, _RV1
+    call _Iprintln_pai
+    # Undo Padding
+    leave 
+    ret 

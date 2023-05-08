@@ -39,24 +39,4 @@ public class ASMArg3 extends ASMInstruction {
     public ArrayList<ASMInstruction> accept(RegisterAllocationTrivialVisitor regVisitor) {
         return regVisitor.visit(this);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ASMArg3 asmArg3 = (ASMArg3) o;
-
-        if (!a1.equals(asmArg3.a1)) return false;
-        if (!Objects.equals(a2, asmArg3.a2)) return false;
-        return Objects.equals(a3, asmArg3.a3);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = a1.hashCode();
-        result = 31 * result + (a2 != null ? a2.hashCode() : 0);
-        result = 31 * result + (a3 != null ? a3.hashCode() : 0);
-        return result;
-    }
 }

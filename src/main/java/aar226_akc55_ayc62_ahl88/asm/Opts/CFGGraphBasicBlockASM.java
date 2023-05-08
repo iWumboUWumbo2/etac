@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.asm.Opts;
 
+import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMAbstractReg;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMNameExpr;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
@@ -22,19 +23,24 @@ public class CFGGraphBasicBlockASM {
     private HashMap<String, Integer> labelMap;
     private HashMap<Integer, BasicBlockASMCFG> indToBasicBlock;
     private HashMap<String,Long> labelToNumber;
+
+    public String funcName;
+
     private boolean stop(ASMInstruction stmt){
         return (stmt instanceof ASMAbstractJump ||
                 stmt instanceof ASMRet ||
                 stmt instanceof ASMLabel);
     }
 
-    public CFGGraphBasicBlockASM(ArrayList<ASMInstruction> stmts){
+    public CFGGraphBasicBlockASM(ArrayList<ASMInstruction> stmts, String func){
+        funcName = func;
         nodes = new ArrayList<>();
         labelMap = new HashMap<>();
         indToBasicBlock = new HashMap<>();
         labelToNumber = new HashMap<>();
         int ind = 0;
-        BasicBlockASMCFG curBlock = new BasicBlockASMCFG();
+        BasicBlockASMCFG curBlock = new BasicBlockASMCFG(funcName);
+        curBlock.start = true;
         for (ASMInstruction stmt: stmts){
             if (stop(stmt)){
                 if (stmt instanceof ASMJumpAlways jmp){
@@ -62,7 +68,7 @@ public class CFGGraphBasicBlockASM {
                     nodes.add(curBlock);
                     indToBasicBlock.put(ind,curBlock);
                     ind++;
-                    curBlock = new BasicBlockASMCFG();
+                    curBlock = new BasicBlockASMCFG(funcName);
                     if (stmt instanceof ASMLabel il){
                         curBlock.destLabels.add(il.getLabel());
                         curBlock.body.add(new CFGNode<>(il));
@@ -146,7 +152,7 @@ public class CFGGraphBasicBlockASM {
     public String toString() {
         return nodes.toString();
     }
-    public String CFGtoDOT() {
+    public String CFGtoDOT(HashMap<BasicBlockASMCFG,String> in, HashMap<BasicBlockASMCFG,String> out) {
         StringBuilder result = new StringBuilder();
 
         // Assume first node is start node
@@ -178,7 +184,10 @@ public class CFGGraphBasicBlockASM {
             }
 
             result.append("\t").append(visitedIDs.get(popped))
-                    .append("\t [ label=\"").append(StringEscapeUtils.escapeJava(popped.toString()))
+                    .append("\t [ label=\"")
+                    .append("in:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
+                    .append(StringEscapeUtils.escapeJava(popped.toString()))
+                    .append("out:\t").append(StringEscapeUtils.escapeJava(out.getOrDefault(popped, ""))).append("\\n")
                     .append("\"]\n");
 
             for (BasicBlockASMCFG child : popped.getChildren()) {
@@ -198,6 +207,9 @@ public class CFGGraphBasicBlockASM {
 
         result.append("}");
         return result.toString();
+    }
+    public String CFGtoDOT() {
+        return CFGtoDOT(new HashMap<>(), new HashMap<>());
     }
     public ArrayList<BasicBlockASMCFG> getNodes() {
         return nodes;
@@ -221,7 +233,7 @@ public class CFGGraphBasicBlockASM {
         }
         for (BasicBlockASMCFG node : nodes) {
             if (!visited.contains(node)) { // remove this node
-                System.out.println("block Removed");
+//                System.out.println("block Removed");
                 for (BasicBlockASMCFG child : node.getChildren()) {
                     if (child != null) {
                         cleanChild(child,node);
@@ -249,5 +261,24 @@ public class CFGGraphBasicBlockASM {
             }
         }
         return irs;
+    }
+
+    public static HashMap<BasicBlockASMCFG,String> HashmapBlockString(HashMap<BasicBlockASMCFG,Set<ASMAbstractReg>> mapping, boolean inMap){
+        HashMap<BasicBlockASMCFG,String> res = new HashMap<>();
+        for (BasicBlockASMCFG node : mapping.keySet()){
+            StringBuilder builder = new StringBuilder();
+            Set<ASMAbstractReg> regs = mapping.get(node);
+            int ind = 0;
+            for (ASMAbstractReg reg : regs){
+                builder.append(reg.toString()).append(" ");
+                ind++;
+                if (ind % 10 == 0){
+                    ind = 0;
+                    builder.append("\n");
+                }
+            }
+            res.put(node,builder.toString());
+        }
+        return res;
     }
 }

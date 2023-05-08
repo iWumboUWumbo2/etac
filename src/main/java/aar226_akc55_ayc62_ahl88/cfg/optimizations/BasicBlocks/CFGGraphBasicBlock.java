@@ -235,13 +235,13 @@ public class CFGGraphBasicBlock {
             if (cur instanceof IRJump jmp  && nxt instanceof IRLabel label){
                 if (jmp.target() instanceof IRName name && name.name().equals(label.name())){ // remove jump
                     labelCount.put(name.name(),labelCount.get(name.name())-1);
-                    System.out.println("removed extra jump");
+//                    System.out.println("removed extra jump");
                 }else{
                     postJumpRemove.add(cur);
                 }
             }else if (cur instanceof  IRCJump cjmp && nxt instanceof  IRLabel label){
                 if (cjmp.trueLabel().equals(label.name())){
-                    System.out.println("removed extra cjmp");
+//                    System.out.println("removed extra cjmp");
                     labelCount.put(cjmp.trueLabel(),labelCount.get(cjmp.trueLabel())-1);
                 }else{
                     postJumpRemove.add(cur);
@@ -329,7 +329,7 @@ public class CFGGraphBasicBlock {
         }
         for (BasicBlockCFG node : nodes) {
             if (!visited.contains(node)) { // remove this node
-                System.out.println("block Removed");
+//                System.out.println("block Removed");
                 for (BasicBlockCFG child : node.getChildren()) {
                     if (child != null) {
                         cleanChild(child,node);

@@ -37,22 +37,4 @@ public class ASMArg2 extends ASMInstruction {
     public String toString(){
         return opCodeToString() + left +", " + right;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ASMArg2 arg2 = (ASMArg2) o;
-
-        if (!left.equals(arg2.left)) return false;
-        return right.equals(arg2.right);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = left.hashCode();
-        result = 31 * result + right.hashCode();
-        return result;
-    }
 }
