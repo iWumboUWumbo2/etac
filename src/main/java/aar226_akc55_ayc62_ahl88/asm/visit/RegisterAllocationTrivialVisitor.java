@@ -572,7 +572,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
      */
     public static ASMExpr tempsToRegs(ASMExpr expr, HashMap<String,String> tempMapping){
         if (expr instanceof ASMTempExpr temp){ // base case
-            return new ASMRegisterExpr(tempMapping.get(temp.getName()));
+            if (tempMapping.containsKey(temp.getName())){
+                return new ASMRegisterExpr(tempMapping.get(temp.getName()));
+            }
+//            System.out.println("expr not in mapping: " + expr);
+            return temp;
         }else if (expr instanceof ASMMemExpr mem){
             return new ASMMemExpr(tempsToRegs(mem.getMem(),tempMapping));
         }else if (expr instanceof ASMBinOpMultExpr binopMult){

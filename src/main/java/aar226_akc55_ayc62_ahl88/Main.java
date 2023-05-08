@@ -504,52 +504,35 @@ public class Main {
         try {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
-            FunctionInliningVisitor fv = new FunctionInliningVisitor();
-            fv.visit((IRCompUnit) ir);
-            ArrayList<String> inlineAbleFunctions = fv.allowedInline;
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
 
-            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
-                StringWriter out = new StringWriter();
-                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
-                for (ASMInstruction instr : abstractInstrs){
-                    if (!(instr instanceof ASMLabel)){
-                        out.write(INDENT_SFILE + instr + '\n');
-                    }else{
-                        out.write(instr+"\n");
-                    }
-                }
-//                writeOutputAsm(filename, out.toString(), "abstract" + kv.getKey());
-                out.close();
-            }
-
-            boolean failed = false;
+//            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
+//                StringWriter out = new StringWriter();
+//                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
+//                for (ASMInstruction instr : abstractInstrs){
+//                    if (!(instr instanceof ASMLabel)){
+//                        out.write(INDENT_SFILE + instr + '\n');
+//                    }else{
+//                        out.write(instr+"\n");
+//                    }
+//                }
+//                out.close();
+//            }
 
             if (opts.isSet(OptimizationType.REGALLOC)) {
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
-//                    CFGGraphBasicBlockASM multi = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
-//                    LiveVariableAnalysisASM mul = new LiveVariableAnalysisASM(multi);
-//                    mul.workList();
-//                    writeOutputDot(filename, kv.getKey(), "SINGLELVA", multi.CFGtoDOT(HashmapBlockString(mul.getInMapping(),true),
-//                            HashmapBlockString(mul.getOutMapping(),false)));
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
                     asmBasicblocks.removeUnreachableNodes();
-                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks,inlineAbleFunctions, comp, kv.getKey());
+                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true);
                     getColors.MainFunc();
-                    if (getColors.failed) {
-                        failed = true;
-//                        break;
-                    } else {
-                        postAlloc.addAll(getColors.replaceTemp());
-                    }
+                    postAlloc.addAll(getColors.replaceTempReserve());
                 }
-            }
-
-            if (failed || !opts.isSet(OptimizationType.REGALLOC))  {
+            }else{
                 System.out.println("doing trivial");
                 postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             }
+
             StringWriter out = new StringWriter();
             out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");
             out.write(INDENT_SFILE+".intel_syntax noprefix\n");
