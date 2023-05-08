@@ -32,9 +32,9 @@ public abstract class Decl extends AstNode {
     }
 
     /**
-     * @param t
-     * @param d
-     * @param table
+     * @param t original type
+     * @param d new dimensions
+     * @param table typechecking table
      * @return new type with dimension d
      */
     public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
@@ -45,25 +45,26 @@ public abstract class Decl extends AstNode {
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.setType(Type.TypeCheckingType.RECORD);
             temp.dimensions = d;
-            return temp;
         } else if (t.isRecordArray() && d.getDim() == 0) {
             Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
             temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.setType(Type.TypeCheckingType.RECORD);
             temp.dimensions = d;
-            return temp;
         } else if (t.isRecordArray() && d.getDim() != 0) {
             Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
             temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.dimensions = d;
             temp.setType(Type.TypeCheckingType.RECORDARRAY);
-            return temp;
+        } else if (t.isIntArray() && d.getDim() == 0) {
+            temp = new Type(Type.TypeCheckingType.INT);
+        } else if (t.isBoolArray() && d.getDim() == 0) {
+            temp = new Type(Type.TypeCheckingType.BOOL);
         } else {
             temp = new Type(t.getType(), d);
-            return temp;
         }
+        return temp;
     }
 
     public abstract void prettyPrint(CodeWriterSExpPrinter p);

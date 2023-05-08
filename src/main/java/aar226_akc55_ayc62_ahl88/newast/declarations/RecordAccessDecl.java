@@ -43,43 +43,35 @@ public class RecordAccessDecl extends Decl {
 
     }
 
+    private void checkIndices(ArrayList<Expr> indices, long maxDim, SymbolTable<Type> table) {
+        for (Expr e : indices) {
+            Type exprType = e.typeCheck(table);
+            if (exprType.getType() != Type.TypeCheckingType.INT) {
+                throw new SemanticError(getLine(), getColumn(), "array access is not an int");
+            }
+        }
+
+        if (indices.size() > maxDim) {
+            throw new SemanticError(getLine(), getColumn(), "more indices than expected");
+        }
+    }
+
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         ArrayList<Type> declTypes =  new ArrayList<Type>();
         int size = decls.size();
-//        for (int i = 0; i < size; i++) {
-//            declTypes.add(decls.get(i).typeCheck(table));
-//        }
-//
-//
-//        if (!(decls.get(size-1) instanceof NoTypeDecl)) {
-//            throw new SemanticError(declTypes.get(0).getLine(), declTypes.get(0).getColumn(), "statements block must be of type record at");
-//        }
+
         Type accessType = decls.get(0).typeCheck(table);
         for (int i = 0; i < size-1; i++) {
             Decl nextDecl = decls.get(i+1);
-//            if (accessType.recordName != null) {
-//                System.out.println("RecordAccessDecl");
-//                System.out.println(accessType.recordName);
-//                System.out.println(accessType.getType());
-//
-//            }
 
             if (accessType.getType() != Type.TypeCheckingType.RECORD) {
                 throw new SemanticError(accessType.getLine(), accessType.getColumn(), "statements block must be of type record at");
             }
 
-//            if (accessType.getType() == Type.TypeCheckingType.RECORD) {
-//                System.out.println("record name: " + accessType.recordName);
-//                System.out.println("record name: " + accessType.recordName);
-//                if (accessType.recordFieldToIndex == null) System.out.println("why be it null");
-//            }
-
-
             String rightId = nextDecl.identifier.toString();
             if (nextDecl instanceof NoTypeDecl) {
 
-//                System.out.println(accessType.recordFieldToIndex);
                 if (!accessType.recordFieldToIndex.containsKey(rightId)) {
                     throw new SemanticError(nextDecl.getLine(), nextDecl.getColumn(), "Invalid field at ");
                 }
@@ -100,34 +92,17 @@ public class RecordAccessDecl extends Decl {
                 if (!arrType.isArray()) {
                     throw new SemanticError(getLine(), getColumn(), "record field is not an array");
                 }
-                ArrayList<Expr> indices = arracc.getIndices();
-                for (Expr e : indices) {
-                    Type exprType = e.typeCheck(table);
-                    if (exprType.getType() != Type.TypeCheckingType.INT) {
-                        throw new SemanticError(getLine(), getColumn(), "array access is not an int");
-                    }
-                }
 
-                if (indices.size() > arrType.dimensions.getDim()) {
-                    throw new SemanticError(getLine(), getColumn(), "more indices than expected");
-                }
+                ArrayList<Expr> indices = arracc.getIndices();
+                checkIndices(indices, arrType.dimensions.getDim(), table);
 
                 Dimension d = arrType.dimensions;
                 Dimension newDim = new Dimension(d.getDim() - indices.size(), d.getLine(), d.getColumn());
-                if (newDim.getDim() == 0) {
-                    if (arrType.getType() == Type.TypeCheckingType.INTARRAY) {
-                        accessType = new Type(Type.TypeCheckingType.INT);
-                    } else if (arrType.getType() == Type.TypeCheckingType.BOOLARRAY) {
-                        accessType = new Type(Type.TypeCheckingType.BOOL);
-                    } else if (arrType.getType() == Type.TypeCheckingType.RECORDARRAY) {
-//                        nodeType = new Type(Type.TypeCheckingType.RECORD);
-//                        nodeType = table.lookup(new Id(arrType.recordName, getColumn(), getLine()));
-                        accessType = correctType(arrType, newDim, table);
-                    } else {
-                        throw new SemanticError(getLine(), getColumn(), "somehow not an array");
-                    }
-                } else {
+
+                if (arrType.isRecordArray() || arrType.isBoolArray() || arrType.isIntArray()) {
                     accessType = correctType(arrType, newDim, table);
+                } else {
+                    throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                 }
             }
         }

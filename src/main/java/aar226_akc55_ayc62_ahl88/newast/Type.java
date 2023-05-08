@@ -185,6 +185,13 @@ public class Type implements Printer {
         return getType() == TypeCheckingType.RECORDARRAY;
     }
 
+    public boolean isIntArray() {
+        return getType() == TypeCheckingType.INTARRAY;
+    }
+    public boolean isBoolArray() {
+        return getType() == TypeCheckingType.BOOLARRAY;
+    }
+
 
     public boolean isBasic(){
         return getType() == TypeCheckingType.INT

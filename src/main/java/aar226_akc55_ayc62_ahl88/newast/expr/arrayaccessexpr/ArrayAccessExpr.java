@@ -58,6 +58,7 @@ public class ArrayAccessExpr extends Expr {
             throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "type is not indexable");
         } else {
             long return_dim = e.dimensions.getDim() - indicies.size();
+            Dimension new_dim = new Dimension(return_dim, getLine(), getColumn());
 //            System.out.println("RETURN DIM: " + return_dim);
             // throw error if length of access indices > arg dimension
             if (return_dim < 0) {
@@ -67,59 +68,44 @@ public class ArrayAccessExpr extends Expr {
                     return nodeType;
                 }
                 throw new SemanticError(orgArray.getLine(), orgArray.getColumn(), "array index size mismatch");
-            } else if (return_dim == 0) {   // if return dim == arg dim, return literal type
-                if (e.getType() == Type.TypeCheckingType.BOOLARRAY)
-                    nodeType = new Type(Type.TypeCheckingType.BOOL);
-                else if (e.getType() == Type.TypeCheckingType.INTARRAY)
-                    nodeType = new Type(Type.TypeCheckingType.INT);
-                else if (e.getType() == Type.TypeCheckingType.RECORDARRAY) {
-                    nodeType = correctType(e, new Dimension(0, getLine(), getColumn()), s);
-//                    nodeType = new Type(Type.TypeCheckingType.RECORD);
-                }
-                else
-                    nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
-                return nodeType;
-            } else {    // otherwise, return array type
-//                nodeType = new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
-                nodeType = correctType(e, new Dimension(return_dim, getLine(), getColumn()), s);
+            } else {
+                nodeType = correctType(e, new_dim, s);
                 return nodeType;
             }
+
         }
     }
 
     /**
-     * @param t
-     * @param d
-     * @param table
+     * @param t original type
+     * @param d new dimensions
+     * @param table typechecking table
      * @return new type with dimension d
      */
     public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
         Type temp;
-        if (t.isRecord()) {
-            Type recordType = table.lookup(new Id(t.recordName, getColumn(), getLine()));
-            temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
-            temp.recordFieldToIndex = recordType.recordFieldToIndex;
-            temp.setType(Type.TypeCheckingType.RECORD);
-            temp.dimensions = d;
-            return temp;
-        } else if (t.isRecordArray() && d.getDim() == 0) {
+        if (t.isRecordArray() && d.getDim() == 0) {
             Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
             temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.setType(Type.TypeCheckingType.RECORD);
             temp.dimensions = d;
-            return temp;
         } else if (t.isRecordArray() && d.getDim() != 0) {
             Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
             temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.dimensions = d;
             temp.setType(Type.TypeCheckingType.RECORDARRAY);
-            return temp;
-        } else {
+        } else if (t.isIntArray() && d.getDim() == 0) {
+            temp = new Type(Type.TypeCheckingType.INT);
+        } else if (t.isBoolArray() && d.getDim() == 0) {
+            temp = new Type(Type.TypeCheckingType.BOOL);
+        } else if (t.isUnknown() && d.getDim() == 0) {
+            temp = new Type(Type.TypeCheckingType.UNKNOWN);
+        }else {
             temp = new Type(t.getType(), d);
-            return temp;
         }
+        return temp;
     }
 
     @Override
