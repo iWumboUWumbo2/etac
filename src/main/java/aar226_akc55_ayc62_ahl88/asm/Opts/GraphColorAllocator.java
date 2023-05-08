@@ -146,14 +146,9 @@ public class GraphColorAllocator {
         }
         AssignColors();
         if (!spilledNodes.isEmpty()) {
-            if (!reserveMode){
+            if (!reserveMode) {
                 failed = true;
-            }else{
-
             }
-        }else{
-            System.out.println("no spilled");
-//            System.out.println(color);
         }
     }
 

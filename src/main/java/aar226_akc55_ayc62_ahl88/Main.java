@@ -521,15 +521,32 @@ public class Main {
 //            }
 
             if (opts.isSet(OptimizationType.REGALLOC)) {
+                boolean failed = false;
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
                     asmBasicblocks.removeUnreachableNodes();
-                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true);
+                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false);
                     getColors.MainFunc();
-                    postAlloc.addAll(getColors.replaceTempReserve());
+                    if (getColors.failed){
+                        failed = true;
+                        break;
+                    }else {
+                        postAlloc.addAll(getColors.replaceTempReserve());
+                    }
+                }
+                if (failed){
+                    postAlloc = new ArrayList<>();
+                    for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
+                        CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
+                        asmBasicblocks.removeUnreachableNodes();
+                        GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true);
+                        getColors.MainFunc();
+                        postAlloc.addAll(getColors.replaceTempReserve());
+                    }
+                }else{
+                    System.out.println("made it with extra");
                 }
             }else{
-                System.out.println("doing trivial");
                 postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             }
 

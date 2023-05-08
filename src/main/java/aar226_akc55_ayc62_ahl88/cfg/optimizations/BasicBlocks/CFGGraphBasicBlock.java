@@ -258,7 +258,6 @@ public class CFGGraphBasicBlock {
                 if (!(labelCount.get(label.name()) == 0)){
                     postLabelRemove.add(node);
                 }else{
-                    System.out.println("removed label");
                 }
             }else{
                 postLabelRemove.add(node);
