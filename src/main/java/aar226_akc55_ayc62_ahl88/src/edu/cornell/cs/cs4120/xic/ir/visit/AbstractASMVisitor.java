@@ -174,15 +174,154 @@ public class AbstractASMVisitor {
             ArrayList<ASMInstruction> makeUnAbstractINstr = fixInstrsAbstract(fixedBigConsts);
 //            System.out.println("after abstract");
             functionToInstructionList.put(curFunction,makeUnAbstractINstr);
-//            replaceTemps(functionInstructions,curFunction);
-//            instructions.addAll(functionInstructions);
-//            System.out.println(func.body());
-//            System.out.println(functionInstructions);
         }
 
         return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping,functionsNameToSig);
     }
 
+    public static ASMInstruction fixSingleAbstract(ASMInstruction instr){
+        if (instr instanceof ASMArg0 arg0){
+            switch (arg0.getOpCode()) {
+                case RET -> {
+                    ASMRet ret = (ASMRet) instr;
+                    return new ASMRet(ret.rets);
+                }
+                case LEAVE -> {
+                    return new ASMLeave();
+                }
+                case CQTO -> {
+                    return new ASMCQTO();
+                }
+            }
+        }else if (instr instanceof ASMArg1 arg1){
+            ASMExpr l = arg1.getLeft();
+            switch(arg1.getOpCode()){
+                case CALL -> {
+                    ASMCall call = (ASMCall) arg1;
+                    return new ASMCall(l,call.numParams,call.numReturns);
+                }
+                case DEC -> {
+                    return new ASMDec(l);
+                }
+                case IDIV -> {
+                    return new ASMIDiv(l);
+                }
+                case INC -> {
+                    return new ASMInc(l);
+                }
+                case JMP -> {
+                    return new ASMJumpAlways(l);
+                }
+                case JE -> {
+                    return new ASMJumpEqual(l);
+                }
+                case JGE -> {
+                    return new ASMJumpGE(l);
+                }
+                case JG -> {
+                    return new ASMJumpGT(l);
+                }
+                case JLE -> {
+                    return new ASMJumpLE(l);
+                }
+                case JL -> {
+                    return new ASMJumpLT(l);
+                }
+                case JNE -> {
+                    return new ASMJumpNotEqual(l);
+                }
+                case JB -> {
+                    return new ASMJumpULT(l);
+                }
+                case NOT -> {
+                    return new ASMNot(l);
+                }
+                case POP -> {
+                    return new ASMPop(l);
+                }
+                case PUSH -> {
+                    return new ASMPush(l);
+                }
+                case SETB -> {
+                    return new ASMSetb(l);
+                }
+                case SETE -> {
+                    return new ASMSete(l);
+                }
+                case SETG -> {
+                    return new ASMSetg(l);
+                }
+                case SETGE -> {
+                    return new ASMSetge(l);
+                }
+                case SETL -> {
+                    return new ASMSetl(l);
+                }
+                case SETLE -> {
+                    return new ASMSetle(l);
+                }
+                case SETNE -> {
+                    return new ASMSetne(l);
+                }
+                case SETAE -> throw new InternalCompilerError("NO AE");
+            }
+
+        }else if (instr instanceof ASMArg2 arg2){
+            ASMExpr l = arg2.getLeft();
+            ASMExpr r = arg2.getRight();
+            switch(arg2.getOpCode()){
+                case ADD -> {
+                    return new ASMAdd(l,r);
+                }
+                case AND -> {
+                    return new ASMAnd(l,r);
+                }
+                case CMP -> {
+                    return new ASMCmp(l,r);
+                }
+                case ENTER -> {
+                    return new ASMEnter(l,r);
+                }
+                case LEA -> {
+                    return new ASMLEA(l,r);
+                }
+                case MOV -> {
+                    return new ASMMov(l,r);
+                }
+                case MOVABS -> {
+                    return new ASMMovabs(l,r);
+                }
+                case OR -> {
+                    return new ASMOr(l,r);
+                }
+                case SAR -> {
+                    return new ASMSar(l,r);
+                }
+                case SHL -> {
+                    return new ASMShl(l,r);
+                }
+                case SHR -> {
+                    return new ASMShr(l,r);
+                }
+                case SUB -> {
+                    return new ASMSub(l,r);
+                }
+                case TEST -> {
+                    return new ASMTest(l,r);
+                }
+                case XOR -> {
+                    return new ASMXor(l,r);
+                }
+            }
+        }else if (instr instanceof ASMArg3 arg3){
+            switch(arg3.getOpCode()){
+                case IMUL: return new ASMIMul(arg3.getA1(),arg3.getA2(),arg3.getA3());
+            }
+        }else{
+            return instr;
+        }
+        throw new InternalCompilerError("somehow instruction don't exist " + instr);
+    }
     public static ArrayList<ASMInstruction> fixInstrsAbstract(ArrayList<ASMInstruction> instrs){
         ArrayList<ASMInstruction> res = new ArrayList<>();
         for (ASMInstruction instr: instrs){

@@ -3,6 +3,281 @@
 etac ("Test --help") "--help" {
 
 }
+etac ("Test --irgen -Ocf -Ocopy") "-libpath $(testpath) --irgen -Ocf -Ocopy" {
+
+     arr_multdim_chain.eta;
+     array_aliasing.eta;
+     array_basicbitch_loop.eta;
+     array_concatenation.eta;
+     array_lengths.eta;
+
+     basic_array.eta;
+     basicfunccall.eta;
+     bigarr.eta;
+
+     binopFunc.eta;
+     binopTest.eta;
+     bool_chain.eta;
+     call_triple.eta;
+     commuteglobvar.eta;
+     commuteglobvar2.eta;
+     commuteglobvar3.eta;
+     create_empty_array.eta;
+     double_inc.eta;
+     eq_binop.eta;
+     ex01.eta;
+     gigaarray.eta;
+     globalvar.eta;
+     hello.eta;
+     hi_mult.eta;
+     if02.eta;
+     if03.eta;
+     if04.eta;
+     inttest.eta;
+     jumps.eta;
+     localdecl13.eta;
+     localdecl14.eta;
+     longLoop.eta;
+     multiassign06.eta;
+     multiassign07.eta;
+     multiassign08.eta;
+     multiret08.eta;
+     nested_arr.eta;
+     newBinop.eta;
+     order.eta;
+     print2darr_double_block.eta;
+     print_char.eta;
+     procdure.eta;
+     read_arr_first_element.eta;
+     rip.eta;
+     stackalign.eta;
+     test1.eta;
+     test2.eta;
+     test3.eta;
+     test4.eta;
+     test5.eta;
+     testingargs.eta;
+     tooDarr.eta;
+     two_mult.eta;
+     while01.eta;
+
+
+     arracc05.eta;
+     arracc07.eta;
+     arracc08.eta;
+     assign06.eta;
+     assign07.eta;
+     assign08.eta;
+     assign09.eta;
+     assign10.eta;
+     medley01.eta;
+
+     localdecl13.eta;
+     localdecl14.eta;
+     multiassign06.eta;
+     multiassign07.eta;
+     multiassign08.eta;
+
+     swap.eta;
+
+     ex01.eta;
+     ack.eta;
+     primes.eta;
+     arrmedian.eta;
+     bestTimeToBuyStock.eta;
+     binsearch.eta;
+     moveslikejagger.eta;
+     recursion1.eta;
+     recursion2.eta;
+     recursion3.eta;
+     stringweird.eta;
+     trappingrainwater.eta;
+     validpalindrome.eta;
+ }
+ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
+
+     swap.eta;
+     arr_multdim_chain.eta;
+     array_aliasing.eta;
+     array_basicbitch_loop.eta;
+     array_concatenation.eta;
+     array_lengths.eta;
+
+     basic_array.eta;
+     basicfunccall.eta;
+     bigarr.eta;
+
+     binopFunc.eta;
+     binopTest.eta;
+     bool_chain.eta;
+     call_triple.eta;
+     commuteglobvar.eta;
+     commuteglobvar2.eta;
+     commuteglobvar3.eta;
+     create_empty_array.eta;
+     double_inc.eta;
+     eq_binop.eta;
+     ex01.eta;
+     gigaarray.eta;
+     globalvar.eta;
+     hello.eta;
+     hi_mult.eta;
+     if02.eta;
+     if03.eta;
+     if04.eta;
+     inttest.eta;
+     jumps.eta;
+     localdecl13.eta;
+     localdecl14.eta;
+     longLoop.eta;
+     multiassign06.eta;
+     multiassign07.eta;
+     multiassign08.eta;
+     multiret08.eta;
+     nested_arr.eta;
+     newBinop.eta;
+     order.eta;
+     print2darr_double_block.eta;
+     print_char.eta;
+     procdure.eta;
+     read_arr_first_element.eta;
+     rip.eta;
+     stackalign.eta;
+     test1.eta;
+     test2.eta;
+     test3.eta;
+     test4.eta;
+     test5.eta;
+     testingargs.eta;
+     tooDarr.eta;
+     two_mult.eta;
+     while01.eta;
+
+     swap.eta;
+     arracc05.eta;
+     arracc07.eta;
+     arracc08.eta;
+     assign06.eta;
+     assign07.eta;
+     assign08.eta;
+     assign09.eta;
+     assign10.eta;
+     medley01.eta;
+
+     localdecl13.eta;
+     localdecl14.eta;
+     multiassign06.eta;
+     multiassign07.eta;
+     multiassign08.eta;
+
+     swap.eta;
+
+     ex01.eta;
+     ack.eta;
+     primes.eta;
+     arrmedian.eta;
+     bestTimeToBuyStock.eta;
+     binsearch.eta;
+     moveslikejagger.eta;
+     recursion1.eta;
+     recursion2.eta;
+     recursion3.eta;
+     stringweird.eta;
+     trappingrainwater.eta;
+     validpalindrome.eta;
+ }
+
+ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
+
+     arr_multdim_chain.eta;
+     array_aliasing.eta;
+     array_basicbitch_loop.eta;
+     array_concatenation.eta;
+     array_lengths.eta;
+
+     basic_array.eta;
+     basicfunccall.eta;
+     bigarr.eta;
+
+     binopFunc.eta;
+     binopTest.eta;
+     bool_chain.eta;
+     call_triple.eta;
+     commuteglobvar.eta;
+     commuteglobvar2.eta;
+     commuteglobvar3.eta;
+     create_empty_array.eta;
+     double_inc.eta;
+     eq_binop.eta;
+     ex01.eta;
+     gigaarray.eta;
+     globalvar.eta;
+     hello.eta;
+     hi_mult.eta;
+     if02.eta;
+     if03.eta;
+     if04.eta;
+     inttest.eta;
+     jumps.eta;
+     localdecl13.eta;
+     localdecl14.eta;
+     longLoop.eta;
+     multiassign06.eta;
+     multiassign07.eta;
+     multiassign08.eta;
+     multiret08.eta;
+     nested_arr.eta;
+     newBinop.eta;
+     order.eta;
+     print2darr_double_block.eta;
+     print_char.eta;
+     procdure.eta;
+     read_arr_first_element.eta;
+     rip.eta;
+     stackalign.eta;
+     test1.eta;
+     test2.eta;
+     test3.eta;
+     test4.eta;
+     test5.eta;
+     testingargs.eta;
+     tooDarr.eta;
+     two_mult.eta;
+     while01.eta;
+     swap.eta;
+
+     arracc05.eta;
+     arracc07.eta;
+     arracc08.eta;
+     assign06.eta;
+     assign07.eta;
+     assign08.eta;
+     assign09.eta;
+     assign10.eta;
+     medley01.eta;
+
+     localdecl13.eta;
+     localdecl14.eta;
+     multiassign06.eta;
+     multiassign07.eta;
+     multiassign08.eta;
+
+
+
+     ex01.eta;
+     ack.eta;
+     primes.eta;
+     arrmedian.eta;
+     bestTimeToBuyStock.eta;
+     binsearch.eta;
+     moveslikejagger.eta;
+     recursion1.eta;
+     recursion2.eta;
+     recursion3.eta;
+     stringweird.eta;
+     trappingrainwater.eta;
+     validpalindrome.eta;
+ }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
 
 
