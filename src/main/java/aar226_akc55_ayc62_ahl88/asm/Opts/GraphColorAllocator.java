@@ -65,6 +65,15 @@ public class GraphColorAllocator {
     String funcName;
     boolean reserveMode;
     ArrayList<String> reservedRegs = new ArrayList<>(List.of("r12", "r13", "r14"));
+
+
+    /**
+     * Graph Coloring Allocator. We don't insert extra defs and uses one time runthrough
+     * @param g
+     * @param comp
+     * @param curFunc
+     * @param reserve
+     */
     public GraphColorAllocator(CFGGraphBasicBlockASM g, ASMCompUnit comp, String curFunc, boolean reserve){
         reserveMode = reserve;
         attempt = 0;
@@ -612,6 +621,10 @@ public class GraphColorAllocator {
     }
 
 
+    /**
+     * Takes the remaining temporaries that still need to be allocated and do trivial allocation on them
+     * @return
+     */
     public ArrayList<ASMInstruction> replaceTempReserve(){
         HashMap <String, String> colorMapping = new HashMap<>();
         for (Map.Entry<ASMAbstractReg,ASMRegisterExpr> kv : color.entrySet()){
@@ -666,6 +679,13 @@ public class GraphColorAllocator {
         }
     }
 
+
+    /**
+     * Does Trivial Register Allocation on the remaining Abstract Registers
+     * @param instrs
+     * @param abstractRegs
+     * @return
+     */
     private ArrayList<ASMInstruction> buildMappingForRemainingAbstract(ArrayList<ASMInstruction> instrs, HashSet<ASMAbstractReg> abstractRegs){
         HashMap<ASMAbstractReg,ASMMemExpr> temptoStack = new HashMap<>();
         int index = 1;
@@ -807,6 +827,12 @@ public class GraphColorAllocator {
         return (stackSize & 1) != 0;
     }
 
+    /**
+     * Fixes Stack Alignment by adding changes to Stack point in comments.
+     * @param instrs
+     * @param abstractRegs
+     * @return
+     */
     private ArrayList<ASMInstruction> fixAllStackAlignmentsColor(ArrayList<ASMInstruction> instrs, HashSet<ASMAbstractReg> abstractRegs) {
         ArrayList<ASMInstruction> alignedFunction = new ArrayList<>(instrs);
         for (int i = 0 ;i< alignedFunction.size();i++){

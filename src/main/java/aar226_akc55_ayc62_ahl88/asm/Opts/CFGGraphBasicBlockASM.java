@@ -17,6 +17,11 @@ import java.util.*;
 
 import static aar226_akc55_ayc62_ahl88.visitors.IRVisitor.OUT_OF_BOUNDS;
 
+
+/**
+ * Class For Basic blocks for ASM instructions
+ * Contains the construction , destruction and printing of the CFG
+ */
 public class CFGGraphBasicBlockASM {
     public static ASMCall outOfBounds = new ASMCall(new ASMNameExpr(OUT_OF_BOUNDS),0,0);
     private ArrayList<BasicBlockASMCFG> nodes;

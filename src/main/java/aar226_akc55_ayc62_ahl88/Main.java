@@ -41,6 +41,7 @@ import java.util.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockString;
+import static aar226_akc55_ayc62_ahl88.cfg.CFGGraph.HashmapString;
 
 public class Main {
     enum Target {
@@ -524,6 +525,11 @@ public class Main {
                 boolean failed = false;
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
+                    CFGGraph<ASMInstruction> single = new CFGGraph<>(kv.getValue());
+                    LVASINGLEASM lva = new LVASINGLEASM(single);
+                    lva.workList();
+                    writeOutputDot(filename, kv.getKey(), "preAlloc", single.CFGtoDOT(HashmapString(lva.getInMapping(),true),
+                            HashmapString(lva.getOutMapping(),false)));
                     asmBasicblocks.removeUnreachableNodes();
                     GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false);
                     getColors.MainFunc();
@@ -535,6 +541,7 @@ public class Main {
                     }
                 }
                 if (failed){
+                    System.out.println("failed with extra");
                     postAlloc = new ArrayList<>();
                     for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                         CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
@@ -544,6 +551,7 @@ public class Main {
                         postAlloc.addAll(getColors.replaceTempReserve());
                     }
                 }else{
+
                     System.out.println("made it with extra");
                 }
             }else{
