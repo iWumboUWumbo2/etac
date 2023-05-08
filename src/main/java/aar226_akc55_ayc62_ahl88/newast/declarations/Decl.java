@@ -38,31 +38,31 @@ public abstract class Decl extends AstNode {
      * @return new type with dimension d
      */
     public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
-
+        Type temp;
         if (t.isRecord()) {
             Type recordType = table.lookup(new Id(t.recordName, getColumn(), getLine()));
-            Type temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
+            temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.setType(Type.TypeCheckingType.RECORD);
             temp.dimensions = d;
             return temp;
         } else if (t.isRecordArray() && d.getDim() == 0) {
             Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
-            Type temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
+            temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.setType(Type.TypeCheckingType.RECORD);
             temp.dimensions = d;
             return temp;
         } else if (t.isRecordArray() && d.getDim() != 0) {
             Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
-            Type temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
+            temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
             temp.recordFieldToIndex = recordType.recordFieldToIndex;
             temp.dimensions = d;
             temp.setType(Type.TypeCheckingType.RECORDARRAY);
             return temp;
         } else {
-            t.dimensions = d;
-            return t;
+            temp = new Type(t.getType(), d);
+            return temp;
         }
     }
 

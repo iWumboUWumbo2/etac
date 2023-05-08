@@ -72,15 +72,53 @@ public class ArrayAccessExpr extends Expr {
                     nodeType = new Type(Type.TypeCheckingType.BOOL);
                 else if (e.getType() == Type.TypeCheckingType.INTARRAY)
                     nodeType = new Type(Type.TypeCheckingType.INT);
-                else if (e.getType() == Type.TypeCheckingType.RECORDARRAY)
-                    nodeType = new Type(Type.TypeCheckingType.RECORD);
+                else if (e.getType() == Type.TypeCheckingType.RECORDARRAY) {
+                    nodeType = correctType(e, new Dimension(0, getLine(), getColumn()), s);
+//                    nodeType = new Type(Type.TypeCheckingType.RECORD);
+                }
                 else
                     nodeType = new Type(Type.TypeCheckingType.UNKNOWN);
                 return nodeType;
             } else {    // otherwise, return array type
-                nodeType = new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
+//                nodeType = new Type(e.getType(), new Dimension(return_dim, getLine(), getColumn()));
+                nodeType = correctType(e, new Dimension(return_dim, getLine(), getColumn()), s);
                 return nodeType;
             }
+        }
+    }
+
+    /**
+     * @param t
+     * @param d
+     * @param table
+     * @return new type with dimension d
+     */
+    public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
+        Type temp;
+        if (t.isRecord()) {
+            Type recordType = table.lookup(new Id(t.recordName, getColumn(), getLine()));
+            temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
+            temp.recordFieldToIndex = recordType.recordFieldToIndex;
+            temp.setType(Type.TypeCheckingType.RECORD);
+            temp.dimensions = d;
+            return temp;
+        } else if (t.isRecordArray() && d.getDim() == 0) {
+            Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
+            temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
+            temp.recordFieldToIndex = recordType.recordFieldToIndex;
+            temp.setType(Type.TypeCheckingType.RECORD);
+            temp.dimensions = d;
+            return temp;
+        } else if (t.isRecordArray() && d.getDim() != 0) {
+            Type recordType = table.lookup(new Id(t.recordName, getLine(),getColumn()));
+            temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
+            temp.recordFieldToIndex = recordType.recordFieldToIndex;
+            temp.dimensions = d;
+            temp.setType(Type.TypeCheckingType.RECORDARRAY);
+            return temp;
+        } else {
+            temp = new Type(t.getType(), d);
+            return temp;
         }
     }
 
