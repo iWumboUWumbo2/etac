@@ -67,7 +67,7 @@ public class GraphColorAllocator {
     String funcName;
     boolean reserveMode;
     ArrayList<String> reservedRegs = new ArrayList<>(List.of("r12", "r13", "r14"));
-
+    boolean mainCalled;
     String file;
 
     /**
@@ -77,7 +77,8 @@ public class GraphColorAllocator {
      * @param curFunc
      * @param reserve
      */
-    public GraphColorAllocator(CFGGraphBasicBlockASM g, ASMCompUnit comp, String curFunc, boolean reserve, String fileName){
+    public GraphColorAllocator(CFGGraphBasicBlockASM g, ASMCompUnit comp, String curFunc, boolean reserve, String fileName,boolean isMainCalled){
+        mainCalled = isMainCalled;
         file = fileName;
         reserveMode = reserve;
         attempt = 0;
@@ -145,7 +146,7 @@ public class GraphColorAllocator {
 //            return;
 //        }
         initTemps();
-        LVA = new LiveVariableAnalysisASM(progBlock);
+        LVA = new LiveVariableAnalysisASM(progBlock,mainCalled);
         LVA.workList();
         Build();
         MakeWorklist();

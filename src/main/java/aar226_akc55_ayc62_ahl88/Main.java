@@ -507,7 +507,7 @@ public class Main {
             IRNode ir = irbuild(zhenFilename);
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
-
+            boolean mainCalled = FunctionInliningVisitor.isMainCalled((IRCompUnit) ir);
 //            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
 //                StringWriter out = new StringWriter();
 //                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
@@ -526,7 +526,7 @@ public class Main {
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
                     asmBasicblocks.removeUnreachableNodes();
-                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false,filename);
+                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false,filename,mainCalled);
                     getColors.MainFunc();
                     if (getColors.failed){
                         failed = true;
@@ -541,12 +541,11 @@ public class Main {
                     for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                         CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
                         asmBasicblocks.removeUnreachableNodes();
-                        GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true,filename);
+                        GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true,filename,mainCalled);
                         getColors.MainFunc();
                         postAlloc.addAll(getColors.replaceTempReserve());
                     }
                 }else{
-
                     System.out.println("made it with extra");
                 }
             }else{
