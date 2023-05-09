@@ -53,6 +53,8 @@ public class DeadCodeEliminationSSA {
         if (stmt instanceof IRCallStmt){
             return true;
         }
+
+        // Remove t <- Mems
         ArrayList<IRNode> flat = new FlattenIrVisitor().visit(stmt);
         for (IRNode node : flat){
             if (node instanceof IRBinOp binop && binop.opType() == IRBinOp.OpType.DIV &&

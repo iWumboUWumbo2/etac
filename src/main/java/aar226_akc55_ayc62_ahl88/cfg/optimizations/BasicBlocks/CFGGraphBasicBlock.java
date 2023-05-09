@@ -305,6 +305,29 @@ public class CFGGraphBasicBlock {
             for (CFGNode<IRStmt> node : bb.getBody()) {
                 if (!node.isDeleted && !(node.getStmt() instanceof IRdud)) {
                     newBody.add(node);
+                }else if (node.getStmt() instanceof IRdud){
+                    BasicBlockCFG jumpChild = bb.getJumpChild();
+                    int index = jumpChild.getPredecessors().indexOf(bb);
+                    for (CFGNode<IRStmt> childNode: jumpChild.getBody()){
+                        if (childNode.getStmt() instanceof IRPhi phi){
+                            phi.getArgs().remove(index);
+                            if (phi.getArgs().size() == 0){
+                                childNode.isDeleted = true;
+                            }
+                        }
+                    }
+                    jumpChild.removePredecessor(bb);
+                    bb.setJumpChild(null);
+                }
+            }
+            bb.body = newBody;
+        }
+
+        for (BasicBlockCFG bb : getNodes()) {
+            ArrayList<CFGNode<IRStmt>> newBody = new ArrayList<>();
+            for (CFGNode<IRStmt> node : bb.getBody()) {
+                if (!node.isDeleted && !(node.getStmt() instanceof IRdud)) {
+                    newBody.add(node);
                 }
             }
             bb.body = newBody;

@@ -1,0 +1,24 @@
+use io
+use conv
+
+main(args : int[][]) {
+
+
+    i:int = 0;
+    a:int = 5;
+    b:int = 1;
+    res:int  = 5;
+    while (i < 5){
+        x:int = a + b;
+        res = res + x;
+        i = i+1;
+        if (i % 2 == 0){
+            res = res + 1;
+        }
+        if (i + 2 < 10){
+            res = res + 5;
+        }
+
+    }
+    println(unparseInt(res));
+}

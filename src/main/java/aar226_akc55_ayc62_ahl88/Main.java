@@ -398,8 +398,14 @@ public class Main {
                     if (opts.isSet(OptimizationType.CONSTPROP)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
                             CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename,func.part1(),"preConst",funcStatements.CFGtoDOT());
                             new ConstantPropSSA(funcStatements).workList();
                             funcStatements.removeUnreachableNodes();
+                            new ConstantPropSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+                            new ConstantPropSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+//                            writeOutputDot(filename,func.part1(),"postConst",funcStatements.CFGtoDOT());
                         }
                     }
 
@@ -410,6 +416,13 @@ public class Main {
                             funcStatements.removeUnreachableNodes();
                         }
                     }
+//                    if (true){
+//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename,func.part1(),"preLoop",funcStatements.CFGtoDOT());
+//                            LoopOpts loopOps = new LoopOpts(funcStatements,domBlocks.get(func));
+//                        }
+//                    }
 
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
