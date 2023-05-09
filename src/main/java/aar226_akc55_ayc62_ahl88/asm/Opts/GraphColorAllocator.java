@@ -18,6 +18,8 @@ import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static aar226_akc55_ayc62_ahl88.Main.writeOutputDot;
+import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockString;
 import static aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM.*;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.tempsToRegs;
 import static aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor.fixInstrsAbstract;
@@ -66,6 +68,7 @@ public class GraphColorAllocator {
     boolean reserveMode;
     ArrayList<String> reservedRegs = new ArrayList<>(List.of("r12", "r13", "r14"));
 
+    String file;
 
     /**
      * Graph Coloring Allocator. We don't insert extra defs and uses one time runthrough
@@ -74,7 +77,8 @@ public class GraphColorAllocator {
      * @param curFunc
      * @param reserve
      */
-    public GraphColorAllocator(CFGGraphBasicBlockASM g, ASMCompUnit comp, String curFunc, boolean reserve){
+    public GraphColorAllocator(CFGGraphBasicBlockASM g, ASMCompUnit comp, String curFunc, boolean reserve, String fileName){
+        file = fileName;
         reserveMode = reserve;
         attempt = 0;
         tempCnt = 0;
@@ -136,12 +140,15 @@ public class GraphColorAllocator {
         }
    }
     public void MainFunc(){
+//        if (attempt == 3){
+//            System.out.println("failed");
+//            return;
+//        }
         initTemps();
         LVA = new LiveVariableAnalysisASM(progBlock);
         LVA.workList();
         Build();
         MakeWorklist();
-
         while (!allEmpty()){
             if (!simplifyWorklist.isEmpty()) {
                 Simplify();
@@ -158,6 +165,9 @@ public class GraphColorAllocator {
             if (!reserveMode) {
                 failed = true;
             }
+//            attempt++;
+//            RewriteProgram();
+//            MainFunc();
         }
     }
 
@@ -552,13 +562,12 @@ public class GraphColorAllocator {
                 ASMInstruction instr = node.getStmt();
                 Set<ASMAbstractReg> used = usesInASM(instr);
                 Set<ASMAbstractReg> def = defsInASM(instr);
-
                 HashSet<ASMAbstractReg> spilledDef = intersect(def, spilledNodes);
                 HashSet<ASMAbstractReg> spilledUse = intersect(used, spilledNodes);
                 ArrayList<CFGNode<ASMInstruction>> extraDefs = new ArrayList<>();
                 ArrayList<CFGNode<ASMInstruction>> extraUses = new ArrayList<>();
+                HashMap<String,String> replaceMapping = new HashMap<>();
                 if (!spilledDef.isEmpty()){
-                    HashMap<String,String> replaceMapping = new HashMap<>();
                     for (ASMAbstractReg v : spilledDef){
                         ASMAbstractReg vi = new ASMTempExpr(nxtTemp());
                         if (!spillMapping.containsKey(v)) {
@@ -572,27 +581,20 @@ public class GraphColorAllocator {
                         }
                         replaceMapping.put(v.toString(),vi.toString());
                     }
-                    ASMInstruction newInstrs = replaceTempNames(instr,replaceMapping);
-                    ASMInstruction nonAbstract = fixSingleAbstract(newInstrs);
-                    node.setStmt(nonAbstract);
                 }
-
                 if (!spilledUse.isEmpty()){
-                    HashMap<String,String> replaceMapping = new HashMap<>();
                     for (ASMAbstractReg v : spilledUse){
                         ASMMemExpr memLoc = spillMapping.get(v);
+                        String vi = replaceMapping.containsKey(v.toString()) ? replaceMapping.get(v.toString()) :  nxtTemp();
+                        newTemps.add(new ASMTempExpr(vi));
+                        replaceMapping.put(v.toString(),vi);
 
-                        ASMAbstractReg vi = new ASMTempExpr(nxtTemp());
-                        newTemps.add(vi);
-                        replaceMapping.put(v.toString(),vi.toString());
-
-                        extraUses.add(new CFGNode<>(new ASMMov(vi,memLoc)));
+                        extraUses.add(new CFGNode<>(new ASMMov(new ASMTempExpr(vi),memLoc)));
                     }
-                    ASMInstruction newInstrs = replaceTempNames(instr,replaceMapping);
-                    ASMInstruction nonAbstract = fixSingleAbstract(newInstrs);
-                    node.setStmt(nonAbstract);
                 }
-
+                ASMInstruction newInstrs = replaceTempNames(instr,replaceMapping);
+                ASMInstruction nonAbstract = fixSingleAbstract(newInstrs);
+                node.setStmt(nonAbstract);
                 nxtBody.addAll(extraUses);
                 nxtBody.add(node);
                 nxtBody.addAll(extraDefs);
@@ -604,6 +606,13 @@ public class GraphColorAllocator {
         initial = union(union(coloredNodes,coalescedNodes),newTemps);
         coloredNodes.clear();
         coalescedNodes.clear();
+
+        adjSet.clear();
+        adjList.clear();
+        degree.clear();
+        moveList.clear();
+        alias.clear();
+        color.clear();
     }
 
 

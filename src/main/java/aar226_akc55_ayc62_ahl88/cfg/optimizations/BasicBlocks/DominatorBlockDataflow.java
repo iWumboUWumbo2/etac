@@ -330,7 +330,8 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
 
         for (BasicBlockCFG block: graph.getNodes()){
             ArrayList<CFGNode<IRStmt>> nxtBody = new ArrayList<>();
-            for (CFGNode<IRStmt> node: block.getBody()){
+            for (int z = 0; z< block.getBody().size();z++){
+                CFGNode<IRStmt> node = block.getBody().get(z);
                 IRStmt stmt = node.getStmt();
                 if (stmt instanceof IRPhi phi){
 //                    System.out.println(phi.getArgs().size());

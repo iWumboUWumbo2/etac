@@ -129,7 +129,7 @@ public class Main {
         writeOutputGeneric(filename, "_" + phase, output, "ir", false);
     }
 
-    private static void writeOutputDot(String filename, String function, String phase, String output) {
+    public static void writeOutputDot(String filename, String function, String phase, String output) {
         writeOutputGeneric(filename, "_" + function + "_" + phase, output, "dot", false);
     }
 
@@ -525,13 +525,8 @@ public class Main {
                 boolean failed = false;
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
-                    CFGGraph<ASMInstruction> single = new CFGGraph<>(kv.getValue());
-                    LVASINGLEASM lva = new LVASINGLEASM(single);
-                    lva.workList();
-                    writeOutputDot(filename, kv.getKey(), "preAlloc", single.CFGtoDOT(HashmapString(lva.getInMapping(),true),
-                            HashmapString(lva.getOutMapping(),false)));
                     asmBasicblocks.removeUnreachableNodes();
-                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false);
+                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false,filename);
                     getColors.MainFunc();
                     if (getColors.failed){
                         failed = true;
@@ -546,7 +541,7 @@ public class Main {
                     for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                         CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
                         asmBasicblocks.removeUnreachableNodes();
-                        GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true);
+                        GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true,filename);
                         getColors.MainFunc();
                         postAlloc.addAll(getColors.replaceTempReserve());
                     }
