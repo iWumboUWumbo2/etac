@@ -26,7 +26,6 @@ import static aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.Ab
 import static aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor.fixSingleAbstract;
 
 public class GraphColorAllocator {
-
     CFGGraphBasicBlockASM progBlock;
     LiveVariableAnalysisASM LVA;
 
@@ -66,10 +65,15 @@ public class GraphColorAllocator {
     ASMCompUnit compUnit;
     String funcName;
     boolean reserveMode;
-    ArrayList<String> reservedRegs = new ArrayList<>(List.of("r12", "r13", "r14"));
+    ArrayList<String> reservedRegs = new ArrayList<>(List.of("r13", "r14"));
     boolean mainCalled;
     String file;
 
+
+    HashMap<ASMAbstractReg,Long> regToCost;
+    HashSet<ASMAbstractReg> insertedNodes;
+
+    long INF = 100000;
     /**
      * Graph Coloring Allocator. We don't insert extra defs and uses one time runthrough
      * @param g
@@ -86,7 +90,7 @@ public class GraphColorAllocator {
         numSpillsplus1 = 1;
         progBlock = g;
         if (reserve){
-            validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11","r15","rsi", "rdi"));
+            validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11","r15","rsi", "rdi","r12"));
             K = validColors.size();
         }else{
             validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "r13","r14","r15","rsi", "rdi"));
@@ -115,6 +119,8 @@ public class GraphColorAllocator {
         compUnit = comp;
         funcName = curFunc;
         spillMapping = new HashMap<>();
+        regToCost = new HashMap<>();
+        insertedNodes = new HashSet<>();
     }
 
    public void initTemps(){
@@ -129,6 +135,11 @@ public class GraphColorAllocator {
         for (ASMAbstractReg reg : temps){
             adjList.put(reg,new HashSet<>());
             degree.put(reg,0);
+            if (insertedNodes.contains(reg)){
+                regToCost.put(reg,INF);
+            }else {
+                regToCost.put(reg, 0L);
+            }
             moveList.put(reg,new HashSet<>());
             if (reg instanceof ASMRegisterExpr real){
                 precolored.add(real);
@@ -172,6 +183,18 @@ public class GraphColorAllocator {
         }
     }
 
+//    private void estimateSpillCosts(){
+//        for (BasicBlockASMCFG b : progBlock.getNodes()){
+//            for (CFGNode<ASMInstruction> node : b.getBody()){
+//                ASMInstruction stmt = node.getStmt();
+//                Set<ASMAbstractReg> uses =  usesInASM(stmt);
+//                for (ASMAbstractReg use: uses){
+//                    regToCost.put(use,regToCost.get(use) + 1);
+//                }
+//            }
+//        }
+//        for (ASMAbstractReg reg : regToCost)
+//    }
 
 
     private void degreeInvar(){
@@ -604,10 +627,12 @@ public class GraphColorAllocator {
         }
 
         spilledNodes.clear();
+        insertedNodes.addAll(newTemps);
         initial = union(union(coloredNodes,coalescedNodes),newTemps);
         coloredNodes.clear();
         coalescedNodes.clear();
 
+        regToCost.clear();
         adjSet.clear();
         adjList.clear();
         degree.clear();
@@ -711,7 +736,7 @@ public class GraphColorAllocator {
         for (ASMInstruction instr: instrs){
             Set<ASMAbstractReg> used = usesInASM(instr);
             Set<ASMAbstractReg> def = defsInASM(instr);
-            ArrayDeque<String> reservedRegs = new ArrayDeque<>(List.of("r12","r13","r14"));
+            ArrayDeque<String> reservedLocalRegs = new ArrayDeque<>(reservedRegs);
             if (instr instanceof ASMEnter){
                 output.add(nxtEnter);
                 output.add(new ASMPush(new ASMRegisterExpr("r12")));
@@ -729,12 +754,13 @@ public class GraphColorAllocator {
                 ArrayList<ASMInstruction> extraDefs = new ArrayList<>();
                 ArrayList<ASMInstruction> extraUses = new ArrayList<>();
                 for (ASMAbstractReg spilled : spilledUse){
-                    String real = ! replaceMapping.containsKey(spilled.toString())? reservedRegs.poll() : replaceMapping.get(spilled.toString());
+                    String real = ! replaceMapping.containsKey(spilled.toString())? reservedLocalRegs.poll() : replaceMapping.get(spilled.toString());
                     replaceMapping.put(spilled.toString(),real);
                     extraUses.add(new ASMMov(new ASMRegisterExpr(real),temptoStack.get(spilled)));
                 }
+                reservedLocalRegs = new ArrayDeque<>(reservedRegs);
                 for (ASMAbstractReg defReg : spilledDef){
-                    String real = ! replaceMapping.containsKey(defReg.toString())? reservedRegs.poll() : replaceMapping.get(defReg.toString());
+                    String real = ! replaceMapping.containsKey(defReg.toString())? reservedLocalRegs.poll() : replaceMapping.get(defReg.toString());
                     replaceMapping.put(defReg.toString(),real);
                     extraDefs.add(new ASMMov(temptoStack.get(defReg),new ASMRegisterExpr(real)));
                 }
