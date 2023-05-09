@@ -1,5 +1,6 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
+import aar226_akc55_ayc62_ahl88.asm.Opts.BasicBlockASMCFG;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
@@ -149,7 +150,8 @@ public class CFGGraphBasicBlock {
     public String toString() {
         return nodes.toString();
     }
-    public String CFGtoDOT() {
+
+    public String CFGtoDOT(HashMap<BasicBlockCFG,String> in, HashMap<BasicBlockCFG,String> out) {
         StringBuilder result = new StringBuilder();
 
         // Assume first node is start node
@@ -181,7 +183,10 @@ public class CFGGraphBasicBlock {
             }
 
             result.append("\t").append(visitedIDs.get(popped))
-                    .append("\t [ label=\"").append(StringEscapeUtils.escapeJava(popped.toString()))
+                    .append("\t [ label=\"")
+                    .append("in:\t").append(StringEscapeUtils.escapeJava(in.getOrDefault(popped, ""))).append("\\n")
+                    .append(StringEscapeUtils.escapeJava(popped.toString()))
+                    .append("out:\t").append(StringEscapeUtils.escapeJava(out.getOrDefault(popped, ""))).append("\\n")
                     .append("\"]\n");
 
             for (BasicBlockCFG child : popped.getChildren()) {
@@ -201,6 +206,9 @@ public class CFGGraphBasicBlock {
 
         result.append("}");
         return result.toString();
+    }
+    public String CFGtoDOT() {
+        return CFGtoDOT(new HashMap<>(), new HashMap<>());
     }
 
     public ArrayList<IRStmt> optimizeJumpsAndLabels(){

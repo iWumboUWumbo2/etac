@@ -10,6 +10,8 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMRet;
 import aar226_akc55_ayc62_ahl88.asm.Opts.BasicBlockASMCFG;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.BasicBlockCFG;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -275,6 +277,25 @@ public class CFGGraphBasicBlockASM {
             Set<ASMAbstractReg> regs = mapping.get(node);
             int ind = 0;
             for (ASMAbstractReg reg : regs){
+                builder.append(reg.toString()).append(" ");
+                ind++;
+                if (ind % 10 == 0){
+                    ind = 0;
+                    builder.append("\n");
+                }
+            }
+            res.put(node,builder.toString());
+        }
+        return res;
+    }
+
+    public static HashMap<BasicBlockCFG,String> HashmapBlockStringIR(HashMap<BasicBlockCFG,Set<IRTemp>> mapping, boolean inMap){
+        HashMap<BasicBlockCFG,String> res = new HashMap<>();
+        for (BasicBlockCFG node : mapping.keySet()){
+            StringBuilder builder = new StringBuilder();
+            Set<IRTemp> regs = mapping.get(node);
+            int ind = 0;
+            for (IRTemp reg : regs){
                 builder.append(reg.toString()).append(" ");
                 ind++;
                 if (ind % 10 == 0){

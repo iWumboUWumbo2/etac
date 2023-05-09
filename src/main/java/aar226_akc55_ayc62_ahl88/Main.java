@@ -41,6 +41,7 @@ import java.util.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
 import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockString;
+import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockStringIR;
 import static aar226_akc55_ayc62_ahl88.cfg.CFGGraph.HashmapString;
 
 public class Main {
@@ -416,13 +417,16 @@ public class Main {
                             funcStatements.removeUnreachableNodes();
                         }
                     }
-//                    if (true){
-//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+                    if (true){
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
 //                            writeOutputDot(filename,func.part1(),"preLoop",funcStatements.CFGtoDOT());
-//                            LoopOpts loopOps = new LoopOpts(funcStatements,domBlocks.get(func));
-//                        }
-//                    }
+                            LoopOpts loopOps = new LoopOpts(funcStatements,domBlocks.get(func));
+                            writeOutputDot(filename,func.part1(),"postLoop",funcStatements.CFGtoDOT(
+                                    HashmapBlockStringIR(loopOps.lva.getInMapping(),true),
+                                    HashmapBlockStringIR(loopOps.lva.getOutMapping(),true)));
+                        }
+                    }
 
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){

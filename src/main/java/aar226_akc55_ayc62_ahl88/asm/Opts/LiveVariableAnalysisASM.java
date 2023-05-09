@@ -59,6 +59,9 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
 
     // for backwards its gen[ns] = gen[n] U (gen[s] - kill[n]) kill[ns]  = kill[s] U kill[n]
     public static Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> blockFunc(BasicBlockASMCFG block,boolean mainCalledInIR){
+        if (block.getBody().size() == 0){
+            return new Pair<>(new HashSet<>(),new HashSet<>());
+        }
         Set<ASMAbstractReg> genns = usesInASMFunc(block.getBody().get(block.getBody().size()-1).getStmt(),block.function,mainCalledInIR);
         Set<ASMAbstractReg> killns = defsInASM(block.getBody().get(block.getBody().size()-1).getStmt());
         for (int i = block.getBody().size()-2;i>=0;i--){

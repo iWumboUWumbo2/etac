@@ -29,7 +29,6 @@ public class LoopOpts {
             res.addAll(loopBody);
             return res;
         }
-
         @Override
         public String toString() {
             return "LoopWrapper{" +
@@ -46,19 +45,22 @@ public class LoopOpts {
 
     ArrayList<LoopWrapper> all_loops;
 
+    public LiveVariableAnalysisBlocks lva;
+
 
 
     public LoopOpts(CFGGraphBasicBlock g,DominatorBlockDataflow dominator){
-
         graph = g;
         dom = dominator;
         backEdges = new ArrayList<>();
         all_loops = new ArrayList<>();
+        lva = new LiveVariableAnalysisBlocks(g);
+        lva.workList();
         findBackEdges();
         findLoops();
         mergeLoops();
         findExitNodes();
-        all_loops.forEach(e -> System.out.println("exits: " + e.exitBlocks));
+//        all_loops.forEach(e -> System.out.println("exits: " + e.exitBlocks));
     }
 
     private void findBackEdges(){
@@ -107,10 +109,10 @@ public class LoopOpts {
     }
 
     private void findExitNodes(){
-        System.out.println(all_loops.size());
+//        System.out.println(all_loops.size());
         for (LoopWrapper loop : all_loops){
             HashSet<BasicBlockCFG> nodesInGraph = new HashSet<>(loop.getAllNodesInLoop());
-            System.out.println("these are nodes in loop: " + nodesInGraph);
+//            System.out.println("these are nodes in loop: " + nodesInGraph);
             for (BasicBlockCFG block : loop.getAllNodesInLoop()){
 
                 for (BasicBlockCFG child : block.getChildren()){
