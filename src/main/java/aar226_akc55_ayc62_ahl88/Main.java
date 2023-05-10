@@ -18,6 +18,7 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyProp;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyPropNoSSA;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeElimNoSSA;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
@@ -350,36 +351,13 @@ public class Main {
                         IRs.put("inline",ir);
                     }
 
-                    HashMap<String,IRFuncDecl> copyPropIR = new HashMap<>();
                     if (opts.isSet(OptimizationType.COPYPROP)) {
-                        for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-                            IRFuncDecl func = map.getValue();
-                            CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
-                            CopyProp copyProp = new CopyProp(stmtGraph);
-                            copyProp.worklist();
-                            HashMap<CFGNode<IRStmt>, HashSetInf<Pair<IRTemp, IRTemp>>> inMapping =
-                                    copyProp.getInMapping();
-                            for (int i = 0; i < stmtGraph.getNodes().size(); i++) {
-                                CFGNode<IRStmt> node = stmtGraph.getNodes().get(i);
-                                HashSetInf<Pair<IRTemp, IRTemp>> pairSet =  inMapping.get(node);
-                                HashMap<String, String> tempHashMap = new HashMap<>();
-                                for (Pair<IRTemp, IRTemp> pair : pairSet) {
-                                    tempHashMap.put(pair.part1().name(), pair.part2().name());
-                                }
-                                IRStmt visited = (IRStmt) new CopyPropReplaceVisitor(new IRNodeFactory_c(), tempHashMap).visit(node.getStmt());
-                                node.setStmt(visited);
-                            }
-                            IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(stmtGraph.getBackIR()));
-                            newFunc.functionSig = func.functionSig;
-//                            writeOutputDot(filename, func.name(), "afterCopy", stmtGraph.CFGtoDOT(copyProp.inMapStr(), copyProp.outMapStr()));
-                            copyPropIR.put(map.getKey(),newFunc);
-                        }
-
-                        ir = new IRCompUnit(((IRCompUnit) ir).name(),copyPropIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-                        IRs.put("postCopy", ir);
+                        ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postCopy", ir);
                     }
                     if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
                         ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
                     }
                     HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
                     HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
@@ -443,6 +421,18 @@ public class Main {
 
                     ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
 
+                    if (opts.isSet(OptimizationType.COPYPROP)) {
+                        ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postCopy", ir);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
+                    }
                     IRs.put("final", ir);
                     return ir;
                 } else if (filename.endsWith(".eti")) {
