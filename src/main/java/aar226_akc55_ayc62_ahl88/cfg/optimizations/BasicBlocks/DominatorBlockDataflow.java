@@ -62,6 +62,12 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
         placePhiFunctions();
         renamingVariables();
     }
+
+    public void createAndExecuteDF(){
+        worklist();
+        createDominatorTreeAndImmediate();
+        constructDF();
+    }
     @Override
     public void worklist() {
         HashSet<BasicBlockCFG> set = new HashSet<>(graph.getNodes());

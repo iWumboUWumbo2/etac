@@ -21,7 +21,7 @@ public class BasicBlockCFG {
 
     private ArrayList<BasicBlockCFG> children;
 
-    private ArrayList<BasicBlockCFG> predecessors;
+    public ArrayList<BasicBlockCFG> predecessors;
 
     public BasicBlockCFG(){
         this.originLabels = new HashSet<>();

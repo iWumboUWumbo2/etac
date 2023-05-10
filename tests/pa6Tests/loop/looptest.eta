@@ -8,8 +8,8 @@ main(args : int[][]) {
     a:int = 5;
     b:int = 1;
     res:int  = 5;
-    while (i < 5){
-        x:int = a + b;
+    while (i < 100000){
+        x:int = a * b;
         res = res + x;
         i = i+1;
         if (i % 2 == 0){

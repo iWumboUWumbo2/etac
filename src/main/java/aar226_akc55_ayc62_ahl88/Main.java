@@ -18,6 +18,7 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyProp;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeElimNoSSA;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
@@ -377,7 +378,9 @@ public class Main {
                         ir = new IRCompUnit(((IRCompUnit) ir).name(),copyPropIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
                         IRs.put("postCopy", ir);
                     }
-
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+                    }
                     HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
                     HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
@@ -422,9 +425,10 @@ public class Main {
                             CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
 //                            writeOutputDot(filename,func.part1(),"preLoop",funcStatements.CFGtoDOT());
                             LoopOpts loopOps = new LoopOpts(funcStatements,domBlocks.get(func));
-                            writeOutputDot(filename,func.part1(),"postLoop",funcStatements.CFGtoDOT(
-                                    HashmapBlockStringIR(loopOps.lva.getInMapping(),true),
-                                    HashmapBlockStringIR(loopOps.lva.getOutMapping(),true)));
+                            domBlocks.put(func,loopOps.dom);
+//                            writeOutputDot(filename,func.part1(),"postLoop",funcStatements.CFGtoDOT(
+//                                    HashmapBlockStringIR(loopOps.lva.getInMapping(),true),
+//                                    HashmapBlockStringIR(loopOps.lva.getOutMapping(),true)));
                         }
                     }
 

@@ -49,7 +49,7 @@ public class DeadCodeEliminationSSA {
         }
     }
 
-    private boolean stmtHasSideEffects(IRStmt stmt) {
+    public static boolean stmtHasSideEffects(IRStmt stmt) {
         if (stmt instanceof IRCallStmt){
             return true;
         }
