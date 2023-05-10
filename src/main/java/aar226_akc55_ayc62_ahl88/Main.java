@@ -398,21 +398,23 @@ public class Main {
                             funcStatements.removeUnreachableNodes();
                         }
                     }
-                    if (true){
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            writeOutputDot(filename,func.part1(),"preLoop",funcStatements.CFGtoDOT());
-                            LoopOpts loopOps = new LoopOpts(funcStatements,domBlocks.get(func));
-                            domBlocks.put(func,loopOps.dom);
-//                            writeOutputDot(filename,func.part1(),"postLoop",funcStatements.CFGtoDOT(
-//                                    HashmapBlockStringIR(loopOps.lva.getInMapping(),true),
-//                                    HashmapBlockStringIR(loopOps.lva.getOutMapping(),true)));
-                        }
-                    }
+//                    if (true){
+//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+////                            writeOutputDot(filename,func.part1(),"preLoop",funcStatements.CFGtoDOT());
+//                            LoopOpts loopOps = new LoopOpts(funcStatements,domBlocks.get(func));
+//                            domBlocks.put(func,loopOps.dom);
+////                            writeOutputDot(filename,func.part1(),"postLoop",funcStatements.CFGtoDOT(
+////                                    HashmapBlockStringIR(loopOps.lva.getInMapping(),true),
+////                                    HashmapBlockStringIR(loopOps.lva.getOutMapping(),true)));
+//                        }
+//                    }
 
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
+                        writeOutputDot(filename,kv.getKey().part1(),"pressa",kv.getValue().CFGtoDOT());
                         DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
+                        writeOutputDot(filename,kv.getKey().part1(),"postssa",kv.getValue().CFGtoDOT());
                         ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
                         optFunc.functionSig = kv.getKey().part2();
