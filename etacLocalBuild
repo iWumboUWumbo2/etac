@@ -1,13 +1,21 @@
 #!/bin/bash
+
 gradle=gradle
+
 DIR=`dirname $0`
 DEPS=$DIR/deps/libs/main
-$gradle clean
-#rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/EtaLexer.java
-#rm  $DIR/src/main/java/aar226_akc55_ayc62_ahl88/Lexer.java
-#jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/etalex.flex
-jflex $DIR/src/main/java/aar226_akc55_ayc62_ahl88/parseLexRho.flex &&
-java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/rh.cup &&
-java -jar $DEPS/java_cup.jar -destdir $DIR/src/main/java/aar226_akc55_ayc62_ahl88 $DIR/src/main/java/aar226_akc55_ayc62_ahl88/ri.cup &&
-$gradle --no-daemon -b build.gradle shadowJar
+DEST="${DIR}/src/main/java/aar226_akc55_ayc62_ahl88"
+
+LEX_FILES=("parseLex" "parseLexRho")
+CUP_FILES=("eta" "eti" "rh" "ri")
+
+gen_lex () {
+  for lex in ${LEX_FILES[@]}; do jflex "${DEST}/${lex}.flex"; done
+}
+
+gen_cup () {
+  for cup in ${CUP_FILES[@]}; do java -jar $DEPS/java_cup.jar -destdir ${DEST} "${DEST}/${cup}.cup"; done
+}
+
+$gradle clean && gen_lex && gen_cup && $gradle --no-daemon -b build.gradle shadowJar
 

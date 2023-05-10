@@ -30,6 +30,7 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
+import java_cup.Lexer;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.lr_parser;
 import org.apache.commons.cli.*;
@@ -65,6 +66,8 @@ public class Main {
     public static Optimizations opts;
 
     private static Target target;
+
+    public static boolean isRho;
 
     // Write the lexed string into the corresponding file name
     private static void writeOutputGeneric(String filename, String suffix, String output, String extension, boolean isAsm) {
@@ -165,41 +168,43 @@ public class Main {
                 : filename;
     }
 
-    private static void lexFile(String filename, StringBuilder lexedOutput, boolean shouldWrite) throws IOException {
+    private static java_cup.runtime.Scanner lexerbuild(String filename) {
+        String zhenFilename = getZhenFilename(filename);
+        java_cup.runtime.Scanner lexer = null;
+
         try {
             if (filename.endsWith(".eta") || filename.endsWith(".eti")) {
-                String zhenFilename = getZhenFilename(filename);
-
-                Lexer etaLexer;
-                try {
-                    etaLexer = new Lexer(new FileReader(zhenFilename));
-                } catch (Exception e) {
-                    System.out.println("File without name " + filename + " found");
-                    return;
-                }
-
-                try {
-                    while (true) {
-                        Symbol t = etaLexer.next_token();
-                        if (t.sym == sym.EOF) break;
-                        String lexed = prettyOut(t);
-                        lexedOutput.append(lexed);
-                    }
-                }
-                catch (EtaError e) {
-                    lexedOutput.append(e.getMessage());
-                }
-            }
-            else {
+                lexer = new EtaLex(new FileReader(zhenFilename));
+            } else if (filename.endsWith(".rh") || filename.endsWith(".ri")) {
+                lexer = new RhoLex(new FileReader(zhenFilename));
+            } else {
                 throw new FileNotFoundException(
-                        "Invalid filename "
-                                + filename
-                                + " provided: All files passed to etac must have a .eta extension");
+                    "Invalid filename "
+                            + filename
+                            + " provided: All files passed to etac must have a .eta extension");
+            }
+        } catch (Exception e) {
+            System.out.println("File without name " + filename + " found");
+        }
+
+        return lexer;
+    }
+
+    private static void lexFile(String filename, StringBuilder lexedOutput, boolean shouldWrite) throws IOException {
+        java_cup.runtime.Scanner lexer = lexerbuild(filename);
+
+        try {
+            while (true) {
+                Symbol t = lexer.next_token();
+                if (t.sym == sym.EOF) break;
+                String lexed = prettyOut(t);
+                lexedOutput.append(lexed);
             }
         }
-        catch (FileNotFoundException invalidFilename) {
-            System.out.println(invalidFilename.getMessage());
-            return;
+        catch (EtaError e) {
+            lexedOutput.append(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         if (shouldWrite) {
@@ -207,39 +212,40 @@ public class Main {
         }
     }
 
+    private static lr_parser parserbuild(String filename) throws FileNotFoundException {
+        lr_parser p;
+        java_cup.runtime.Scanner lex = lexerbuild(filename);
+
+        if (filename.endsWith(".eta")) p = new EtaParser(lex);
+        else if (filename.endsWith(".eti")) p = new EtiParser(lex);
+        else if (filename.endsWith(".rh")) p = new RhParser(lex);
+        else if (filename.endsWith(".ri")) p = new RiParser(lex);
+        else throw new FileNotFoundException(
+                    "Invalid filename "
+                            + filename
+                            + " provided: All files passed to etac must have a .eta extension");
+
+        return p;
+    }
+
     private static void parseFile(String filename, boolean shouldWrite) throws IOException {
         try {
-            String zhenFilename = getZhenFilename(filename);
-
-            Lexer lex;
-            try {
-                lex = new Lexer(new FileReader(zhenFilename));
-            } catch (Exception e) {
-                System.out.println("File without name " + filename + " found");
-                return;
-            }
-
-            lr_parser p = null;
-            if (filename.endsWith(".eta")) p = new EtaParser(lex);
-            else if (filename.endsWith(".eti")) p = new EtiParser(lex);
-            else throw new FileNotFoundException(
-                        "Invalid filename "
-                                + filename
-                                + " provided: All files passed to etac must have a .eta extension");
+            lr_parser p = parserbuild(filename);
 
             try {
                 StringWriter out = new StringWriter();
                 PrintWriter cw = new PrintWriter(out);
                 CodeWriterSExpPrinter printer = new CodeWriterSExpPrinter(cw);
 
-                if (filename.endsWith(".eta")) {
+                if (filename.endsWith(".eta") || filename.endsWith(".rh")) {
                     Program result = (Program) p.parse().value;
                     result.prettyPrint(printer);
                 }
-                else if (filename.endsWith(".eti")) {
+                else if (filename.endsWith(".eti") || filename.endsWith(".ri")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.prettyPrint(printer);
                 }
+
                 out.close();
                 printer.close();
                 if (shouldWrite) {
@@ -262,22 +268,7 @@ public class Main {
     private static void typeCheckFile(String filename, boolean shouldWrite) throws IOException {
         try {
             String zhenFilename = getZhenFilename(filename);
-
-            Lexer lex = null;
-            try {
-                lex = new Lexer(new FileReader(zhenFilename));
-            } catch (Exception e) {
-                System.out.println("No file found with filename " + filename);
-                return;
-            }
-
-            lr_parser p;
-            if (filename.endsWith(".eta")) p = new EtaParser(lex);
-            else if (filename.endsWith(".eti")) p = new EtiParser(lex);
-            else throw new FileNotFoundException(
-                        "Invalid filename "
-                                + filename
-                                + " provided: All files passed to etac must have a .eta extension");
+            lr_parser p = parserbuild(filename);
 
             try {
                 if (filename.endsWith(".eta")) {
@@ -311,22 +302,7 @@ public class Main {
     private static IRNode irbuild(String filename) throws Exception {
         try {
             String zhenFilename = getZhenFilename(filename);
-
-            Lexer lex;
-            try {
-                lex = new Lexer(new FileReader(zhenFilename));
-            } catch (Exception e) {
-                System.out.println("No file found with filename " + filename);
-                return null;
-            }
-
-            lr_parser p;
-            if (filename.endsWith(".eta")) p = new EtaParser(lex);
-            else if (filename.endsWith(".eti")) p = new EtiParser(lex);
-            else throw new FileNotFoundException(
-                        "Invalid filename "
-                                + filename
-                                + " provided: All files passed to etac must have a .eta extension");
+            lr_parser p = parserbuild(filename);
 
             try {
                 if (filename.endsWith(".eta")) {
@@ -583,6 +559,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws java.io.IOException {
+
+
         // Create the command line parser
         CommandLineParser parser = new DefaultParser();
 
@@ -681,8 +659,15 @@ public class Main {
 
         boolean shouldAsmGen = true;
 
+        isRho = false;
+
         ArrayList<String> filenames = new ArrayList<>();
         for (int i = args.length - 1; i >= 0; i--) {
+            if (args[i].endsWith(".rh") || args[i].endsWith(".ri")) {
+                isRho = true;
+                filenames.add(args[i]);
+            }
+
             if (args[i].endsWith(".eta") || args[i].endsWith(".eti")) {
                 filenames.add(args[i]);
             }

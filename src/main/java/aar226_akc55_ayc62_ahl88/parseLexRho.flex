@@ -8,7 +8,7 @@ import org.apache.commons.text.*;
 %%
 
 %public
-%class Lexer
+%class RhoLex
 
 %line
 %column

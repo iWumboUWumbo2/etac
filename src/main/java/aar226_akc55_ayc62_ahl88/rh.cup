@@ -23,7 +23,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import java.util.ArrayList;
 
 // You might want to add types to these declarations.
-parser EtaParser {:
+parser RhParser {:
     public void syntax_error(Symbol cur_token){
         throw new SyntaxError(cur_token.left,cur_token.right ,"Parsing error " + cur_token.value());
     }
