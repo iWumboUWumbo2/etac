@@ -9,6 +9,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
 import aar226_akc55_ayc62_ahl88.asm.Opts.GraphColorAllocator;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
+import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
@@ -329,9 +330,18 @@ public class Main {
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     IRs.put("initial", ir);
-//                    if (opts.allClear()){ // Added if we only doing reg allocate
-//                        return ir;
-//                    }
+                    HashMap<String,IRFuncDecl> cfgIRLoop = new HashMap<>();
+                    for (String funcName : ((IRCompUnit) ir).functions().keySet()){
+                        IRFuncDecl func = ((IRCompUnit) ir).functions().get(funcName);
+                        CFGGraphBasicBlock graph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
+                        LoopOpts loopOpts = new LoopOpts(graph,funcName);
+                        loopOpts.insertPreHeaderNoSSA();
+//                        System.out.println(loopOpts.loopToPotentialInvar());
+                        IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(graph.getBackIR()));
+                        newFunc.functionSig = func.functionSig;
+                        cfgIRLoop.put(funcName,newFunc);
+                    }
+                    ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIRLoop,new ArrayList<>(),((IRCompUnit) ir).dataMap());
 
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
@@ -399,15 +409,8 @@ public class Main {
                     }
 
                     ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-                    if (opts.isSet(OptimizationType.LICM)){
-                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
-                    }
-//                    for (String funcName : ((IRCompUnit) ir).functions().keySet()){
-//                        IRFuncDecl func = ((IRCompUnit) ir).functions().get(funcName);
-//                        CFGGraphBasicBlock graph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
-//                        writeOutputDot(filename,funcName,"preLoop",graph.CFGtoDOT());
-//                        LoopOpts loopOpts = new LoopOpts(graph);
-//                        writeOutputDot(filename,funcName,"postLoop",graph.CFGtoDOT());
+//                    if (opts.isSet(OptimizationType.LICM)){
+//                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
 //                    }
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);

@@ -30,9 +30,9 @@ public class LoopOptsVisitorNoSSA {
 
     public IRFuncDecl optimizeFunc(IRFuncDecl func){
         CFGGraphBasicBlock blockGraph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
-        LoopOpts loopFrameWork = new LoopOpts(blockGraph);
-        CFGGraphBasicBlock newGraphWithPreHeaders = loopFrameWork.createNewGraph();
-        IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(newGraphWithPreHeaders.getBackIR()));
+        LoopOpts loopFrameWork = new LoopOpts(blockGraph,func.name());
+        loopFrameWork.insertPreHeaderNoSSA();
+        IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(blockGraph.getBackIR()));
         newFunc.functionSig = func.functionSig;
         return newFunc;
     }

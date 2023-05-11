@@ -1,0 +1,14 @@
+
+use io
+use conv;
+
+main(args:int[][]){
+    a:int = 5;
+    c:int = 1;
+    while (!(c > a)){
+        x:int = a;
+        c = c + c;
+    }
+    a = c - a;
+    c = 0;
+}

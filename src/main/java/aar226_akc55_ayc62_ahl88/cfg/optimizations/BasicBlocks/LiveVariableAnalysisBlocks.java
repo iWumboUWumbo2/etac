@@ -38,7 +38,7 @@ public class LiveVariableAnalysisBlocks extends BackwardBlockDataflow<Set<IRTemp
                 new HashSet<>());
     }
     /**
-     * Creates Gen[pn] and kill[pn]
+     * Creates Gen[pn] and kill[pn] for Backward
      * @param block
      * @return
      */
