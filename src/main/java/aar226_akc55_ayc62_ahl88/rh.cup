@@ -380,7 +380,8 @@ recordaccessdeclarray ::=
         RESULT = rad; :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD fullBracketAss:fb {:
         //Point(1,2).x[2]
-        //TODO: dont think it should be fullbracketass?
+        //TODO: dont think it should be fullbracketass? i.e. x.y(2,3)[1] should not be allowed
+        // Should just be the first line of fullBracketAss?
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright,false));
         rad.add(fb);
