@@ -394,7 +394,6 @@ recordaccessdeclarray ::=
         rad.add(fb);
         RESULT = rad; :}
     | fullBracketAss:fb PERIOD IDENTIFIER:i {:
-        //TODO: dont think should be a thing?
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(fb);
         rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,true));
@@ -405,7 +404,6 @@ recordaccessdeclarray ::=
         rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,true));
         RESULT = rad; :}
     | fullBracketAss:fb PERIOD fullBracketAss:fb1 {:
-        //TODO: dont think this should be a thing?
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(fb);
         rad.add(fb1);

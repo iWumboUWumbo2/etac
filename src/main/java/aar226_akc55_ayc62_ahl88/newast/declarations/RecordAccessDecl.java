@@ -19,6 +19,8 @@ public class RecordAccessDecl extends Decl {
 
     public ArrayList<Decl> decls;
 
+    public ArrayList<Type> types;
+
     public RecordAccessDecl(ArrayList<Decl> decls, int l, int c) {
         super(decls.get(0).identifier, l,c);
         this.decls = decls;
@@ -59,6 +61,7 @@ public class RecordAccessDecl extends Decl {
         int size = decls.size();
 
         Type accessType = decls.get(0).typeCheck(table);
+        declTypes.add(accessType);
         for (int i = 0; i < size-1; i++) {
             Decl nextDecl = decls.get(i+1);
 
@@ -76,7 +79,7 @@ public class RecordAccessDecl extends Decl {
                 int index = accessType.recordFieldToIndex.get(rightId);
                 Type temp =  accessType.recordFieldTypes.get(index);
                 accessType = correctType(temp, new Dimension(0, getLine(), getColumn()), table);
-
+                declTypes.add(accessType);
             //arr[4].a[4].x
             } else if (nextDecl instanceof ArrAccessDecl arracc) {
                 if (!accessType.recordFieldToIndex.containsKey(rightId)) {
@@ -98,6 +101,7 @@ public class RecordAccessDecl extends Decl {
 
                 if (arrType.isRecordArray() || arrType.isBoolArray() || arrType.isIntArray()) {
                     accessType = correctType(arrType, newDim, table);
+                    declTypes.add(accessType);
                 } else {
                     throw new SemanticError(getLine(), getColumn(), "somehow not an array");
                 }
@@ -105,6 +109,7 @@ public class RecordAccessDecl extends Decl {
         }
 
         nodeType = accessType;
+        types = declTypes;
         return accessType;
     }
 
