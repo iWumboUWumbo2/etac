@@ -845,8 +845,6 @@ public class IRVisitor implements Visitor<IRNode>{
 //                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
                         }
                     } else {
-                        //PrevType guaranteed to be record?
-                        // Assume left side already in ta;
                         Type prevType = rad.types.get(i-1);
                         Type recordPrevType = allRecordTypes.get(prevType.recordName);
                         Id field = aad.identifier;

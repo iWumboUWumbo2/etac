@@ -20,15 +20,15 @@ main(args : int[][]) {
     a : Point = Point(3,4);
     b : Point = Point(5,6)
     c : PointArr = PointArr({a,b})
-    d : Point = Point(7,11)
+    //d : Point = Point(7,11)
 
     b = a;
-    println(unparseInt(b.x))        //3
-    println(unparseInt(b.y))        //4
-    println(unparseInt(c.x[0].x))   //3
-    println(unparseInt(c.x[0].y))   //4
+    //println(unparseInt(b.x))        //3
+    //println(unparseInt(b.y))        //4
+    //println(unparseInt(c.x[0].x))   //3
+    //println(unparseInt(c.x[0].y))   //4
     println(unparseInt(c.x[1].x))   //3
-    println(unparseInt(c.x[1].y))   //4
+    //println(unparseInt(c.x[1].y))   //4
 
     //b.x = 9;
     //println(unparseInt(a.x))        // ????
@@ -46,7 +46,7 @@ main(args : int[][]) {
     //Doesn't type check????
     //foo(3,4)[0] = 5;
 
-    //Works?
+    //Works
     //PointArr({a,b}).x[0].x = 2;
     // no type decl (PointArr, {a,b})
     // arraccesdecl (x, {0})
