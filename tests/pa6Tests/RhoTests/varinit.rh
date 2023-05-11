@@ -1,11 +1,11 @@
 int1, int2 : int
 list1, list2, list3, list4 : int[][][]
 
-foo() {
+main(args : int[][]) {
     x, y, z : bool;
     a:bool, b:bool = true, true;
     c:int
     c, d:int = 4, 4;
     x, y, z = true, false, true;
-    e, f, g : int = 1, 2, 3; // pass parse, fail typecheck
+    //e, f, g : int = 1, 2, 3; // pass parse, fail typecheck
 }

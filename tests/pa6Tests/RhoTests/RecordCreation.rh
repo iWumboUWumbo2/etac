@@ -15,7 +15,4 @@ main(args : int[][]) {
     println(unparseInt(a.y))
     println(unparseInt(a.z))
     println(unparseInt(b))
-    //println(unparseInt(a.a))
-    //println(unparseInt(a.b))
-    //println(unparseInt(a.c))
 }
