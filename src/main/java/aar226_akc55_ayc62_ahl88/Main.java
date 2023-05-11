@@ -398,23 +398,12 @@ public class Main {
                             funcStatements.removeUnreachableNodes();
                         }
                     }
-//                    if (true){
-//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-////                            writeOutputDot(filename,func.part1(),"preLoop",funcStatements.CFGtoDOT());
-//                            LoopOpts loopOps = new LoopOpts(funcStatements,domBlocks.get(func));
-//                            domBlocks.put(func,loopOps.dom);
-////                            writeOutputDot(filename,func.part1(),"postLoop",funcStatements.CFGtoDOT(
-////                                    HashmapBlockStringIR(loopOps.lva.getInMapping(),true),
-////                                    HashmapBlockStringIR(loopOps.lva.getOutMapping(),true)));
-//                        }
-//                    }
 
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
-                        writeOutputDot(filename,kv.getKey().part1(),"pressa",kv.getValue().CFGtoDOT());
+//                        writeOutputDot(filename,kv.getKey().part1(),"pressa",kv.getValue().CFGtoDOT());
                         DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
-                        writeOutputDot(filename,kv.getKey().part1(),"postssa",kv.getValue().CFGtoDOT());
+//                        writeOutputDot(filename,kv.getKey().part1(),"postssa",kv.getValue().CFGtoDOT());
                         ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
                         optFunc.functionSig = kv.getKey().part2();
@@ -422,7 +411,9 @@ public class Main {
                     }
 
                     ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-
+                    if (opts.isSet(OptimizationType.LICM)){
+                        ir = new LoopOptsVisitor().optimizeLoops((IRCompUnit) ir);
+                    }
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postCopy", ir);
@@ -435,7 +426,8 @@ public class Main {
                         ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postDead", ir);
                     }
-                    IRs.put("final", ir);
+
+//                    IRs.put("final", ir);
                     return ir;
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
@@ -644,6 +636,8 @@ public class Main {
                 "Constant propagation optimization.");
         Option copyPropOpt = new Option ("Ocopy", false,
                 "Copy propagation optimization.");
+        Option licmOpt = new Option ("Olicm", false,
+                "Enable Loop Invariant Code Motion optimization.");
         Option dceOpt = new Option ("Odce", false,
                 "Dead code elimination optimization.");
         Option regOpt = new Option ("Oreg", false,
@@ -669,6 +663,7 @@ public class Main {
         options.addOption(inlOptOpt);
         options.addOption(constPropOpt);
         options.addOption(copyPropOpt);
+        options.addOption(licmOpt);
         options.addOption(dceOpt);
         options.addOption(regOpt);
 
@@ -751,7 +746,9 @@ public class Main {
             if (cmd.hasOption("Ocopy")) {
                 opts.setOptimizations(OptimizationType.COPYPROP);
             }
-
+            if (cmd.hasOption("Olicm")){
+                opts.setOptimizations(OptimizationType.LICM);
+            }
             if (cmd.hasOption("Odce")) {
                 opts.setOptimizations(OptimizationType.DEAD_CODE_ELIMINATION);
             }

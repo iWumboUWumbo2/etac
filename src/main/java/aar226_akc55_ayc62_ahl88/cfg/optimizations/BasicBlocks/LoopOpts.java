@@ -59,56 +59,25 @@ public class LoopOpts {
     public ArrayList<Pair<BasicBlockCFG,BasicBlockCFG>> backEdges;
 
     public ArrayList<LoopWrapper> all_loops;
-
+    public HashMap<BasicBlockCFG,LoopWrapper> headerToLoop;
     public LiveVariableAnalysisBlocks lva;
-
-
-
-    public LoopOpts(CFGGraphBasicBlock g,DominatorBlockDataflow domBlock){
+    public LoopOpts(CFGGraphBasicBlock g){
         graph = g;
         dom = new DominatorBlockDataflow(g);
         dom.createAndExecuteDF();
-        dom.retArgsReverseMapping = domBlock.retArgsReverseMapping;
         backEdges = new ArrayList<>();
         all_loops = new ArrayList<>();
+        headerToLoop = new HashMap<>();
         lva = new LiveVariableAnalysisBlocks(g);
         lva.workList();
         findBackEdges();
         findLoops();
         mergeLoops();
 //        insertPreHeader();
-
         findExitNodes();
         findStores();
-        allTempsDefined();
 //        all_loops.forEach(e -> System.out.println("exits: " + e.exitBlocks));
     }
-
-//    private void insertPreHeader(){
-//        for (LoopWrapper loop : all_loops){
-//            BasicBlockCFG head = loop.header;
-//            BasicBlockCFG preheader = loop.preheader;
-//
-//            int indexOfHead = graph.getNodes().indexOf(head);
-//            ArrayList<BasicBlockCFG> preds = head.getPredecessors();
-//            // Old predecessors of head now point to preheader
-//            ArrayList<BasicBlockCFG> preheaderPreds = new ArrayList<>();
-//            for (BasicBlockCFG pred : preds){
-//                if (!backEdges.contains(new Pair<>(pred,head))) { // not backedge
-//                    int indexOfHeaderInPred = pred.getChildren().indexOf(head);
-//                    pred.getChildren().set(indexOfHeaderInPred, preheader);
-//                    preheaderPreds.add(pred);
-//                }
-//            }
-//            preheader.predecessors = preheaderPreds; // preheader gets headers preds
-//
-//            preheader.setFallThroughChild(head);
-//            head.predecessors.clear();
-//            head.predecessors.add(preheader);
-//
-//            graph.getNodes().set(indexOfHead,preheader);
-//        }
-//    }
     private void findBackEdges(){
         for (BasicBlockCFG node : graph.getNodes()){
             for (BasicBlockCFG dominator: dom.outMapping.get(node)){
@@ -140,7 +109,6 @@ public class LoopOpts {
         }
     }
     private void mergeLoops(){
-        HashMap<BasicBlockCFG,LoopWrapper> headerToLoop = new HashMap<>();
         for (LoopWrapper loop : all_loops){
             if (!headerToLoop.containsKey(loop.header)){
                 headerToLoop.put(loop.header,loop);
@@ -250,6 +218,44 @@ public class LoopOpts {
 
             }
 
+        }
+    }
+
+    public ArrayList<IRStmt> createNewGraph(){
+        ArrayList<IRStmt> stmts = new ArrayList<>();
+        for (BasicBlockCFG block : graph.getNodes()){
+            if (headerToLoop.containsKey(block)){
+                LoopWrapper wrap = headerToLoop.get(block);
+                stmts.addAll(wrap.preheader.returnIRNodes());
+            }
+            stmts.addAll(block.returnIRNodes());
+        }
+        return stmts;
+    }
+    private void insertPreHeader(){
+        for (LoopWrapper loop : all_loops){
+            BasicBlockCFG head = loop.header;
+            BasicBlockCFG preheader = loop.preheader;
+
+            int indexOfHead = graph.getNodes().indexOf(head);
+            ArrayList<BasicBlockCFG> preds = head.getPredecessors();
+            // Old predecessors of head now point to preheader
+            ArrayList<BasicBlockCFG> preheaderPreds = new ArrayList<>();
+
+            for (BasicBlockCFG pred : preds){
+                if (!backEdges.contains(new Pair<>(pred,head))) { // not backedge
+                    int indexOfHeaderInPred = pred.getChildren().indexOf(head);
+                    pred.getChildren().set(indexOfHeaderInPred, preheader);
+                    preheaderPreds.add(pred);
+                }
+            }
+            preheader.predecessors = preheaderPreds; // preheader gets headers preds
+
+            preheader.setFallThroughChild(head);
+            head.predecessors.clear();
+            head.predecessors.add(preheader);
+
+            graph.getNodes().set(indexOfHead,preheader);
         }
     }
 

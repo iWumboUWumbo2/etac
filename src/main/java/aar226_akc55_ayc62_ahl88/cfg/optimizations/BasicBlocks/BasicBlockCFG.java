@@ -33,6 +33,13 @@ public class BasicBlockCFG {
         this.body = new ArrayList<>();
     }
 
+    public ArrayList<IRStmt> returnIRNodes(){
+        ArrayList<IRStmt> res = new ArrayList<>();
+        for (CFGNode<IRStmt> body : getBody()){
+            res.add(body.getStmt());
+        }
+        return res;
+    }
     public ArrayList<CFGNode<IRStmt>> getBody() { return body; }
 
     public BasicBlockCFG getFallThroughChild() {
