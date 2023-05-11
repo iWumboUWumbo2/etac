@@ -48,11 +48,14 @@ public class Use extends AstNode{
         try (FileReader fileReader = new FileReader(filename)) {
             lr_parser pi = isRho ? new RiParser(new RhoLex(fileReader)) : new EtiParser(new EtaLex(fileReader));
             EtiInterface eI = (EtiInterface) pi.parse().value;
-            HashMap<Id,Type> firstPass = eI.firstPass(); // to do need to fail in interface
+            HashMap<Id,Type> firstPass = eI.firstPass(zhenFilename, new HashMap<>()); // to do need to fail in interface
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 if (table.contains(entry.getKey())) {
-                    if (table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.FUNC ||
-                            entry.getValue().getType() != Type.TypeCheckingType.FUNC) {
+                    if (!((table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.FUNC &&
+                            entry.getValue().getType() != Type.TypeCheckingType.FUNC) ||
+                            (table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.RECORD &&
+                            entry.getValue().getType() != Type.TypeCheckingType.RECORD))) {
+                        System.out.println(table.lookup(entry.getKey()).getType());
                         throw new SemanticError(getLine(), getColumn(), " Duplicate Name is not a function");
                     } else {
                         if (!entry.getValue().isSameFunc(table.lookup(entry.getKey()))) {

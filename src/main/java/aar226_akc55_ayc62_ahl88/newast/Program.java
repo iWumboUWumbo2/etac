@@ -1,16 +1,23 @@
 package aar226_akc55_ayc62_ahl88.newast;
 
+import aar226_akc55_ayc62_ahl88.*;
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.definitions.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
+import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
+import java_cup.runtime.lr_parser;
 
+import java.io.FileReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -65,6 +72,24 @@ public class Program extends AstNode {
     public Type typeCheck(SymbolTable<Type> table, String zhenFile){
 //        System.out.println("in program typecheck");
         table.enterScope();
+
+        // check implicit use
+        String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
+        if (Main.isRho) {
+            // create object of Path
+            Path path = Paths.get(zhenFile);
+            // call getFileName() and get FileName path object
+            Path fileName = path.getFileName();
+            String fileNameString = fileName.toString();
+            String filename = Paths.get(libpathDir, fileNameString.substring(0, fileNameString.length() - 3) + ".ri").toString();
+
+            try (FileReader fileReader = new FileReader(filename)) {
+                useList.add(0, new Use("fileNameString", -1,-1));
+            } catch (Error e) {
+            } catch (Exception e) {
+            }
+        }
+
         // first pass to add all Interfaces and Definitions
         for (Use u: useList){
             Type useType = u.typeCheck(table,zhenFile);

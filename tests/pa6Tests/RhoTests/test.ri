@@ -1,0 +1,5 @@
+use io
+
+record Node {}
+
+foo() : int

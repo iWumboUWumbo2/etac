@@ -205,6 +205,16 @@ public class Type implements Printer {
 
 
     public boolean isSameFunc(Type rhs){
+        if (tct == TypeCheckingType.RECORD && rhs.getType() == TypeCheckingType.RECORD) {
+            if (recordName.equals(rhs.recordName)) {
+                return true;
+            }
+            System.out.println(recordName);
+            System.out.println(rhs.recordName);
+            System.out.println(recordName.equals(rhs.recordName));
+            throw new SemanticError(-1,-1, "not same record");
+        }
+
         if (!(tct == TypeCheckingType.FUNC && rhs.getType() == TypeCheckingType.FUNC)){
             throw new SemanticError(-1,-1, "both aren't functions");
         }
@@ -234,15 +244,21 @@ public class Type implements Printer {
         if (!(tct == TypeCheckingType.RECORD && rhs.getType() == TypeCheckingType.RECORD)){
             throw new SemanticError(-1,-1, "both aren't functions");
         }
+        if (!recordName.equals(rhs.recordName)) return false;
         ArrayList<Type> rhsIn = rhs.recordFieldTypes;
-        if (rhsIn.size() != recordFieldTypes.size()){
-            return false;
-        }
-        for (int i = 0; i< rhsIn.size();i++){
-            if (!recordFieldTypes.get(i).sameType(rhsIn.get(i))){
+        if (rhsIn != null && recordFieldTypes != null) {
+            if (rhsIn.size() != recordFieldTypes.size()) {
                 return false;
             }
+
+            // TODO: order matters?
+            for (int i = 0; i< rhsIn.size();i++){
+                if (!recordFieldTypes.get(i).sameType(rhsIn.get(i))){
+                    return false;
+                }
+            }
         }
+
         return true;
     }
 

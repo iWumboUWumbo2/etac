@@ -1,0 +1,10 @@
+use test
+
+record Node {
+    x:int;
+}
+
+foo() : int {
+    println("hello world");
+    return 3
+}
