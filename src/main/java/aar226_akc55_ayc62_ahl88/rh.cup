@@ -386,11 +386,11 @@ recordaccessdeclarray ::=
         rad.add(fb);
         RESULT = rad; :}
     | recordaccessdeclarray:rad PERIOD fullBracketAss:fb {:
-        //Todo same issue
+        //TODO same issue
         rad.add(fb);
         RESULT = rad; :}
     | IDENTIFIER:i PERIOD fullBracketAss:fb {:
-        //Todo same issue
+        //TODO same issue
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,false));
         rad.add(fb);

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class NoTypeDecl extends Decl{
 
     public ArrayList<Expr> args;
+    private Type functionSig;
     public boolean isField;
     /**
      * @param i Identifier Input
@@ -54,7 +55,14 @@ public class NoTypeDecl extends Decl{
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         nodeType = table.lookup(identifier);
+        if (nodeType.getType() == Type.TypeCheckingType.FUNC) {
+            functionSig = table.lookup(identifier);
+        }
         return nodeType;
+    }
+
+    public Type getFunctionSig(){
+        return functionSig;
     }
 
     @Override
