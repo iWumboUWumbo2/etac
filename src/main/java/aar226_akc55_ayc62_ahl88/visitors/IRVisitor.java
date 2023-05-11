@@ -799,12 +799,15 @@ public class IRVisitor implements Visitor<IRNode>{
                                 }
 
                                 IRSeq ir_seq = new IRSeq(seq_list);
-                                IRMove move = new IRMove(new IRTemp(ta),
-                                        new IRESeq(ir_seq,
-                                                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(temp), new IRConst(WORD_BYTES))
-                                        )
+//                                IRMove move = new IRMove(new IRTemp(ta),
+//                                        new IRESeq(ir_seq,
+//                                                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(temp), new IRConst(WORD_BYTES))
+//                                        )
+//                                );
+                                prev = new IRESeq(ir_seq,
+                                        new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(temp), new IRConst(WORD_BYTES))
                                 );
-                                irlist.add(move);
+//                                irlist.add(move);
                             } else {
                                 //Regular function call
                                 String funcName = genABIFunc(ntd.getFunctionSig(),ntd.getIdentifier());
@@ -813,10 +816,10 @@ public class IRVisitor implements Visitor<IRNode>{
                                     argsList.add(param.accept(this));
                                 }
                                 IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
-                                irlist.add(new IRMove(new IRTemp(ta), new IRESeq(funcCall, new IRTemp("_RV1"))));
+//                                irlist.add(new IRMove(new IRTemp(ta), new IRESeq(funcCall, new IRTemp("_RV1"))));
+                                prev=new IRESeq(funcCall, new IRTemp("_RV1"));
                             }
                         } else {
-                            System.out.println("REEEEEE: " + ntd.identifier.toString());
                             IRExpr recordName = new IRTemp(ntd.identifier.toString());
 //                            IRMem mem = new IRMem(recordName);
                             prev = recordName;
@@ -834,7 +837,8 @@ public class IRVisitor implements Visitor<IRNode>{
                         if (aad.getFuncParams() == null){ // a[e1][e2]
                             IRExpr arrIdIR = aad.getIdentifier().accept(this);
                             IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
-                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
+                            prev = memComponent;
+//                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
                         }else{ // g1(e1,e2)[4][5]
                             String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
                             ArrayList<IRExpr> argsList = new ArrayList<>();
