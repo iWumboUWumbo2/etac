@@ -55,9 +55,13 @@ public class NoTypeDecl extends Decl{
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         nodeType = table.lookup(identifier);
-        if (nodeType.getType() == Type.TypeCheckingType.FUNC) {
+//        System.out.println("CHECKING IF FUNC");
+        if (args != null && args.size() > 0) {
             functionSig = table.lookup(identifier);
+
+
         }
+//        System.out.println(nodeType.getType());
         return nodeType;
     }
 
