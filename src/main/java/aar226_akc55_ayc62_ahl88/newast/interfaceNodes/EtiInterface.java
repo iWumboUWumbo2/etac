@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.AstNode;
+import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.Use;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
@@ -20,6 +21,7 @@ public class EtiInterface extends AstNode {
     public EtiInterface(ArrayList<Method_Interface> mi,int l, int c) {
         super(l,c);
         this.methods_inter = mi;
+        useList = new ArrayList<>();
         if (mi.size() == 0){
             throw new SyntaxError(1,1,"no method definitions");
         }
@@ -50,20 +52,40 @@ public class EtiInterface extends AstNode {
         p.endList();
     }
 
-    public HashMap<Id,Type> firstPass() {
-        HashMap<Id,Type> res = new HashMap<>();
+    public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res) {
+//        HashMap<Id,Type> res = new HashMap<>();
         HashSet<String> methodName= new HashSet<>();
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
         methodSymbols.enterScope();
+
+        // TODO: for ri file, typecheck all uses and use modules
+        // TODO: everything declared in the interface must be defined in the module.
+//        System.out.println(useList);
+//        for (Use u:useList) {
+//            Type useType = u.typeCheck(methodSymbols, zhenFileName);
+//            if (useType.getType() != Type.TypeCheckingType.UNIT) {
+//                throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
+//            }
+//
+//        }
+
         for (Method_Interface mI: methods_inter){
             Type curMethod = mI.typeCheck(res,methodSymbols);
             Id nameOfMethod = mI.getName();
             if (methodName.contains(nameOfMethod.toString())){
                 throw new SemanticError(mI.getLine(), mI.getColumn() ,"interface function already exists");
             }
-            ArrayList<Type> inTypes = mI.getInputTypes();
-            ArrayList<Type> outTypes = mI.getOutputtypes();
-            Type funcTypeInTable = new Type(inTypes,outTypes);
+            Type funcTypeInTable;
+            if (mI.isRecord) {
+                String recordName = mI.recordType.recordName;
+                Dimension dim = mI.recordType.dimensions;
+                funcTypeInTable =  new Type(recordName, dim, getLine(),getColumn());
+            } else {
+                ArrayList<Type> inTypes = mI.getInputTypes();
+                ArrayList<Type> outTypes = mI.getOutputtypes();
+                funcTypeInTable = new Type(inTypes,outTypes);
+            }
+
             methodSymbols.add(nameOfMethod,funcTypeInTable);
             res.put(nameOfMethod,funcTypeInTable);
             methodName.add(nameOfMethod.toString());

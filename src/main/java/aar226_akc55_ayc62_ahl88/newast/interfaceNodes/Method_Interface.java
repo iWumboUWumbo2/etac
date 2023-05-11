@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.AstNode;
+import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
@@ -17,6 +18,8 @@ public class Method_Interface extends AstNode {
     private Id id;
     private ArrayList<AnnotatedTypeDecl> decls;
     public ArrayList<Type> types;
+    public Type recordType;
+    public boolean isRecord;
 
     public Method_Interface(String s, ArrayList<AnnotatedTypeDecl> d, ArrayList<Type> t,int l, int c){
         super(l,c);
@@ -33,6 +36,18 @@ public class Method_Interface extends AstNode {
         id = new Id(s,l,c);
         decls = d;
         types = t;
+        isRecord = false;
+        recordType = null;
+    }
+
+    public Method_Interface(String s, int l, int c) {
+        super(l, c);
+        isRecord = true;
+        id = new Id(s, l, c);
+        decls = new ArrayList<>();
+        types = new ArrayList<>();
+        Dimension emptyDim = new Dimension(0, l, c);
+        recordType = new Type(s, emptyDim, l, c);
     }
 
     public String toString(){
@@ -60,6 +75,8 @@ public class Method_Interface extends AstNode {
     public Type typeCheck(HashMap<Id, Type> resultingGlobals, SymbolTable<Type> methods) {
 
         HashSet<String> prev = new HashSet<>();
+
+        //TODO: what do we do for records?
         for (AnnotatedTypeDecl atd: decls){
             if (atd.identifier.toString().equals(id.toString())){ // decl name and function name
                 throw new SemanticError(atd.getLine(), atd.getColumn(), "function and parameter have same name");

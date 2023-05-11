@@ -91,7 +91,7 @@ precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 start with topLevelInter;
 
 topLevelInter ::= importUseStar:ius interfaceStar:is{:
-    RESULT = new EtiInterface(is,isleft,isright);
+    RESULT = new EtiInterface(ius,is,isleft,isright);
     :}
     ;
 
@@ -116,6 +116,9 @@ method_interface ::=
      :}
      |IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {:
       RESULT = new Method_Interface(i,ds,new ArrayList<Type>(),ileft,iright);
+      :}
+      | RECORD IDENTIFIER:i OPEN_BRACE CLOSE_BRACE {:
+       RESULT = new Method_Interface(i, ileft, iright);
       :}
 ;
 definitionStar ::=
