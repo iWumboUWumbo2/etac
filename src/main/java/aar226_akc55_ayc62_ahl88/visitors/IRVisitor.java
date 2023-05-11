@@ -725,21 +725,14 @@ public class IRVisitor implements Visitor<IRNode>{
         }else if (node.getDecl() instanceof UnderScore){
             return new IRExp(right);
         } else if (node.getDecl() instanceof RecordAccessDecl rad) {
-//            return null;
-
-            String ta = nxtTemp();
             String ti = nxtTemp();
             ArrayList<IRStmt> irlist = new ArrayList<IRStmt>();
             IRExpr prev = null;
             for (int i = 0; i < rad.decls.size(); i++) {
 
-//                System.out.println("-----------------");
                 Decl d = rad.decls.get(i);
                 Type t = rad.types.get(i);
-//                System.out.println(t.getType());
-//                if (t.recordName != null) {
-//                    System.out.println(t.recordName);
-//                }
+
                 if (d instanceof NoTypeDecl ntd) {
                     if (ntd.isField) {
                         assert (i > 0); // Can only be after first position
@@ -756,10 +749,9 @@ public class IRVisitor implements Visitor<IRNode>{
                                                 new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
                                 )
                         );
-
+                        prev = accessField;
 //                        IRStmt move = new IRMove(new IRTemp(ta), accessField);
 //                        irlist.add(move);
-                        prev = accessField;
                     } else {
                         // can be record, or function -> record
                         // Can only be first position of decl
@@ -817,17 +809,18 @@ public class IRVisitor implements Visitor<IRNode>{
                                 }
                                 IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
 //                                irlist.add(new IRMove(new IRTemp(ta), new IRESeq(funcCall, new IRTemp("_RV1"))));
-                                prev=new IRESeq(funcCall, new IRTemp("_RV1"));
+                                prev = new IRESeq(funcCall, new IRTemp("_RV1"));
                             }
                         } else {
+                            // Regular record
                             IRExpr recordName = new IRTemp(ntd.identifier.toString());
-//                            IRMem mem = new IRMem(recordName);
                             prev = recordName;
+//                            IRMem mem = new IRMem(recordName);
+
 //                            IRStmt move = new IRMove(new IRTemp(ta), recordName);
 //                            irlist.add(move);
                         }
                     }
-
                 } else if (d instanceof ArrAccessDecl aad) {
                     // Id is a field name in this context
                     //assume it is in temp ta
