@@ -5,6 +5,7 @@ import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.AstNode;
 import aar226_akc55_ayc62_ahl88.newast.Type;
+import aar226_akc55_ayc62_ahl88.newast.Use;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
@@ -14,6 +15,7 @@ import java.util.HashSet;
 
 public class EtiInterface extends AstNode {
     private ArrayList<Method_Interface> methods_inter;
+    private ArrayList<Use> useList;
 
     public EtiInterface(ArrayList<Method_Interface> mi,int l, int c) {
         super(l,c);
@@ -22,6 +24,16 @@ public class EtiInterface extends AstNode {
             throw new SyntaxError(1,1,"no method definitions");
         }
     }
+
+    public EtiInterface(ArrayList<Use> useList, ArrayList<Method_Interface> mi,int l, int c) {
+        super(l,c);
+        this.methods_inter = mi;
+        this.useList = useList;
+        if (mi.size() == 0){
+            throw new SyntaxError(1,1,"no method definitions");
+        }
+    }
+
     // need pretty
     public String toString() {
         String build = "";

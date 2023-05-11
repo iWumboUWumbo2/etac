@@ -1,6 +1,9 @@
 use io
 use conv
 
+
+k, kk : int
+kkk : Point
 record Point {
     x,y:int
 }
@@ -12,6 +15,8 @@ createPoint(x: int, y: int): Point {
 main(args : int[][]) {
     x : int = 5;
     y : int = 6;
+    k = 3;
+    kkk = Point(1, 2)
 
     a : Point = createPoint(3,5)
     b : Point = createPoint(x,y);

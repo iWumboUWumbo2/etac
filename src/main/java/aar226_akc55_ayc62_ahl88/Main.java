@@ -86,7 +86,8 @@ public class Main {
         }
 
         String pathname = path.toString();
-        pathname = pathname.substring(0, pathname.length() - 4) + suffix + "." + extension;
+        int length = (isRho) ? pathname.length() - 3 : pathname.length() - 4;
+        pathname = pathname.substring(0, length) + suffix + "." + extension;
 //        System.out.println(pathname);
         Path parentPath = path.getParent();
         String dirname = (parentPath == null) ? "" : parentPath.toString();
@@ -277,6 +278,12 @@ public class Main {
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.firstPass(); // Just to throw EtaErrors
+                } else if (filename.endsWith(".rh")) {
+                    Program result = (Program) p.parse().value;
+                    result.typeCheck(new SymbolTable<>(), zhenFilename);
+                } else if (filename.endsWith(".ri")) {
+                    EtiInterface result = (EtiInterface) p.parse().value;
+                    result.firstPass(); // Just to throw EtaErrors
                 }
 
                 if (shouldWrite) {
@@ -305,7 +312,7 @@ public class Main {
             lr_parser p = parserbuild(filename);
 
             try {
-                if (filename.endsWith(".eta")) {
+                if (filename.endsWith(".eta") || filename.endsWith(".rh")) {
                     Program result = (Program) p.parse().value;
                     SymbolTable s = new SymbolTable<>();
                     result.typeCheck(s, zhenFilename);
@@ -400,7 +407,7 @@ public class Main {
 
                     IRs.put("final", ir);
                     return ir;
-                } else if (filename.endsWith(".eti")) {
+                } else if (filename.endsWith(".eti") || filename.endsWith(".ri")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.firstPass(); // Just to throw EtaErrors
                 }

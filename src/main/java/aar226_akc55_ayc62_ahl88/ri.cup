@@ -90,7 +90,7 @@ precedence left OPEN_BRACKET,CLOSE_BRACKET,OPEN_PAREN,CLOSE_PAREN;
 
 start with topLevelInter;
 
-topLevelInter ::= interfaceStar:is{:
+topLevelInter ::= importUseStar:ius interfaceStar:is{:
     RESULT = new EtiInterface(is,isleft,isright);
     :}
     ;
