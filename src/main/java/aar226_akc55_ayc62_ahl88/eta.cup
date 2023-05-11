@@ -331,7 +331,7 @@ type_list ::=
     UNDERSCORE:u COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
         temp.add(new UnderScore(uleft,uright));
-        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right),i2left,i2right));
+        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right),i2left,i2right,false));
         RESULT = temp;
     :}
     |IDENTIFIER:i1 COLON emptyBracketType:t1 COMMA UNDERSCORE:u {:
@@ -348,7 +348,7 @@ type_list ::=
                 :}
     |IDENTIFIER:i1 COMMA UNDERSCORE:u {:
             ArrayList<Decl> temp = new ArrayList<Decl>();
-            temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right));
+            temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right,false));
             temp.add(new UnderScore(uleft,uright));
             RESULT = temp;
             :}
@@ -360,19 +360,19 @@ type_list ::=
             :}
     |IDENTIFIER:i1 COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
-        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right));
-        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right));
+        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right,false));
+        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right,false));
         RESULT = temp;
     :}
     |IDENTIFIER:i1 COLON emptyBracketType:t1 COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
         temp.add(new AnnotatedTypeDecl(new Id(i1,i1left,i1right),t1,i1left,i1right));
-        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right));
+        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right,false));
         RESULT = temp;
             :}
     |IDENTIFIER:i1 COMMA IDENTIFIER:i2 COLON emptyBracketType:t2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
-        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right));
+        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right,false));
         temp.add(new AnnotatedTypeDecl(new Id(i2,i2left,i2right),t2, i2left, i2right));
         RESULT = temp;
                 :}
@@ -387,7 +387,7 @@ type_list ::=
         RESULT = tl;
     :}
     | type_list:tl COMMA IDENTIFIER:i {:
-        tl.add(new NoTypeDecl(new Id(i,ileft,iright), ileft, iright));
+        tl.add(new NoTypeDecl(new Id(i,ileft,iright), ileft, iright,false));
         RESULT = tl;
     :}
     | type_list:tl COMMA UNDERSCORE:u {:
@@ -421,12 +421,12 @@ type_list ::=
     |fullBracketAss:fb COMMA IDENTIFIER:i1 {:
     ArrayList<Decl> temp = new ArrayList<Decl>();
     temp.add(fb);
-    temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right));
+    temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right,false));
     RESULT = temp;
     :}
     | IDENTIFIER:i1 COMMA fullBracketAss:fb{:
     ArrayList<Decl> temp = new ArrayList<Decl>();
-    temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right));
+    temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right,false));
     temp.add(fb);
     RESULT = temp;
     :}
@@ -451,7 +451,7 @@ declaration_assign_stmt ::=
     :}
     | emptyBracketDecl:d {:RESULT = new DeclNoAssignStmt(d,dleft,dright);:}
     | IDENTIFIER:id GETS:g expr:e {:
-        NoTypeDecl tempDec = new NoTypeDecl(new Id(id,idleft,idright),idleft,idright);
+        NoTypeDecl tempDec = new NoTypeDecl(new Id(id,idleft,idright),idleft,idright,false);
         RESULT = new DeclAssignStmt(tempDec,e,gleft,gright);:}
     | UNDERSCORE:u GETS:g expr:e {:
         UnderScore tempUnder = new UnderScore(uleft,uright);

@@ -371,16 +371,18 @@ fullBracketAss ::=
 
 recordaccessdeclarray ::=
     recordaccessdeclarray:rad PERIOD IDENTIFIER:i {:
-        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,true));
         RESULT = rad; :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD IDENTIFIER:i {:
         ArrayList<Decl> rad = new ArrayList<Decl>();
-        rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright));
-        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright,false));
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,true));
         RESULT = rad; :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD fullBracketAss:fb {:
+        //Point(1,2).x[2]
+        //TODO: dont think it should be fullbracketass?
         ArrayList<Decl> rad = new ArrayList<Decl>();
-        rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright));
+        rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright,false));
         rad.add(fb);
         RESULT = rad; :}
     | recordaccessdeclarray:rad PERIOD fullBracketAss:fb {:
@@ -388,20 +390,22 @@ recordaccessdeclarray ::=
         RESULT = rad; :}
     | IDENTIFIER:i PERIOD fullBracketAss:fb {:
         ArrayList<Decl> rad = new ArrayList<Decl>();
-        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,false));
         rad.add(fb);
         RESULT = rad; :}
     | fullBracketAss:fb PERIOD IDENTIFIER:i {:
+        //TODO: dont think should be a thing?
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(fb);
-        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,true));
         RESULT = rad; :}
     | IDENTIFIER:i1 PERIOD IDENTIFIER:i {:
         ArrayList<Decl> rad = new ArrayList<Decl>();
-        rad.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left,i1right));
-        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        rad.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left,i1right,false));
+        rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,true));
         RESULT = rad; :}
     | fullBracketAss:fb PERIOD fullBracketAss:fb1 {:
+        //TODO: dont think this should be a thing?
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(fb);
         rad.add(fb1);
@@ -420,7 +424,7 @@ type_list ::=
     UNDERSCORE:u COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
         temp.add(new UnderScore(uleft,uright));
-        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right),i2left,i2right));
+        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right),i2left,i2right,false));
         RESULT = temp; :}
     |IDENTIFIER:i1 COLON emptyBracketType:t1 COMMA UNDERSCORE:u {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
@@ -434,7 +438,7 @@ type_list ::=
         RESULT = temp; :}
     |IDENTIFIER:i1 COMMA UNDERSCORE:u {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
-        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right));
+        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right,false));
         temp.add(new UnderScore(uleft,uright));
         RESULT = temp; :}
     |UNDERSCORE:u1 COMMA UNDERSCORE:u2 {:
@@ -444,17 +448,17 @@ type_list ::=
         RESULT = temp; :}
     |IDENTIFIER:i1 COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
-        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right));
-        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right));
+        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right),i1left, i1right,false));
+        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right,false));
         RESULT = temp; :}
     |IDENTIFIER:i1 COLON emptyBracketType:t1 COMMA IDENTIFIER:i2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
         temp.add(new AnnotatedTypeDecl(new Id(i1,i1left,i1right),t1,i1left,i1right));
-        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right));
+        temp.add(new NoTypeDecl(new Id(i2,i2left,i2right), i2left, i2right,false));
         RESULT = temp; :}
     |IDENTIFIER:i1 COMMA IDENTIFIER:i2 COLON emptyBracketType:t2 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
-        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right));
+        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right,false));
         temp.add(new AnnotatedTypeDecl(new Id(i2,i2left,i2right),t2, i2left, i2right));
         RESULT = temp; :}
     |IDENTIFIER:i1 COLON emptyBracketType:t1 COMMA IDENTIFIER:i2 COLON emptyBracketType:t2 {:
@@ -466,7 +470,7 @@ type_list ::=
         tl.add(new AnnotatedTypeDecl(new Id(i,ileft,iright), t, ileft, iright));
         RESULT = tl; :}
     | type_list:tl COMMA IDENTIFIER:i {:
-        tl.add(new NoTypeDecl(new Id(i,ileft,iright), ileft, iright));
+        tl.add(new NoTypeDecl(new Id(i,ileft,iright), ileft, iright,false));
         RESULT = tl; :}
     | type_list:tl COMMA UNDERSCORE:u {:
         tl.add(new UnderScore(uleft,uright));
@@ -494,11 +498,11 @@ type_list ::=
     |fullBracketAss:fb COMMA IDENTIFIER:i1 {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
         temp.add(fb);
-        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right));
+        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right,false));
         RESULT = temp; :}
     | IDENTIFIER:i1 COMMA fullBracketAss:fb {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
-        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right));
+        temp.add(new NoTypeDecl(new Id(i1,i1left,i1right), i1left, i1right,false));
         temp.add(fb);
         RESULT = temp; :}
     | fullBracketAss:fb1 COMMA fullBracketAss:fb2{:
@@ -518,11 +522,11 @@ type_list ::=
     | recordaccessdecl:rd COMMA IDENTIFIER:i {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
         temp.add(rd);
-        temp.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        temp.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,false));
         RESULT = temp; :}
     | IDENTIFIER:i COMMA recordaccessdecl:rd {:
         ArrayList<Decl> temp = new ArrayList<Decl>();
-        temp.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright));
+        temp.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,false));
         temp.add(rd);
         RESULT = temp; :}
     | recordaccessdecl:rd COMMA UNDERSCORE:u {:
@@ -569,7 +573,7 @@ declaration_assign_stmt ::=
     :}
     | emptyBracketDecl:d {:RESULT = new DeclNoAssignStmt(d,dleft,dright);:}
     | IDENTIFIER:id GETS:g expr:e {:
-        NoTypeDecl tempDec = new NoTypeDecl(new Id(id,idleft,idright),idleft,idright);
+        NoTypeDecl tempDec = new NoTypeDecl(new Id(id,idleft,idright),idleft,idright,false);
         RESULT = new DeclAssignStmt(tempDec,e,gleft,gright);:}
     | UNDERSCORE:u GETS:g expr:e {:
         UnderScore tempUnder = new UnderScore(uleft,uright);

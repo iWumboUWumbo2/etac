@@ -20,20 +20,22 @@ import java.util.ArrayList;
  */
 public class NoTypeDecl extends Decl{
 
-    ArrayList<Expr> args;
-
+    public ArrayList<Expr> args;
+    public boolean isField;
     /**
      * @param i Identifier Input
      * @param l Line Number
      * @param c Column Number
      */
-    public NoTypeDecl(Id i, int l, int c) {
+    public NoTypeDecl(Id i, int l, int c, boolean field) {
         super(i,l, c);
+        this.isField = field;
     }
 
-    public NoTypeDecl(Id i, ArrayList<Expr> args, int l, int c) {
+    public NoTypeDecl(Id i, ArrayList<Expr> args, int l, int c, boolean field) {
         super (i, l, c);
         this.args = args;
+        this.isField = field;
     }
 
     @Override
@@ -48,6 +50,7 @@ public class NoTypeDecl extends Decl{
         }
     }
 
+    //todo typecheck?
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
         nodeType = table.lookup(identifier);
