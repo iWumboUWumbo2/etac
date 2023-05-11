@@ -470,11 +470,12 @@ public class IRVisitor implements Visitor<IRNode>{
 
             for(int i = 0; i < n; i++) {
                 IRExpr ire = values.get(i).accept(this);
-                IRMove move_elmnt = new IRMove(new IRMem(new IRBinOp(
-                        IRBinOp.OpType.ADD,
-                        new IRTemp(t),
-                        new IRConst(8L*(i+1)))),
-                        ire );
+                IRMove move_elmnt = new IRMove(
+                        new IRMem(
+                                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(t), new IRConst(8L*(i+1)))
+                        ),
+                        ire
+                );
                 seq_list.add(move_elmnt);
             }
 
@@ -612,8 +613,7 @@ public class IRVisitor implements Visitor<IRNode>{
         String l1 = nxtLabel();
         String l2 = nxtLabel();
         IRExpr guardAccept = node.guard.accept(this);
-        if (constantFold &&  guardAccept instanceof IRConst c &&
-        c.value() == 0){
+        if (constantFold &&  guardAccept instanceof IRConst c && c.value() == 0){
             return new IRSeq();
         }
         IRStmt condStmt = booleanAsControlFlow(node.guard,l1,l2);
@@ -730,6 +730,7 @@ public class IRVisitor implements Visitor<IRNode>{
             String ta = nxtTemp();
             String ti = nxtTemp();
             ArrayList<IRStmt> irlist = new ArrayList<IRStmt>();
+            IRExpr prev = null;
             for (int i = 0; i < rad.decls.size(); i++) {
 
 //                System.out.println("-----------------");
@@ -750,19 +751,22 @@ public class IRVisitor implements Visitor<IRNode>{
                                 new IRMove(new IRTemp(ti), new IRConst(index)),
                                 new IRMem(
                                         new IRBinOp(IRBinOp.OpType.ADD,
-                                                new IRTemp(ta),
+//                                                new IRTemp(ta),
+                                                prev,
                                                 new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
                                 )
                         );
 
-                        IRStmt move = new IRMove(new IRTemp(ta), accessField);
-                        irlist.add(move);
+//                        IRStmt move = new IRMove(new IRTemp(ta), accessField);
+//                        irlist.add(move);
+                        prev = accessField;
                     } else {
                         // can be record, or function -> record
                         // Can only be first position of decl
                         assert (i == 0);
                         if (ntd.args != null && ntd.args.size() > 0) {
                             if (rad.types.get(i).getType() == Type.TypeCheckingType.RECORD) {
+                                //Record constructor call
                                 String temp = nxtTemp();   // temp label for malloc
                                 ArrayList<Expr> values = ntd.args;
                                 long n = values.size();
@@ -812,11 +816,12 @@ public class IRVisitor implements Visitor<IRNode>{
                                 irlist.add(new IRMove(new IRTemp(ta), new IRESeq(funcCall, new IRTemp("_RV1"))));
                             }
                         } else {
-
-                            IRExpr recordName = ntd.identifier.accept(this);
-                            IRMem mem = new IRMem(recordName);
-                            IRStmt move = new IRMove(new IRTemp(ta), mem);
-                            irlist.add(move);
+                            System.out.println("REEEEEE: " + ntd.identifier.toString());
+                            IRExpr recordName = new IRTemp(ntd.identifier.toString());
+//                            IRMem mem = new IRMem(recordName);
+                            prev = recordName;
+//                            IRStmt move = new IRMove(new IRTemp(ta), recordName);
+//                            irlist.add(move);
                         }
                     }
 
@@ -839,7 +844,8 @@ public class IRVisitor implements Visitor<IRNode>{
                             IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
                             IRESeq sideEffects = new IRESeq(funcCall, new IRTemp("_RV1"));
                             IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
-                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
+                            prev = memComponent;
+//                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
                         }
                     } else {
                         //PrevType guaranteed to be record?
@@ -852,20 +858,25 @@ public class IRVisitor implements Visitor<IRNode>{
                                 new IRMove(new IRTemp(ti), new IRConst(index)),
                                 new IRMem(
                                         new IRBinOp(IRBinOp.OpType.ADD,
-                                                new IRTemp(ta),
+//                                                new IRTemp(ta),
+                                                prev,
                                                 new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
                                 )
                         );
 
-                        IRStmt move1 = new IRMove(new IRTemp(ta), accessField);
+                        prev = accessField;
+//                        IRStmt move1 = new IRMove(new IRTemp(ta), accessField);
                         //Acess index
-                        IRExpr arrIdIR = new IRMem(new IRTemp(ta));
-                        IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
-                        irlist.add(new IRMove(new IRTemp(ta), memComponent));
+//                        IRExpr arrIdIR = new IRMem(new IRTemp(ta));
+                        IRExpr arrIdIR = new IRMem(prev);
+                        prev = arrIdIR;
+                        IRExpr memComponent = accessRecur(0,aad.getIndices(), prev);
+                        prev = memComponent;
+//                        irlist.add(new IRMove(new IRTemp(ta), memComponent));
                     }
                 }
             }
-            irlist.add(new IRMove(new IRTemp(ta), right));
+            irlist.add(new IRMove(prev, right));
             return new IRSeq(irlist);
         }
         throw new InternalCompilerError("NOT A DECL?");
