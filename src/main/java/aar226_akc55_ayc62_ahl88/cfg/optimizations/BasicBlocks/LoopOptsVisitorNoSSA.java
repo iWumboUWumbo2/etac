@@ -1,6 +1,5 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRSeq;
@@ -9,9 +8,9 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class LoopOptsVisitor {
+public class LoopOptsVisitorNoSSA {
 
-    public LoopOptsVisitor(){
+    public LoopOptsVisitorNoSSA(){
 
     }
 
@@ -32,7 +31,8 @@ public class LoopOptsVisitor {
     public IRFuncDecl optimizeFunc(IRFuncDecl func){
         CFGGraphBasicBlock blockGraph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
         LoopOpts loopFrameWork = new LoopOpts(blockGraph);
-        IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(loopFrameWork.createNewGraph()));
+        CFGGraphBasicBlock newGraphWithPreHeaders = loopFrameWork.createNewGraph();
+        IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(newGraphWithPreHeaders.getBackIR()));
         newFunc.functionSig = func.functionSig;
         return newFunc;
     }

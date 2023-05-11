@@ -221,7 +221,7 @@ public class LoopOpts {
         }
     }
 
-    public ArrayList<IRStmt> createNewGraph(){
+    public CFGGraphBasicBlock createNewGraph(){
         ArrayList<IRStmt> stmts = new ArrayList<>();
         for (BasicBlockCFG block : graph.getNodes()){
             if (headerToLoop.containsKey(block)){
@@ -230,9 +230,35 @@ public class LoopOpts {
             }
             stmts.addAll(block.returnIRNodes());
         }
-        return stmts;
+        return new CFGGraphBasicBlock(stmts);
     }
-    private void insertPreHeader(){
+    private void insertPreHeaderNoSSA(){
+        for (LoopWrapper loop : all_loops){
+            BasicBlockCFG head = loop.header;
+            BasicBlockCFG preheader = loop.preheader;
+
+            int indexOfHead = graph.getNodes().indexOf(head);
+            ArrayList<BasicBlockCFG> preds = head.getPredecessors();
+            // Old predecessors of head now point to preheader
+            ArrayList<BasicBlockCFG> preheaderPreds = new ArrayList<>();
+
+            for (BasicBlockCFG pred : preds){
+                if (!backEdges.contains(new Pair<>(pred,head))) { // not backedge
+                    int indexOfHeaderInPred = pred.getChildren().indexOf(head);
+                    pred.getChildren().set(indexOfHeaderInPred, preheader);
+                    preheaderPreds.add(pred);
+                }
+            }
+            preheader.predecessors = preheaderPreds; // preheader gets headers preds
+
+            preheader.setFallThroughChild(head);
+            head.predecessors.clear();
+            head.predecessors.add(preheader);
+
+            graph.getNodes().set(indexOfHead,preheader);
+        }
+    }
+    private void insertPreHeaderYesSSA(){
         for (LoopWrapper loop : all_loops){
             BasicBlockCFG head = loop.header;
             BasicBlockCFG preheader = loop.preheader;

@@ -8,16 +8,10 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
 import aar226_akc55_ayc62_ahl88.asm.Opts.GraphColorAllocator;
-import aar226_akc55_ayc62_ahl88.asm.Opts.LVASINGLEASM;
-import aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
-import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyProp;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyPropNoSSA;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeElimNoSSA;
 import aar226_akc55_ayc62_ahl88.newast.Program;
@@ -26,10 +20,8 @@ import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CopyPropReplaceVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.runtime.Symbol;
@@ -41,10 +33,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-
-import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockString;
-import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockStringIR;
-import static aar226_akc55_ayc62_ahl88.cfg.CFGGraph.HashmapString;
 
 public class Main {
     enum Target {
@@ -412,8 +400,15 @@ public class Main {
 
                     ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
                     if (opts.isSet(OptimizationType.LICM)){
-                        ir = new LoopOptsVisitor().optimizeLoops((IRCompUnit) ir);
+                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
                     }
+//                    for (String funcName : ((IRCompUnit) ir).functions().keySet()){
+//                        IRFuncDecl func = ((IRCompUnit) ir).functions().get(funcName);
+//                        CFGGraphBasicBlock graph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
+//                        writeOutputDot(filename,funcName,"preLoop",graph.CFGtoDOT());
+//                        LoopOpts loopOpts = new LoopOpts(graph);
+//                        writeOutputDot(filename,funcName,"postLoop",graph.CFGtoDOT());
+//                    }
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postCopy", ir);
