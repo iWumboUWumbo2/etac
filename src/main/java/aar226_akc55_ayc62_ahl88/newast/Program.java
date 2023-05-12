@@ -69,30 +69,40 @@ public class Program extends AstNode {
         p.endList();
     }
 
+    private boolean containsUse(String useName) {
+        for (Use u : useList) {
+            if (useName.equals(u.id.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Type typeCheck(SymbolTable<Type> table, String zhenFile){
-//        System.out.println("in program typecheck");
         table.enterScope();
 
         // check implicit use
-        String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
-        if (Main.isRho) {
-            // create object of Path
-            Path path = Paths.get(zhenFile);
-            // call getFileName() and get FileName path object
-            Path fileName = path.getFileName();
-            String fileNameString = fileName.toString();
-            String filename = Paths.get(libpathDir, fileNameString.substring(0, fileNameString.length() - 3) + ".ri").toString();
+        Path path = Paths.get(zhenFile);
+        String fileNameString = path.getFileName().toString();
+        fileNameString = fileNameString.substring(0, fileNameString.length() - 3);
 
-            try (FileReader fileReader = new FileReader(filename)) {
-                useList.add(0, new Use("fileNameString", -1,-1));
+        if (Main.isRho && !containsUse(fileNameString)) {
+            // create object of Path
+            // call getFileName() and get FileName path object
+            String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
+            String fileDirString = libpathDir+"/"+fileNameString+".ri";
+
+            try (FileReader fileReader = new FileReader(fileDirString)) {
+                useList.add(0, new Use(fileNameString, -1,-1));
             } catch (Error e) {
             } catch (Exception e) {
             }
         }
 
         // first pass to add all Interfaces and Definitions
+        HashMap<Id,Type> globTypes = new HashMap<>();
         for (Use u: useList){
-            Type useType = u.typeCheck(table,zhenFile);
+            Type useType = u.typeCheck(table,zhenFile, globTypes);
             if (useType.getType() != Type.TypeCheckingType.UNIT){
                 throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
             }

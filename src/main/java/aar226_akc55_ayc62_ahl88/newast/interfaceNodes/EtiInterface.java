@@ -53,27 +53,29 @@ public class EtiInterface extends AstNode {
     }
 
     public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res) {
-//        HashMap<Id,Type> res = new HashMap<>();
         HashSet<String> methodName= new HashSet<>();
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
         methodSymbols.enterScope();
 
         // TODO: for ri file, typecheck all uses and use modules
         // TODO: everything declared in the interface must be defined in the module.
-//        System.out.println(useList);
-//        for (Use u:useList) {
-//            Type useType = u.typeCheck(methodSymbols, zhenFileName);
-//            if (useType.getType() != Type.TypeCheckingType.UNIT) {
-//                throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
-//            }
-//
-//        }
+        for (Use u:useList) {
+            Type useType = u.typeCheck(methodSymbols, zhenFileName, res);
+            if (useType.getType() != Type.TypeCheckingType.UNIT) {
+                throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
+            }
+
+        }
 
         for (Method_Interface mI: methods_inter){
             Type curMethod = mI.typeCheck(res,methodSymbols);
             Id nameOfMethod = mI.getName();
             if (methodName.contains(nameOfMethod.toString())){
                 throw new SemanticError(mI.getLine(), mI.getColumn() ,"interface function already exists");
+            }
+            if (res.containsKey(nameOfMethod)) {
+                throw new SemanticError(mI.getLine(), mI.getColumn() ,
+                        "interface function already defined in different interface");
             }
             Type funcTypeInTable;
             if (mI.isRecord) {
@@ -85,7 +87,6 @@ public class EtiInterface extends AstNode {
                 ArrayList<Type> outTypes = mI.getOutputtypes();
                 funcTypeInTable = new Type(inTypes,outTypes);
             }
-
             methodSymbols.add(nameOfMethod,funcTypeInTable);
             res.put(nameOfMethod,funcTypeInTable);
             methodName.add(nameOfMethod.toString());

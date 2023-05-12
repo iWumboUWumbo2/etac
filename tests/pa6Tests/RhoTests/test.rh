@@ -6,5 +6,6 @@ record Node {
 
 foo() : int {
     println("hello world");
+    println(unparseInt(3));
     return 3
 }

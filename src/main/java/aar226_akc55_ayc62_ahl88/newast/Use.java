@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Use extends AstNode{
-    private final Id id;
+    public final Id id;
 
     public Use(Id id, int l, int c) {
         super(l,c);
@@ -39,7 +39,7 @@ public class Use extends AstNode{
         id.prettyPrint(p);
         p.endList();
     }
-    public Type typeCheck(SymbolTable<Type> table, String zhenFilename) {
+    public Type typeCheck(SymbolTable<Type> table, String zhenFilename, HashMap<Id,Type> firstPass) {
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
         boolean isRho = Main.isRho;
 
@@ -48,14 +48,13 @@ public class Use extends AstNode{
         try (FileReader fileReader = new FileReader(filename)) {
             lr_parser pi = isRho ? new RiParser(new RhoLex(fileReader)) : new EtiParser(new EtaLex(fileReader));
             EtiInterface eI = (EtiInterface) pi.parse().value;
-            HashMap<Id,Type> firstPass = eI.firstPass(zhenFilename, new HashMap<>()); // to do need to fail in interface
+            firstPass.putAll(eI.firstPass(zhenFilename, firstPass)); // TODO
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 if (table.contains(entry.getKey())) {
                     if (!((table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.FUNC &&
                             entry.getValue().getType() != Type.TypeCheckingType.FUNC) ||
                             (table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.RECORD &&
                             entry.getValue().getType() != Type.TypeCheckingType.RECORD))) {
-                        System.out.println(table.lookup(entry.getKey()).getType());
                         throw new SemanticError(getLine(), getColumn(), " Duplicate Name is not a function");
                     } else {
                         if (!entry.getValue().isSameFunc(table.lookup(entry.getKey()))) {

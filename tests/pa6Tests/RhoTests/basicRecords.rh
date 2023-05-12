@@ -16,7 +16,10 @@ main(args : int[][]) {
     x : int = 5;
     y : int = 6;
     k = 3;
+    k = Point(1,2).x
+    Point(1,2).x = k;
     kkk = Point(1, 2)
+
 
     a : Point = createPoint(3,5)
     b : Point = createPoint(x,y);
