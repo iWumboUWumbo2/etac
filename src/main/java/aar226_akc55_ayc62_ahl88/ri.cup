@@ -75,6 +75,17 @@ nonterminal EtiInterface topLevelInter;
 nonterminal Method_Interface            method_interface;
 nonterminal ArrayList<Method_Interface> interfaceStar;
 
+//Rho
+nonterminal Dimension              rhoEmptyDimension_star;
+nonterminal Type                   rhoEmptyBracketType;
+nonterminal ArrayList<Type>        rhoEmptyBracketType_plus;
+nonterminal AnnotatedTypeDecl      rhoEmptyBracketDecl;
+nonterminal ArrayList<AnnotatedTypeDecl>        rhoEmptyBracketDecl_plus;
+nonterminal ArrayList<Id>           identifier_plus;
+nonterminal ArrayList<AnnotatedTypeDecl>         rhoMultiDecl;
+nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
+nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
+nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
@@ -110,6 +121,67 @@ interfaceStar ::=
     | {:RESULT = new ArrayList<Method_Interface>();:}
 ;
 
+//Rho stuff-----------------------------------------
+rhoEmptyDimension_star ::=
+    rhoEmptyDimension_star:ds OPEN_BRACKET CLOSE_BRACKET {:
+        ds.increment();
+        ds.foundEmpty = true;
+        ds.indices.add(null);
+        RESULT = ds;:}
+    | {:RESULT = new Dimension(-1,-1); :}
+; // Maybe check future
+
+rhoEmptyBracketType ::=
+    INT  rhoEmptyDimension_star:d {:RESULT = new Type(true,d,dleft,dright); :}
+    | BOOL rhoEmptyDimension_star:d {:RESULT = new Type(false,d,dleft,dright); :}
+    | IDENTIFIER:i rhoEmptyDimension_star:d {: RESULT = new Type(i, d, ileft, iright); :}
+;
+
+rhoEmptyBracketDecl ::=
+    IDENTIFIER:i COLON rhoEmptyBracketType:t {: RESULT = new AnnotatedTypeDecl(new Id(i,ileft,iright),t,ileft,iright); :}
+;
+
+rhoEmptyBracketDecl_plus ::=
+    rhoEmptyBracketDecl_plus:ts COMMA rhoEmptyBracketDecl:d {: ts.add(d); RESULT = ts; :}
+    |rhoEmptyBracketDecl:d {:ArrayList<AnnotatedTypeDecl> temp = new ArrayList<AnnotatedTypeDecl>();
+      temp.add(d);
+      RESULT = temp;
+      :}
+;
+
+identifier_plus ::=
+    identifier_plus:ip COMMA IDENTIFIER:i {: ip.add(new Id(i, ileft, iright)); RESULT = ip; :}
+    | IDENTIFIER:i1 COMMA IDENTIFIER:i2 {:
+        ArrayList<Id> idList = new ArrayList<Id>();
+        idList.add(new Id(i1, i1left, i1right));
+        idList.add(new Id(i2, i2left, i2right));
+        RESULT = idList; :}
+;
+
+// x, y : int
+rhoMultiDecl ::=
+    identifier_plus:ip COLON rhoEmptyBracketType:e {:
+        ArrayList<AnnotatedTypeDecl> declList = new ArrayList<AnnotatedTypeDecl>();
+        for(int j = 0; j < ip.size(); j++) {
+            declList.add(new AnnotatedTypeDecl(ip.get(j), e, ipleft, ipright));
+        }
+        RESULT = declList; :}
+;
+
+// x, y : int
+// x : int, y : int
+fieldDecl ::=
+    rhoMultiDecl:m {: RESULT = m; :}
+    | rhoMultiDecl:m SEMICOLON {: RESULT = m; :}
+    | rhoEmptyBracketDecl_plus:e {: RESULT = e; :}
+    | rhoEmptyBracketDecl_plus:e SEMICOLON {: RESULT = e; :}
+;
+
+fieldDeclPlus ::=
+    fieldDeclPlus:ss fieldDecl:s {: ss.addAll(s); RESULT = ss; :}
+    |fieldDecl:s {: RESULT = s; :}
+;
+
 method_interface ::=
      IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts {:
      RESULT = new Method_Interface(i,ds,ts,ileft,iright);
@@ -117,8 +189,8 @@ method_interface ::=
      |IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {:
       RESULT = new Method_Interface(i,ds,new ArrayList<Type>(),ileft,iright);
       :}
-      | RECORD IDENTIFIER:i OPEN_BRACE CLOSE_BRACE {:
-       RESULT = new Method_Interface(i,new ArrayList<>(), ileft, iright);
+      | RECORD IDENTIFIER:i OPEN_BRACE fieldDeclPlus:s CLOSE_BRACE {:
+       RESULT = new Method_Interface(i,s, ileft, iright);
       :}
 ;
 definitionStar ::=
