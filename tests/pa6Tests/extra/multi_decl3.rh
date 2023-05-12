@@ -1,0 +1,14 @@
+use multi_intf
+use conv
+use io
+
+main(args: int[][]){
+    p1: Circle
+    p1, p2: Point = Circle(Point(1,2),1), Point(3,4)
+    if(p1.r == 1){
+        print("YES")
+    }
+    else{
+        print("NO")
+    }
+}

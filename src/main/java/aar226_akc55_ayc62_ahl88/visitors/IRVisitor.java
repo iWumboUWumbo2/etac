@@ -937,6 +937,17 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRStmt visit(MultiDeclAssignStmt node) {
+        if (node.getExpressions().size() == 0){ // x,y,z : type;
+            ArrayList<IRStmt> order =new ArrayList<>();
+            for (int i = 0; i< node.getDecls().size();i++){
+                IRExpr e =  new IRConst(0);
+                String tempName = node.getDecls().get(i).identifier.toString();
+//                System.out.println(tempName);
+                IRMove curMove = new IRMove(new IRTemp(tempName),e);
+                order.add(curMove);
+            }
+            return new IRSeq(order);
+        }
         List<IRExpr> right = node.getExpressions().stream().map(expr -> expr.accept(this)).toList();
         ArrayList<Expr> exprs = node.getExpressions();
         ArrayList<IRStmt> order =new ArrayList<>();

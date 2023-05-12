@@ -1,0 +1,3 @@
+record Point{
+    if(x < 1) {}
+}
