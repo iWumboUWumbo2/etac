@@ -27,13 +27,14 @@ main(args : int[][]) {
     println(unparseInt(b.y))        //4
     println(unparseInt(c.x[0].x))   //3
     println(unparseInt(c.x[0].y))   //4
-    println(unparseInt(c.x[1].x))   //3
-    println(unparseInt(c.x[1].y))   //4
+    println(unparseInt(c.x[1].x))   //5
+    println(unparseInt(c.x[1].y))   //6
 
-    //b.x = 9;
-    println(unparseInt(a.x))        // ?
+    b.x = 9;
+    println(unparseInt(a.x))        // 9
     println(unparseInt(b.x))        //9
-    println(unparseInt(c.x[1].x))   //9
+    println(unparseInt(c.x[1].x))   //5
+    println("");
 
     c.x[0] = d;
     println(unparseInt(c.x[0].x))   //7

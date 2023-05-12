@@ -18,7 +18,6 @@ main(args:int[][]) {
         temp_node_2 = temp_node_2.next;
     }
 
-
 }
 
 record Node {

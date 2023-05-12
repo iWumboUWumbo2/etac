@@ -756,158 +756,167 @@ public class IRVisitor implements Visitor<IRNode>{
         }else if (node.getDecl() instanceof UnderScore){
             return new IRExp(right);
         } else if (node.getDecl() instanceof RecordAccessDecl rad) {
-            String ti = nxtTemp();
-            ArrayList<IRStmt> irlist = new ArrayList<IRStmt>();
-            IRExpr prev = null;
-            for (int i = 0; i < rad.decls.size(); i++) {
+            return recordAccessDeclStmt(rad,right);
+        }
+        throw new InternalCompilerError("NOT A DECL?");
+    }
 
-                Decl d = rad.decls.get(i);
-                Type t = rad.types.get(i);
+    private IRStmt recordAccessDeclStmt(RecordAccessDecl rad, IRExpr right){
+        String ti = nxtTemp();
+        ArrayList<IRStmt> irlist = new ArrayList<>();
+        IRExpr prev = null;
+        for (int i = 0; i < rad.decls.size(); i++) {
 
-                if (d instanceof NoTypeDecl ntd) {
-                    if (ntd.isField) {
-                        assert (i > 0); // Can only be after first position
-                        Type prevType = rad.types.get(i-1);
-                        Type recordPrevType = allRecordTypes.get(prevType.recordName);
-                        Id field = ntd.identifier;
-                        int index = recordPrevType.recordFieldToIndex.get(field.toString());
-                        IRESeq accessField = new IRESeq(
-                                new IRMove(new IRTemp(ti), new IRConst(index)),
-                                new IRMem(
-                                        new IRBinOp(IRBinOp.OpType.ADD,
+            Decl d = rad.decls.get(i);
+            Type t = rad.types.get(i);
+
+            if (d instanceof NoTypeDecl ntd) {
+                if (ntd.isField) {
+                    if (i == 0 ){
+                        throw new InternalCompilerError("cant be field here");
+                    } // Can only be after first position
+                    Type prevType = rad.types.get(i-1);
+                    Type recordPrevType = allRecordTypes.get(prevType.recordName);
+                    Id field = ntd.identifier;
+                    int index = recordPrevType.recordFieldToIndex.get(field.toString());
+                    IRESeq accessField = new IRESeq(
+                            new IRMove(new IRTemp(ti), new IRConst(index)),
+                            new IRMem(
+                                    new IRBinOp(IRBinOp.OpType.ADD,
 //                                                new IRTemp(ta),
-                                                prev,
-                                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
-                                )
-                        );
-                        prev = accessField;
+                                            prev,
+                                            new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
+                            )
+                    );
+                    prev = accessField;
 //                        IRStmt move = new IRMove(new IRTemp(ta), accessField);
 //                        irlist.add(move);
-                    } else {
-                        // can be record, or function -> record
-                        // Can only be first position of decl
-                        assert (i == 0);
-                        if (ntd.args != null && ntd.args.size() > 0) {
-                            if (rad.types.get(i).getType() == Type.TypeCheckingType.RECORD) {
-                                //Record constructor call
-                                String temp = nxtTemp();   // temp label for malloc
-                                ArrayList<Expr> values = ntd.args;
-                                long n = values.size();
+                } else {
+//                    System.out.println("can be record");
+                    // can be record, or function -> record
+                    // Can only be first position of decl
+                    if (i != 0){
+                        throw new InternalCompilerError("cant be field here");
+                    }
+                    assert (i == 0);
+                    if (ntd.args != null && ntd.args.size() > 0) {
+                        if (rad.types.get(i).getType() == Type.TypeCheckingType.RECORD) {
+                            //Record constructor call
+                            String temp = nxtTemp();   // temp label for malloc
+                            ArrayList<Expr> values = ntd.args;
+                            long n = values.size();
 
-                                // 8*n+8
-                                IRBinOp size = new IRBinOp(IRBinOp.OpType.ADD,
-                                        new IRBinOp(IRBinOp.OpType.MUL,
-                                                new IRConst(n),
-                                                new IRConst(WORD_BYTES)),
-                                        new IRConst(WORD_BYTES));
+                            // 8*n+8
+                            IRBinOp size = new IRBinOp(IRBinOp.OpType.ADD,
+                                    new IRBinOp(IRBinOp.OpType.MUL,
+                                            new IRConst(n),
+                                            new IRConst(WORD_BYTES)),
+                                    new IRConst(WORD_BYTES));
 
-                                // CALL(NAME(malloc), size)
-                                IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"),1L, size);
+                            // CALL(NAME(malloc), size)
+                            IRCallStmt alloc_call = new IRCallStmt(new IRName("_eta_alloc"),1L, size);
 
-                                // reg[t] <- call malloc
-                                IRMove malloc_move = new IRMove(new IRTemp(temp), new IRTemp("_RV1"));
+                            // reg[t] <- call malloc
+                            IRMove malloc_move = new IRMove(new IRTemp(temp), new IRTemp("_RV1"));
 
-                                IRMove size_move = new IRMove(new IRMem(new IRTemp(temp)), new IRConst(n));
+                            IRMove size_move = new IRMove(new IRMem(new IRTemp(temp)), new IRConst(n));
 
-                                List<IRStmt> seq_list = new ArrayList<>(List.of(alloc_call, malloc_move, size_move));
+                            List<IRStmt> seq_list = new ArrayList<>(List.of(alloc_call, malloc_move, size_move));
 
-                                for(int j = 0; j < n; j++) {
-                                    IRExpr ire = values.get(j).accept(this);
-                                    IRMove move_elmnt = new IRMove(new IRMem(new IRBinOp(
-                                            IRBinOp.OpType.ADD,
-                                            new IRTemp(temp),
-                                            new IRConst(8L*(j+1)))),
-                                            ire );
-                                    seq_list.add(move_elmnt);
-                                }
+                            for(int j = 0; j < n; j++) {
+                                IRExpr ire = values.get(j).accept(this);
+                                IRMove move_elmnt = new IRMove(new IRMem(new IRBinOp(
+                                        IRBinOp.OpType.ADD,
+                                        new IRTemp(temp),
+                                        new IRConst(8L*(j+1)))),
+                                        ire );
+                                seq_list.add(move_elmnt);
+                            }
 
-                                IRSeq ir_seq = new IRSeq(seq_list);
+                            IRSeq ir_seq = new IRSeq(seq_list);
 //                                IRMove move = new IRMove(new IRTemp(ta),
 //                                        new IRESeq(ir_seq,
 //                                                new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(temp), new IRConst(WORD_BYTES))
 //                                        )
 //                                );
-                                prev = new IRESeq(ir_seq,
-                                        new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(temp), new IRConst(WORD_BYTES))
-                                );
+                            prev = new IRESeq(ir_seq,
+                                    new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(temp), new IRConst(WORD_BYTES))
+                            );
 //                                irlist.add(move);
-                            } else {
-                                //Regular function call
-                                String funcName = genABIFunc(ntd.getFunctionSig(),ntd.getIdentifier());
-                                ArrayList<IRExpr> argsList = new ArrayList<>();
-                                for (Expr param: ntd.args){
-                                    argsList.add(param.accept(this));
-                                }
-                                IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
-//                                irlist.add(new IRMove(new IRTemp(ta), new IRESeq(funcCall, new IRTemp("_RV1"))));
-                                prev = new IRESeq(funcCall, new IRTemp("_RV1"));
-                            }
                         } else {
-                            // Regular record
-                            IRExpr recordName = new IRTemp(ntd.identifier.toString());
-                            prev = recordName;
+                            //Regular function call
+                            String funcName = genABIFunc(ntd.getFunctionSig(),ntd.getIdentifier());
+                            ArrayList<IRExpr> argsList = new ArrayList<>();
+                            for (Expr param: ntd.args){
+                                argsList.add(param.accept(this));
+                            }
+                            IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
+//                                irlist.add(new IRMove(new IRTemp(ta), new IRESeq(funcCall, new IRTemp("_RV1"))));
+                            prev = new IRESeq(funcCall, new IRTemp("_RV1"));
+                        }
+                    } else {
+//                        System.out.println("regular record");
+                        // Regular record
+                        IRExpr recordName = new IRTemp(ntd.identifier.toString());
+                        prev = recordName;
 //                            IRMem mem = new IRMem(recordName);
 
 //                            IRStmt move = new IRMove(new IRTemp(ta), recordName);
 //                            irlist.add(move);
-                        }
-                    }
-                } else if (d instanceof ArrAccessDecl aad) {
-                    // Id is a field name in this context
-                    //assume it is in temp ta
-                    if (i == 0) {
-                        //id is either function -> record[] or record[]
-                        assert(aad.getIndices().size() >= 1);
-                        if (aad.getFuncParams() == null){ // a[e1][e2]
-                            IRExpr arrIdIR = aad.getIdentifier().accept(this);
-                            IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
-                            prev = memComponent;
-//                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
-                        }else{ // g1(e1,e2)[4][5]
-                            String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
-                            ArrayList<IRExpr> argsList = new ArrayList<>();
-                            for (Expr param: aad.getFuncParams()){
-                                argsList.add(param.accept(this));
-                            }
-                            IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
-                            IRESeq sideEffects = new IRESeq(funcCall, new IRTemp("_RV1"));
-                            IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
-                            prev = memComponent;
-//                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
-                        }
-                    } else {
-                        Type prevType = rad.types.get(i-1);
-                        Type recordPrevType = allRecordTypes.get(prevType.recordName);
-                        Id field = aad.identifier;
-                        int index = recordPrevType.recordFieldToIndex.get(field.toString());
-                        IRESeq accessField = new IRESeq(
-                                new IRMove(new IRTemp(ti), new IRConst(index)),
-                                new IRMem(
-                                        new IRBinOp(IRBinOp.OpType.ADD,
-//                                                new IRTemp(ta),
-                                                prev,
-                                                new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
-                                )
-                        );
-
-                        prev = accessField;
-//                        IRStmt move1 = new IRMove(new IRTemp(ta), accessField);
-                        //Acess index
-//                        IRExpr arrIdIR = new IRMem(new IRTemp(ta));
-                        IRExpr arrIdIR = new IRMem(prev);
-                        prev = arrIdIR;
-                        IRExpr memComponent = accessRecur(0,aad.getIndices(), prev);
-                        prev = memComponent;
-//                        irlist.add(new IRMove(new IRTemp(ta), memComponent));
                     }
                 }
-            }
-            irlist.add(new IRMove(prev, right));
-            return new IRSeq(irlist);
-        }
-        throw new InternalCompilerError("NOT A DECL?");
-    }
+            } else if (d instanceof ArrAccessDecl aad) {
+                // Id is a field name in this context
+                //assume it is in temp ta
+                if (i == 0) {
+                    //id is either function -> record[] or record[]
+                    assert(aad.getIndices().size() >= 1);
+                    if (aad.getFuncParams() == null){ // a[e1][e2]
+                        IRExpr arrIdIR = aad.getIdentifier().accept(this);
+                        IRExpr memComponent = accessRecur(0,aad.getIndices(), arrIdIR);
+                        prev = memComponent;
+//                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
+                    }else{ // g1(e1,e2)[4][5]
+                        String funcName = genABIFunc(aad.getFunctionSig(),aad.getIdentifier());
+                        ArrayList<IRExpr> argsList = new ArrayList<>();
+                        for (Expr param: aad.getFuncParams()){
+                            argsList.add(param.accept(this));
+                        }
+                        IRCallStmt funcCall = new IRCallStmt(new IRName(funcName),1L,argsList);
+                        IRESeq sideEffects = new IRESeq(funcCall, new IRTemp("_RV1"));
+                        IRExpr memComponent = accessRecur(0,aad.getIndices(), sideEffects);
+                        prev = memComponent;
+//                            irlist.add(new IRMove(new IRTemp(ta), memComponent));
+                    }
+                } else {
+                    Type prevType = rad.types.get(i-1);
+                    Type recordPrevType = allRecordTypes.get(prevType.recordName);
+                    Id field = aad.identifier;
+                    int index = recordPrevType.recordFieldToIndex.get(field.toString());
+                    IRESeq accessField = new IRESeq(
+                            new IRMove(new IRTemp(ti), new IRConst(index)),
+                            new IRMem(
+                                    new IRBinOp(IRBinOp.OpType.ADD,
+                                            prev,
+                                            new IRBinOp(IRBinOp.OpType.MUL,new IRTemp(ti),new IRConst(8)))
+                            )
+                    );
 
+                    prev = accessField;
+//                        IRStmt move1 = new IRMove(new IRTemp(ta), accessField);
+                    //Acess index
+//                        IRExpr arrIdIR = new IRMem(new IRTemp(ta));
+//                    IRExpr arrIdIR = new IRMem(prev);
+//                    prev = arrIdIR;
+                    IRExpr memComponent = accessRecur(0,aad.getIndices(), prev);
+                    prev = memComponent;
+//                        irlist.add(new IRMove(new IRTemp(ta), memComponent));
+                }
+            }
+        }
+        irlist.add(new IRMove(prev, right));
+        return new IRSeq(irlist);
+    }
     @Override
     public IRStmt visit(DeclNoAssignStmt node) {
         if (!(node.getDecl() instanceof AnnotatedTypeDecl atd)){
