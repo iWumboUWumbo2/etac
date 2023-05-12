@@ -7,11 +7,14 @@ main(args:int[][]){
     c:int = 1;
     b:int[20];
     while (c < length(b)){
-        x:int = a;
-        y:int = x;
+        x:int,y:int = foo();
         g:int = x + y;
         c = c + c + g;
     }
     a = c - a;
     c = 0;
+}
+
+foo():int,int{
+    return 4,5;
 }

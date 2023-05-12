@@ -4,6 +4,7 @@ import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.FlattenIrVisitor;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.*;
@@ -23,8 +24,8 @@ public class LoopOpts {
 
         public HashSet<IRTemp> loopInvariantDefs;
         public HashMap<IRTemp,CFGNode<IRStmt>> defToNode;
-
         public ArrayList<CFGNode<IRStmt>> allNodes;
+        public ArrayList<CFGNode<IRStmt>> potentialLoopInvariantInstrs;
         public LoopWrapper(BasicBlockCFG head, ArrayList<BasicBlockCFG> body){
             preheader = new BasicBlockCFG();
             header = head;
@@ -91,14 +92,15 @@ public class LoopOpts {
         backEdges = new ArrayList<>();
         all_loops = new ArrayList<>();
         headerToLoop = new HashMap<>();
-        lva = new LiveVariableAnalysisBlocks(g);
-        lva.workList();
         findBackEdges();
         findLoops();
         mergeLoops();
         findExitNodes();
         findStores();
         allTempsDefined();
+        insertPreHeaderNoSSA();
+        lva = new LiveVariableAnalysisBlocks(g);
+        lva.workList();
 //        all_loops.forEach(e -> System.out.println("exits: " + e.exitBlocks));
     }
     private void findBackEdges(){
@@ -217,7 +219,7 @@ public class LoopOpts {
         //All reaching definitions of var are outside the loop.
         boolean allReachDefOutside = true;
         for (IRTemp use : uses){
-            Set<CFGNode<IRStmt>> nodesToCheck = reach.singleNodeOutMapping.get(inst);
+            Set<CFGNode<IRStmt>> nodesToCheck = new HashSet<>(reach.singleNodeOutMapping.get(inst));
             // only check nodes that define this use
             nodesToCheck.removeIf(n -> !LiveVariableAnalysis.def(n.getStmt()).contains(use));
 
@@ -234,11 +236,11 @@ public class LoopOpts {
 
         // now we know at least one def inside of loop
         for (IRTemp use : uses){
-            Set<CFGNode<IRStmt>> nodesToCheck = reach.singleNodeOutMapping.get(inst);
+            Set<CFGNode<IRStmt>> nodesToCheck = new HashSet<>(reach.singleNodeOutMapping.get(inst));
             // only check nodes that define this use
             nodesToCheck.removeIf(n -> !LiveVariableAnalysis.def(n.getStmt()).contains(use));
             // more than one reaching def
-            if(nodesToCheck.size() != 1){
+            if(nodesToCheck.size() > 1){
                 return false;
             }
             CFGNode<IRStmt> reachedDef = nodesToCheck.iterator().next();
@@ -271,7 +273,6 @@ public class LoopOpts {
                 }
             }
         }
-
         HashSet<CFGNode<IRStmt>> set = new HashSet<>(loop.allNodes);
         ArrayDeque<CFGNode<IRStmt>> queue = new ArrayDeque<>(loop.allNodes);
         HashSet<IRTemp> invariantTemps = new HashSet<>();
@@ -295,14 +296,48 @@ public class LoopOpts {
         return res;
     }
 
-    public ArrayList<CFGNode<IRStmt>> loopToPotentialInvar(){
-        ArrayList<CFGNode<IRStmt>> res =new ArrayList<>();
+    public void hoistPotentialNodes(){
         for (LoopWrapper loop : all_loops){
-            res.addAll(potentialInvariantNodes(loop));
+            loop.potentialLoopInvariantInstrs = potentialInvariantNodes(loop);
         }
-        return res;
+        for (LoopWrapper loop : all_loops){
+            HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTemps =  new HashMap<>(loop.definedTempsInLoop);
+            ArrayList<CFGNode<IRStmt>> validLI = new ArrayList<>();
+//            System.out.println(loop.potentialLoopInvariantInstrs);
+            for (CFGNode<IRStmt> potentialLI : loop.potentialLoopInvariantInstrs){
+                boolean failed = false;
+                Set<IRTemp> defs = LiveVariableAnalysis.def(potentialLI.getStmt());
+                for (IRTemp def : defs){
+                    if (definedTemps.get(def).size() > 1){
+                        failed = true;
+                    }
+                    if (lva.getOutMapping().get(loop.preheader).contains(def)){
+                        failed = true;
+                    }
+                }
+                BasicBlockCFG blockThatHoldsLI = null;
+                for (BasicBlockCFG block : loop.getAllBlocksInLoop()){
+                    if (block.getBody().contains(potentialLI)){
+                        blockThatHoldsLI = block;
+                        break;
+                    }
+                }
+                if (blockThatHoldsLI == null){
+                    throw new InternalCompilerError("loop invar without block in loop");
+                }
+                for (BasicBlockCFG exitBlocks : loop.exitBlocks){
+                    if (!dom.getOutMapping().get(exitBlocks).contains(blockThatHoldsLI)){
+//                        System.out.println("exit block not dominated: " + potentialLI);
+                        failed = true;
+                    }
+                }
+                if (!failed){
+                    validLI.add(potentialLI);
+                }
+            }
+//            System.out.println("valid loop invars: " + validLI);
+        }
     }
-
     public void insertPreHeaderNoSSA(){
 //        System.out.println("inserting preheaders");
         for (LoopWrapper loop : all_loops){

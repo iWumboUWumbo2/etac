@@ -4,7 +4,7 @@ etac ("Test --help") "--help" {
 
 }
 
-etac ("Test --irgen --licm") "-libpath $(testpath) --irgen -Olicm -Ocf" {
+etac ("Test --irgen --licm --cf") "-libpath $(testpath) --irgen -Olicm -Ocf" {
 
      swap.eta;
      arr_multdim_chain.eta;

@@ -5,9 +5,11 @@ import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
+import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCallStmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRMove;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
+import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.HashMap;
@@ -85,8 +87,6 @@ public class ReachingDefinitionsBlock extends ForwardBlockDataflow<Set<CFGNode<I
         return new Pair<>(genpn,killpn);
 
     }
-
-
     private static Set<CFGNode<IRStmt>> killReach(CFGNode<IRStmt> node,
                                            HashMap<IRTemp,HashSet<CFGNode<IRStmt>>> tempToAllDefs){
         if (node.getStmt() instanceof IRMove mov && mov.target()
@@ -95,7 +95,15 @@ public class ReachingDefinitionsBlock extends ForwardBlockDataflow<Set<CFGNode<I
             Set<CFGNode<IRStmt>> allDefSites = new HashSet<>(tempToAllDefs.get(t));
             allDefSites.remove(node);
             return allDefSites;
-        }else{
+        }else if (node.getStmt() instanceof IRCallStmt call){
+            Set<CFGNode<IRStmt>> allDefSites = new HashSet<>();
+            for (int i = 1; i<= call.n_returns();i++){
+                IRTemp ret = new IRTemp("_RV" + i);
+                allDefSites.addAll(tempToAllDefs.get(ret));
+            }
+            allDefSites.remove(node);
+            return allDefSites;
+        } else{
             return new HashSet<>();
         }
     }
@@ -106,7 +114,15 @@ public class ReachingDefinitionsBlock extends ForwardBlockDataflow<Set<CFGNode<I
             Set<CFGNode<IRStmt>> empty = new HashSet<>();
             empty.add(node);
             return empty;
-        }else{
+        }else if (node.getStmt() instanceof IRCallStmt call){
+            if (call.n_returns() > 0) {
+                Set<CFGNode<IRStmt>> empty = new HashSet<>();
+                empty.add(node);
+                return empty;
+            }else{
+                return new HashSet<>();
+            }
+        } else{
             return new HashSet<>();
         }
     }
@@ -122,5 +138,19 @@ public class ReachingDefinitionsBlock extends ForwardBlockDataflow<Set<CFGNode<I
                 singleNodeOutMapping.put(node,new HashSet<>(inBlock));
             }
         }
+    }
+
+
+    public static boolean canWeRunReaching(CFGGraphBasicBlock graph){
+        for (BasicBlockCFG block : graph.getNodes()){
+            for (CFGNode<IRStmt> stmt: block.getBody()){
+                if (stmt.getStmt() instanceof IRCallStmt call){
+                    if (call.n_returns() >= 2){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
