@@ -33,6 +33,12 @@ public enum OptimizationType {
             return "copy";
         }
     },
+    LICM {
+        @Override
+        public String toString() {
+            return "licm";
+        }
+    },
 
     REGALLOC {
         @Override

@@ -1,0 +1,23 @@
+// See if they treat global updates properly in presence of dead code
+// elimination
+use io
+use conv
+
+x:int
+
+f() {
+  y:int // = 0
+  while (y < 100000000) {
+    x = x + 1
+    y = y + 1
+  }
+}
+
+main(args: int[][]) {
+  f()
+  if ( x == 100000000){
+    println("true");
+  }else{
+    println("false");
+  }
+}

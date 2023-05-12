@@ -1,0 +1,32 @@
+use io
+use conv;
+
+main(args:int[][]){
+
+    y:int = foo();
+
+    println(unparseInt(y));
+}
+
+
+foo():int{
+    x:int = 4;
+    y:int = 5;
+    c:int = 1234
+    a:int,b:int = 1,490123120;
+    res:int = 0;
+
+    s:int = 1;
+    w:int = 2;
+    while (a + x + res < b+ y + c){
+        res = res +  1;
+        a = a + 1
+        c = c + 1
+        swap:int = s;
+        s = w ;
+        w = swap;
+    }
+
+    return y + x + a + b  + res + c + s + w;
+
+}

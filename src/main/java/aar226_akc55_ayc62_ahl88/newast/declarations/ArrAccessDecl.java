@@ -139,7 +139,7 @@ public class ArrAccessDecl extends Decl{
             Dimension newDim = new Dimension(d.getDim() - indices.size(), d.getLine(), d.getColumn());
 
             if (funcOutType.isRecordArray() || funcOutType.isBoolArray() || funcOutType.isIntArray()) {
-                nodeType = correctType(identifierType, newDim, table);
+                nodeType = correctType(funcOutType, newDim, table);
             } else {
                 throw new SemanticError(getLine(), getColumn(), "somehow not an array");
             }

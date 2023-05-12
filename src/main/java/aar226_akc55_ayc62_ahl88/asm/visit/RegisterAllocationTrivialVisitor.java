@@ -17,6 +17,10 @@ import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.*;
 
+
+/**
+ * Class to Do Trivial Register Allocation where we put everything on the stack
+ */
 public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<ASMInstruction>>{
 
 
@@ -572,7 +576,11 @@ public class RegisterAllocationTrivialVisitor implements ASMVisitor<ArrayList<AS
      */
     public static ASMExpr tempsToRegs(ASMExpr expr, HashMap<String,String> tempMapping){
         if (expr instanceof ASMTempExpr temp){ // base case
-            return new ASMRegisterExpr(tempMapping.get(temp.getName()));
+            if (tempMapping.containsKey(temp.getName())){
+                return new ASMRegisterExpr(tempMapping.get(temp.getName()));
+            }
+//            System.out.println("expr not in mapping: " + expr);
+            return temp;
         }else if (expr instanceof ASMMemExpr mem){
             return new ASMMemExpr(tempsToRegs(mem.getMem(),tempMapping));
         }else if (expr instanceof ASMBinOpMultExpr binopMult){

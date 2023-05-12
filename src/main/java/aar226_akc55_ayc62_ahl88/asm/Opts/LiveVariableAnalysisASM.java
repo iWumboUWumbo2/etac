@@ -28,10 +28,11 @@ import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisito
 public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbstractReg>> {
 
     static ArrayList<String> calleSaved = new ArrayList<>(List.of("rbp", "rsp", "rbx", "r12", "r13", "r14", "r15"));
-    public LiveVariableAnalysisASM(CFGGraphBasicBlockASM g) {
+
+    public LiveVariableAnalysisASM(CFGGraphBasicBlockASM g,boolean mainCalled) {
         super(g,
                 (n,outN) ->{
-                    Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> res = blockFunc(n);
+                    Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> res = blockFunc(n,mainCalled);
                     Set<ASMAbstractReg> useSet = res.part1();
                     Set<ASMAbstractReg> defSet = res.part2();
 
@@ -57,8 +58,11 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
      */
 
     // for backwards its gen[ns] = gen[n] U (gen[s] - kill[n]) kill[ns]  = kill[s] U kill[n]
-    public static Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> blockFunc(BasicBlockASMCFG block){
-        Set<ASMAbstractReg> genns = usesInASMFunc(block.getBody().get(block.getBody().size()-1).getStmt(),block.function);
+    public static Pair<Set<ASMAbstractReg>,Set<ASMAbstractReg>> blockFunc(BasicBlockASMCFG block,boolean mainCalledInIR){
+        if (block.getBody().size() == 0){
+            return new Pair<>(new HashSet<>(),new HashSet<>());
+        }
+        Set<ASMAbstractReg> genns = usesInASMFunc(block.getBody().get(block.getBody().size()-1).getStmt(),block.function,mainCalledInIR);
         Set<ASMAbstractReg> killns = defsInASM(block.getBody().get(block.getBody().size()-1).getStmt());
         for (int i = block.getBody().size()-2;i>=0;i--){
             CFGNode<ASMInstruction> n = block.getBody().get(i);
@@ -66,8 +70,7 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
             genns.addAll(usesInASM(n.getStmt()));
             killns.addAll(defsInASM(n.getStmt()));
         }
-//        && !block.function.equals("_Imain_paai")
-        if (block.start ){
+        if (block.start && (!block.function.equals("_Imain_paai") || mainCalledInIR)){
             for (String reg : calleSaved){
                 genns.add(new ASMRegisterExpr(reg));
             }
@@ -374,7 +377,7 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
         usedSet.removeIf(e-> e instanceof ASMNameExpr);
         return usedSet;
     }
-    public static Set<ASMAbstractReg> usesInASMFunc(ASMInstruction instr,String funcName) {
+    public static Set<ASMAbstractReg> usesInASMFunc(ASMInstruction instr,String funcName,boolean mainCalled) {
         HashSet<ASMAbstractReg> usedSet = new HashSet<>();
         switch(instr.getOpCode()){
             // RDX:RAX:= sign-extend of RAX.
@@ -525,11 +528,11 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                 }else if (ret.rets == 1){
                     usedSet.add(new ASMRegisterExpr("rax"));
                 }
-//                if (!funcName.equals("_Imain_paai")) {
+                if (!funcName.equals("_Imain_paai") || mainCalled) {
                     for (String reg : calleSaved) {
                         usedSet.add(new ASMRegisterExpr(reg));
                     }
-//                }
+                }
 
             }
             case LABEL, COMMENT -> {

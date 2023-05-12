@@ -323,4 +323,21 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
     public IRNode visit(IRPhi node) {
         return node;
     }
+
+
+    public static boolean isMainCalled(IRCompUnit comp){
+
+        for (String name : comp.functions().keySet()){
+            IRFuncDecl func = comp.getFunction(name);
+            IRSeq body = (IRSeq) func.body();
+            for (IRStmt stmt : body.stmts()){
+                if (stmt instanceof IRCallStmt call){
+                    if (call.target() instanceof IRName calledFunc && calledFunc.name().equals("_Imain_paai")){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
