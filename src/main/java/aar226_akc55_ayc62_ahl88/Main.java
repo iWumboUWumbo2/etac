@@ -59,7 +59,6 @@ public class Main {
     public static boolean isLibpathDirSpecified;
 
     public static Optimizations opts;
-
     private static Target target;
 
     // Write the lexed string into the corresponding file name
@@ -333,37 +332,11 @@ public class Main {
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     IRs.put("initial", ir);
-                    if (opts.isSet(OptimizationType.LICM)) {
-                        HashMap<String, IRFuncDecl> cfgIRLoop = new HashMap<>();
-                        for (String funcName : ((IRCompUnit) ir).functions().keySet()) {
-                            IRFuncDecl func = ((IRCompUnit) ir).functions().get(funcName);
-                            CFGGraphBasicBlock graph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
-                            IRFuncDecl newFunc;
-                            if (canWeRunReaching(graph)) {
-                                LoopOpts loopOpts = new LoopOpts(graph, funcName);
-
-                                LiveVariableAnalysisBlocks lva = loopOpts.lva;
-                                HashMap<BasicBlockCFG, String> inMap = new HashMap<>();
-                                lva.getInMapping().forEach((k,v) -> inMap.put(k,v.toString()));
-                                HashMap<BasicBlockCFG, String> outMap = new HashMap<>();
-                                lva.getOutMapping().forEach((k,v) -> outMap.put(k,v.toString()));
-                                writeOutputDot(filename, funcName, "preLoop", graph.CFGtoDOT(inMap,outMap));
-                                loopOpts.hoistPotentialNodes();
-                                newFunc = new IRFuncDecl(func.name(), new IRSeq(graph.getBackIR()));
-                                newFunc.functionSig = func.functionSig;
-                            }else{
-                                newFunc = func;
-                            }
-                            cfgIRLoop.put(funcName, newFunc);
-                        }
-                        ir = new IRCompUnit(((IRCompUnit) ir).name(), cfgIRLoop, new ArrayList<>(), ((IRCompUnit) ir).dataMap());
-                    }
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
                         IRs.put("inline",ir);
                     }
-
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postCopy", ir);
@@ -424,9 +397,9 @@ public class Main {
                     }
 
                     ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-//                    if (opts.isSet(OptimizationType.LICM)){
-//                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
-//                    }
+                    if (opts.isSet(OptimizationType.LICM)){
+                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
+                    }
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postCopy", ir);

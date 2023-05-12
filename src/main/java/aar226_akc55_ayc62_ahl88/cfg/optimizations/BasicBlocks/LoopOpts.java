@@ -9,6 +9,9 @@ import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.*;
 
+/**
+ * Loop Optimization Class Does LICM at the Moment
+ */
 public class LoopOpts {
 
     private static class LoopWrapper{
@@ -95,13 +98,11 @@ public class LoopOpts {
         findBackEdges();
         findLoops();
         mergeLoops();
+        insertPreHeaderNoSSA();
+        reorderAllLoops();
         findExitNodes();
         findStores();
         allTempsDefined();
-        insertPreHeaderNoSSA();
-        lva = new LiveVariableAnalysisBlocks(g);
-        lva.workList();
-//        all_loops.forEach(e -> System.out.println("exits: " + e.exitBlocks));
     }
     private void findBackEdges(){
         for (BasicBlockCFG node : graph.getNodes()){
@@ -113,12 +114,18 @@ public class LoopOpts {
         }
     }
 
-    private void find_pred(BasicBlockCFG node, ArrayList<BasicBlockCFG> loop, HashSet<BasicBlockCFG> visit){
+    private void find_pred(BasicBlockCFG node,
+                           ArrayList<BasicBlockCFG> loop,
+                           HashSet<BasicBlockCFG> visit,
+                           BasicBlockCFG head){
+        if (node == head){
+            return;
+        }
         loop.add(node);
         for (BasicBlockCFG pred : node.getPredecessors()){
             if (!visit.contains(pred)){
                 visit.add(pred);
-                find_pred(pred,loop,visit);
+                find_pred(pred,loop,visit,head);
             }
         }
     }
@@ -129,7 +136,7 @@ public class LoopOpts {
             ArrayList<BasicBlockCFG> nat_loop = new ArrayList<>();
             HashSet<BasicBlockCFG> visit = new HashSet<>();
             visit.add(b);
-            find_pred(a,nat_loop,visit);
+            find_pred(a,nat_loop,visit,b);
             all_loops.add(new LoopWrapper(b, nat_loop));
         }
     }
@@ -147,6 +154,68 @@ public class LoopOpts {
         all_loops.addAll(headerToLoop.values());
     }
 
+
+    private boolean isSubset(LoopWrapper loop1, LoopWrapper loop2){
+        ArrayList<BasicBlockCFG> loop1Blocks = loop1.getAllBlocksInLoop();
+
+        ArrayList<BasicBlockCFG> loop2Blocks = loop2.getAllBlocksInLoop();
+
+        for (BasicBlockCFG block : loop1Blocks){
+            if (!loop2Blocks.contains(block)){
+                return false;
+            }
+        }
+        return true;
+    }
+    private void reorderAllLoops(){
+        HashMap<LoopWrapper,HashSet<LoopWrapper>> parentToChildLoops = new HashMap<>();
+        for (int i =0; i< all_loops.size();i++){
+            parentToChildLoops.put(all_loops.get(i),new HashSet<>());
+            LoopWrapper parent = all_loops.get(i);
+            for (int j = 0; j< all_loops.size();j++){
+                LoopWrapper child = all_loops.get(j);
+                if (i != j){
+                    if (isSubset(child,parent)){ // j is subset of i
+                        parentToChildLoops.get(parent).add(child);
+                    }
+                }
+            }
+        }
+        for (LoopWrapper parent : parentToChildLoops.keySet()){
+            for (LoopWrapper child : parentToChildLoops.get(parent)){
+                int indexOfChild = parent.loopBody.indexOf(child.header);
+                parent.loopBody.add(indexOfChild,child.preheader);
+            }
+        }
+        ArrayList<LoopWrapper> reordered = new ArrayList<>();
+        ArrayDeque<LoopWrapper> queue = new ArrayDeque<>();
+        HashSet<LoopWrapper> visited = new HashSet<>();
+        for (LoopWrapper parent : parentToChildLoops.keySet()){
+            if (parentToChildLoops.get(parent).size() == 0){
+                queue.add(parent);
+                visited.add(parent);
+            }
+        }
+
+        while (!queue.isEmpty()){
+            LoopWrapper top = queue.poll();
+            reordered.add(top);
+            for (LoopWrapper parent : parentToChildLoops.keySet()){
+                parentToChildLoops.get(parent).remove(top);
+                if (!visited.contains(parent) &&  parentToChildLoops.get(parent).size() == 0){
+                    visited.add(parent);
+                    queue.add(parent);
+                }
+            }
+        }
+        if (reordered.size() != all_loops.size()){
+            throw new InternalCompilerError("loops missing");
+        }
+        all_loops = reordered;
+
+
+
+    }
     private void findExitNodes(){
         for (LoopWrapper loop : all_loops){
             HashSet<BasicBlockCFG> nodesInGraph = new HashSet<>(loop.getAllBlocksInLoop());
@@ -198,7 +267,15 @@ public class LoopOpts {
     private boolean nodeContainedInLoop(LoopWrapper loop, CFGNode<IRStmt> inst){
         return loop.allNodes.contains(inst);
     }
-    private boolean isInvariant(CFGNode<IRStmt> inst, LoopWrapper loop, HashSet<IRTemp> defsAlreadyInvar){
+
+    /**
+     * Checks if Instruction is Invariant
+     * @param inst
+     * @param loop
+     * @param instrsAlreadyInvar
+     * @return
+     */
+    private boolean isInvariant(CFGNode<IRStmt> inst, LoopWrapper loop, HashSet<CFGNode<IRStmt>> instrsAlreadyInvar){
         if (!(inst.getStmt() instanceof IRMove)){
             return false;
         }
@@ -230,28 +307,58 @@ public class LoopOpts {
                 }
             }
         }
-        if (allReachDefOutside){
-            return true;
-        }
-
+        if (!allReachDefOutside){
         // now we know at least one def inside of loop
-        for (IRTemp use : uses){
-            Set<CFGNode<IRStmt>> nodesToCheck = new HashSet<>(reach.singleNodeOutMapping.get(inst));
-            // only check nodes that define this use
-            nodesToCheck.removeIf(n -> !LiveVariableAnalysis.def(n.getStmt()).contains(use));
-            // more than one reaching def
-            if(nodesToCheck.size() > 1){
+            for (IRTemp use : uses){
+                Set<CFGNode<IRStmt>> nodesToCheck = new HashSet<>(reach.singleNodeOutMapping.get(inst));
+                // only check nodes that define this use
+                nodesToCheck.removeIf(n -> !LiveVariableAnalysis.def(n.getStmt()).contains(use));
+                // more than one reaching def
+                if(nodesToCheck.size() > 1){
+                    return false;
+                }
+                CFGNode<IRStmt> reachedDef = nodesToCheck.iterator().next();
+                if (nodeContainedInLoop(loop,reachedDef) && // loop contains reaching def
+                        (!instrsAlreadyInvar.contains(reachedDef))){ // loop has more than one def of this var
+                    return false;
+                }
+            }
+        }
+        HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTemps =  loop.definedTempsInLoop;
+        Set<IRTemp> defs = LiveVariableAnalysis.def(inst.getStmt());
+        for (IRTemp def : defs){
+            if (definedTemps.get(def).size() > 1){
                 return false;
             }
-            CFGNode<IRStmt> reachedDef = nodesToCheck.iterator().next();
-            if (nodeContainedInLoop(loop,reachedDef) && // loop contains reaching def
-                    (!defsAlreadyInvar.contains(use))){ // loop has more than one def of this var
+            if (lva.getOutMapping().get(loop.preheader).contains(def)){
+                return false;
+            }
+        }
+        BasicBlockCFG blockThatHoldsLI = null;
+        for (BasicBlockCFG block : loop.getAllBlocksInLoop()){
+            if (block.getBody().contains(inst)){
+                blockThatHoldsLI = block;
+                break;
+            }
+        }
+        if (blockThatHoldsLI == null){
+            throw new InternalCompilerError("loop invar without block in loop");
+        }
+        for (BasicBlockCFG exitBlocks : loop.exitBlocks){
+            if (!dom.getOutMapping().get(exitBlocks).contains(blockThatHoldsLI)){
+//                        System.out.println("exit block not dominated: " + potentialLI);
                 return false;
             }
         }
         return true;
 
     }
+
+    /**
+     * Finds the potential Invariant Nodes
+     * @param loop
+     * @return
+     */
     private ArrayList<CFGNode<IRStmt>> potentialInvariantNodes(LoopWrapper loop){
         ArrayList<CFGNode<IRStmt>> res = new ArrayList<>();
         HashMap<IRTemp, Set<CFGNode<IRStmt>>> useMapping = new HashMap<>();
@@ -275,12 +382,12 @@ public class LoopOpts {
         }
         HashSet<CFGNode<IRStmt>> set = new HashSet<>(loop.allNodes);
         ArrayDeque<CFGNode<IRStmt>> queue = new ArrayDeque<>(loop.allNodes);
-        HashSet<IRTemp> invariantTemps = new HashSet<>();
+        HashSet<CFGNode<IRStmt>> invariantInstrs = new HashSet<>();
         while (!queue.isEmpty()){
             CFGNode<IRStmt> node = queue.poll();
-            if (isInvariant(node,loop,invariantTemps)){
+            if (isInvariant(node,loop,invariantInstrs)){ // passes initial check
                 Set<IRTemp> defs = LiveVariableAnalysis.def(node.getStmt());
-                invariantTemps.addAll(defs);
+                invariantInstrs.add(node);
                 res.add(node);
                 for (IRTemp def : defs){
                     for (CFGNode<IRStmt> child : useMapping.get(def)){
@@ -292,54 +399,37 @@ public class LoopOpts {
                 }
             }
         }
-
+//        System.out.println("this is res:" + res);
         return res;
     }
 
+    /**
+     * Hoists the loop invariant Nodes
+     */
     public void hoistPotentialNodes(){
         for (LoopWrapper loop : all_loops){
+            lva = new LiveVariableAnalysisBlocks(graph);
+            lva.workList();
+            final HashMap<IRTemp,HashSet<CFGNode<IRStmt>>> temps =  ReachingDefinitionsBlock.locateDefs(graph);
+            reach = new ReachingDefinitionsBlock(graph, temps);
+            reach.worklist();
+            reach.getSingleMapping(temps);
             loop.potentialLoopInvariantInstrs = potentialInvariantNodes(loop);
-        }
-        for (LoopWrapper loop : all_loops){
+//            System.out.println(loop.potentialLoopInvariantInstrs);
+//            System.out.println(loop.definedTempsInLoop);
             HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTemps =  new HashMap<>(loop.definedTempsInLoop);
             ArrayList<CFGNode<IRStmt>> validLI = new ArrayList<>();
-//            System.out.println(loop.potentialLoopInvariantInstrs);
-            for (CFGNode<IRStmt> potentialLI : loop.potentialLoopInvariantInstrs){
-                boolean failed = false;
-                Set<IRTemp> defs = LiveVariableAnalysis.def(potentialLI.getStmt());
-                for (IRTemp def : defs){
-                    if (definedTemps.get(def).size() > 1){
-                        failed = true;
-                    }
-                    if (lva.getOutMapping().get(loop.preheader).contains(def)){
-                        failed = true;
-                    }
-                }
-                BasicBlockCFG blockThatHoldsLI = null;
-                for (BasicBlockCFG block : loop.getAllBlocksInLoop()){
-                    if (block.getBody().contains(potentialLI)){
-                        blockThatHoldsLI = block;
-                        break;
-                    }
-                }
-                if (blockThatHoldsLI == null){
-                    throw new InternalCompilerError("loop invar without block in loop");
-                }
-                for (BasicBlockCFG exitBlocks : loop.exitBlocks){
-                    if (!dom.getOutMapping().get(exitBlocks).contains(blockThatHoldsLI)){
-//                        System.out.println("exit block not dominated: " + potentialLI);
-                        failed = true;
-                    }
-                }
-                if (!failed){
-                    validLI.add(potentialLI);
-                }
-            }
-//            System.out.println("valid loop invars: " + validLI);
+            validLI = new ArrayList<>(loop.potentialLoopInvariantInstrs);
+//            if (validLI.size() != 0){
+//                System.out.println("hoisted " + validLI);
+//            }
         }
     }
+
+    /**
+     * Inserts the Preheader nodes into the Graph
+     */
     public void insertPreHeaderNoSSA(){
-//        System.out.println("inserting preheaders");
         for (LoopWrapper loop : all_loops){
             BasicBlockCFG head = loop.header;
             BasicBlockCFG preheader = loop.preheader;
@@ -357,6 +447,7 @@ public class LoopOpts {
             for (BasicBlockCFG pred : preds){
                 if (!backEdges.contains(new Pair<>(pred,head))) { // not backedge
                     int indexOfHeaderInPred = pred.getChildren().indexOf(head);
+                    BasicBlockCFG originalFallThrough = pred.getFallThroughChild();
                     pred.getChildren().set(indexOfHeaderInPred, preheader);
                     preheaderPreds.add(pred);
 
@@ -366,8 +457,10 @@ public class LoopOpts {
                             IRJump newJump = new IRJump(new IRName(preheadString));
                             lastStatementPred.setStmt(newJump);
                         }else if (lastStatementPred.getStmt() instanceof IRCJump cjmp){
-                            IRCJump newCjmp = new IRCJump(cjmp.cond(),preheadString,null);
-                            lastStatementPred.setStmt(newCjmp);
+                            if (!(originalFallThrough == head)) {
+                                IRCJump newCjmp = new IRCJump(cjmp.cond(), preheadString, null);
+                                lastStatementPred.setStmt(newCjmp);
+                            }
                         }
                     }
                 }
@@ -385,11 +478,6 @@ public class LoopOpts {
             head.predecessors = nxtHeadPreds;
             graph.getNodes().add(indexOfHead,preheader);
         }
-
-        final HashMap<IRTemp,HashSet<CFGNode<IRStmt>>> temps =  ReachingDefinitionsBlock.locateDefs(graph);
-        reach = new ReachingDefinitionsBlock(graph, temps);
-        reach.worklist();
-        reach.getSingleMapping(temps);
     }
 
 }

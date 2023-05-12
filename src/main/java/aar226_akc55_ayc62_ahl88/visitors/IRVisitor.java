@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static aar226_akc55_ayc62_ahl88.Main.opts;
+
+
 public class IRVisitor implements Visitor<IRNode>{
     private static final int WORD_BYTES = 8;
     public static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
@@ -50,7 +53,7 @@ public class IRVisitor implements Visitor<IRNode>{
         stringCnt = 1;
         compUnitName = name;
         string_consts = new ArrayList<>();
-        constantFold = Main.opts.isSet(OptimizationType.CONSTANT_FOLDING);
+        constantFold = opts.isSet(OptimizationType.CONSTANT_FOLDING);
     }
     private String nxtLabel() {
         return String.format("l%d", (labelCnt++));
@@ -553,24 +556,47 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     @Override
     public IRStmt visit(While node) {
-        String lh = nxtLabel();
-        String l1 = nxtLabel();
-        String le = nxtLabel();
-        IRExpr guardAccept = node.getGuard().accept(this);
-        if (constantFold &&  guardAccept instanceof IRConst c &&
-                c.value() == 0){
-            return new IRSeq();
+//        if (!opts.isSet(OptimizationType.LICM)) {
+//            String lh = nxtLabel();
+//            String l1 = nxtLabel();
+//            String le = nxtLabel();
+//            IRExpr guardAccept = node.getGuard().accept(this);
+//
+//            if (constantFold && guardAccept instanceof IRConst c &&
+//                    c.value() == 0) {
+//                return new IRSeq();
+//            }
+//            IRStmt condStmt = booleanAsControlFlow(node.getGuard(), l1, le);
+//            IRStmt bodyStmt = node.getStmt().accept(this);
+//            return new IRSeq(
+//                    new IRLabel(lh),
+//                    condStmt,
+//                    new IRLabel(l1),
+//                    bodyStmt,
+//                    new IRJump(new IRName(lh)),
+//                    new IRLabel(le));
+//        }else{
+            String lh = nxtLabel();
+            String le = nxtLabel();
+            IRExpr guardAccept = node.getGuard().accept(this);
+            if (constantFold && guardAccept instanceof IRConst c &&
+                    c.value() == 0) {
+                return new IRSeq();
+            }
+            IRStmt condStmt = booleanAsControlFlow(node.getGuard(), lh, le);
+
+            IRStmt untilStmt = booleanAsControlFlow(
+                    new NotUnop(node.getGuard(),-1,-1),le,lh);
+
+            IRStmt bodyStmt = node.getStmt().accept(this);
+            return new IRSeq(
+                    condStmt,
+                    new IRLabel(lh),
+                    bodyStmt,
+                    untilStmt,
+                    new IRLabel(le));
         }
-        IRStmt condStmt = booleanAsControlFlow(node.getGuard(),l1,le);
-        IRStmt bodyStmt = node.getStmt().accept(this);
-        return new IRSeq(
-                new IRLabel(lh),
-                condStmt,
-                new IRLabel(l1),
-                bodyStmt,
-                new IRJump(new IRName(lh)),
-                new IRLabel(le));
-    }
+//    }
     @Override
     public IRStmt visit(DeclAssignStmt node) {
         // might need to do call stmt
