@@ -43,6 +43,8 @@ import static aar226_akc55_ayc62_ahl88.Main.opts;
 
 
 public class IRVisitor implements Visitor<IRNode>{
+
+    private static final IRConst NULLEXPR = new IRConst(0);
     private static final int WORD_BYTES = 8;
     public static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
     private int labelCnt;
@@ -77,7 +79,7 @@ public class IRVisitor implements Visitor<IRNode>{
     // Rho -------------------------------------------------
     public IRStmt visit(RecordDef node) {
         // I don't think we have to do anything here.
-        return null;
+        throw  new InternalCompilerError("NO RECORD DEF");
     }
     public IRExpr visit(RecordAcessBinop node) {
         Expr eLeft = node.getLeftExpr();
@@ -362,6 +364,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 default -> throw new Error("NOT EQUIVALENCE COMPARISON BINOP");
             };
         }
+//        System.out.println(new IRBinOp(op, ire1, ire2));
         return new IRBinOp(op, ire1, ire2);
     }
 
@@ -1055,7 +1058,7 @@ public class IRVisitor implements Visitor<IRNode>{
     public IRStmt visit(AnnotatedTypeDecl node) { // could be IREXPR
         if (node.type.isArray()){
             if (node.type.dimensions.allEmpty){ // random init is fine
-                return new IRMove(new IRTemp(node.identifier.toString()),new IRConst(0));
+                return new IRMove(new IRTemp(node.identifier.toString()),NULLEXPR);
             }else{
                 IRExpr iden = node.getIdentifier().accept(this); // x:int[e1][e2][e3]
                 ArrayList<String> dimTemps = new ArrayList<>();
@@ -1078,6 +1081,8 @@ public class IRVisitor implements Visitor<IRNode>{
             }
         }else if (node.type.isBasic()){
             return new IRMove(new IRTemp(node.identifier.toString()),new IRConst(0));
+        }else if (node.type.isRecord()){
+            return new IRMove(new IRTemp(node.identifier.toString()),NULLEXPR);
         }
         throw new InternalCompilerError("Annotated can only be array or basic");
     }
@@ -1098,7 +1103,7 @@ public class IRVisitor implements Visitor<IRNode>{
     }
     @Override
     public IRExpr visit(Null node) {// no need to visit
-        return new IRTemp("null");
+        return NULLEXPR;
     }
 
     @Override

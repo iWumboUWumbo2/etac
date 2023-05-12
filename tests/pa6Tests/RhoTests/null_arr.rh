@@ -1,0 +1,12 @@
+use io
+use conv
+
+main(args:int[][]) {
+	arr : int[]
+	if (arr == null){
+		println("good")
+	}
+	else{
+		println("bad")
+	}
+}

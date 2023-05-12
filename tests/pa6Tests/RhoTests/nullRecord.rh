@@ -1,0 +1,29 @@
+use io
+use conv
+
+record Point {
+    x : int
+    y : int
+}
+
+record PointArr {
+    x : Point[];
+}
+main(args:int[][]) {
+	arr : Point;
+	if (arr == null){
+		println("pass")
+	}
+	else{
+		println("fail")
+	}
+
+	wrap: PointArr = PointArr({});
+
+    if (wrap == null){
+		println("pass")
+	}
+	else{
+		println("fail")
+	}
+}
