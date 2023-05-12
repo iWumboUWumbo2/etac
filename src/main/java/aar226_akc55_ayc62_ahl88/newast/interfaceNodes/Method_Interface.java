@@ -21,6 +21,8 @@ public class Method_Interface extends AstNode {
     public Type recordType;
     public boolean isRecord;
 
+    public ArrayList<AnnotatedTypeDecl> fields;
+
     public Method_Interface(String s, ArrayList<AnnotatedTypeDecl> d, ArrayList<Type> t,int l, int c){
         super(l,c);
         for (AnnotatedTypeDecl cur: d){
@@ -40,7 +42,7 @@ public class Method_Interface extends AstNode {
         recordType = null;
     }
 
-    public Method_Interface(String s, int l, int c) {
+    public Method_Interface(String s, ArrayList<AnnotatedTypeDecl> fieldInputs, int l, int c) {
         super(l, c);
         isRecord = true;
         id = new Id(s, l, c);
@@ -48,6 +50,7 @@ public class Method_Interface extends AstNode {
         types = new ArrayList<>();
         Dimension emptyDim = new Dimension(0, l, c);
         recordType = new Type(s, emptyDim, l, c);
+        fields = fieldInputs;
     }
 
     public String toString(){
@@ -58,18 +61,29 @@ public class Method_Interface extends AstNode {
 
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startUnifiedList();
-        id.prettyPrint(p);
+        if (isRecord){
+            p.startUnifiedList();
+            id.prettyPrint(p);
 
-        p.startList();
-        for (AnnotatedTypeDecl d : decls) d.prettyPrint(p);
-        p.endList();
+            p.startList();
+            for (AnnotatedTypeDecl field : fields) field.prettyPrint(p);
+            p.endList();
 
-        p.startList();
-        for (Type t : types) t.prettyPrint(p);
-        p.endList();
+            p.endList();
+        }else {
+            p.startUnifiedList();
+            id.prettyPrint(p);
 
-        p.endList();
+            p.startList();
+            for (AnnotatedTypeDecl d : decls) d.prettyPrint(p);
+            p.endList();
+
+            p.startList();
+            for (Type t : types) t.prettyPrint(p);
+            p.endList();
+
+            p.endList();
+        }
     }
 
     public Type typeCheck(HashMap<Id, Type> resultingGlobals, SymbolTable<Type> methods) {

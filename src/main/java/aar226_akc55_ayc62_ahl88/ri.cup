@@ -118,7 +118,7 @@ method_interface ::=
       RESULT = new Method_Interface(i,ds,new ArrayList<Type>(),ileft,iright);
       :}
       | RECORD IDENTIFIER:i OPEN_BRACE CLOSE_BRACE {:
-       RESULT = new Method_Interface(i, ileft, iright);
+       RESULT = new Method_Interface(i,new ArrayList<>(), ileft, iright);
       :}
 ;
 definitionStar ::=
