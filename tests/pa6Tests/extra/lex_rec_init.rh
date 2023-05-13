@@ -1,5 +1,0 @@
-record Point{
-    x: int
-    y: int
-}
-Point(x,y)

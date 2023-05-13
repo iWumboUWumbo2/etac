@@ -1,6 +1,0 @@
-use multi_intf
-
-record Square{
-    p: Point
-    a: int
-}

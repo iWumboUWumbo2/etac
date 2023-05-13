@@ -1,6 +1,0 @@
-use multi_intf
-
-main(args: int[][]){
-    a: int[]
-    a[1]
-}
