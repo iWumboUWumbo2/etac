@@ -192,6 +192,7 @@ public class AbstractASMVisitor {
                 case CQTO -> {
                     return new ASMCQTO();
                 }
+                default -> throw new InternalCompilerError("mismatched: " + instr);
             }
         }else if (instr instanceof ASMArg1 arg1){
             ASMExpr l = arg1.getLeft();
@@ -263,7 +264,11 @@ public class AbstractASMVisitor {
                 case SETNE -> {
                     return new ASMSetne(l);
                 }
+                case IMUL -> {
+                    return new ASMIMul(l,null,null);
+                }
                 case SETAE -> throw new InternalCompilerError("NO AE");
+                default -> throw new InternalCompilerError("mismatchedARg1: " + instr);
             }
 
         }else if (instr instanceof ASMArg2 arg2){
@@ -312,15 +317,21 @@ public class AbstractASMVisitor {
                 case XOR -> {
                     return new ASMXor(l,r);
                 }
+                case IMUL -> {
+                    return new ASMIMul(l,r,null);
+                }
+                default -> throw new InternalCompilerError("mismatchedARg2: " + instr);
             }
         }else if (instr instanceof ASMArg3 arg3){
             switch(arg3.getOpCode()){
-                case IMUL: return new ASMIMul(arg3.getA1(),arg3.getA2(),arg3.getA3());
+                case IMUL -> {
+                    return new ASMIMul(arg3.getA1(),arg3.getA2(),arg3.getA3());
+                }
+                default -> throw new InternalCompilerError("mismatchedARg3: " + instr);
             }
         }else{
             return instr;
         }
-        throw new InternalCompilerError("somehow instruction don't exist " + instr);
     }
     public static ArrayList<ASMInstruction> fixInstrsAbstract(ArrayList<ASMInstruction> instrs){
         ArrayList<ASMInstruction> res = new ArrayList<>();
@@ -333,6 +344,7 @@ public class AbstractASMVisitor {
                     }
                     case LEAVE -> res.add(new ASMLeave());
                     case CQTO -> res.add(new ASMCQTO());
+                    default -> throw new InternalCompilerError("mismatchedArg0: " + instr);
                 }
             }else if (instr instanceof ASMArg1 arg1){
                 ASMExpr l = arg1.getLeft();
@@ -363,6 +375,10 @@ public class AbstractASMVisitor {
                     case SETLE ->res.add(new ASMSetle(l));
                     case SETNE -> res.add(new ASMSetne(l));
                     case SETAE -> throw new InternalCompilerError("NO AE");
+                    case IMUL -> {
+                        res.add(new ASMIMul(l,null,null));
+                    }
+                    default -> throw new InternalCompilerError("mismatchedArg1: " + instr);
                 }
 
             }else if (instr instanceof ASMArg2 arg2){
@@ -383,10 +399,13 @@ public class AbstractASMVisitor {
                     case SUB ->res.add(new ASMSub(l,r));
                     case TEST -> res.add(new ASMTest(l,r));
                     case XOR ->res.add(new ASMXor(l,r));
+                    case IMUL -> res.add(new ASMIMul(l,r,null));
+                    default -> throw new InternalCompilerError("mismatchedArg2: " + instr);
                 }
             }else if (instr instanceof ASMArg3 arg3){
                 switch(arg3.getOpCode()){
-                    case IMUL: res.add(new ASMIMul(arg3.getA1(),arg3.getA2(),arg3.getA3()));
+                    case IMUL-> res.add(new ASMIMul(arg3.getA1(),arg3.getA2(),arg3.getA3()));
+                    default -> throw new InternalCompilerError("mismatchedArg3: " + instr);
                 }
             }else{
                 res.add(instr);
@@ -461,6 +480,7 @@ public class AbstractASMVisitor {
                 }else{
                     left = arg3.getA1();
                 }
+//                System.out.println("added mul: " + instr);
                 res.add(new ASMArg3(arg3.getOpCode(),left,mid,right));
             }else{
                 res.add(instr);
@@ -570,7 +590,6 @@ public class AbstractASMVisitor {
         if (debug) {
             instructions.add(new ASMComment(nodeUnFlat.replaceAll("\n", ""), null));
         }
-
         // TEMP TEMP
         if (dest instanceof IRTemp t1 && source instanceof IRTemp t2) { // random case for testing atm
             tileTempTemp(t1, t2, instructions);
@@ -583,6 +602,7 @@ public class AbstractASMVisitor {
         // TEMP BINOP
         } else if (dest instanceof IRTemp t && source instanceof IRBinOp b) {
             tileTempBinop(t, b, instructions);
+
         // MEM TEMP
         } else if (dest instanceof IRMem m && source instanceof IRTemp t) {
             tileMemTemp(m, t, instructions);
@@ -654,6 +674,7 @@ public class AbstractASMVisitor {
 
     // Can Expand
     public long tileTempBinop(IRTemp t, IRBinOp b, ArrayList<ASMInstruction> instrs) {
+
         long curBestCost = Long.MAX_VALUE;
         ArrayList<ASMInstruction> curBestInstructions = new ArrayList<>();
         ASMAbstractReg tempTemp = munchIRExpr(t);

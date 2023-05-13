@@ -486,9 +486,9 @@ public class LoopOpts {
             ArrayList<CFGNode<IRStmt>> validLI = new ArrayList<>();
             validLI = new ArrayList<>(loop.potentialLoopInvariantInstrs);
 
-//            if (validLI.size() != 0){
-//                System.out.println("hoisted " + validLI);
-//            }
+            if (validLI.size() != 0){
+                System.out.println("hoisted " + validLI);
+            }
             ArrayList<BasicBlockCFG> loopBlocks = loop.getAllBlocksInLoop();
             for (int i = 0; i< loopBlocks.size();i++){
                 BasicBlockCFG block = loopBlocks.get(i);
