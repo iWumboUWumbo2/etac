@@ -1,0 +1,131 @@
+use assert
+use io
+use conv
+use math
+
+RootCalls: int = 0
+RootIters: int = 0
+
+sqrt(n: int): int {
+    RootCalls = RootCalls + 1
+
+    // Finds an approximate square-root, using sort-of-bruteforce.
+    // We keep triangle legs small to make this reasonable
+    guess: int = 1
+
+    if (n >= 100 * 100)
+        guess = 100
+
+    if (n >= 30 * 30)
+        guess = 30
+
+    if (n >= 10 * 10)
+        guess = 10
+    
+    while (guess * guess < n) {
+        RootIters = RootIters + 1
+        guess = guess + 1
+    }
+    if (guess * guess == n) {
+        return guess
+    } else {
+        return guess - 1
+    }
+}
+
+class Shape {
+    area(): int { assert(false); return 0; }
+}
+
+class Rectangle extends Shape {
+    w: int
+    h: int
+
+    init(w_: int, h_: int): Shape {
+        assert (w_ > 0)
+        assert (h_ > 0)
+        w = w_
+        h = h_
+        return this
+    }
+
+    area(): int {
+        return w * h
+    }
+}
+
+// Note: some of things we produce aren't actually triangles ---
+// the side lengths don't make sense. But since we're just benchmarking
+class Triangle extends Shape {
+    side1: int
+    side2: int
+    side3: int
+
+    init(a: int, b: int, c: int): Shape {
+        side1 = a
+        side2 = b
+        side3 = c
+        return this
+    }
+
+    area(): int {
+        s: int = (side1 + side2 + side3)/2
+        return sqrt(s*(s - side1)*(s - side2)*(s - side3))
+    }
+}
+
+main(a: int[][]) {
+    SIZE: int = 100000
+    RUNS: int = 50
+
+    shapes: Shape[SIZE]
+
+    i: int = 0
+
+    srand(42)
+
+    r: int = 0
+    t: int = 0
+
+    run: int = 0
+    areaS: int
+    while (run < RUNS) {
+        while (i < SIZE) {
+            if (rand() % 2 == 0) {
+                shapes[i] = new Rectangle.init(rand(), rand())
+                r = r + 1
+            } else {
+                shapes[i] = new Triangle.init(rand() % 20 + 1, rand() % 20 + 1, rand() % 20 + 1)
+                t = t + 1
+            }
+
+            i = i + 1
+        }
+
+        areaS = 0
+
+        i = 0
+        while (i < SIZE) {
+            areaS = areaS + shapes[i].area()
+            i = i + 1
+        }
+
+        run = run + 1
+    }
+    
+
+    print("R = ")
+    println(unparseInt(r))
+
+    print("T = ")
+    println(unparseInt(t))
+
+    print("RC = ")
+    println(unparseInt(RootCalls))
+
+    print("RI = ")
+    println(unparseInt(RootIters))
+
+    print("A = ")
+    println(unparseInt(areaS))
+}

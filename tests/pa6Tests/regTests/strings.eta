@@ -1,0 +1,11 @@
+use io;
+use conv;
+
+main(args: int[][]) {
+  i:int = 0
+  while (i < 10000000) {
+    s:int[] = "!"
+    i = i + 1
+  }
+}
+

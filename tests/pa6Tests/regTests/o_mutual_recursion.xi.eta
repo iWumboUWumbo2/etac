@@ -1,0 +1,22 @@
+use assert
+
+class A {
+  b(x: B): B { return x }
+  equals(x: A): bool { return this == x }
+}
+
+class B {
+  a(x: A): A { return x }
+  equals(x: B): bool { return this == x }
+}
+
+main(args: int[][]) {
+  i:int = 0
+  while (i < 10000000) {
+    a:A = new A
+    b:B = new B
+    assert(a.b(b).equals(b))
+    assert(b.a(a).equals(a))
+    i = i + 1
+  }
+}

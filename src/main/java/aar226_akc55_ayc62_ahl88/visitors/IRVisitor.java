@@ -39,6 +39,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static aar226_akc55_ayc62_ahl88.Main.opts;
+
+
 public class IRVisitor implements Visitor<IRNode>{
     private static final int WORD_BYTES = 8;
     public static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
@@ -643,28 +646,56 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRStmt visit(While node) {
-        String lh = nxtLabel();
-        String l1 = nxtLabel();
-        String le = nxtLabel();
-        IRExpr guardAccept = node.getGuard().accept(this);
-        if (constantFold && guardAccept instanceof IRConst c &&
-                c.value() == 0){
-            return new IRSeq();
+        if (!opts.isSet(OptimizationType.LICM)) {
+//            System.out.println("non opt while");
+            String lh = nxtLabel();
+            String l1 = nxtLabel();
+            String le = nxtLabel();
+            IRExpr guardAccept = node.getGuard().accept(this);
+            if (constantFold && guardAccept instanceof IRConst c &&
+                    c.value() == 0) {
+                return new IRSeq();
+            }
+            IRStmt condStmt = booleanAsControlFlow(node.getGuard(), l1, le);
+
+            String lastWhileExitOld = this.lastWhileExit;
+            this.lastWhileExit = le;
+            IRStmt bodyStmt = node.getStmt().accept(this);
+            this.lastWhileExit = lastWhileExitOld;
+
+            return new IRSeq(
+                    new IRLabel(lh),
+                    condStmt,
+                    new IRLabel(l1),
+                    bodyStmt,
+                    new IRJump(new IRName(lh)),
+                    new IRLabel(le));
+        }else{
+//            System.out.println("opt while");
+            String lh = nxtLabel();
+            String le = nxtLabel();
+            IRExpr guardAccept = node.getGuard().accept(this);
+            if (constantFold && guardAccept instanceof IRConst c &&
+                    c.value() == 0) {
+                return new IRSeq();
+            }
+            IRStmt condStmt = booleanAsControlFlow(node.getGuard(), lh, le);
+
+            IRStmt untilStmt = booleanAsControlFlow(
+                    new NotUnop(node.getGuard(),-1,-1),le,lh);
+
+            String lastWhileExitOld = this.lastWhileExit;
+            this.lastWhileExit = le;
+            IRStmt bodyStmt = node.getStmt().accept(this);
+            this.lastWhileExit = lastWhileExitOld;
+
+            return new IRSeq(
+                    condStmt,
+                    new IRLabel(lh),
+                    bodyStmt,
+                    untilStmt,
+                    new IRLabel(le));
         }
-        IRStmt condStmt = booleanAsControlFlow(node.getGuard(),l1,le);
-
-        String lastWhileExitOld = this.lastWhileExit;
-        this.lastWhileExit = le;
-        IRStmt bodyStmt = node.getStmt().accept(this);
-        this.lastWhileExit = lastWhileExitOld;
-
-        return new IRSeq(
-                new IRLabel(lh),
-                condStmt,
-                new IRLabel(l1),
-                bodyStmt,
-                new IRJump(new IRName(lh)),
-                new IRLabel(le));
     }
 
     //todo decl assign for record fields, i.e. a.x = 5
@@ -1125,7 +1156,7 @@ public class IRVisitor implements Visitor<IRNode>{
             throw new Error("HOW ARE WE HERE");
         }
         String replaceName = funcName.toString().replaceAll("_","__");
-        
+
         if (funcType.getType() == Type.TypeCheckingType.FUNC) {
             String inputABIName = genABIArr(funcType.inputTypes,true);
             String outputABIName = genABIArr(funcType.outputTypes,false);

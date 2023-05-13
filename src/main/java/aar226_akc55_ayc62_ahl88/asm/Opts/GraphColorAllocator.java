@@ -1,6 +1,5 @@
 package aar226_akc55_ayc62_ahl88.asm.Opts;
 
-import aar226_akc55_ayc62_ahl88.Main;
 import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
@@ -12,27 +11,22 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.stackops.ASMPush;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMCall;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMEnter;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.subroutine.ASMLeave;
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import static aar226_akc55_ayc62_ahl88.Main.writeOutputDot;
+import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockString;
 import static aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM.*;
-import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.flattenMem;
 import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor.tempsToRegs;
 import static aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor.fixInstrsAbstract;
 import static aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor.fixSingleAbstract;
 
 public class GraphColorAllocator {
-
     CFGGraphBasicBlockASM progBlock;
-
     LiveVariableAnalysisASM LVA;
 
     HashSet<ASMAbstractReg> precolored;
@@ -64,16 +58,44 @@ public class GraphColorAllocator {
 
     HashMap<ASMAbstractReg,ASMMemExpr> spillMapping;
 
-    ArrayList<String> validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "r13","r14","r15","rsi", "rdi"));
-    int K = validColors.size();
+    ArrayList<String> validColors;
+    int K;
     public boolean failed = false;
+    public int attempt;
     ASMCompUnit compUnit;
-
     String funcName;
-    public GraphColorAllocator(CFGGraphBasicBlockASM g, ArrayList<String> inlinedFunctions, ASMCompUnit comp, String curFunc){
+    boolean reserveMode;
+    ArrayList<String> reservedRegs = new ArrayList<>(List.of("r13", "r14"));
+    boolean mainCalled;
+    String file;
+
+
+    HashMap<ASMAbstractReg,Long> regToCost;
+    HashSet<ASMAbstractReg> insertedNodes;
+
+    long INF = 100000;
+    /**
+     * Graph Coloring Allocator. We don't insert extra defs and uses one time runthrough
+     * @param g
+     * @param comp
+     * @param curFunc
+     * @param reserve
+     */
+    public GraphColorAllocator(CFGGraphBasicBlockASM g, ASMCompUnit comp, String curFunc, boolean reserve, String fileName,boolean isMainCalled){
+        mainCalled = isMainCalled;
+        file = fileName;
+        reserveMode = reserve;
+        attempt = 0;
         tempCnt = 0;
         numSpillsplus1 = 1;
         progBlock = g;
+        if (reserve){
+            validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11","r15","rsi", "rdi","r12"));
+            K = validColors.size();
+        }else{
+            validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "r13","r14","r15","rsi", "rdi"));
+            K = validColors.size();
+        }
         precolored = new HashSet<>();
         initial = new HashSet<>();
         simplifyWorklist = new HashSet<>();
@@ -97,29 +119,11 @@ public class GraphColorAllocator {
         compUnit = comp;
         funcName = curFunc;
         spillMapping = new HashMap<>();
+        regToCost = new HashMap<>();
+        insertedNodes = new HashSet<>();
     }
 
    public void initTemps(){
-//       precolored = new HashSet<>();
-//       initial = new HashSet<>();
-//       simplifyWorklist = new HashSet<>();
-//       freezeWorklist = new HashSet<>();
-//       spillWorklist = new HashSet<>();
-//       spilledNodes = new HashSet<>();
-//       coalescedNodes = new HashSet<>();
-//       coloredNodes = new HashSet<>();
-//       selectStack = new Stack<>();
-//       coalescedMoves = new HashSet<>();
-//       constrainedMoves = new HashSet<>();
-//       frozenMoves = new HashSet<>();
-//       worklistMoves = new HashSet<>();
-//       activeMoves = new HashSet<>();
-//       adjSet = new HashSet<>();
-//       adjList = new HashMap<>();
-//       degree = new HashMap<>();
-//       moveList = new HashMap<>();
-//       alias = new HashMap<>();
-//       color = new HashMap<>();
         HashSet<ASMAbstractReg> temps = new HashSet<>();
         for (BasicBlockASMCFG b : progBlock.getNodes()) {
             for (CFGNode<ASMInstruction> instr : b.getBody()) {
@@ -131,6 +135,11 @@ public class GraphColorAllocator {
         for (ASMAbstractReg reg : temps){
             adjList.put(reg,new HashSet<>());
             degree.put(reg,0);
+            if (insertedNodes.contains(reg)){
+                regToCost.put(reg,INF);
+            }else {
+                regToCost.put(reg, 0L);
+            }
             moveList.put(reg,new HashSet<>());
             if (reg instanceof ASMRegisterExpr real){
                 precolored.add(real);
@@ -143,12 +152,15 @@ public class GraphColorAllocator {
         }
    }
     public void MainFunc(){
+//        if (attempt == 3){
+//            System.out.println("failed");
+//            return;
+//        }
         initTemps();
-        LVA = new LiveVariableAnalysisASM(progBlock);
+        LVA = new LiveVariableAnalysisASM(progBlock,mainCalled);
         LVA.workList();
         Build();
         MakeWorklist();
-
         while (!allEmpty()){
             if (!simplifyWorklist.isEmpty()) {
                 Simplify();
@@ -162,18 +174,27 @@ public class GraphColorAllocator {
         }
         AssignColors();
         if (!spilledNodes.isEmpty()) {
-            System.out.println("spilled");
-            failed = true;
+            if (!reserveMode) {
+                failed = true;
+            }
+//            attempt++;
 //            RewriteProgram();
-//            System.out.println("done rewrite");
 //            MainFunc();
-//
-        }else{
-            System.out.println("no spilled");
-//            System.out.println(color);
         }
     }
 
+//    private void estimateSpillCosts(){
+//        for (BasicBlockASMCFG b : progBlock.getNodes()){
+//            for (CFGNode<ASMInstruction> node : b.getBody()){
+//                ASMInstruction stmt = node.getStmt();
+//                Set<ASMAbstractReg> uses =  usesInASM(stmt);
+//                for (ASMAbstractReg use: uses){
+//                    regToCost.put(use,regToCost.get(use) + 1);
+//                }
+//            }
+//        }
+//        for (ASMAbstractReg reg : regToCost)
+//    }
 
 
     private void degreeInvar(){
@@ -482,8 +503,8 @@ public class GraphColorAllocator {
     public void AssignColors(){
         while (!selectStack.isEmpty()) {
             ASMAbstractReg n = selectStack.pop();
-            ArrayDeque<ASMRegisterExpr> okColors = validColors.stream().map(ASMRegisterExpr::new)
-                    .collect(Collectors.toCollection(ArrayDeque::new));
+            HashSet<ASMRegisterExpr> okColors = validColors.stream().map(ASMRegisterExpr::new)
+                    .collect(Collectors.toCollection(HashSet::new));
 
             for (ASMAbstractReg w : adjList.get(n)) {
                 if (union(coloredNodes, precolored).contains(GetAlias(w))) {
@@ -502,7 +523,9 @@ public class GraphColorAllocator {
         }
 
         for (ASMAbstractReg n : coalescedNodes) {
-            color.put(n, color.get(GetAlias(n)));
+            if (color.get(GetAlias(n)) != null) {
+                color.put(n, color.get(GetAlias(n)));
+            }
         }
     }
     public void AddEdge(ASMAbstractReg u, ASMAbstractReg v){
@@ -563,13 +586,12 @@ public class GraphColorAllocator {
                 ASMInstruction instr = node.getStmt();
                 Set<ASMAbstractReg> used = usesInASM(instr);
                 Set<ASMAbstractReg> def = defsInASM(instr);
-
                 HashSet<ASMAbstractReg> spilledDef = intersect(def, spilledNodes);
                 HashSet<ASMAbstractReg> spilledUse = intersect(used, spilledNodes);
                 ArrayList<CFGNode<ASMInstruction>> extraDefs = new ArrayList<>();
                 ArrayList<CFGNode<ASMInstruction>> extraUses = new ArrayList<>();
+                HashMap<String,String> replaceMapping = new HashMap<>();
                 if (!spilledDef.isEmpty()){
-                    HashMap<String,String> replaceMapping = new HashMap<>();
                     for (ASMAbstractReg v : spilledDef){
                         ASMAbstractReg vi = new ASMTempExpr(nxtTemp());
                         if (!spillMapping.containsKey(v)) {
@@ -583,27 +605,20 @@ public class GraphColorAllocator {
                         }
                         replaceMapping.put(v.toString(),vi.toString());
                     }
-                    ASMInstruction newInstrs = replaceTempNames(instr,replaceMapping);
-                    ASMInstruction nonAbstract = fixSingleAbstract(newInstrs);
-                    node.setStmt(nonAbstract);
                 }
-
                 if (!spilledUse.isEmpty()){
-                    HashMap<String,String> replaceMapping = new HashMap<>();
                     for (ASMAbstractReg v : spilledUse){
                         ASMMemExpr memLoc = spillMapping.get(v);
+                        String vi = replaceMapping.containsKey(v.toString()) ? replaceMapping.get(v.toString()) :  nxtTemp();
+                        newTemps.add(new ASMTempExpr(vi));
+                        replaceMapping.put(v.toString(),vi);
 
-                        ASMAbstractReg vi = new ASMTempExpr(nxtTemp());
-                        newTemps.add(vi);
-                        replaceMapping.put(v.toString(),vi.toString());
-
-                        extraUses.add(new CFGNode<>(new ASMMov(vi,memLoc)));
+                        extraUses.add(new CFGNode<>(new ASMMov(new ASMTempExpr(vi),memLoc)));
                     }
-                    ASMInstruction newInstrs = replaceTempNames(instr,replaceMapping);
-                    ASMInstruction nonAbstract = fixSingleAbstract(newInstrs);
-                    node.setStmt(nonAbstract);
                 }
-
+                ASMInstruction newInstrs = replaceTempNames(instr,replaceMapping);
+                ASMInstruction nonAbstract = fixSingleAbstract(newInstrs);
+                node.setStmt(nonAbstract);
                 nxtBody.addAll(extraUses);
                 nxtBody.add(node);
                 nxtBody.addAll(extraDefs);
@@ -612,9 +627,18 @@ public class GraphColorAllocator {
         }
 
         spilledNodes.clear();
+        insertedNodes.addAll(newTemps);
         initial = union(union(coloredNodes,coalescedNodes),newTemps);
         coloredNodes.clear();
         coalescedNodes.clear();
+
+        regToCost.clear();
+        adjSet.clear();
+        adjList.clear();
+        degree.clear();
+        moveList.clear();
+        alias.clear();
+        color.clear();
     }
 
 
@@ -632,13 +656,16 @@ public class GraphColorAllocator {
     }
 
 
-
-    public ArrayList<ASMInstruction> replaceTemp(){
+    /**
+     * Takes the remaining temporaries that still need to be allocated and do trivial allocation on them
+     * @return
+     */
+    public ArrayList<ASMInstruction> replaceTempReserve(){
         HashMap <String, String> colorMapping = new HashMap<>();
-        ASMEnter builtEnter =  new ASMEnter(new ASMConstExpr(8L*(numSpillsplus1-1)), new ASMConstExpr(0));
         for (Map.Entry<ASMAbstractReg,ASMRegisterExpr> kv : color.entrySet()){
             colorMapping.put(kv.getKey().toString(),kv.getValue().getRegisterName());
         }
+
         ArrayList<ASMInstruction> res = new ArrayList<>();
         for (BasicBlockASMCFG block : progBlock.getNodes()){
             for (CFGNode<ASMInstruction> node : block.getBody()){
@@ -648,14 +675,10 @@ public class GraphColorAllocator {
                     ASMCall call = (ASMCall) instr;
                     fixedInstr = new ASMCall(call.getLeft(),call.numParams,call.numReturns);
                 }
-                if (fixedInstr.getOpCode() == ASMOpCodes.ENTER){
-                    fixedInstr = builtEnter;
-                }
                 if (fixedInstr.getOpCode() == ASMOpCodes.MOV || fixedInstr.getOpCode() == ASMOpCodes.MOVABS){
                     ASMArg2 arg2 = (ASMArg2) fixedInstr;
                     if (arg2.getLeft() instanceof ASMRegisterExpr realL &&
                             arg2.getRight() instanceof ASMRegisterExpr realR && realL.equals(realR)){
-
                     }else{
                         res.add(fixedInstr);
                     }
@@ -664,9 +687,92 @@ public class GraphColorAllocator {
                 }
             }
         }
+        HashSet<ASMAbstractReg> stillAbstract = new HashSet<>();
+        for (ASMInstruction instr : res){
+            Set<ASMAbstractReg> used = usesInASM(instr);
+            Set<ASMAbstractReg> def = defsInASM(instr);
+            for (ASMAbstractReg use: used){
+                if (use instanceof ASMTempExpr temp){
+                    stillAbstract.add(temp);
+                }
+            }
+            for (ASMAbstractReg d: def) {
+                if (d instanceof ASMTempExpr temp) {
+                    stillAbstract.add(temp);
+                }
+            }
+        }
+        ArrayList<ASMInstruction> fixed = fixInstrsAbstract(res);
+        if (stillAbstract.size() != 0 && !reserveMode){
+            failed = true;
+            return new ArrayList<>();
+        }else if (stillAbstract.size() != 0 && reserveMode){
+            // fix
+            return buildMappingForRemainingAbstract(fixed,stillAbstract);
+        }else{
+            return fixed;
+        }
+    }
 
-        ArrayList<ASMInstruction> fixed =  fixInstrsAbstract(res);
-        return fixAllStackAlignmentsColor(fixed,colorMapping);
+
+    /**
+     * Does Trivial Register Allocation on the remaining Abstract Registers
+     * @param instrs
+     * @param abstractRegs
+     * @return
+     */
+    private ArrayList<ASMInstruction> buildMappingForRemainingAbstract(ArrayList<ASMInstruction> instrs, HashSet<ASMAbstractReg> abstractRegs){
+        HashMap<ASMAbstractReg,ASMMemExpr> temptoStack = new HashMap<>();
+        int index = 1;
+        for (ASMAbstractReg fake : abstractRegs){
+            temptoStack.put(fake,new ASMMemExpr(new ASMBinOpAddExpr(
+                    new ASMRegisterExpr("rbp"),
+                    new ASMConstExpr(-8L * index))));
+            index++;
+        }
+
+        ASMEnter nxtEnter = new ASMEnter(new ASMConstExpr(8L*(temptoStack.size())), new ASMConstExpr(0));;
+        ArrayList<ASMInstruction> output = new ArrayList<>();
+        for (ASMInstruction instr: instrs){
+            Set<ASMAbstractReg> used = usesInASM(instr);
+            Set<ASMAbstractReg> def = defsInASM(instr);
+            ArrayDeque<String> reservedLocalRegs = new ArrayDeque<>(reservedRegs);
+            if (instr instanceof ASMEnter){
+                output.add(nxtEnter);
+                output.add(new ASMPush(new ASMRegisterExpr("r12")));
+                output.add(new ASMPush(new ASMRegisterExpr("r13")));
+                output.add(new ASMPush(new ASMRegisterExpr("r14")));
+            }else if (instr instanceof ASMLeave leave){
+                output.add(new ASMPop(new ASMRegisterExpr("r14")));
+                output.add(new ASMPop(new ASMRegisterExpr("r13")));
+                output.add(new ASMPop(new ASMRegisterExpr("r12")));
+                output.add(leave);
+            }else{
+                HashSet<ASMAbstractReg> spilledDef = intersect(def, abstractRegs);
+                HashSet<ASMAbstractReg> spilledUse = intersect(used, abstractRegs);
+                HashMap<String,String> replaceMapping = new HashMap<>();
+                ArrayList<ASMInstruction> extraDefs = new ArrayList<>();
+                ArrayList<ASMInstruction> extraUses = new ArrayList<>();
+                for (ASMAbstractReg spilled : spilledUse){
+                    String real = ! replaceMapping.containsKey(spilled.toString())? reservedLocalRegs.poll() : replaceMapping.get(spilled.toString());
+                    replaceMapping.put(spilled.toString(),real);
+                    extraUses.add(new ASMMov(new ASMRegisterExpr(real),temptoStack.get(spilled)));
+                }
+                reservedLocalRegs = new ArrayDeque<>(reservedRegs);
+                for (ASMAbstractReg defReg : spilledDef){
+                    String real = ! replaceMapping.containsKey(defReg.toString())? reservedLocalRegs.poll() : replaceMapping.get(defReg.toString());
+                    replaceMapping.put(defReg.toString(),real);
+                    extraDefs.add(new ASMMov(temptoStack.get(defReg),new ASMRegisterExpr(real)));
+                }
+                ASMInstruction realInstruction = fixSingleAbstract(fixInstruction(instr,replaceMapping));
+                output.addAll(extraUses);
+                output.add(realInstruction);
+                output.addAll(extraDefs);
+            }
+        }
+
+
+        return fixAllStackAlignmentsColor(output,abstractRegs);
     }
 
     public ASMInstruction fixInstruction(ASMInstruction instr, HashMap <String, String> mapping){
@@ -743,25 +849,32 @@ public class GraphColorAllocator {
      * @param calledFunction
      * @return true if we need to insert stackalignment.
      */
-    private boolean doWeNeedstackAlignmentColor(String calledFunction, HashMap<String,String> colorMapping) {
+    private boolean doWeNeedstackAlignmentColor(String calledFunction, HashSet<ASMAbstractReg> abstractArgs) {
         int paramCount = compUnit.getAllFunctionsSigs().get(calledFunction).part1();
         int returnCount = compUnit.getAllFunctionsSigs().get(calledFunction).part2();
         int returnSpace = Math.max(returnCount - 2, 0);
         int argSpace = Math.max(paramCount - (returnCount > 2 ? 5 : 6), 0);
 
 
-
-        int stackSize =  (numSpillsplus1-1) + returnSpace + argSpace;
+        // assume 3 pushes
+        //
+        int stackSize =  1+ 1 + 3 + returnSpace + argSpace + abstractArgs.size();
         // rip, rbp, r12, r13, r14
         return (stackSize & 1) != 0;
     }
 
-    private ArrayList<ASMInstruction> fixAllStackAlignmentsColor(ArrayList<ASMInstruction> instrs, HashMap<String,String> colorMap) {
+    /**
+     * Fixes Stack Alignment by adding changes to Stack point in comments.
+     * @param instrs
+     * @param abstractRegs
+     * @return
+     */
+    private ArrayList<ASMInstruction> fixAllStackAlignmentsColor(ArrayList<ASMInstruction> instrs, HashSet<ASMAbstractReg> abstractRegs) {
         ArrayList<ASMInstruction> alignedFunction = new ArrayList<>(instrs);
         for (int i = 0 ;i< alignedFunction.size();i++){
             ASMInstruction instr = alignedFunction.get(i);
             if (instr instanceof ASMComment comment && comment.getComment().equals("Add Padding")){
-                if (doWeNeedstackAlignmentColor(comment.getFunctionName(),colorMap)){
+                if (doWeNeedstackAlignmentColor(comment.getFunctionName(),abstractRegs)){
                     alignedFunction.set(i,new ASMArg2(ASMOpCodes.SUB, new ASMRegisterExpr("rsp"), new ASMConstExpr(8)));
                     // find end
                     int undoIndex = undoCommentColor(alignedFunction,i+1);

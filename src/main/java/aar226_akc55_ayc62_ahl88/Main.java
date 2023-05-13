@@ -8,26 +8,22 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
 import aar226_akc55_ayc62_ahl88.asm.Opts.GraphColorAllocator;
-import aar226_akc55_ayc62_ahl88.asm.Opts.LVASINGLEASM;
-import aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.Optimizations;
-import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyProp;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.CopyPropNoSSA;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeElimNoSSA;
+import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.AbstractASMVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.CopyPropReplaceVisitor;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.IRLoweringVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.FunctionInliningVisitor;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.Lexer;
@@ -41,7 +37,7 @@ import java.util.*;
 
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
-import static aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM.HashmapBlockString;
+import static aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.ReachingDefinitionsBlock.canWeRunReaching;
 
 public class Main {
     enum Target {
@@ -64,7 +60,6 @@ public class Main {
     public static boolean isLibpathDirSpecified;
 
     public static Optimizations opts;
-
     private static Target target;
 
     public static boolean isRho;
@@ -132,7 +127,7 @@ public class Main {
         writeOutputGeneric(filename, "_" + phase, output, "ir", false);
     }
 
-    private static void writeOutputDot(String filename, String function, String phase, String output) {
+    public static void writeOutputDot(String filename, String function, String phase, String output) {
         writeOutputGeneric(filename, "_" + function + "_" + phase, output, "dot", false);
     }
 
@@ -321,45 +316,19 @@ public class Main {
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
                     IRs.put("initial", ir);
-//                    if (opts.allClear()){ // Added if we only doing reg allocate
-//                        return ir;
-//                    }
-
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
                         IRs.put("inline",ir);
                     }
-
-                    HashMap<String,IRFuncDecl> copyPropIR = new HashMap<>();
                     if (opts.isSet(OptimizationType.COPYPROP)) {
-                        for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-                            IRFuncDecl func = map.getValue();
-                            CFGGraph<IRStmt> stmtGraph = new CFGGraph<>((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
-                            CopyProp copyProp = new CopyProp(stmtGraph);
-                            copyProp.worklist();
-                            HashMap<CFGNode<IRStmt>, HashSetInf<Pair<IRTemp, IRTemp>>> inMapping =
-                                    copyProp.getInMapping();
-                            for (int i = 0; i < stmtGraph.getNodes().size(); i++) {
-                                CFGNode<IRStmt> node = stmtGraph.getNodes().get(i);
-                                HashSetInf<Pair<IRTemp, IRTemp>> pairSet =  inMapping.get(node);
-                                HashMap<String, String> tempHashMap = new HashMap<>();
-                                for (Pair<IRTemp, IRTemp> pair : pairSet) {
-                                    tempHashMap.put(pair.part1().name(), pair.part2().name());
-                                }
-                                IRStmt visited = (IRStmt) new CopyPropReplaceVisitor(new IRNodeFactory_c(), tempHashMap).visit(node.getStmt());
-                                node.setStmt(visited);
-                            }
-                            IRFuncDecl newFunc = new IRFuncDecl(func.name(), new IRSeq(stmtGraph.getBackIR()));
-                            newFunc.functionSig = func.functionSig;
-//                            writeOutputDot(filename, func.name(), "afterCopy", stmtGraph.CFGtoDOT(copyProp.inMapStr(), copyProp.outMapStr()));
-                            copyPropIR.put(map.getKey(),newFunc);
-                        }
-
-                        ir = new IRCompUnit(((IRCompUnit) ir).name(),copyPropIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-                        IRs.put("postCopy", ir);
+                        ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postCopy", ir);
                     }
-
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
+                    }
                     HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
                     HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
                     for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
@@ -381,8 +350,14 @@ public class Main {
                     if (opts.isSet(OptimizationType.CONSTPROP)) {
                         for (Pair<String, Type> func : funcToSSA.keySet()) {
                             CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename,func.part1(),"preConst",funcStatements.CFGtoDOT());
                             new ConstantPropSSA(funcStatements).workList();
                             funcStatements.removeUnreachableNodes();
+                            new ConstantPropSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+                            new ConstantPropSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+//                            writeOutputDot(filename,func.part1(),"postConst",funcStatements.CFGtoDOT());
                         }
                     }
 
@@ -396,7 +371,9 @@ public class Main {
 
                     HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
                     for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
+//                        writeOutputDot(filename,kv.getKey().part1(),"pressa",kv.getValue().CFGtoDOT());
                         DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
+//                        writeOutputDot(filename,kv.getKey().part1(),"postssa",kv.getValue().CFGtoDOT());
                         ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
                         IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
                         optFunc.functionSig = kv.getKey().part2();
@@ -404,6 +381,21 @@ public class Main {
                     }
 
                     ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
+                    if (opts.isSet(OptimizationType.LICM)){
+                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
+                    }
+                    if (opts.isSet(OptimizationType.COPYPROP)) {
+                        ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postCopy", ir);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
+                    }
 
                     IRs.put("final", ir);
                     return ir;
@@ -488,52 +480,53 @@ public class Main {
         try {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
-            FunctionInliningVisitor fv = new FunctionInliningVisitor();
-            fv.visit((IRCompUnit) ir);
-            ArrayList<String> inlineAbleFunctions = fv.allowedInline;
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
-
-            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
-                StringWriter out = new StringWriter();
-                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
-                for (ASMInstruction instr : abstractInstrs){
-                    if (!(instr instanceof ASMLabel)){
-                        out.write(INDENT_SFILE + instr + '\n');
-                    }else{
-                        out.write(instr+"\n");
-                    }
-                }
-//                writeOutputAsm(filename, out.toString(), "abstract" + kv.getKey());
-                out.close();
-            }
-
-            boolean failed = false;
+            boolean mainCalled = FunctionInliningVisitor.isMainCalled((IRCompUnit) ir);
+//            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
+//                StringWriter out = new StringWriter();
+//                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
+//                for (ASMInstruction instr : abstractInstrs){
+//                    if (!(instr instanceof ASMLabel)){
+//                        out.write(INDENT_SFILE + instr + '\n');
+//                    }else{
+//                        out.write(instr+"\n");
+//                    }
+//                }
+//                out.close();
+//            }
 
             if (opts.isSet(OptimizationType.REGALLOC)) {
+                boolean failed = false;
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
-//                    CFGGraphBasicBlockASM multi = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
-//                    LiveVariableAnalysisASM mul = new LiveVariableAnalysisASM(multi);
-//                    mul.workList();
-//                    writeOutputDot(filename, kv.getKey(), "SINGLELVA", multi.CFGtoDOT(HashmapBlockString(mul.getInMapping(),true),
-//                            HashmapBlockString(mul.getOutMapping(),false)));
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
                     asmBasicblocks.removeUnreachableNodes();
-                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks,inlineAbleFunctions, comp, kv.getKey());
+                    GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false,filename,mainCalled);
                     getColors.MainFunc();
-                    if (getColors.failed) {
+                    if (getColors.failed){
                         failed = true;
-//                        break;
-                    } else {
-                        postAlloc.addAll(getColors.replaceTemp());
+                        break;
+                    }else {
+                        postAlloc.addAll(getColors.replaceTempReserve());
                     }
                 }
-            }
-
-            if (failed || !opts.isSet(OptimizationType.REGALLOC))  {
-                System.out.println("doing trivial");
+                if (failed){
+                    System.out.println("failed with extra");
+                    postAlloc = new ArrayList<>();
+                    for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
+                        CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
+                        asmBasicblocks.removeUnreachableNodes();
+                        GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true,filename,mainCalled);
+                        getColors.MainFunc();
+                        postAlloc.addAll(getColors.replaceTempReserve());
+                    }
+                }else{
+                    System.out.println("made it with extra");
+                }
+            }else{
                 postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
             }
+
             StringWriter out = new StringWriter();
             out.write(INDENT_SFILE+ ".file  \""+zhenFilename+"\"\n");
             out.write(INDENT_SFILE+".intel_syntax noprefix\n");
@@ -615,6 +608,8 @@ public class Main {
                 "Constant propagation optimization.");
         Option copyPropOpt = new Option ("Ocopy", false,
                 "Copy propagation optimization.");
+        Option licmOpt = new Option ("Olicm", false,
+                "Enable Loop Invariant Code Motion optimization.");
         Option dceOpt = new Option ("Odce", false,
                 "Dead code elimination optimization.");
         Option regOpt = new Option ("Oreg", false,
@@ -640,6 +635,7 @@ public class Main {
         options.addOption(inlOptOpt);
         options.addOption(constPropOpt);
         options.addOption(copyPropOpt);
+        options.addOption(licmOpt);
         options.addOption(dceOpt);
         options.addOption(regOpt);
 
@@ -729,7 +725,9 @@ public class Main {
             if (cmd.hasOption("Ocopy")) {
                 opts.setOptimizations(OptimizationType.COPYPROP);
             }
-
+            if (cmd.hasOption("Olicm")){
+                opts.setOptimizations(OptimizationType.LICM);
+            }
             if (cmd.hasOption("Odce")) {
                 opts.setOptimizations(OptimizationType.DEAD_CODE_ELIMINATION);
             }

@@ -1,0 +1,165 @@
+// A little stack machine interpreter.
+use assert
+use io
+use conv
+
+class StackCell {
+    next: StackCell
+    val:  int
+
+    getVal():  int { return val; }
+    getNext(): StackCell { return next; }
+    setVal (v: int) { val = v; }
+    setNext(n: StackCell) { next = n; }
+}
+
+class Stack {
+    topCell: StackCell
+    size:    int
+
+    top(): int { return topCell.getVal(); }
+    pop(): int {
+        size = size - 1
+        oldTop: StackCell = topCell
+        topCell = oldTop.getNext()
+        return oldTop.getVal()
+    }
+
+    push(n: int) {
+        size = size + 1
+        newTop: StackCell = new StackCell
+        newTop.setVal(n)
+        newTop.setNext(topCell)
+        topCell = newTop
+    }
+
+    getSize(): int { return size; }
+}
+
+class Op {
+    // Returns new PC, with default given in
+    execute(s: Stack, nextPC: int): int { assert(false); return nextPC; }
+}
+
+class NumOp extends Op {
+    val: int
+
+    execute(s: Stack, nextPC: int): int {
+        s.push(val)
+        return nextPC
+    }
+
+    init(v: int) { val = v; }
+}
+
+num(n: int): Op {
+    no: NumOp = new NumOp
+    no.init(n)
+    return no
+}
+
+class DupOp extends Op {
+    execute(s: Stack, nextPC: int): int {
+        s.push(s.top())
+        return nextPC
+    }
+}
+
+dup(): Op { return new DupOp; }
+
+class AddOp extends Op {
+    execute(s: Stack, nextPC: int): int {
+        v1: int = s.pop()
+        v2: int = s.pop()
+        s.push(v1 + v2)
+        return nextPC
+    }
+}
+
+add(): Op { return new AddOp; }
+
+class StackSizeOp extends Op {
+    execute(s: Stack, nextPC: int): int {
+        ss: int = s.getSize()
+        s.push(ss)
+        return nextPC
+    }
+}
+
+ssize(): Op { return new StackSizeOp; }
+
+// Jump if item under top is < item on top (pops both)
+class JLessOp extends Op {
+    dest: int
+
+    execute(s: Stack, nextPC: int): int {
+        topV: int = s.pop()
+        underTop: int = s.pop()
+
+        if (underTop < topV) {
+            return dest
+        } else {
+            return nextPC
+        }
+    }
+
+    init(d: int) { dest = d;}
+}
+
+jl(n: int): Op {
+    jo: JLessOp = new JLessOp
+    jo.init(n)
+    return jo
+}
+
+run(s: Stack, program: Op[]) {
+    pc: int = 0
+    while (pc < length(program)) {
+        op: Op = program[pc]
+        pc = pc + 1
+
+        pc = op.execute(s, pc)
+    }
+}
+
+main(args: int[][]) {
+    LIMIT: int = 1000
+    RUNS:  int = 500
+
+    r: int = 0
+    s: Stack
+    while (r < RUNS) {
+        // Runs program that adds in 0 ... LIMIT - 1
+        // It first puts all of them (well, except 0) on the stack
+
+        prog1: Op[] = ( num(0),   // @0
+                        dup(),    // @1
+                        num(1),   // @2
+                        add(),    // @3 -- produces top of stack +1 with previous two
+                        dup(),    // @4
+                        num(LIMIT-1), // @5 --- (-1 as post-test)
+                        jl(1)       // @ 6 -- loop if under limit
+                        )
+
+        s = new Stack
+        run(s, prog1)
+
+        // The second program adds all of them up.
+        prog2: Op[] = ( add(),    // @0
+                        num(2),
+                        ssize(),
+                        jl(0)     //while 2 < ssize (before the instruction, so includes the 2), add stuff.
+                    )
+
+        run(s, prog2)
+
+        r = r + 1
+    }
+
+    println(unparseInt(r))
+
+    while (s.getSize() != 0) {
+        v: int = s.pop()
+        println(unparseInt(v))
+    }
+}

@@ -9,8 +9,8 @@ do
 done
 
 pushd $DIR/src/main/java/aar226_akc55_ayc62_ahl88
-rm EtaLexer.java Lexer.java EtaLexer.java~ Lexer.java~
-rm EtaParser.java EtiParser.java parser.java sym.java
+rm EtaLexer.java Lexer.java EtaLexer.java~ Lexer.java~ EtaLex.java EtaLex.java~
+rm EtaParser.java EtiParser.java parser.java sym.java RhParser.java RhoLex.java RhoLex.java~ RiParser.java
 popd
 
 rm  -r $DIR/build

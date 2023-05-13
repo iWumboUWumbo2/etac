@@ -18,6 +18,10 @@ import java.util.*;
 
 import static aar226_akc55_ayc62_ahl88.visitors.IRVisitor.OUT_OF_BOUNDS;
 
+/**
+ * Class For Single Instructions CFG
+ * Contains the construction , destruction and printing of the CFG
+ */
 public class CFGGraph<T> {
     public static IRCallStmt outOfBounds = new IRCallStmt(new IRName(OUT_OF_BOUNDS), 0L,new ArrayList<>());
     public static ASMCall asmOut = new ASMCall(new ASMNameExpr("_eta_out_of_bounds"),0,0);

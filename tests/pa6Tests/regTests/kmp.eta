@@ -1,0 +1,63 @@
+
+use io
+use conv
+
+// complex number a+bi	a,b\in\Re are represented as
+//   x:array[int]   a\approx x_0*10000, b\approx x_1*10000
+
+// compute g(z) = z^2 + c
+step(z:int[], c:int[]):int[]{
+	w:int[2]
+
+	//(a+bi)^2 = (a^2-b^2) + (2*a*b)i
+
+	w[0] = c[0] + (z[0]/100)*(z[0]/100) - (z[1]/100)*(z[1]/100);
+	w[1] = c[1] + 2*(z[0]/100)*(z[1]/100);
+
+	return w;
+}
+
+// return true if |z|<2.0
+//   |z|^2<4.0
+//   a^2+b^2 < 4.0
+escapes(z:int[]):bool{
+	return (z[0]/100)*(z[0]/100)+(z[1]/100)*(z[1]/100) > 40000
+	}
+
+// check how long it takes the point c to escape
+//  upto maxiter iterations; returns number of iterations or
+//   maxiter if it doesn't escape in maxiter iterations
+mandelbrot(c:int[], maxiter:int):int{
+	z:int[2]
+	i:int = 0;
+	while (i < maxiter & !escapes(z)){z = step(z,c); i=i+1};
+	return i;
+}
+
+main(args:int[][]):int{
+	z_0:int[2];
+	z_0[0] = 3200; z_0[1] = -100;
+
+	while (z_0[0] < 3800){
+		while (z_0[1] < 2000){
+			k:int = mandelbrot(z_0, 2000);
+			if (k < 5)
+				print("*");
+			else if (k < 10)
+				print("X");
+                        else if (k < 15)
+				print("O");
+			else if (k < 20)
+				print("o");
+			else if (k < 250)
+				print(".");
+			else
+				print(" ");
+			z_0[1] = z_0[1] + 27;
+		}
+		print("\N");
+		z_0[1] = -100;
+		z_0[0] = z_0[0] + 34;
+	}
+	return 0;
+}
