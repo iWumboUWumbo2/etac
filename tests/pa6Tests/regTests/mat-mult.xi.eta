@@ -10,13 +10,13 @@ matMult(A: int[][], B: int[][]): int[][] {
     out: int[rowsA][colsB]
 
     outRow: int = 0
-    while (outRow < rowsA) {
+    while (outRow < length(A)) {
         outCol: int = 0
-        while (outCol < colsB) {
+        while (outCol < length(B[0])) {
             dotVal: int = 0
 
             dotPos: int = 0
-            while (dotPos < colsA) {
+            while (dotPos < length(A[0])) {
                 dotVal = dotVal + A[outRow][dotPos] * B[dotPos][outCol]
                 dotPos = dotPos + 1
             }

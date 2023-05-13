@@ -65,7 +65,7 @@ public class GraphColorAllocator {
     ASMCompUnit compUnit;
     String funcName;
     boolean reserveMode;
-    ArrayList<String> reservedRegs = new ArrayList<>(List.of("r13", "r14"));
+    ArrayList<String> reservedRegs = new ArrayList<>(List.of("r12", "r13", "r14"));
     boolean mainCalled;
     String file;
 
@@ -90,7 +90,7 @@ public class GraphColorAllocator {
         numSpillsplus1 = 1;
         progBlock = g;
         if (reserve){
-            validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11","r15","rsi", "rdi","r12"));
+            validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11","r15","rsi", "rdi"));
             K = validColors.size();
         }else{
             validColors = new ArrayList<>(List.of("rcx", "rbx", "rdx", "rax", "r8", "r9", "r10", "r11", "r12", "r13","r14","r15","rsi", "rdi"));

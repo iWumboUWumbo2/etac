@@ -374,6 +374,9 @@ public class LoopOpts {
                 // only check nodes that define this use
                 nodesToCheck.removeIf(n -> !LiveVariableAnalysis.def(n.getStmt()).contains(use));
                 // more than one reaching def
+                if (nodesToCheck.size() == 0){
+                    continue;
+                }
                 if(nodesToCheck.size() > 1){
                     return false;
                 }
