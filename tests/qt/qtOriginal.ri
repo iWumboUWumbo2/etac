@@ -1,218 +1,44 @@
+// ********************************************************************
+// This is a Rho interface to the Qt graphical user interface library.
+// For more information about the classes and methods in this interface,
+// consult the online documentation at:
+//
+//     https://doc.qt.io/archives/qt-4.8/index.html.
+// ********************************************************************
+
+//  A GUI application needs a single instance of the class QApplication.
+//  It manages the control flow of the application and its main settings.
+//  A QApplication allows the user interface to be set up and to be started
+//  running. An application looks roughly like this:
+//
+// main(origArgs: int[][]) = {
+//     qapp: QApplication, args: int[][] = qapplication(origArgs);
+//     // set up initial GUI here, and show it
+//     QApplication_exec(qapp);
+// }
+//
+// Unlike other classes, QApplication may NOT be extended from Rho.
 record QApplication {
 }
-record QStringDerived {}
-record QApplicationDerived {}
-record AboutToQuitListener {
-}
-record AboutToQuitListenerDerived {}
-record QString {
-}
-record QPoint {
-}
-record QPointDerived {}
-record QSize {
-}
-record QSizeDerived {}
-record QRect {
-}
-record Orientation {
-}
-record QRectDerived {}
-record OrientationDerived {}
-record QContextMenuEvent {
-}
-record EventType {
-}
-record EventTypeDerived {}
-record QEvent {
-}
-record QEventDerived {}
-record QInputEvent {
-}
-record QInputEventDerived {}
-record QContextMenuEventDerived {}
-record QKeyEvent {
-}
-record QKeyEventDerived {}
-record MouseButton {
-}
-record MouseButtonDerived {}
-record QMouseEvent {
-}
-record QMouseEventDerived {}
-record QPaintEvent {
-}
-
-record QPaintEventDerived {}
-record QResizeEvent {
-}
-record QResizeEventDerived {}
-record QWheelEvent {
-}
-record QWheelEventDerived {}
-record QBrushDerived {}
-record QBrush {
-}
-record QPenDerived {}
-record QPen {
-}
-record PenJoinStyleDerived {}
-record PenJoinStyle {
-}
-record PenCapStyleDerived {}
-record PenCapStyle {
-}
-record PenStyleDerived {}
-record PenStyle {
-}
-record QColorDerived {}
-record QColor {
-}
-record QPixmapDerived {}
-record QPixmap {
-}
-record QPaintDevice {
-}
-record QPaintDeviceDerived {}
-record QGridLayoutDerived {}
-record QGridLayout {
-}
-record QVBoxLayoutDerived {}
-record QVBoxLayout {
-}
-record QHBoxLayoutDerived {}
-record QHBoxLayout {
-}
-record QBoxLayoutDerived {}
-record QBoxLayout {
-}
-record BoxLayoutDirectionDerived {}
-record BoxLayoutDirection {
-}
-record QLayoutDerived {}
-record QLayout {
-}
-record QPainterDerived {}
-record QPainter {
-}
-record QFontMetricsDerived {}
-record QFontMetrics {
-}
-record TextElideModeDerived {}
-record TextElideMode {
-}
-record QFontDerived {}
-record QFont {
-}
-record FontStyle {
-}
-record FontStyleDerived {}
-record QMenu {
-}
-record QButtonGroupDerived {}
-record QButtonGroup {
-}
-record QRadioButton {
-}
-record ToggleListenerDerived {}
-record ToggleListener {
-}
-record QCheckBoxDerived {}
-record QCheckBox {
-}
-record ClickListenerDerived {}
-record ClickListener {
-}
-record QPushButton {
-}
-record QWidgetDerived {}
-record QWidget {
-}
-record FocusPolicyDerived {}
-record FocusPolicy {
-}
-record QIconDerived {}
-record QIcon {
-}
-record ActionListenerDerived {}
-record ActionListener {
-}
-record QActionDerived {}
-record QAction {
-}
-record TimerListenerDerived {}
-record TimerListener {
-}
-record QTimerDerived {}
-record QTimer {
-}
-record QStackedLayout {
-}
-record QStackedLayoutDerived {}
-record SliderListener {
-}
-record QTextEditDerived {}
-record QTextEdit {
-}
-record QLineEditDerived {}
-record QLineEdit {
-}
-record QDialogDerived {}
-record QDialog {
-}
-record DialogCodeDerived {}
-record DialogCode {
-}
-record QGroupBoxDerived {}
-record QGroupBox {
-}
-record QMainWindowDerived {}
-record QMainWindow {
-}
-record QLabelDerived {}
-record QLabel {
-}
-record QMenuBarDerived {}
-record QMenuBar {
-}
-record QToolBarDerived {}
-record QToolBar {
-}
-record ToolButtonStyleDerived {}
-record ToolButtonStyle {
-}
-record QMenuDerived {}
-record QRadioButtonDerived {}
-record QPushButtonDerived {}
-record SliderListenerDerived {}
-record StandardIcon {
-}
-record QSliderDerived {}
-record QSlider {
-}
-record SliderTickPositionDerived {}
-record SliderTickPosition {
-}
-record QScrollBarDerived {}
-record QScrollBar {
-}
-record QAbstractSliderDerived {}
-record QAbstractSlider {
-}
-record StandardIconDerived {}
 
 QApplication_exec(self: QApplication)
+// Interrupt execution of the application, by halting a
+//       call to exec().
 QApplication_quit(self: QApplication)
+// Close all application windows.
 QApplication_closeAllWindows(self: QApplication)
+// Stylesheets can be used to tweak UI appearance.
+//       See: https://doc.qt.io/archives/qt-4.8/stylesheet.html
 QApplication_styleSheet(self: QApplication): QString
 QApplication_setStyleSheet(self: QApplication, sheet: QString)
 QApplication_windowIcon(self: QApplication): QIcon
 QApplication_setWindowIcon(self: QApplication, param0: QIcon)
 QApplication_font(self: QApplication): QFont
 QApplication_setFont(self: QApplication, param0: QFont)
+// Add a listener to be notified when the application is about to exit.
 QApplication_addAboutToQuitListener(self: QApplication, l: AboutToQuitListener)
 
-
+record QApplicationDerived {}
 
 QApplication_extend(): QApplicationDerived
 QApplication_downcast(self: QApplication, derived: QApplicationDerived)
@@ -227,13 +53,37 @@ QApplication_override_setWindowIcon(derived: QApplicationDerived, name: int[])
 QApplication_override_font(derived: QApplicationDerived, name: int[])
 QApplication_override_setFont(derived: QApplicationDerived, name: int[])
 QApplication_override_addAboutToQuitListener(derived: QApplicationDerived, name: int[])
+
 qapplication_alloc(): QApplication
+
+// Create a QApplication.
 qapplication(origArgs: int[][]): QApplication, int[][]
+
+// A Listener called by applications that are quitting.
+record AboutToQuitListener {
+}
+
 AboutToQuitListener_aboutToQuit(self: AboutToQuitListener)
+
+record AboutToQuitListenerDerived {}
+
 AboutToQuitListener_extend(): AboutToQuitListenerDerived
 AboutToQuitListener_downcast(self: AboutToQuitListener, derived: AboutToQuitListenerDerived)
+
 AboutToQuitListener_override_aboutToQuit(derived: AboutToQuitListenerDerived, name: int[])
+
 abouttoquitlistener_alloc(): AboutToQuitListener
+
+
+// A QString is a mutable string. Rho code can use qs "foo"
+// to construct instances from Rho string literals, which are
+// represented as int64_t[] arrays that are in UCS-4.
+// well, the bottom 32 bits are UCS-4. the top 32 are meaningless.
+
+// Methods suffixed with CI are case-insensitive variants.
+record QString {
+}
+
 QString_RhoString(self: QString): int[]
 QString_append(self: QString, other: QString)
 QString_at(self: QString, pos: int): int
@@ -273,8 +123,12 @@ QString_less(self: QString, other: QString): bool
 QString_leq(self: QString, other: QString): bool
 QString_greater(self: QString, other: QString): bool
 QString_geq(self: QString, other: QString): bool
+
+record QStringDerived {}
+
 QString_extend(): QStringDerived
 QString_downcast(self: QString, derived: QStringDerived)
+
 QString_override_RhoString(derived: QStringDerived, name: int[])
 QString_override_append(derived: QStringDerived, name: int[])
 QString_override_at(derived: QStringDerived, name: int[])
@@ -318,13 +172,17 @@ QString_override_geq(derived: QStringDerived, name: int[])
 qstring_alloc(): QString
 
 
+// Convert a Rho string to a QString
 qs(istr: int[]): QString
 
 
+// A QString containing the decimal representation of num.
 qsNum(num: int): QString
 
 
-
+// QPoint is a two-dimensional point (x,y).
+record QPoint {
+}
 
 QPoint_x(self: QPoint): int
 QPoint_y(self: QPoint): int
@@ -335,7 +193,7 @@ QPoint_minus(self: QPoint, other: QPoint): QPoint
 QPoint_equals(self: QPoint, other: QPoint): bool
 QPoint_neq(self: QPoint, other: QPoint): bool
 
-
+record QPointDerived {}
 
 QPoint_extend(): QPointDerived
 QPoint_downcast(self: QPoint, derived: QPointDerived)
@@ -352,9 +210,11 @@ QPoint_override_neq(derived: QPointDerived, name: int[])
 qpoint_alloc(): QPoint
 
 
+// qpoint(x,y) is the QPoint for (x,y).
 qpoint(x: int, y: int): QPoint
 
-
+record QSize {
+}
 
 QSize_boundedTo(self: QSize, other: QSize): QSize
 QSize_expandedTo(self: QSize, other: QSize): QSize
@@ -371,7 +231,7 @@ QSize_minus(self: QSize, other: QSize): QSize
 QSize_equals(self: QSize, other: QSize): bool
 QSize_neq(self: QSize, other: QSize): bool
 
-
+record QSizeDerived {}
 
 QSize_extend(): QSizeDerived
 QSize_downcast(self: QSize, derived: QSizeDerived)
@@ -395,7 +255,8 @@ qsize_alloc(): QSize
 
 qsize(w: int, h: int): QSize
 
-
+record QRect {
+}
 
 QRect_adjust(self: QRect, dx1: int, dy1: int, dx2: int, dy2: int)
 QRect_adjusted(self: QRect, dx1: int, dy1: int, dx2: int, dy2: int): QRect
@@ -449,7 +310,7 @@ QRect_y(self: QRect): int
 QRect_equals(self: QRect, other: QRect): bool
 QRect_neq(self: QRect, other: QRect): bool
 
-
+record QRectDerived {}
 
 QRect_extend(): QRectDerived
 QRect_downcast(self: QRect, derived: QRectDerived)
@@ -511,14 +372,16 @@ qrect_alloc(): QRect
 qrect(x: int, y: int, w: int, h: int): QRect
 
 
-
+// Some important enums
+record Orientation {
+}
 
 Horizontal(): Orientation
 
 Vertical(): Orientation
 
 
-
+record OrientationDerived {}
 
 Orientation_extend(): OrientationDerived
 Orientation_downcast(self: Orientation, derived: OrientationDerived)
@@ -533,6 +396,8 @@ orientation_alloc(): Orientation
 //  also can't be extended from Rho
 
 // See https://doc.qt.io/archives/qt-4.8/qevent.html#Type-enum
+record EventType {
+}
 
 ContextMenu(): EventType
 
@@ -564,20 +429,40 @@ Show(): EventType
 
 Wheel(): EventType
 
+
+record EventTypeDerived {}
+
 EventType_extend(): EventTypeDerived
 EventType_downcast(self: EventType, derived: EventTypeDerived)
+
+
 eventtype_alloc(): EventType
+
+record QEvent {
+}
+
 QEvent_type(self: QEvent): EventType
 QEvent_accept(self: QEvent)
 QEvent_ignore(self: QEvent)
 QEvent_isAccepted(self: QEvent): bool
+
+record QEventDerived {}
+
 QEvent_extend(): QEventDerived
 QEvent_downcast(self: QEvent, derived: QEventDerived)
+
 QEvent_override_type(derived: QEventDerived, name: int[])
 QEvent_override_accept(derived: QEventDerived, name: int[])
 QEvent_override_ignore(derived: QEventDerived, name: int[])
 QEvent_override_isAccepted(derived: QEventDerived, name: int[])
+
 qevent_alloc(): QEvent
+
+
+// We provide boolean accessors instead of bitflags in the original
+record QInputEvent {
+}
+
 QInputEvent_to_QEvent(self: QInputEvent): QEvent
 QInputEvent_shift(self: QInputEvent): bool
 QInputEvent_ctrl(self: QInputEvent): bool
@@ -587,8 +472,12 @@ QInputEvent_type(self: QInputEvent): EventType
 QInputEvent_accept(self: QInputEvent)
 QInputEvent_ignore(self: QInputEvent)
 QInputEvent_isAccepted(self: QInputEvent): bool
+
+record QInputEventDerived {}
+
 QInputEvent_extend(): QInputEventDerived
 QInputEvent_downcast(self: QInputEvent, derived: QInputEventDerived)
+
 QInputEvent_override_shift(derived: QInputEventDerived, name: int[])
 QInputEvent_override_ctrl(derived: QInputEventDerived, name: int[])
 QInputEvent_override_alt(derived: QInputEventDerived, name: int[])
@@ -597,8 +486,11 @@ QInputEvent_override_type(derived: QInputEventDerived, name: int[])
 QInputEvent_override_accept(derived: QInputEventDerived, name: int[])
 QInputEvent_override_ignore(derived: QInputEventDerived, name: int[])
 QInputEvent_override_isAccepted(derived: QInputEventDerived, name: int[])
+
 qinputevent_alloc(): QInputEvent
 
+record QContextMenuEvent {
+}
 
 QContextMenuEvent_to_QInputEvent(self: QContextMenuEvent): QInputEvent
 QContextMenuEvent_to_QEvent(self: QContextMenuEvent): QEvent
@@ -613,7 +505,7 @@ QContextMenuEvent_accept(self: QContextMenuEvent)
 QContextMenuEvent_ignore(self: QContextMenuEvent)
 QContextMenuEvent_isAccepted(self: QContextMenuEvent): bool
 
-
+record QContextMenuEventDerived {}
 
 QContextMenuEvent_extend(): QContextMenuEventDerived
 QContextMenuEvent_downcast(self: QContextMenuEvent, derived: QContextMenuEventDerived)
@@ -631,6 +523,8 @@ QContextMenuEvent_override_isAccepted(derived: QContextMenuEventDerived, name: i
 
 qcontextmenuevent_alloc(): QContextMenuEvent
 
+record QKeyEvent {
+}
 
 QKeyEvent_to_QInputEvent(self: QKeyEvent): QInputEvent
 QKeyEvent_to_QEvent(self: QKeyEvent): QEvent
@@ -649,7 +543,7 @@ QKeyEvent_accept(self: QKeyEvent)
 QKeyEvent_ignore(self: QKeyEvent)
 QKeyEvent_isAccepted(self: QKeyEvent): bool
 
-
+record QKeyEventDerived {}
 
 QKeyEvent_extend(): QKeyEventDerived
 QKeyEvent_downcast(self: QKeyEvent, derived: QKeyEventDerived)
@@ -669,7 +563,8 @@ QKeyEvent_override_isAccepted(derived: QKeyEventDerived, name: int[])
 
 qkeyevent_alloc(): QKeyEvent
 
-
+record MouseButton {
+}
 
 LeftButton(): MouseButton
 
@@ -678,6 +573,7 @@ RightButton(): MouseButton
 MidButton(): MouseButton
 
 
+record MouseButtonDerived {}
 
 MouseButton_extend(): MouseButtonDerived
 MouseButton_downcast(self: MouseButton, derived: MouseButtonDerived)
@@ -685,7 +581,8 @@ MouseButton_downcast(self: MouseButton, derived: MouseButtonDerived)
 
 mousebutton_alloc(): MouseButton
 
-
+record QMouseEvent {
+}
 
 QMouseEvent_to_QInputEvent(self: QMouseEvent): QInputEvent
 QMouseEvent_to_QEvent(self: QMouseEvent): QEvent
@@ -706,7 +603,7 @@ QMouseEvent_accept(self: QMouseEvent)
 QMouseEvent_ignore(self: QMouseEvent)
 QMouseEvent_isAccepted(self: QMouseEvent): bool
 
-
+record QMouseEventDerived {}
 
 QMouseEvent_extend(): QMouseEventDerived
 QMouseEvent_downcast(self: QMouseEvent, derived: QMouseEventDerived)
@@ -728,6 +625,8 @@ QMouseEvent_override_isAccepted(derived: QMouseEventDerived, name: int[])
 
 qmouseevent_alloc(): QMouseEvent
 
+record QPaintEvent {
+}
 
 QPaintEvent_to_QEvent(self: QPaintEvent): QEvent
 QPaintEvent_rect(self: QPaintEvent): QRect
@@ -736,6 +635,7 @@ QPaintEvent_accept(self: QPaintEvent)
 QPaintEvent_ignore(self: QPaintEvent)
 QPaintEvent_isAccepted(self: QPaintEvent): bool
 
+record QPaintEventDerived {}
 
 QPaintEvent_extend(): QPaintEventDerived
 QPaintEvent_downcast(self: QPaintEvent, derived: QPaintEventDerived)
@@ -748,7 +648,8 @@ QPaintEvent_override_isAccepted(derived: QPaintEventDerived, name: int[])
 
 qpaintevent_alloc(): QPaintEvent
 
-
+record QResizeEvent {
+}
 
 QResizeEvent_to_QEvent(self: QResizeEvent): QEvent
 QResizeEvent_oldSize(self: QResizeEvent): QSize
@@ -758,7 +659,7 @@ QResizeEvent_accept(self: QResizeEvent)
 QResizeEvent_ignore(self: QResizeEvent)
 QResizeEvent_isAccepted(self: QResizeEvent): bool
 
-
+record QResizeEventDerived {}
 
 QResizeEvent_extend(): QResizeEventDerived
 QResizeEvent_downcast(self: QResizeEvent, derived: QResizeEventDerived)
@@ -772,7 +673,8 @@ QResizeEvent_override_isAccepted(derived: QResizeEventDerived, name: int[])
 
 qresizeevent_alloc(): QResizeEvent
 
-
+record QWheelEvent {
+}
 
 QWheelEvent_to_QInputEvent(self: QWheelEvent): QInputEvent
 QWheelEvent_to_QEvent(self: QWheelEvent): QEvent
@@ -789,7 +691,7 @@ QWheelEvent_accept(self: QWheelEvent)
 QWheelEvent_ignore(self: QWheelEvent)
 QWheelEvent_isAccepted(self: QWheelEvent): bool
 
-
+record QWheelEventDerived {}
 
 QWheelEvent_extend(): QWheelEventDerived
 QWheelEvent_downcast(self: QWheelEvent, derived: QWheelEventDerived)
@@ -815,12 +717,13 @@ qwheelevent_alloc(): QWheelEvent
 
 // A QPaintDevice is an object that can be painted.
 //   You should not extend this.
-
+record QPaintDevice {
+}
 
 QPaintDevice_toPixmap(self: QPaintDevice): QPixmap
 QPaintDevice_toWidget(self: QPaintDevice): QWidget
 
-
+record QPaintDeviceDerived {}
 
 QPaintDevice_extend(): QPaintDeviceDerived
 QPaintDevice_downcast(self: QPaintDevice, derived: QPaintDeviceDerived)
@@ -833,7 +736,8 @@ qpaintdevice_alloc(): QPaintDevice
 
 // An off-screen picture, which can both be drawn to,
 //  and which can be drawn in turn
-
+record QPixmap {
+}
 
 QPixmap_to_QPaintDevice(self: QPixmap): QPaintDevice
 QPixmap_load(self: QPixmap, file: QString)
@@ -847,7 +751,7 @@ QPixmap_size(self: QPixmap): QSize
 QPixmap_toPixmap(self: QPixmap): QPixmap
 QPixmap_toWidget(self: QPixmap): QWidget
 
-
+record QPixmapDerived {}
 
 QPixmap_extend(): QPixmapDerived
 QPixmap_downcast(self: QPixmap, derived: QPixmapDerived)
@@ -871,7 +775,8 @@ qpixmapFromFile(f: QString): QPixmap
 
 
 // Represent a color; components range 0-255
-
+record QColor {
+}
 
 QColor_alpha(self: QColor): int
 QColor_red(self: QColor): int
@@ -886,7 +791,7 @@ QColor_setNamedColor(self: QColor, param0: QString)
 QColor_equals(self: QColor, other: QColor): bool
 QColor_neq(self: QColor, other: QColor): bool
 
-
+record QColorDerived {}
 
 QColor_extend(): QColorDerived
 QColor_downcast(self: QColor, derived: QColorDerived)
@@ -910,7 +815,8 @@ qcolor(r: int, g: int, b: int): QColor
 
 qcolorRGBA(r: int, g: int, b: int, a: int): QColor
 
-
+record PenStyle {
+}
 
 NoPen(): PenStyle
 
@@ -925,7 +831,7 @@ DashDotLine(): PenStyle
 DashDotDotLine(): PenStyle
 
 
-
+record PenStyleDerived {}
 
 PenStyle_extend(): PenStyleDerived
 PenStyle_downcast(self: PenStyle, derived: PenStyleDerived)
@@ -933,7 +839,8 @@ PenStyle_downcast(self: PenStyle, derived: PenStyleDerived)
 
 penstyle_alloc(): PenStyle
 
-
+record PenCapStyle {
+}
 
 FlatCap(): PenCapStyle
 
@@ -942,7 +849,7 @@ SquareCap(): PenCapStyle
 RoundCap(): PenCapStyle
 
 
-
+record PenCapStyleDerived {}
 
 PenCapStyle_extend(): PenCapStyleDerived
 PenCapStyle_downcast(self: PenCapStyle, derived: PenCapStyleDerived)
@@ -950,7 +857,8 @@ PenCapStyle_downcast(self: PenCapStyle, derived: PenCapStyleDerived)
 
 pencapstyle_alloc(): PenCapStyle
 
-
+record PenJoinStyle {
+}
 
 MiterJoin(): PenJoinStyle
 
@@ -961,7 +869,7 @@ RoundJoin(): PenJoinStyle
 SvgMiterJoin(): PenJoinStyle
 
 
-
+record PenJoinStyleDerived {}
 
 PenJoinStyle_extend(): PenJoinStyleDerived
 PenJoinStyle_downcast(self: PenJoinStyle, derived: PenJoinStyleDerived)
@@ -971,7 +879,8 @@ penjoinstyle_alloc(): PenJoinStyle
 
 
 // Pens are used for standalone lines and outlines of shapes
-
+record QPen {
+}
 
 QPen_brush(self: QPen): QBrush
 QPen_capStyle(self: QPen): PenCapStyle
@@ -991,7 +900,7 @@ QPen_width(self: QPen): int
 QPen_equals(self: QPen, other: QPen): bool
 QPen_neq(self: QPen, other: QPen): bool
 
-
+record QPenDerived {}
 
 QPen_extend(): QPenDerived
 QPen_downcast(self: QPen, derived: QPenDerived)
@@ -1020,14 +929,15 @@ qpen(c: QColor): QPen
 
 
 // Brushes are used to fill interiors of shapes.
-
+record QBrush {
+}
 
 QBrush_color(self: QBrush): QColor
 QBrush_texture(self: QBrush): QPixmap
 QBrush_setColor(self: QBrush, c: QColor)
 QBrush_setTexture(self: QBrush, p: QPixmap)
 
-
+record QBrushDerived {}
 
 QBrush_extend(): QBrushDerived
 QBrush_downcast(self: QBrush, derived: QBrushDerived)
@@ -1043,6 +953,8 @@ qbrush(c: QColor): QBrush
 
 qtextureBrush(p: QPixmap): QBrush
 
+record FontStyle {
+}
 
 StyleNormal(): FontStyle
 
@@ -1051,7 +963,7 @@ StyleItalic(): FontStyle
 StyleOblique(): FontStyle
 
 
-
+record FontStyleDerived {}
 
 FontStyle_extend(): FontStyleDerived
 FontStyle_downcast(self: FontStyle, derived: FontStyleDerived)
@@ -1059,7 +971,8 @@ FontStyle_downcast(self: FontStyle, derived: FontStyleDerived)
 
 fontstyle_alloc(): FontStyle
 
-
+record QFont {
+}
 
 QFont_bold(self: QFont): bool
 QFont_setBold(self: QFont, param0: bool)
@@ -1083,7 +996,7 @@ QFont_setUnderline(self: QFont, param0: bool)
 QFont_setStrikeOut(self: QFont, param0: bool)
 QFont_toString(self: QFont): QString
 
-
+record QFontDerived {}
 
 QFont_extend(): QFontDerived
 QFont_downcast(self: QFont, derived: QFontDerived)
@@ -1116,7 +1029,8 @@ qfont_alloc(): QFont
 // Returns application default font. See also QApplication::setFont
 qfont(): QFont
 
-
+record TextElideMode {
+}
 
 ElideLeft(): TextElideMode
 
@@ -1127,7 +1041,7 @@ ElideMiddle(): TextElideMode
 ElideNone(): TextElideMode
 
 
-
+record TextElideModeDerived {}
 
 TextElideMode_extend(): TextElideModeDerived
 TextElideMode_downcast(self: TextElideMode, derived: TextElideModeDerived)
@@ -1139,7 +1053,8 @@ textelidemode_alloc(): TextElideMode
 // This class lets one compute how much text will take with given
 //   font.
 //   Warning: can't be extended
-
+record QFontMetrics {
+}
 
 QFontMetrics_ascent(self: QFontMetrics): int
 QFontMetrics_descent(self: QFontMetrics): int
@@ -1164,7 +1079,7 @@ QFontMetrics_tightBoundingRect(self: QFontMetrics, param0: QString): QRect
 QFontMetrics_width(self: QFontMetrics, param0: QString): int
 QFontMetrics_elidedText(self: QFontMetrics, text: QString, mode: TextElideMode, w: int): QString
 
-
+record QFontMetricsDerived {}
 
 QFontMetrics_extend(): QFontMetricsDerived
 QFontMetrics_downcast(self: QFontMetrics, derived: QFontMetricsDerived)
@@ -1198,7 +1113,8 @@ qfontMetrics(f: QFont): QFontMetrics
 
 // You use this to paint on a QPaintDevice. Be sure to call end() when you're
 //   done. If you extend, you'll need to call begin() to describe what to draw on
-
+record QPainter {
+}
 
 QPainter_begin(self: QPainter, param0: QPaintDevice)
 QPainter_end(self: QPainter)
@@ -1237,7 +1153,7 @@ QPainter_drawPoint(self: QPainter, p: QPoint)
 QPainter_drawLine(self: QPainter, p1: QPoint, p2: QPoint)
 QPainter_drawText(self: QPainter, p: QPoint, text: QString)
 
-
+record QPainterDerived {}
 
 QPainter_extend(): QPainterDerived
 QPainter_downcast(self: QPainter, derived: QPainterDerived)
@@ -1289,12 +1205,13 @@ qpainter(target: QPaintDevice): QPainter
 // This is the base class for layouts. You want to use one of the subclasses
 //  defined here instead (as QtRho doesn't bind most of the advanced API).
 //  Should not be extended from Rho.
-
+record QLayout {
+}
 
 // unlike QLayout::removeWidget, this returns ownership to Rho
 QLayout_removeWidget(self: QLayout, iw: QWidget)
 
-
+record QLayoutDerived {}
 
 QLayout_extend(): QLayoutDerived
 QLayout_downcast(self: QLayout, derived: QLayoutDerived)
@@ -1303,7 +1220,8 @@ QLayout_override_removeWidget(derived: QLayoutDerived, name: int[])
 
 qlayout_alloc(): QLayout
 
-
+record BoxLayoutDirection {
+}
 
 LeftToRight(): BoxLayoutDirection
 
@@ -1314,7 +1232,7 @@ TopToBottom(): BoxLayoutDirection
 BottomToTop(): BoxLayoutDirection
 
 
-
+record BoxLayoutDirectionDerived {}
 
 BoxLayoutDirection_extend(): BoxLayoutDirectionDerived
 BoxLayoutDirection_downcast(self: BoxLayoutDirection, derived: BoxLayoutDirectionDerived)
@@ -1324,7 +1242,8 @@ boxlayoutdirection_alloc(): BoxLayoutDirection
 
 
 // * Defaults to top-to-bottom
-
+record QBoxLayout {
+}
 
 QBoxLayout_to_QLayout(self: QBoxLayout): QLayout
 QBoxLayout_direction(self: QBoxLayout): BoxLayoutDirection
@@ -1352,7 +1271,7 @@ QBoxLayout_setStretch(self: QBoxLayout, idx: int, stretch: int)
 // unlike QLayout::removeWidget, this returns ownership to Rho
 QBoxLayout_removeWidget(self: QBoxLayout, iw: QWidget)
 
-
+record QBoxLayoutDerived {}
 
 QBoxLayout_extend(): QBoxLayoutDerived
 QBoxLayout_downcast(self: QBoxLayout, derived: QBoxLayoutDerived)
@@ -1372,7 +1291,8 @@ QBoxLayout_override_removeWidget(derived: QBoxLayoutDerived, name: int[])
 
 qboxlayout_alloc(): QBoxLayout
 
-
+record QHBoxLayout {
+}
 
 QHBoxLayout_to_QBoxLayout(self: QHBoxLayout): QBoxLayout
 QHBoxLayout_to_QLayout(self: QHBoxLayout): QLayout
@@ -1401,7 +1321,7 @@ QHBoxLayout_setStretch(self: QHBoxLayout, idx: int, stretch: int)
 // unlike QLayout::removeWidget, this returns ownership to Rho
 QHBoxLayout_removeWidget(self: QHBoxLayout, iw: QWidget)
 
-
+record QHBoxLayoutDerived {}
 
 QHBoxLayout_extend(): QHBoxLayoutDerived
 QHBoxLayout_downcast(self: QHBoxLayout, derived: QHBoxLayoutDerived)
@@ -1423,7 +1343,8 @@ qhboxlayout_alloc(): QHBoxLayout
 
 qhboxLayout(): QHBoxLayout
 
-
+record QVBoxLayout {
+}
 
 QVBoxLayout_to_QBoxLayout(self: QVBoxLayout): QBoxLayout
 QVBoxLayout_to_QLayout(self: QVBoxLayout): QLayout
@@ -1452,7 +1373,7 @@ QVBoxLayout_setStretch(self: QVBoxLayout, idx: int, stretch: int)
 // unlike QLayout::removeWidget, this returns ownership to Rho
 QVBoxLayout_removeWidget(self: QVBoxLayout, iw: QWidget)
 
-
+record QVBoxLayoutDerived {}
 
 QVBoxLayout_extend(): QVBoxLayoutDerived
 QVBoxLayout_downcast(self: QVBoxLayout, derived: QVBoxLayoutDerived)
@@ -1474,7 +1395,8 @@ qvboxlayout_alloc(): QVBoxLayout
 
 qvboxLayout(): QVBoxLayout
 
-
+record QGridLayout {
+}
 
 QGridLayout_to_QLayout(self: QGridLayout): QLayout
 QGridLayout_addLayout(self: QGridLayout, l: QLayout, row: int, col: int)
@@ -1499,7 +1421,7 @@ QGridLayout_verticalSpacing(self: QGridLayout): int
 // unlike QLayout::removeWidget, this returns ownership to Rho
 QGridLayout_removeWidget(self: QGridLayout, iw: QWidget)
 
-
+record QGridLayoutDerived {}
 
 QGridLayout_extend(): QGridLayoutDerived
 QGridLayout_downcast(self: QGridLayout, derived: QGridLayoutDerived)
@@ -1531,6 +1453,8 @@ qgridLayout(): QGridLayout
 
 
 // Shows one thing at a time
+record QStackedLayout {
+}
 
 QStackedLayout_to_QLayout(self: QStackedLayout): QLayout
 QStackedLayout_addWidget(self: QStackedLayout, w: QWidget): int
@@ -1542,7 +1466,7 @@ QStackedLayout_currentWidget(self: QStackedLayout): QWidget
 // unlike QLayout::removeWidget, this returns ownership to Rho
 QStackedLayout_removeWidget(self: QStackedLayout, iw: QWidget)
 
-
+record QStackedLayoutDerived {}
 
 QStackedLayout_extend(): QStackedLayoutDerived
 QStackedLayout_downcast(self: QStackedLayout, derived: QStackedLayoutDerived)
@@ -1562,7 +1486,8 @@ qstackedLayout(): QStackedLayout
 
 // *
 //  Widgets and a few other things
-
+record QTimer {
+}
 
 QTimer_interval(self: QTimer): int
 QTimer_isActive(self: QTimer): bool
@@ -1576,7 +1501,7 @@ QTimer_stop(self: QTimer)
 QTimer_timeout(self: QTimer)
 QTimer_addTimerListener(self: QTimer, tl: TimerListener)
 
-
+record QTimerDerived {}
 
 QTimer_extend(): QTimerDerived
 QTimer_downcast(self: QTimer, derived: QTimerDerived)
@@ -1595,11 +1520,12 @@ qtimer_alloc(): QTimer
 
 qtimer(): QTimer
 
-
+record TimerListener {
+}
 
 TimerListener_timeout(self: TimerListener, timer: QTimer)
 
-
+record TimerListenerDerived {}
 
 TimerListener_extend(): TimerListenerDerived
 TimerListener_downcast(self: TimerListener, derived: TimerListenerDerived)
@@ -1612,7 +1538,8 @@ timerlistener_alloc(): TimerListener
 // actions basically abstract the idea of a menu/toolbar entry.
 //   You can add them to menus and toolbars to create
 //   the appropriate things.
-
+record QAction {
+}
 
 QAction_isCheckable(self: QAction): bool
 QAction_setCheckable(self: QAction, param0: bool)
@@ -1634,7 +1561,7 @@ QAction_setMenu(self: QAction, param0: QMenu)
 QAction_triggered(self: QAction)
 QAction_addActionListener(self: QAction, l: ActionListener)
 
-
+record QActionDerived {}
 
 QAction_extend(): QActionDerived
 QAction_downcast(self: QAction, derived: QActionDerived)
@@ -1662,11 +1589,12 @@ qaction_alloc(): QAction
 
 qaction(text: QString): QAction
 
-
+record ActionListener {
+}
 
 ActionListener_triggered(self: ActionListener, a: QAction)
 
-
+record ActionListenerDerived {}
 
 ActionListener_extend(): ActionListenerDerived
 ActionListener_downcast(self: ActionListener, derived: ActionListenerDerived)
@@ -1677,10 +1605,11 @@ actionlistener_alloc(): ActionListener
 
 
 // Used to set window/button icons and the like
+record QIcon {
+}
 
 
-
-
+record QIconDerived {}
 
 QIcon_extend(): QIconDerived
 QIcon_downcast(self: QIcon, derived: QIconDerived)
@@ -1696,7 +1625,8 @@ qiconNull(): QIcon
 
 qiconStandard(id: StandardIcon): QIcon
 
-
+record FocusPolicy {
+}
 
 TabFocus(): FocusPolicy
 
@@ -1709,7 +1639,7 @@ WheelFocus(): FocusPolicy
 NoFocus(): FocusPolicy
 
 
-
+record FocusPolicyDerived {}
 
 FocusPolicy_extend(): FocusPolicyDerived
 FocusPolicy_downcast(self: FocusPolicy, derived: FocusPolicyDerived)
@@ -1720,7 +1650,8 @@ focuspolicy_alloc(): FocusPolicy
 
 // A QWidget is a user interface object that has a graphical
 // representation and handles input from the user.
-
+record QWidget {
+}
 
 QWidget_to_QPaintDevice(self: QWidget): QPaintDevice
 QWidget_show(self: QWidget)
@@ -1817,7 +1748,7 @@ QWidget_defaultEvent(self: QWidget, pe: QEvent)
 QWidget_toPixmap(self: QWidget): QPixmap
 QWidget_toWidget(self: QWidget): QWidget
 
-
+record QWidgetDerived {}
 
 QWidget_extend(): QWidgetDerived
 QWidget_downcast(self: QWidget, derived: QWidgetDerived)
@@ -1904,7 +1835,8 @@ qwidget_alloc(): QWidget
 
 // A QPushButton is a button that can be pushed to deliver an
 // click event.
-
+record QPushButton {
+}
 
 QPushButton_to_QWidget(self: QPushButton): QWidget
 QPushButton_to_QPaintDevice(self: QPushButton): QPaintDevice
@@ -2019,7 +1951,7 @@ QPushButton_defaultEvent(self: QPushButton, pe: QEvent)
 QPushButton_toPixmap(self: QPushButton): QPixmap
 QPushButton_toWidget(self: QPushButton): QWidget
 
-
+record QPushButtonDerived {}
 
 QPushButton_extend(): QPushButtonDerived
 QPushButton_downcast(self: QPushButton, derived: QPushButtonDerived)
@@ -2124,11 +2056,12 @@ qpushbutton(label: QString): QPushButton
 
 
 // A ClickListener listens for button click events.
-
+record ClickListener {
+}
 
 ClickListener_clicked(self: ClickListener, pb: QPushButton)
 
-
+record ClickListenerDerived {}
 
 ClickListener_extend(): ClickListenerDerived
 ClickListener_downcast(self: ClickListener, derived: ClickListenerDerived)
@@ -2139,7 +2072,8 @@ clicklistener_alloc(): ClickListener
 
 
 // A checkbox with a label
-
+record QCheckBox {
+}
 
 QCheckBox_to_QWidget(self: QCheckBox): QWidget
 QCheckBox_to_QPaintDevice(self: QCheckBox): QPaintDevice
@@ -2243,7 +2177,7 @@ QCheckBox_defaultEvent(self: QCheckBox, pe: QEvent)
 QCheckBox_toPixmap(self: QCheckBox): QPixmap
 QCheckBox_toWidget(self: QCheckBox): QWidget
 
-
+record QCheckBoxDerived {}
 
 QCheckBox_extend(): QCheckBoxDerived
 QCheckBox_downcast(self: QCheckBox, derived: QCheckBoxDerived)
@@ -2337,11 +2271,12 @@ qcheckbox_alloc(): QCheckBox
 // Creates a checkbox with given label
 qcheckbox(label: QString): QCheckBox
 
-
+record ToggleListener {
+}
 
 ToggleListener_toggled(self: ToggleListener, widget: QWidget, state: bool)
 
-
+record ToggleListenerDerived {}
 
 ToggleListener_extend(): ToggleListenerDerived
 ToggleListener_downcast(self: ToggleListener, derived: ToggleListenerDerived)
@@ -2354,7 +2289,8 @@ togglelistener_alloc(): ToggleListener
 // A radio button. Those with the same parent widget
 //   will be grouped together, unless you use a QButtonGroup
 //   to override that.
-
+record QRadioButton {
+}
 
 QRadioButton_to_QWidget(self: QRadioButton): QWidget
 QRadioButton_to_QPaintDevice(self: QRadioButton): QPaintDevice
@@ -2458,7 +2394,7 @@ QRadioButton_defaultEvent(self: QRadioButton, pe: QEvent)
 QRadioButton_toPixmap(self: QRadioButton): QPixmap
 QRadioButton_toWidget(self: QRadioButton): QWidget
 
-
+record QRadioButtonDerived {}
 
 QRadioButton_extend(): QRadioButtonDerived
 QRadioButton_downcast(self: QRadioButton, derived: QRadioButtonDerived)
@@ -2556,11 +2492,12 @@ qradio(label: QString): QRadioButton
 
 //   Note: make sure to keep a reference to these to avoid it from
 //   being garbage-collected!
-
+record QButtonGroup {
+}
 
 QButtonGroup_addButton(self: QButtonGroup, button: QRadioButton)
 
-
+record QButtonGroupDerived {}
 
 QButtonGroup_extend(): QButtonGroupDerived
 QButtonGroup_downcast(self: QButtonGroup, derived: QButtonGroupDerived)
@@ -2571,7 +2508,8 @@ qbuttongroup_alloc(): QButtonGroup
 
 qbuttongroup(): QButtonGroup
 
-
+record QMenu {
+}
 
 QMenu_to_QWidget(self: QMenu): QWidget
 QMenu_to_QPaintDevice(self: QMenu): QPaintDevice
@@ -2682,7 +2620,7 @@ QMenu_defaultEvent(self: QMenu, pe: QEvent)
 QMenu_toPixmap(self: QMenu): QPixmap
 QMenu_toWidget(self: QMenu): QWidget
 
-
+record QMenuDerived {}
 
 QMenu_extend(): QMenuDerived
 QMenu_downcast(self: QMenu, derived: QMenuDerived)
@@ -2776,7 +2714,8 @@ qmenu_alloc(): QMenu
 
 qmenu(title: QString): QMenu
 
-
+record ToolButtonStyle {
+}
 
 ToolButtonIconOnly(): ToolButtonStyle
 
@@ -2787,7 +2726,7 @@ ToolButtonTextBesideIcon(): ToolButtonStyle
 ToolButtonTextUnderIcon(): ToolButtonStyle
 
 
-
+record ToolButtonStyleDerived {}
 
 ToolButtonStyle_extend(): ToolButtonStyleDerived
 ToolButtonStyle_downcast(self: ToolButtonStyle, derived: ToolButtonStyleDerived)
@@ -2795,7 +2734,8 @@ ToolButtonStyle_downcast(self: ToolButtonStyle, derived: ToolButtonStyleDerived)
 
 toolbuttonstyle_alloc(): ToolButtonStyle
 
-
+record QToolBar {
+}
 
 QToolBar_to_QWidget(self: QToolBar): QWidget
 QToolBar_to_QPaintDevice(self: QToolBar): QPaintDevice
@@ -2896,7 +2836,7 @@ QToolBar_defaultEvent(self: QToolBar, pe: QEvent)
 QToolBar_toPixmap(self: QToolBar): QPixmap
 QToolBar_toWidget(self: QToolBar): QWidget
 
-
+record QToolBarDerived {}
 
 QToolBar_extend(): QToolBarDerived
 QToolBar_downcast(self: QToolBar, derived: QToolBarDerived)
@@ -2987,7 +2927,8 @@ qtoolbar(): QToolBar
 
 
 // The menu bar of the window... Use a QMainWindow if you want one
-
+record QMenuBar {
+}
 
 QMenuBar_to_QWidget(self: QMenuBar): QWidget
 QMenuBar_to_QPaintDevice(self: QMenuBar): QPaintDevice
@@ -3087,7 +3028,7 @@ QMenuBar_defaultEvent(self: QMenuBar, pe: QEvent)
 QMenuBar_toPixmap(self: QMenuBar): QPixmap
 QMenuBar_toWidget(self: QMenuBar): QWidget
 
-
+record QMenuBarDerived {}
 
 QMenuBar_extend(): QMenuBarDerived
 QMenuBar_downcast(self: QMenuBar, derived: QMenuBarDerived)
@@ -3175,7 +3116,8 @@ qmenubar_alloc(): QMenuBar
 
 
 // A piece of text (perhaps rich text!) or a pixmap
-
+record QLabel {
+}
 
 QLabel_to_QWidget(self: QLabel): QWidget
 QLabel_to_QPaintDevice(self: QLabel): QPaintDevice
@@ -3292,7 +3234,7 @@ QLabel_defaultEvent(self: QLabel, pe: QEvent)
 QLabel_toPixmap(self: QLabel): QPixmap
 QLabel_toWidget(self: QLabel): QWidget
 
-
+record QLabelDerived {}
 
 QLabel_extend(): QLabelDerived
 QLabel_downcast(self: QLabel, derived: QLabelDerived)
@@ -3398,7 +3340,8 @@ qlabelPixmap(p: QPixmap): QLabel
 
 // A QMainWindow manages toolbars & the menubar.
 //   Set your stuff as the central widget
-
+record QMainWindow {
+}
 
 QMainWindow_to_QWidget(self: QMainWindow): QWidget
 QMainWindow_to_QPaintDevice(self: QMainWindow): QPaintDevice
@@ -3499,7 +3442,7 @@ QMainWindow_defaultEvent(self: QMainWindow, pe: QEvent)
 QMainWindow_toPixmap(self: QMainWindow): QPixmap
 QMainWindow_toWidget(self: QMainWindow): QWidget
 
-
+record QMainWindowDerived {}
 
 QMainWindow_extend(): QMainWindowDerived
 QMainWindow_downcast(self: QMainWindow, derived: QMainWindowDerived)
@@ -3588,7 +3531,8 @@ qmainwindow_alloc(): QMainWindow
 
 qmainwindow(): QMainWindow
 
-
+record QGroupBox {
+}
 
 QGroupBox_to_QWidget(self: QGroupBox): QWidget
 QGroupBox_to_QPaintDevice(self: QGroupBox): QPaintDevice
@@ -3690,7 +3634,7 @@ QGroupBox_defaultEvent(self: QGroupBox, pe: QEvent)
 QGroupBox_toPixmap(self: QGroupBox): QPixmap
 QGroupBox_toWidget(self: QGroupBox): QWidget
 
-
+record QGroupBoxDerived {}
 
 QGroupBox_extend(): QGroupBoxDerived
 QGroupBox_downcast(self: QGroupBox, derived: QGroupBoxDerived)
@@ -3780,14 +3724,15 @@ qgroupbox_alloc(): QGroupBox
 
 qgroupbox(title: QString): QGroupBox
 
-
+record DialogCode {
+}
 
 Accepted(): DialogCode
 
 Rejected(): DialogCode
 
 
-
+record DialogCodeDerived {}
 
 DialogCode_extend(): DialogCodeDerived
 DialogCode_downcast(self: DialogCode, derived: DialogCodeDerived)
@@ -3795,7 +3740,8 @@ DialogCode_downcast(self: DialogCode, derived: DialogCodeDerived)
 
 dialogcode_alloc(): DialogCode
 
-
+record QDialog {
+}
 
 QDialog_to_QWidget(self: QDialog): QWidget
 QDialog_to_QPaintDevice(self: QDialog): QPaintDevice
@@ -3897,7 +3843,7 @@ QDialog_defaultEvent(self: QDialog, pe: QEvent)
 QDialog_toPixmap(self: QDialog): QPixmap
 QDialog_toWidget(self: QDialog): QWidget
 
-
+record QDialogDerived {}
 
 QDialog_extend(): QDialogDerived
 QDialog_downcast(self: QDialog, derived: QDialogDerived)
@@ -3988,7 +3934,8 @@ qdialog(): QDialog
 
 
 // input one line of text
-
+record QLineEdit {
+}
 
 QLineEdit_to_QWidget(self: QLineEdit): QWidget
 QLineEdit_to_QPaintDevice(self: QLineEdit): QPaintDevice
@@ -4093,7 +4040,7 @@ QLineEdit_defaultEvent(self: QLineEdit, pe: QEvent)
 QLineEdit_toPixmap(self: QLineEdit): QPixmap
 QLineEdit_toWidget(self: QLineEdit): QWidget
 
-
+record QLineEditDerived {}
 
 QLineEdit_extend(): QLineEditDerived
 QLineEdit_downcast(self: QLineEdit, derived: QLineEditDerived)
@@ -4188,7 +4135,8 @@ qlineedit(): QLineEdit
 
 
 // input/output many lines of text, including HTML
-
+record QTextEdit {
+}
 
 QTextEdit_to_QWidget(self: QTextEdit): QWidget
 QTextEdit_to_QPaintDevice(self: QTextEdit): QPaintDevice
@@ -4294,7 +4242,7 @@ QTextEdit_defaultEvent(self: QTextEdit, pe: QEvent)
 QTextEdit_toPixmap(self: QTextEdit): QPixmap
 QTextEdit_toWidget(self: QTextEdit): QWidget
 
-
+record QTextEditDerived {}
 
 QTextEdit_extend(): QTextEditDerived
 QTextEdit_downcast(self: QTextEdit, derived: QTextEditDerived)
@@ -4388,10 +4336,12 @@ qtextedit_alloc(): QTextEdit
 
 qtextedit(): QTextEdit
 
+record SliderListener {
+}
 
 SliderListener_sliderMoved(self: SliderListener, slider: QWidget, val: int)
 
-
+record SliderListenerDerived {}
 
 SliderListener_extend(): SliderListenerDerived
 SliderListener_downcast(self: SliderListener, derived: SliderListenerDerived)
@@ -4402,7 +4352,8 @@ sliderlistener_alloc(): SliderListener
 
 
 // base class for sliders and scrollbars
-
+record QAbstractSlider {
+}
 
 QAbstractSlider_to_QWidget(self: QAbstractSlider): QWidget
 QAbstractSlider_to_QPaintDevice(self: QAbstractSlider): QPaintDevice
@@ -4515,7 +4466,7 @@ QAbstractSlider_defaultEvent(self: QAbstractSlider, pe: QEvent)
 QAbstractSlider_toPixmap(self: QAbstractSlider): QPixmap
 QAbstractSlider_toWidget(self: QAbstractSlider): QWidget
 
-
+record QAbstractSliderDerived {}
 
 QAbstractSlider_extend(): QAbstractSliderDerived
 QAbstractSlider_downcast(self: QAbstractSlider, derived: QAbstractSliderDerived)
@@ -4612,7 +4563,8 @@ QAbstractSlider_override_toWidget(derived: QAbstractSliderDerived, name: int[])
 
 qabstractslider_alloc(): QAbstractSlider
 
-
+record QScrollBar {
+}
 
 QScrollBar_to_QAbstractSlider(self: QScrollBar): QAbstractSlider
 QScrollBar_to_QWidget(self: QScrollBar): QWidget
@@ -4726,7 +4678,7 @@ QScrollBar_defaultEvent(self: QScrollBar, pe: QEvent)
 QScrollBar_toPixmap(self: QScrollBar): QPixmap
 QScrollBar_toWidget(self: QScrollBar): QWidget
 
-
+record QScrollBarDerived {}
 
 QScrollBar_extend(): QScrollBarDerived
 QScrollBar_downcast(self: QScrollBar, derived: QScrollBarDerived)
@@ -4825,7 +4777,8 @@ qscrollbar_alloc(): QScrollBar
 
 qscrollbar(o: Orientation): QScrollBar
 
-
+record SliderTickPosition {
+}
 
 TicksBothSides(): SliderTickPosition
 
@@ -4834,7 +4787,7 @@ TicksAbove(): SliderTickPosition
 TicksBelow(): SliderTickPosition
 
 
-
+record SliderTickPositionDerived {}
 
 SliderTickPosition_extend(): SliderTickPositionDerived
 SliderTickPosition_downcast(self: SliderTickPosition, derived: SliderTickPositionDerived)
@@ -4842,7 +4795,8 @@ SliderTickPosition_downcast(self: SliderTickPosition, derived: SliderTickPositio
 
 slidertickposition_alloc(): SliderTickPosition
 
-
+record QSlider {
+}
 
 QSlider_to_QAbstractSlider(self: QSlider): QAbstractSlider
 QSlider_to_QWidget(self: QSlider): QWidget
@@ -4961,7 +4915,7 @@ QSlider_defaultEvent(self: QSlider, pe: QEvent)
 QSlider_toPixmap(self: QSlider): QPixmap
 QSlider_toWidget(self: QSlider): QWidget
 
-
+record QSliderDerived {}
 
 QSlider_extend(): QSliderDerived
 QSlider_downcast(self: QSlider, derived: QSliderDerived)
@@ -5064,7 +5018,8 @@ qslider_alloc(): QSlider
 
 qslider(): QSlider
 
-
+record StandardIcon {
+}
 
 TitleBarMenuButton(): StandardIcon
 
@@ -5205,6 +5160,7 @@ MediaVolume(): StandardIcon
 MediaVolumeMuted(): StandardIcon
 
 
+record StandardIconDerived {}
 
 StandardIcon_extend(): StandardIconDerived
 StandardIcon_downcast(self: StandardIcon, derived: StandardIconDerived)
