@@ -1,0 +1,6 @@
+15
+Syntax error beginning at tests/pa6Tests/trolltests/dce2.eta:16:10: Parsing error +
+Syntax error beginning at tests/pa6Tests/trolltests/dce2.eta:16:10: Parsing error +
+Syntax error beginning at /home/student/shared/tests/pa6Tests/trolltests/dce2.eta:16:10: Parsing error +
+Syntax error beginning at /home/student/shared/tests/pa6Tests/trolltests/dce2.eta:16:10: Parsing error +
+gcc: error: /home/student/shared/tests/pa6Tests/trolltests/dce2.s: No such file or directory
