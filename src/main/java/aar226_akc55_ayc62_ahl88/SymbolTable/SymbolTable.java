@@ -72,6 +72,14 @@ public class SymbolTable<T> {
         return false;
     }
 
+    public void replace(Id id, T t) {
+        for (HashMap<String, T> scope: scopes){
+            if (scope.containsKey(id.toString())) {
+                scope.replace(id.toString(),t);
+            }
+        }
+    }
+
     /**
      * Add an identifier to the current scope with a given type.
      * @param id The identifier.

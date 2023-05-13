@@ -37,6 +37,8 @@ public class RecordDef extends Definition {
             if (!recordType.isSameRecord(rhs)) {
                 throw new SemanticError(getLine(), getColumn(), "Duplicate record not exact same");
             }
+            table.replace(recordName, recordType);
+            table.allRecordTypes.put(recordName.toString(), recordType);
         } else {
             table.add(recordName, recordType);
             table.allRecordTypes.put(recordName.toString(), recordType);
@@ -77,6 +79,7 @@ public class RecordDef extends Definition {
             if (!recordType.isSameRecord(rhs)) {
                 throw new SemanticError(getLine(), getColumn(), "Duplicate record not exact same");
             }
+            table.replace(recordName, recordType);
         } else {
             table.add(recordName, recordType);
             table.allRecordTypes.put(recordName.toString(), recordType);
