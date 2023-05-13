@@ -69,6 +69,8 @@ public class RecordAccessDecl extends Decl {
                 throw new SemanticError(accessType.getLine(), accessType.getColumn(), "statements block must be of type record at");
             }
 
+            accessType = table.lookup(new Id(accessType.recordName,0,0));
+
             String rightId = nextDecl.identifier.toString();
             if (nextDecl instanceof NoTypeDecl) {
 
