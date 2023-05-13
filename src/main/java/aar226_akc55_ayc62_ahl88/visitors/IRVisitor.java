@@ -1324,25 +1324,22 @@ public class IRVisitor implements Visitor<IRNode>{
 
     //Todo: review the exprs.size() == 0 if block
     private ArrayList<IRData> initMultiGlobal(MultiGlobalDecl node){
-
         ArrayList<AnnotatedTypeDecl> decls = node.getDecls();
         ArrayList<Expr> exprs = node.getExpressions();
 
         ArrayList<IRData> irDataList = new ArrayList<>(decls.size());
-        for (int i = 0; i < decls.size(); i++) {
-            Globdecl glob = new Globdecl(decls.get(i), exprs.get(i), -1 ,-1);
-            irDataList.set(i, initSingleGlobal(glob));
-        }
 
-//        if (exprs.size() == 0) {
-//            System.out.println("IN HERE: " + exprs.size());
-//            for (int i = 0; i < decls.size(); i++) {
-//                Globdecl glob = new Globdecl(decls.get(i), null, -1 ,-1);
-//                irDataList.add(initSingleGlobal(glob));
-//            }
-//        } else {
-//
-//        }
+        if (exprs.size() == 0) {
+            for (int i = 0; i < decls.size(); i++) {
+                Globdecl glob = new Globdecl(decls.get(i), null, -1 ,-1);
+                irDataList.add(initSingleGlobal(glob));
+            }
+        } else {
+            for (int i = 0; i < decls.size(); i++) {
+                Globdecl glob = new Globdecl(decls.get(i), exprs.get(i), -1 ,-1);
+                irDataList.set(i, initSingleGlobal(glob));
+            }
+        }
 
         return irDataList;
     }
