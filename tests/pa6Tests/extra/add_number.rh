@@ -1,0 +1,25 @@
+use io
+use conv
+
+record Node{
+    value: int
+    next: Node
+}
+
+main(args: int[][]){
+    l1: Node = Node(2, Node(4, Node (3, null)))
+    l2: Node = Node(5, Node(6, Node (4, null)))
+    l3: Node = Node(0, null)
+    h3: Node = l3
+    upper: int = 0
+    while(l1 != null & l2 != null){
+        v3: int = l1.value + l2.value + upper
+        l3.next = Node(v3 % 10, null)
+        upper = v3 / 10
+        l1 = l1.next; l2 = l2.next; l3 = l3.next
+    }
+    while(h3.next != null){
+        h3 = h3.next
+        print(unparseInt(h3.value))
+    }
+}

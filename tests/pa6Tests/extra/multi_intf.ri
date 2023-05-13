@@ -1,0 +1,9 @@
+record Point{
+    x: int
+    y: int
+}
+
+record Circle{
+    p: Point
+    r: int
+}

@@ -1,0 +1,8 @@
+use multi_intf
+
+main(args: int[][]){
+    p: Point = Point(1,2)
+    c: Circle = Circle(p, 3)
+    l: int = c.p.x
+}
+

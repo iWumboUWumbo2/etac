@@ -1,0 +1,6 @@
+use multi_intf
+
+main(args: int[][]){
+    p: Point = Point(1,2)
+    x: bool = p.y
+}
