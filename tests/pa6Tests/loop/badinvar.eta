@@ -1,0 +1,16 @@
+use io
+use conv
+main(args:int[][]) {
+    i:int = 0;
+    sum:int = 0;
+
+    while (i < 10) {
+        j:int = i;
+        while (j < 10) {
+            sum = sum +  j;
+            j = j + 1;
+        }
+        i = i + 1;
+    }
+    println(unparseInt(sum));
+}

@@ -1,0 +1,12 @@
+use qt
+use io
+use conv
+
+main(origArgs: int[][]) {
+    app: QApplication, args: int[][] = qapplication(origArgs)
+    a: int = 0
+
+    b: QPushButton = qpushbutton(qs("hi"))
+    QPushButton_show(b)
+    QApplication_exec(app)
+}

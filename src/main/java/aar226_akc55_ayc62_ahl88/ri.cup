@@ -275,6 +275,7 @@ emptyBracketType_plus ::=
 emptyBracketType ::=
    INT  emptyDimension_star:d {:RESULT = new Type(true,d,dleft,dright); :}
  | BOOL emptyDimension_star:d {:RESULT = new Type(false,d,dleft,dright); :}
+ | IDENTIFIER:i emptyDimension_star:d {: RESULT = new Type(i, d, ileft, iright); :}
  ;
 
 emptyDimension_star ::=

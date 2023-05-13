@@ -95,6 +95,15 @@ etac ("Test --help") "--help" {
      stringweird.eta;
      trappingrainwater.eta;
      validpalindrome.eta;
+
+     chainedExprs.eta;
+     constprop.eta;
+     copyprop.eta;
+     dce1.eta;
+     dce2.eta;
+     dce3.eta;
+     recmain.eta;
+
  }
 
  etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
@@ -187,6 +196,15 @@ etac ("Test --help") "--help" {
      stringweird.eta;
      trappingrainwater.eta;
      validpalindrome.eta;
+
+     chainedExprs.eta;
+     constprop.eta;
+     copyprop.eta;
+     dce1.eta;
+     dce2.eta;
+     dce3.eta;
+     recmain.eta;
+
  }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
 
@@ -284,6 +302,15 @@ etac ("Test -target linux") "-libpath $(testpath) -target linux" {
     stringweird.eta;
     trappingrainwater.eta;
     validpalindrome.eta;
+
+    chainedExprs.eta;
+    constprop.eta;
+    copyprop.eta;
+    dce1.eta;
+    dce2.eta;
+    dce3.eta;
+    recmain.eta;
+
 }
 
 etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
@@ -380,4 +407,13 @@ etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
     stringweird.eta;
     trappingrainwater.eta;
     validpalindrome.eta;
+
+    chainedExprs.eta;
+    constprop.eta;
+    copyprop.eta;
+    dce1.eta;
+    dce2.eta;
+    dce3.eta;
+    recmain.eta;
+
 }

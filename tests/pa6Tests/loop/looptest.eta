@@ -3,16 +3,21 @@ use conv
 
 main(args : int[][]) {
     i:int = 0;
-    a:int = 5;
-    b:int = 1;
-    res:int  = 5;
-    while (i < 123412){
-        x:int = a * b;
-        res = res + x;
-        i = i+1;
+    println(unparseInt(foo(5,1)))
+}
 
+foo(a:int,b:int):int{
+    res:int  = 5;
+    i:int = 0;
+    while (i < 223412110){
+        x:int = a * b;
+        y:int = x * 20;
+        z:int = y * 123;
+        g:int = z/40;
+        res = res + g;
+        i = i+1;
     }
-    println(unparseInt(res));
+    return res;
 }
 
  //       if (i % 2 == 0){

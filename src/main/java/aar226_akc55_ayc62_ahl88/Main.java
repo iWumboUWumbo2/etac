@@ -277,6 +277,7 @@ public class Main {
                     Program result = (Program) p.parse().value;
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                 } else if (filename.endsWith(".ri")) {
+                    System.out.println();
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>()); // Just to throw EtaErrors
                 }
@@ -315,15 +316,22 @@ public class Main {
 
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
+                    if (opts.allClear()){
+                        return ir;
+                    }
                     IRs.put("initial", ir);
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
-                        IRs.put("inline",ir);
+//                        IRs.put("inline",ir);
                     }
                     if (opts.isSet(OptimizationType.COPYPROP)) {
                         ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postCopy", ir);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
                     }
                     if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
                         ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
@@ -755,7 +763,6 @@ public class Main {
                 };
             }
 
-            // TODO: fix optir and optcfg
             if (cmd.hasOption("optir")) {
                 String[] phases = cmd.getOptionValues("optir");
                 System.out.println(Arrays.toString(phases));

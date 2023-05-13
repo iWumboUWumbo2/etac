@@ -1,0 +1,20 @@
+main(args:int[][]) {
+    i:int = 0;
+    shouldBreak:bool = false;
+
+    while (i < 10) {
+        j:int = 0;
+
+        while (j < 10) {
+            if (j == 5) {
+                shouldBreak = true;
+                break;
+            }
+            j = j + 1
+        }
+        if (shouldBreak) {
+            break;
+        }
+        i = i + 1;
+    }
+}
