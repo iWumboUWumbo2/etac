@@ -121,4 +121,3 @@ public class Method_Interface extends AstNode {
         return types;
     }
 }
-
