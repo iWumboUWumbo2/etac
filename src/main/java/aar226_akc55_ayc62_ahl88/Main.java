@@ -755,7 +755,6 @@ public class Main {
                 };
             }
 
-            // TODO: fix optir and optcfg
             if (cmd.hasOption("optir")) {
                 String[] phases = cmd.getOptionValues("optir");
                 System.out.println(Arrays.toString(phases));
