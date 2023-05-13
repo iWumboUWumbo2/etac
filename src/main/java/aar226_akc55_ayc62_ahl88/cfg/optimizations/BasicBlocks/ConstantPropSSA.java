@@ -95,7 +95,7 @@ public class ConstantPropSSA {
                 return new Pair<>(false,0L);
             }
         }
-        System.out.println("phi is constant: " + phi);
+//        System.out.println("phi is constant: " + phi);
         return new Pair<>(true,val);
     }
 }

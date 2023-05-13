@@ -1,0 +1,16 @@
+
+
+main(origArgs: int[][]) {
+
+
+}
+
+foo(x:Point[][][]):Point{
+    return Point(1);
+}
+foo(x:Point[][][]):Point{
+    return Point(2);
+}
+record Point{
+    x:int
+}
