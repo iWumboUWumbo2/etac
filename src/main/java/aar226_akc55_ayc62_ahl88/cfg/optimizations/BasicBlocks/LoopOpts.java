@@ -17,6 +17,7 @@ public class LoopOpts {
     private static class LoopWrapper{
 
         public boolean hasStores;
+        public  ArrayList<IRNode> stores;
         public BasicBlockCFG preheader;
         public BasicBlockCFG header;
 
@@ -38,6 +39,7 @@ public class LoopOpts {
             defToNode = new HashMap<>();
             hasStores = false;
             allNodes = getAllNodesInLoop();
+            stores = new ArrayList<>();
         }
 
         public ArrayList<BasicBlockCFG> getAllBlocksInLoop(){
@@ -253,10 +255,12 @@ public class LoopOpts {
             for (BasicBlockCFG block : loop.getAllBlocksInLoop()){
                 for (CFGNode<IRStmt> stmt : block.getBody()){
                     if (stmt.getStmt() instanceof IRMove mov &&
-                    mov.target() instanceof IRMem){
+                    mov.target() instanceof IRMem mem){
                         loop.hasStores = true;
-                    }else if (stmt.getStmt() instanceof IRCallStmt){
+                        loop.stores.add(mem);
+                    }else if (stmt.getStmt() instanceof IRCallStmt call){
                         loop.hasStores = true;
+                        loop.stores.add(call);
                     }
                 }
             }
@@ -268,6 +272,46 @@ public class LoopOpts {
         return loop.allNodes.contains(inst);
     }
 
+    /**
+     * Very Naive Check if alias. Just checking for Length
+     * @param inst
+     * @return
+     */
+
+    private boolean isLengthInVar(IRMem inst, LoopWrapper loop){
+
+        HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTemps =  loop.definedTempsInLoop;
+        // This Mem is length
+        if (inst.expr() instanceof IRBinOp binop && binop.opType() == IRBinOp.OpType.SUB
+                && binop.left() instanceof IRTemp base && binop.right() instanceof IRConst cons && cons.value() == 8L){
+            if (!definedTemps.containsKey(base)){
+                return true;
+            }
+            else return definedTemps.get(base).size() == 0;
+        }
+
+        return false;
+    }
+    private boolean isNaiveAlias(CFGNode<IRStmt> inst, LoopWrapper loop){
+        // Length
+//        IRMem mem = new IRMem(new IRBinOp(IRBinOp.OpType.SUB, node.getArg().accept(this), new IRConst(WORD_BYTES)));
+        IRStmt node = inst.getStmt();
+        ArrayList<IRNode> exprsInInst = new FlattenIrVisitor().visit(node);
+        ArrayList<IRMem> mems = new ArrayList<>();
+        for (IRNode n: exprsInInst){
+            if (n instanceof IRMem m){
+                mems.add(m);
+            }
+        }
+        for (IRMem memInst: mems){
+            if (!isLengthInVar(memInst,loop)){
+                return true;
+            }
+        }
+
+
+        return false;
+    }
     /**
      * Checks if Instruction is Invariant
      * @param inst
@@ -287,8 +331,24 @@ public class LoopOpts {
                 break;
             }
         }
+        boolean isLength = false;
         if (loop.hasStores && usedMem){
-            return false;
+            for (IRNode node : loop.stores){ // I'm here
+                if (node instanceof IRCallStmt ){
+                    return false;
+                }
+            }
+            if(isNaiveAlias(inst,loop)){
+                return false;
+            }else{
+                isLength = true;
+            }
+        }else if (usedMem){
+            if(isNaiveAlias(inst,loop)){
+
+            }else{
+                isLength = true;
+            }
         }
 //        loop.definedTempsInLoop
         Set<IRTemp> uses = LiveVariableAnalysis.use(inst.getStmt());
@@ -345,8 +405,10 @@ public class LoopOpts {
             throw new InternalCompilerError("loop invar without block in loop");
         }
         for (BasicBlockCFG exitBlocks : loop.exitBlocks){
-            if (!dom.getOutMapping().get(exitBlocks).contains(blockThatHoldsLI)){
-//                        System.out.println("exit block not dominated: " + potentialLI);
+            if (!dom.getOutMapping().get(exitBlocks).contains(blockThatHoldsLI) && !isLength){
+//                System.out.println("exit block not dominated: " + inst);
+//                System.out.println("my block: " + blockThatHoldsLI);
+//                System.out.println("bad block: " + exitBlocks);
                 return false;
             }
         }
@@ -420,9 +482,23 @@ public class LoopOpts {
             HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTemps =  new HashMap<>(loop.definedTempsInLoop);
             ArrayList<CFGNode<IRStmt>> validLI = new ArrayList<>();
             validLI = new ArrayList<>(loop.potentialLoopInvariantInstrs);
-//            if (validLI.size() != 0){
-//                System.out.println("hoisted " + validLI);
-//            }
+
+            if (validLI.size() != 0){
+                System.out.println("hoisted " + validLI);
+            }
+            ArrayList<BasicBlockCFG> loopBlocks = loop.getAllBlocksInLoop();
+            for (int i = 0; i< loopBlocks.size();i++){
+                BasicBlockCFG block = loopBlocks.get(i);
+                ArrayList<CFGNode<IRStmt>> nxtBody = new ArrayList<>();
+                for (CFGNode<IRStmt> node : block.getBody()){
+                    if (validLI.contains(node)){
+                        loop.preheader.getBody().add(node);
+                    }else{
+                        nxtBody.add(node);
+                    }
+                }
+                block.body = nxtBody;
+            }
         }
     }
 
