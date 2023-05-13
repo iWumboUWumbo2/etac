@@ -425,6 +425,11 @@ public class Type implements Printer {
             } else if (rhs.getType() == Type.TypeCheckingType.NULLARRAY &&
                     getType() == Type.TypeCheckingType.NULLARRAY) {
                 return true;
+            } else if (rhs.isRecordArray() && isRecordArray()) {
+                if (!rhs.recordName.equals(recordName)) {
+                    return false;
+                }
+                return dimensions.equalsDimension(rhs.dimensions);
             }
             else {
                 return dimensions.equalsDimension(rhs.dimensions);

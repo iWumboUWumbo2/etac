@@ -80,7 +80,7 @@ public class RecordAccessDecl extends Decl {
 
                 int index = accessType.recordFieldToIndex.get(rightId);
                 Type temp =  accessType.recordFieldTypes.get(index);
-                accessType = correctType(temp, new Dimension(0, getLine(), getColumn()), table);
+                accessType = correctType(temp, temp.dimensions, table);
                 declTypes.add(accessType);
             //arr[4].a[4].x
             } else if (nextDecl instanceof ArrAccessDecl arracc) {
