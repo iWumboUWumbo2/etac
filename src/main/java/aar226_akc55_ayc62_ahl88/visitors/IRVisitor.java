@@ -684,8 +684,7 @@ public class IRVisitor implements Visitor<IRNode>{
             }
             IRStmt condStmt = booleanAsControlFlow(node.getGuard(), lh, le);
 
-            IRStmt untilStmt = booleanAsControlFlow(
-                    new NotUnop(node.getGuard(),-1,-1),le,lh);
+            IRStmt untilStmt = booleanAsControlFlow(new NotUnop(node.getGuard(),-1,-1),le,lh);
 
             String lastWhileExitOld = this.lastWhileExit;
             this.lastWhileExit = le;

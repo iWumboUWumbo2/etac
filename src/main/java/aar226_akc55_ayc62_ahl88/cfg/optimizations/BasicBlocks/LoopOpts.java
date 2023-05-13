@@ -374,6 +374,9 @@ public class LoopOpts {
                 // only check nodes that define this use
                 nodesToCheck.removeIf(n -> !LiveVariableAnalysis.def(n.getStmt()).contains(use));
                 // more than one reaching def
+                if (nodesToCheck.size() == 0){
+                    continue;
+                }
                 if(nodesToCheck.size() > 1){
                     return false;
                 }
@@ -483,9 +486,9 @@ public class LoopOpts {
             ArrayList<CFGNode<IRStmt>> validLI = new ArrayList<>();
             validLI = new ArrayList<>(loop.potentialLoopInvariantInstrs);
 
-            if (validLI.size() != 0){
-                System.out.println("hoisted " + validLI);
-            }
+//            if (validLI.size() != 0){
+//                System.out.println("hoisted " + validLI);
+//            }
             ArrayList<BasicBlockCFG> loopBlocks = loop.getAllBlocksInLoop();
             for (int i = 0; i< loopBlocks.size();i++){
                 BasicBlockCFG block = loopBlocks.get(i);
