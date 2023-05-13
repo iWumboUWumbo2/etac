@@ -608,7 +608,7 @@ public class AbstractASMVisitor {
             tileMemTemp(m, t, instructions);
         // MEM MEM
         } else if (dest instanceof IRMem m1 && source instanceof IRMem m2) {
-            System.out.println("tiling: " + node);
+//            System.out.println("tiling: " + node);
             tileMemMem(m1, m2, instructions);
         // MEM CONST
         } else if (dest instanceof IRMem m && source instanceof IRConst x) {
