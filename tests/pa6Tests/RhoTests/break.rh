@@ -13,5 +13,18 @@ main(args : int[][]) {
             }
         }
     }
-    println(unparseInt(a));
+    println(unparseInt(a)); // 2000
+
+    b : int = 5
+    while a > 1500 {
+        a = a - b;
+        while a > 1900 {
+            b = b + 5
+            if b >= 100 {
+                break;
+            }
+        }
+    }
+
+    println(unparseInt(a)); //1495
 }

@@ -1,9 +1,9 @@
 use io
 use conv
 
+a, aa : int
+aaa : Point
 
-k, kk : int
-kkk : Point
 record Point {
     x,y:int
 }
@@ -15,24 +15,23 @@ createPoint(x: int, y: int): Point {
 main(args : int[][]) {
     x : int = 5;
     y : int = 6;
-    k = 3;
-    k = Point(1,2).x
-    Point(1,2).x = k;
-    kkk = Point(1, 2)
+    a = 3;
+    a = Point(1,2).x
+    Point(1,2).x = a;
+    aaa = Point(1, 2)
 
-
-    a : Point = createPoint(3,5)
+    k : Point = createPoint(3,5)
     b : Point = createPoint(x,y);
     c : Point = createPoint(x,1);
     d : Point = createPoint(9,x);
     e : Point = createPoint(8, b.x);
-    f : Point = createPoint(a.x, 7);
+    f : Point = createPoint(k.x, 7);
     g : Point = createPoint(c.x, d.y);
     h : Point = createPoint(e.x, f.y);
     i : Point = createPoint(g.y, c.x);
 
-    println(unparseInt(a.x))
-    println(unparseInt(a.y))
+    println(unparseInt(k.x))
+    println(unparseInt(k.y))
     println(unparseInt(b.x))
     println(unparseInt(b.y))
     println(unparseInt(c.x))
