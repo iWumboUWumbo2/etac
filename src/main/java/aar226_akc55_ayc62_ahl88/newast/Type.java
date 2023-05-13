@@ -185,6 +185,10 @@ public class Type implements Printer {
         return getType() == TypeCheckingType.RECORDARRAY;
     }
 
+    public boolean isFunc() {
+        return getType() == TypeCheckingType.FUNC;
+    }
+
     public boolean isIntArray() {
         return getType() == TypeCheckingType.INTARRAY;
     }
@@ -209,9 +213,6 @@ public class Type implements Printer {
             if (recordName.equals(rhs.recordName)) {
                 return true;
             }
-            System.out.println(recordName);
-            System.out.println(rhs.recordName);
-            System.out.println(recordName.equals(rhs.recordName));
             throw new SemanticError(-1,-1, "not same record");
         }
 
@@ -246,6 +247,10 @@ public class Type implements Printer {
         }
         if (!recordName.equals(rhs.recordName)) return false;
         ArrayList<Type> rhsIn = rhs.recordFieldTypes;
+        if (rhs.recordFieldTypes == null || rhsIn == null ||
+                rhs.recordFieldTypes.size() == 0 || rhsIn.size() == 0) {
+            return true;
+        }
         if (rhsIn != null && recordFieldTypes != null) {
             if (rhsIn.size() != recordFieldTypes.size()) {
                 return false;

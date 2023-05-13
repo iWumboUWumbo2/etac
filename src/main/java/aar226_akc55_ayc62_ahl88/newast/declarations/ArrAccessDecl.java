@@ -90,6 +90,7 @@ public class ArrAccessDecl extends Decl{
     public Type typeCheck(SymbolTable<Type> table) {
         Type identifierType = table.lookup(identifier);
         functionSig = identifierType;
+        System.out.println(identifierType.getType());
         if (identifierType.getType() != Type.TypeCheckingType.FUNC) {
             if (!identifierType.isArray()) {
                 throw new SemanticError(getLine(), getColumn(), "variable is not an array");
@@ -139,7 +140,7 @@ public class ArrAccessDecl extends Decl{
             Dimension newDim = new Dimension(d.getDim() - indices.size(), d.getLine(), d.getColumn());
 
             if (funcOutType.isRecordArray() || funcOutType.isBoolArray() || funcOutType.isIntArray()) {
-                nodeType = correctType(identifierType, newDim, table);
+                nodeType = correctType(funcOutType, newDim, table);
             } else {
                 throw new SemanticError(getLine(), getColumn(), "somehow not an array");
             }

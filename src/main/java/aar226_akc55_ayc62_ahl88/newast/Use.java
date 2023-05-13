@@ -13,7 +13,10 @@ import java_cup.runtime.lr_parser;
 
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Use extends AstNode{
@@ -39,6 +42,14 @@ public class Use extends AstNode{
         id.prettyPrint(p);
         p.endList();
     }
+
+    private boolean isNecessaryUse(String zhenFilename) {
+        Path path = Paths.get(zhenFilename);
+        String fileNameString = path.getFileName().toString();
+        fileNameString = fileNameString.substring(0, fileNameString.length() - 3);
+        return id.toString().equals(fileNameString);
+    }
+
     public Type typeCheck(SymbolTable<Type> table, String zhenFilename, HashMap<Id,Type> firstPass) {
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
         boolean isRho = Main.isRho;
@@ -48,7 +59,10 @@ public class Use extends AstNode{
         try (FileReader fileReader = new FileReader(filename)) {
             lr_parser pi = isRho ? new RiParser(new RhoLex(fileReader)) : new EtiParser(new EtaLex(fileReader));
             EtiInterface eI = (EtiInterface) pi.parse().value;
-            firstPass.putAll(eI.firstPass(zhenFilename, firstPass)); // TODO
+
+            ArrayList<Id> useInterfaceMethods = new ArrayList<>();
+
+            firstPass.putAll(eI.firstPass(zhenFilename, firstPass, useInterfaceMethods)); // TODO
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 if (table.contains(entry.getKey())) {
                     if (!((table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.FUNC &&
@@ -63,6 +77,9 @@ public class Use extends AstNode{
                     }
                 }else {
                     table.add(entry.getKey(), entry.getValue());
+                    if (isNecessaryUse(zhenFilename)) {
+                        table.necessaryDefs = new ArrayList(useInterfaceMethods);
+                    }
                 }
             }
         } catch (Error e) {

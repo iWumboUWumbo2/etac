@@ -277,13 +277,13 @@ public class Main {
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
-                    result.firstPass(zhenFilename, new HashMap<>()); // Just to throw EtaErrors
+                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>()); // Just to throw EtaErrors
                 } else if (filename.endsWith(".rh")) {
                     Program result = (Program) p.parse().value;
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                 } else if (filename.endsWith(".ri")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
-                    result.firstPass(zhenFilename, new HashMap<>()); // Just to throw EtaErrors
+                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>()); // Just to throw EtaErrors
                 }
 
                 if (shouldWrite) {
@@ -409,7 +409,7 @@ public class Main {
                     return ir;
                 } else if (filename.endsWith(".eti") || filename.endsWith(".ri")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
-                    result.firstPass(zhenFilename, new HashMap<>()); // Just to throw EtaErrors
+                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>()); // Just to throw EtaErrors
                 }
                 else {
                     System.out.println("Why are we here");

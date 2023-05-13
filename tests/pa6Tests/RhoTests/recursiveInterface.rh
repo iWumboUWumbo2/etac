@@ -1,0 +1,10 @@
+use interface1
+use interface2
+
+record Record1{
+   x: Record2
+}
+
+record Record2{
+   x: Record1
+}
