@@ -608,6 +608,7 @@ public class AbstractASMVisitor {
             tileMemTemp(m, t, instructions);
         // MEM MEM
         } else if (dest instanceof IRMem m1 && source instanceof IRMem m2) {
+            System.out.println("tiling: " + node);
             tileMemMem(m1, m2, instructions);
         // MEM CONST
         } else if (dest instanceof IRMem m && source instanceof IRConst x) {
@@ -849,6 +850,7 @@ public class AbstractASMVisitor {
         ASMMemExpr leftSideMem = (ASMMemExpr)  movMemToDest.getRight();
 
         if ((m1.getBestCost() -1) + 1 +m2.getBestCost() < curBestCost){
+//            System.out.println("doing better");
             ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m2.getBestInstructions());
             caseInstructions.addAll(copyLeftMemInstrs);
             caseInstructions.add(new ASMMov(leftSideMem,m2.getAbstractReg()));
@@ -859,13 +861,18 @@ public class AbstractASMVisitor {
         if (false){ // other patterns;
 
         }else { // catch all case do right mem then left mem
-
+//            System.out.println("worst case");
             if (m2.expr().getBestCost() + m1.expr().getBestCost() + 1 < curBestCost){
+//                System.out.println("chose default");
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
                 caseInstructions.addAll(m2.expr().getBestInstructions());
                 caseInstructions.addAll(m1.expr().getBestInstructions());
-                caseInstructions.add(new ASMMov(new ASMMemExpr(m1.expr().getAbstractReg()), new ASMMemExpr(m2.expr().getAbstractReg()))); // move the temp mem into ASMMOV
+                ASMAbstractReg extraReg = new ASMTempExpr(nxtTemp());
+                caseInstructions.add(new ASMMov(extraReg,new ASMMemExpr(m2.expr().getAbstractReg())));
+                caseInstructions.add(new ASMMov(new ASMMemExpr(m1.expr().getAbstractReg()),extraReg )); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
+//                System.out.println(m2.expr().getBestInstructions());
+//                System.out.println(m1.expr().getBestInstructions());
                 curBestCost = m2.expr().getBestCost() + m1.expr().getBestCost() +  1;
             }
         }
