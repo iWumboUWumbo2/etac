@@ -47,6 +47,7 @@ public class RecordAcessBinop extends BinopExpr{
             if (recordType.recordFieldToIndex.containsKey(rightId)) {
                 int index = recordType.recordFieldToIndex.get(this.rightId);
                 Type t = recordType.recordFieldTypes.get(index);
+                nodeType = t;
                 return correctType(t, t.dimensions, s);
             } else {
                 throw new SemanticError(e2.getLine(), e2.getColumn(), "Invalid field at ");
