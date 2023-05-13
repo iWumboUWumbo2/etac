@@ -1,0 +1,25 @@
+
+use io
+use conv
+
+
+sum:int = 0;
+
+start:bool = false;
+main(args:int[][]){
+    if (!start){
+        args = {{10}}
+        start = true;
+    }
+    if (args[0][0] == 0){
+       sum = 1;
+       return;
+    }
+    x:int = sum;
+    println(unparseInt(args[0][0]))
+    args[0][0] = args[0][0] - 1;
+    main(args)
+    sum = sum + x;
+    println(unparseInt(x))
+    println(unparseInt(sum))
+}
