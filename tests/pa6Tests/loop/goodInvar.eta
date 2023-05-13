@@ -1,0 +1,23 @@
+use io
+use conv
+main(args:int[][]) {
+
+
+    res:int = 4;
+    i:int = 0;
+    product:int = 5;
+    while ( i< 100000000){
+
+        res = 2;
+        product = 5 * res;
+
+        i = i + 1
+    }
+    return res;
+}
+
+
+    for _ in range(10000):
+        print("Hello, world!")
+        result = math.sqrt(4)
+        product = 3 * 5

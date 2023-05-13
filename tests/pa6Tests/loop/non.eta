@@ -1,0 +1,20 @@
+use io
+use conv
+
+main(args:int[][]) {
+    a:int = 10;
+    b:int = 5;
+    c:int = 0;
+
+    i:int = 0;
+    while (i < a) {
+        if (i % 2 == 0) {
+            c = c + b;
+        } else {
+            c = c - b;
+        }
+        i=i+1;
+    }
+
+    println(unparseInt(c))
+}
