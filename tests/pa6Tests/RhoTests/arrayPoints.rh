@@ -19,19 +19,16 @@ func():PointArr{
 
     return PointArr({a,b});
 }
+
 main(args : int[][]) {
     a : Point = Point(3,4);
     c : PointArr = PointArr({a})
     d : Point = Point(7,11)
 
-
     c.x[0] = d;
     c.x[0].x = 4;
-    println(unparseInt(func().x[1].x));
-    println(unparseInt(Point(10,5).y))
+    println(unparseInt(func().x[1].x)) //10
+    println(unparseInt(Point(10,5).y)) //5
     println(unparseInt(c.x[0].x))   //4
     println(unparseInt(c.x[0].y))   //11
-
-
-
 }
