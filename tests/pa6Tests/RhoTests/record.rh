@@ -22,7 +22,7 @@ main(args:int[][]) {
 
     Point(1,2,3).x = 3
     z : int = y.x;
-    z = Point(1,2,3).x;
+    z = Point(1,2,3).y;
 
     println(unparseInt(z));
     println(unparseInt(y.x));

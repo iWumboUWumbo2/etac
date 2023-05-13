@@ -23,15 +23,15 @@ main(args : int[][]) {
     d : Point = Point(7,11)
 
     b = a;
-    println(unparseInt(b.x))        //3
-    println(unparseInt(b.y))        //4
+    println(unparseInt(b.x))
     println(unparseInt(c.x[0].x))   //3
     println(unparseInt(c.x[0].y))   //4
     println(unparseInt(c.x[1].x))   //5
     println(unparseInt(c.x[1].y))   //6
+    println("");
 
     b.x = 9;
-    println(unparseInt(a.x))        // 9
+    println(unparseInt(a.x))        //9
     println(unparseInt(b.x))        //9
     println(unparseInt(c.x[1].x))   //5
     println("");
@@ -39,15 +39,16 @@ main(args : int[][]) {
     c.x[0] = d;
     println(unparseInt(c.x[0].x))   //7
     println(unparseInt(c.x[0].y))   //11
+    println("");
 
     c.x[0].x = 13;
     println(unparseInt(c.x[0].x))   //13
     println(unparseInt(d.x))        //13
+    println("");
 
-    //Doesn't type check????
-    //foo(3,4)[0] = 5;
+    foo(3,4)[0] = 5;
 
-    //PointArr({a,b}).x[0].x = 2;
+    PointArr({a,b}).x[0].x = 2;
     // no type decl (PointArr, {a,b})
     // arraccesdecl (x, {0})
     // no type decl (x)

@@ -21,9 +21,9 @@ main(args:int[][]) {
 	wrap: PointArr = PointArr({});
 
     if (wrap == null){
-		println("pass")
+		println("fail")
 	}
 	else{
-		println("fail")
+		println("pass")
 	}
 }
