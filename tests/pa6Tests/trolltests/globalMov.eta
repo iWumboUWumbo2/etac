@@ -1,0 +1,12 @@
+use io
+use conv
+
+
+x:int = 4;
+
+y:int = 5;
+main(args:int[][]) {
+
+    x = y;
+    println(unparseInt(x));
+}
