@@ -31,11 +31,11 @@ public class RecordAcessBinop extends BinopExpr{
 
         //b:Point = {}[0]
         if (t1.getType() != Type.TypeCheckingType.RECORD) {
-            throw new SemanticError(e1.getLine(), e1.getColumn(), "statements block must be of type record at");
+            throw new SemanticError(this.getLine(), this.getColumn(), "statements block must be of type record at");
         }
 
         if (!(e2 instanceof Id i)) {
-            throw new SemanticError(e2.getLine(), e2.getColumn(), "statements block must be of type int at");
+            throw new SemanticError(e2.getLine(), e2.getColumn(), "statements block must be of type id at");
         }
 
         this.rightId = i.toString();
