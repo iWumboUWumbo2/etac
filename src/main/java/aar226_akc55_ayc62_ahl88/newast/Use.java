@@ -50,7 +50,8 @@ public class Use extends AstNode{
         return id.toString().equals(fileNameString);
     }
 
-    public Type typeCheck(SymbolTable<Type> table, String zhenFilename, HashMap<Id,Type> firstPass) {
+    public Type typeCheck(SymbolTable<Type> table, String zhenFilename, HashMap<Id,Type> firstPass,
+                          ArrayList<String> visitedInterfaces) {
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
         boolean isRho = Main.isRho;
 
@@ -61,8 +62,9 @@ public class Use extends AstNode{
             EtiInterface eI = (EtiInterface) pi.parse().value;
 
             ArrayList<Id> useInterfaceMethods = new ArrayList<>();
+            visitedInterfaces.add(this.id.toString());
 
-            firstPass.putAll(eI.firstPass(zhenFilename, firstPass, useInterfaceMethods)); // TODO
+            firstPass.putAll(eI.firstPass(zhenFilename, firstPass, useInterfaceMethods, visitedInterfaces)); // TODO
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 if (table.contains(entry.getKey())) {
                     if (!((table.lookup(entry.getKey()).getType() != Type.TypeCheckingType.FUNC &&
@@ -82,6 +84,7 @@ public class Use extends AstNode{
                     }
                 }
             }
+
         } catch (Error e) {
 //            System.out.println(e.getMessage());
             throw new SemanticError(getLine() , getColumn(),"Faulty interface file " + filename + " " + e.getMessage());

@@ -144,8 +144,9 @@ public class Program extends AstNode {
 
         // first pass to add all Interfaces and Definitions
         HashMap<Id,Type> globTypes = new HashMap<>();
+        ArrayList<String> visitedInterfaces = new ArrayList<>();
         for (Use u: useList){
-            Type useType = u.typeCheck(table,zhenFile, globTypes);
+            Type useType = u.typeCheck(table,zhenFile, globTypes, visitedInterfaces);
             if (useType.getType() != Type.TypeCheckingType.UNIT){
                 throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
             }

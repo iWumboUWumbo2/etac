@@ -54,7 +54,8 @@ public class EtiInterface extends AstNode {
         p.endList();
     }
 
-    public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res, ArrayList<Id> useInterfaceMethods) {
+    public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res, ArrayList<Id> useInterfaceMethods,
+                                      ArrayList<String> visitedInterfaces) {
         HashSet<String> methodName= new HashSet<>();
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
         methodSymbols.enterScope();
@@ -62,10 +63,13 @@ public class EtiInterface extends AstNode {
         // TODO: for ri file, typecheck all uses and use modules
         // TODO: everything declared in the interface must be defined in the module.
         for (Use u:useList) {
-            Type useType = u.typeCheck(methodSymbols, zhenFileName, res);
-            if (useType.getType() != Type.TypeCheckingType.UNIT) {
-                throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
+            if (!visitedInterfaces.contains(u.id.toString())) {
+                Type useType = u.typeCheck(methodSymbols, zhenFileName, res, visitedInterfaces);
+                if (useType.getType() != Type.TypeCheckingType.UNIT) {
+                    throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
+                }
             }
+
 
         }
 
