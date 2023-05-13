@@ -649,8 +649,18 @@ public class IRVisitor implements Visitor<IRNode>{
 
     @Override
     public IRStmt visit(While node) {
-        if (!opts.isSet(OptimizationType.LICM)) {
-//            System.out.println("non opt while");
+
+        IRStmt condTry = booleanAsControlFlow(node.getGuard(),nxtLabel(),nxtLabel());
+        ArrayList<IRNode> flat = new FlattenIrVisitor().visit(condTry);
+        long jumpCount = 0;
+        for (IRNode n : flat){
+            if (n instanceof IRJump){
+                jumpCount++;
+            }else if (n instanceof IRCJump){
+                jumpCount++;
+            }
+        }
+        if (jumpCount > 1) {
             String lh = nxtLabel();
             String l1 = nxtLabel();
             String le = nxtLabel();
@@ -674,7 +684,6 @@ public class IRVisitor implements Visitor<IRNode>{
                     new IRJump(new IRName(lh)),
                     new IRLabel(le));
         }else{
-//            System.out.println("opt while");
             String lh = nxtLabel();
             String le = nxtLabel();
             IRExpr guardAccept = node.getGuard().accept(this);
