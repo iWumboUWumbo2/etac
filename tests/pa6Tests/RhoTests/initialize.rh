@@ -1,0 +1,52 @@
+use io
+use conv
+
+point1 : Point;
+x:int
+y:bool
+int_arr:int[]
+point_arr:Point[]
+a,b,c:int
+d,e,f:Point
+
+main(args:int[][]) {
+    //f.x = 3 // fails irrun
+    //point_arr[0].x = 3; // fails irrun
+    if (!(point1 == null)) println("BAD0")
+    if (!(x == 0)) println("BAD1")
+    if (!(y == false)) println("BAD2")
+    if (!(int_arr == null)) println("BAD3")
+    if (!(point_arr == null)) println("BAD4")
+
+    point_arr1:Point[3]
+    int_arr1:int[3]
+    if (!(point_arr1[0] == null)) println("BAD5")
+    if (!(int_arr1[0] == 0)) println("BAD6")
+
+    nested:int[][]
+    nested_1:int[2][2]
+    if (!(nested == null)) println("BAD7")
+    if ((nested_1[0] == null)) println("BAD8")
+    if (!(nested_1[0][0] == 0)) println("BAD9")
+    if (!(nested_1[1][1] == 0)) println("BAD10")
+
+    nested_2:Point[][]
+    nested_3:Point[2][2]
+    if (!(nested_2 == null)) println("BAD11")
+    if ((nested_3[0] == null)) println("BAD12")
+    if (!(nested_3[0][0] == null)) println("BAD13")
+    if (!(nested_3[1][1] == null)) println("BAD14")
+
+    if (!(a == 0)) println("BAD15")
+    if (!(b == 0)) println("BAD16")
+    if (!(c == 0)) println("BAD17")
+
+    if (!(d == null)) println("BAD18")
+    if (!(e == null)) println("BAD19")
+    if (!(f == null)) println("BAD20")
+
+}
+
+record Point {
+    x,y:int
+}
