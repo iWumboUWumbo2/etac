@@ -84,7 +84,7 @@ nonterminal ArrayList<AnnotatedTypeDecl>        rhoEmptyBracketDecl_plus;
 nonterminal ArrayList<Id>           identifier_plus;
 nonterminal ArrayList<AnnotatedTypeDecl>         rhoMultiDecl;
 nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
-nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
+nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclStar;
 nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
 
 precedence nonassoc IF;
@@ -177,9 +177,9 @@ fieldDecl ::=
     | rhoEmptyBracketDecl_plus:e SEMICOLON {: RESULT = e; :}
 ;
 
-fieldDeclPlus ::=
-    fieldDeclPlus:ss fieldDecl:s {: ss.addAll(s); RESULT = ss; :}
-    |fieldDecl:s {: RESULT = s; :}
+fieldDeclStar ::=
+    fieldDeclStar:ss fieldDecl:s {: ss.addAll(s); RESULT = ss; :}
+    |{: RESULT = new ArrayList<AnnotatedTypeDecl>(); :}
 ;
 
 method_interface ::=
@@ -189,7 +189,7 @@ method_interface ::=
      |IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN {:
       RESULT = new Method_Interface(i,ds,new ArrayList<Type>(),ileft,iright);
       :}
-      | RECORD IDENTIFIER:i OPEN_BRACE fieldDeclPlus:s CLOSE_BRACE {:
+      | RECORD IDENTIFIER:i OPEN_BRACE fieldDeclStar:s CLOSE_BRACE {:
        RESULT = new Method_Interface(i,s, ileft, iright);
       :}
 ;

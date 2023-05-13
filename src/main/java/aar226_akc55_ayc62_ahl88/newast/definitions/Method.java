@@ -154,6 +154,7 @@ public class Method extends Definition {
             table.add(id, methodType);
         }
         nodeType = new Type(Type.TypeCheckingType.UNIT);
+        table.addVisitedDef(this.id);
         return nodeType;
     }
     public ArrayList<Type> getInputTypes(){

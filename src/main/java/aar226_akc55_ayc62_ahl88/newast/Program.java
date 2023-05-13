@@ -78,6 +78,47 @@ public class Program extends AstNode {
         return false;
     }
 
+    private void checkRecordInTable(SymbolTable<Type> table, String id, int l, int c) {
+        if (!table.contains(id))
+            throw new SemanticError(l, c,
+                    "record type not defined in scope");
+    }
+
+
+    /**
+     * @param table symbol table
+     * checks that all record types are in scope
+     */
+    private void checkRecordTypes(SymbolTable<Type> table) {
+        HashMap<String, Type> flattened = table.flatten();
+        for (String id : flattened.keySet()){
+            Type t = flattened.get(id);
+            if (t.isRecord()) {
+                for (String field : t.recordFieldToIndex.keySet()) {
+                    int index = t.recordFieldToIndex.get(field);
+                    Type fieldType = t.recordFieldTypes.get(index);
+                    if (fieldType.isRecord() || fieldType.isRecordArray()) {
+                        checkRecordInTable(table, fieldType.recordName,
+                                t.getLine(), t.getColumn());
+                    }
+                }
+            } else if (t.isFunc()) {
+                for (Type inputType : t.inputTypes) {
+                    if (inputType.isRecord() || inputType.isRecordArray()) {
+                        checkRecordInTable(table, inputType.recordName,
+                                inputType.getLine(), inputType.getColumn());
+                    }
+                }
+                for (Type outputType : t.outputTypes) {
+                    if (outputType.isRecord() || outputType.isRecordArray()) {
+                        checkRecordInTable(table, outputType.recordName,
+                                t.getLine(), t.getColumn());
+                    }
+                }
+            }
+        }
+    }
+
     public Type typeCheck(SymbolTable<Type> table, String zhenFile){
         table.enterScope();
 
@@ -99,6 +140,8 @@ public class Program extends AstNode {
             }
         }
 
+        // TODO: everything in ri has to be in rh
+
         // first pass to add all Interfaces and Definitions
         HashMap<Id,Type> globTypes = new HashMap<>();
         for (Use u: useList){
@@ -107,10 +150,17 @@ public class Program extends AstNode {
                 throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
             }
         }
+
+        checkRecordTypes(table);
+
         HashSet<String> currentFileIds  = new HashSet<>();
         // FIRST PASS
         for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
             d.firstPass(table,currentFileIds);
+        }
+
+        if (Main.isRho) {
+            table.isNecessaryVisited();
         }
 //        table.printContext();
 //        table.printContext();

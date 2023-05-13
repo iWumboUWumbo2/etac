@@ -67,6 +67,7 @@ public class RecordDef extends Definition {
         }
 
         nodeType = new Type(Type.TypeCheckingType.UNIT);
+        table.addVisitedDef(this.recordName);
         return nodeType;
     }
 

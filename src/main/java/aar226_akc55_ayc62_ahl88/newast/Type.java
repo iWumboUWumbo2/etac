@@ -185,6 +185,10 @@ public class Type implements Printer {
         return getType() == TypeCheckingType.RECORDARRAY;
     }
 
+    public boolean isFunc() {
+        return getType() == TypeCheckingType.FUNC;
+    }
+
     public boolean isIntArray() {
         return getType() == TypeCheckingType.INTARRAY;
     }
@@ -209,9 +213,6 @@ public class Type implements Printer {
             if (recordName.equals(rhs.recordName)) {
                 return true;
             }
-            System.out.println(recordName);
-            System.out.println(rhs.recordName);
-            System.out.println(recordName.equals(rhs.recordName));
             throw new SemanticError(-1,-1, "not same record");
         }
 
@@ -240,26 +241,37 @@ public class Type implements Printer {
         return true;
     }
 
-    public boolean isSameRecord(Type rhs){
-        if (!(tct == TypeCheckingType.RECORD && rhs.getType() == TypeCheckingType.RECORD)){
-            throw new SemanticError(-1,-1, "both aren't functions");
+    public boolean isSameRecord(Type table_t){
+        // table_t is type from table
+        if (!(tct == TypeCheckingType.RECORD && table_t.getType() == TypeCheckingType.RECORD)){
+            throw new SemanticError(getLine(),getColumn(), "both aren't records");
         }
-        if (!recordName.equals(rhs.recordName)) return false;
-        ArrayList<Type> rhsIn = rhs.recordFieldTypes;
-        if (rhsIn != null && recordFieldTypes != null) {
-            if (rhsIn.size() != recordFieldTypes.size()) {
-                return false;
-            }
-
-            // TODO: order matters?
-            for (int i = 0; i< rhsIn.size();i++){
-                if (!recordFieldTypes.get(i).sameType(rhsIn.get(i))){
-                    return false;
-                }
-            }
+        if (!recordName.equals(table_t.recordName)) return false;
+        ArrayList<Type> table_t_fields = table_t.recordFieldTypes;
+        HashMap<String, Integer> table_t_map = table_t.recordFieldToIndex;
+        if (table_t_map == null || table_t_fields == null ||
+                table_t_map.size() == 0 || table_t_map.size() == 0) {
+            return true;
         }
 
+        for (String id : table_t_map.keySet()) {
+            int table_index = table_t_map.get(id);
+            int this_index = (recordFieldToIndex.get(id) == null) ? -1 : recordFieldToIndex.get(id);
+
+            if (!(table_index == this_index)) {
+                throw new SemanticError(getLine(), getColumn(),
+                        "field declarations out of order from interface declaration");
+            }
+
+            Type table_type = table_t_fields.get(table_index);
+            Type this_type = recordFieldTypes.get(table_index);
+            if (!table_type.sameType(this_type)) {
+                throw new SemanticError(getLine(), getColumn(),
+                        "Same field different types");
+            }
+        }
         return true;
+
     }
 
     public boolean sameArray(Type rhs){
@@ -342,7 +354,7 @@ public class Type implements Printer {
         else if (!(isUnknown() || isUnknownArray() || isNull() || isNullArray()) &&
                 !(t.isUnknown() || t.isUnknownArray() || t.isNull() || t.isNullArray())) {
             return this;
-        // CASE 4: both unknown
+            // CASE 4: both unknown
         } else if ((isUnknown() || isUnknownArray()) &&
                 (t.isUnknown() || t.isUnknownArray())) {
 //            System.out.println("this");
@@ -354,7 +366,7 @@ public class Type implements Printer {
         // CASE 5: this unknown or null and the other is not
         else if (isUnknown() || isUnknownArray() || isNull()|| isNullArray()) {
             return t;
-        // CASE 6: this
+            // CASE 6: this
         } else {
             return this;
         }
@@ -375,13 +387,13 @@ public class Type implements Printer {
         // otherwise, if both types are not ambiguous, we type check
         if (getType() != rhs.getType() &&
                 !(getType() == TypeCheckingType.UNKNOWN
-                || rhs.getType() == TypeCheckingType.UNKNOWN
-                || getType() == TypeCheckingType.UNKNOWNARRAY
-                || rhs.getType() == TypeCheckingType.UNKNOWNARRAY
-                || getType() == TypeCheckingType.UNDERSCORE
-                || rhs.getType() == TypeCheckingType.UNDERSCORE
-                || getType() == TypeCheckingType.NULLARRAY
-                || rhs.getType() == TypeCheckingType.NULLARRAY)) {
+                        || rhs.getType() == TypeCheckingType.UNKNOWN
+                        || getType() == TypeCheckingType.UNKNOWNARRAY
+                        || rhs.getType() == TypeCheckingType.UNKNOWNARRAY
+                        || getType() == TypeCheckingType.UNDERSCORE
+                        || rhs.getType() == TypeCheckingType.UNDERSCORE
+                        || getType() == TypeCheckingType.NULLARRAY
+                        || rhs.getType() == TypeCheckingType.NULLARRAY)) {
             return false;
         }
 
@@ -400,14 +412,14 @@ public class Type implements Printer {
             } else if (this.getType() == Type.TypeCheckingType.UNKNOWNARRAY &&
                     this.getType() == Type.TypeCheckingType.UNKNOWNARRAY) {
                 return true;
-            // fail x:int[] = {null}
-            // pass x:Record[] = {null}
+                // fail x:int[] = {null}
+                // pass x:Record[] = {null}
             } else if (getType() == Type.TypeCheckingType.NULLARRAY &&
-                rhs.getType() != Type.TypeCheckingType.NULLARRAY ) {
+                    rhs.getType() != Type.TypeCheckingType.NULLARRAY ) {
                 if (rhs.isRecordArray()) return (this.dimensions.getDim() <= rhs.dimensions.getDim());
                 else return (this.dimensions.getDim() < rhs.dimensions.getDim());
             } else if (rhs.getType() == Type.TypeCheckingType.NULLARRAY &&
-                getType() != Type.TypeCheckingType.NULLARRAY) {
+                    getType() != Type.TypeCheckingType.NULLARRAY) {
                 if (this.isRecordArray()) return (rhs.dimensions.getDim() <= this.dimensions.getDim());
                 else return (rhs.dimensions.getDim() < this.dimensions.getDim());
             } else if (rhs.getType() == Type.TypeCheckingType.NULLARRAY &&
@@ -418,7 +430,7 @@ public class Type implements Printer {
                 return dimensions.equalsDimension(rhs.dimensions);
             }
         } else if ((isArray() || rhs.isArray()) &&
-            !(isUnknown() || rhs.isUnknown())) {
+                !(isUnknown() || rhs.isUnknown())) {
             // if one side is not array and neither unknown, then they do not type check
             return false;
         }

@@ -10,6 +10,8 @@ import aar226_akc55_ayc62_ahl88.newast.Use;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +54,7 @@ public class EtiInterface extends AstNode {
         p.endList();
     }
 
-    public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res) {
+    public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res, ArrayList<Id> useInterfaceMethods) {
         HashSet<String> methodName= new HashSet<>();
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
         methodSymbols.enterScope();
@@ -80,13 +82,13 @@ public class EtiInterface extends AstNode {
             Type funcTypeInTable;
             if (mI.isRecord) {
                 String recordName = mI.recordType.recordName;
-                Dimension dim = mI.recordType.dimensions;
-                funcTypeInTable =  new Type(recordName, dim, getLine(),getColumn());
+                funcTypeInTable =  new Type(recordName, mI.fields, getLine(),getColumn(), true);
             } else {
                 ArrayList<Type> inTypes = mI.getInputTypes();
                 ArrayList<Type> outTypes = mI.getOutputtypes();
                 funcTypeInTable = new Type(inTypes,outTypes);
             }
+            useInterfaceMethods.add(nameOfMethod);
             methodSymbols.add(nameOfMethod,funcTypeInTable);
             res.put(nameOfMethod,funcTypeInTable);
             methodName.add(nameOfMethod.toString());

@@ -11,11 +11,15 @@ public class SymbolTable<T> {
     public Id currentParentFunction;
     public boolean parentLoop;
     public HashMap<String, T> allRecordTypes;
+    public ArrayList<Id> necessaryDefs;
+    public ArrayList<Id> visitedDefs;
 
     public SymbolTable() {
         this.scopes = new ArrayList<>();
         allRecordTypes = new HashMap<String, T>();
         parentLoop = false;
+        necessaryDefs = new ArrayList<Id>();
+        visitedDefs = new ArrayList<Id>();
     }
 
     /**
@@ -46,6 +50,22 @@ public class SymbolTable<T> {
         Collections.reverse(rev);
         for (HashMap<String, T> scope: rev){
             if (scope.containsKey(id.toString())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Does the symboltable contain the identifer
+     * @param id The identifier.
+     * @return true if the identifier exist. False Otherwise
+     */
+    public boolean contains(String id){
+        ArrayList<HashMap<String, T>> rev = new ArrayList<>(scopes);
+        Collections.reverse(rev);
+        for (HashMap<String, T> scope: rev){
+            if (scope.containsKey(id)){
                 return true;
             }
         }
@@ -86,6 +106,14 @@ public class SymbolTable<T> {
         return currentParentFunction;
     }
 
+    public HashMap<String, T> flatten() {
+        HashMap<String, T> flattened = new HashMap<String, T>();
+        for (HashMap<String, T> map: scopes){
+            flattened.putAll(map);
+        }
+        return flattened;
+    }
+
     public void printContext(){
         for (HashMap<String, T> s: scopes){
             System.out.println("------------");
@@ -94,6 +122,31 @@ public class SymbolTable<T> {
                 System.out.println(" "+ e.getValue().toString());
             }
             System.out.println("------------");
+        }
+    }
+
+    public void addNecessaryDef(Id id) {
+        necessaryDefs.add(id);
+    }
+    public void addVisitedDef(Id id) {
+        visitedDefs.add(id);
+    }
+
+    public void isNecessaryVisited() {
+        ArrayList<String> visitedString = new ArrayList<String>();
+        ArrayList<String> necessaryString = new ArrayList<String>();
+        for (Id id : visitedDefs) {
+            visitedString.add(id.toString());
+        }
+        for (Id id : necessaryDefs) {
+            necessaryString.add(id.toString());
+        }
+        for (int i = 0; i < necessaryString.size(); i ++ ) {
+            if (!visitedString.contains(necessaryString.get(i))) {
+                throw new SemanticError(necessaryDefs.get(i).getLine(),
+                        necessaryDefs.get(i).getColumn(),
+                        "Not all functions in interface declared in module");
+            }
         }
     }
 }

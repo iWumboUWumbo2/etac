@@ -1,0 +1,5 @@
+use recordInterface2
+
+record R1 {}
+record R2 { x : int }
+record R3 { y : R4 }
