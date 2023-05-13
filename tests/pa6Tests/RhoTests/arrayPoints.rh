@@ -10,9 +10,7 @@ record PointArr {
     x : Point[];
 }
 
-
 func():PointArr{
-
     a:Point = Point(50,10);
 
     b:Point = Point(10,100);

@@ -1007,7 +1007,11 @@ public class IRVisitor implements Visitor<IRNode>{
                     }
                 }else if (atd.type.isBasic()){
                     order.add(new IRMove(new IRTemp(atd.identifier.toString()),new IRTemp(curTemp)));
-                }else {
+                }else if (atd.type.isRecord()){
+                    return new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp));
+                }
+
+                else {
                     throw new InternalCompilerError("Annotated can only be array or basic");
                 }
             }else if (d instanceof ArrAccessDecl aad){

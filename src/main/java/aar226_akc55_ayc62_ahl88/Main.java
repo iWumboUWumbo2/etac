@@ -277,6 +277,7 @@ public class Main {
                     Program result = (Program) p.parse().value;
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                 } else if (filename.endsWith(".ri")) {
+                    System.out.println();
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>()); // Just to throw EtaErrors
                 }
@@ -315,15 +316,10 @@ public class Main {
 
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
+                    if (opts.allClear()){
+                        return ir;
+                    }
                     IRs.put("initial", ir);
-                    if (opts.isSet(OptimizationType.LICM)){
-                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
-//                        System.out.println("done loop");
-                    }
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
-//                        IRs.put("postDead", ir);
-                    }
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();
                         ir = ir.accept(fv);
@@ -341,73 +337,73 @@ public class Main {
                         ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postDead", ir);
                     }
-//                    HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
-//                    HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
-//                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
-//                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-//                        stmtGraphBlocks.removeUnreachableNodes();
-//                        stmtGraphBlocks.removeDeletedNodes();
-//                        CFGGraphBasicBlock cleanedStmtGraphBlocks  = new CFGGraphBasicBlock(stmtGraphBlocks.optimizeJumpsAndLabels());
-//                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(cleanedStmtGraphBlocks);
-//                        domBlock.convertToSSA();
-//                        funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),cleanedStmtGraphBlocks);
-//                        domBlocks.put(new Pair<>(map.getKey(),map.getValue().functionSig),domBlock);
-//                    }
-//                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            new DeadCodeEliminationSSA(funcStatements).workList();
-//                        }
-//                    }
-//                    if (opts.isSet(OptimizationType.CONSTPROP)) {
-//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-////                            writeOutputDot(filename,func.part1(),"preConst",funcStatements.CFGtoDOT());
-//                            new ConstantPropSSA(funcStatements).workList();
-//                            funcStatements.removeUnreachableNodes();
-//                            new ConstantPropSSA(funcStatements).workList();
-//                            funcStatements.removeUnreachableNodes();
-//                            new ConstantPropSSA(funcStatements).workList();
-//                            funcStatements.removeUnreachableNodes();
-////                            writeOutputDot(filename,func.part1(),"postConst",funcStatements.CFGtoDOT());
-//                        }
-//                    }
-//
-//                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-//                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-//                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-//                            new DeadCodeEliminationSSA(funcStatements).workList();
-//                            funcStatements.removeUnreachableNodes();
-//                        }
-//                    }
-//
-//                    HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
-//                    for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
-////                        writeOutputDot(filename,kv.getKey().part1(),"pressa",kv.getValue().CFGtoDOT());
-//                        DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
-////                        writeOutputDot(filename,kv.getKey().part1(),"postssa",kv.getValue().CFGtoDOT());
-//                        ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
-//                        IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
-//                        optFunc.functionSig = kv.getKey().part2();
-//                        cfgIR.put(kv.getKey().part1(),optFunc);
-//                    }
+                    HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
+                    HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
+                    for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                        CFGGraphBasicBlock stmtGraphBlocks = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
+                        stmtGraphBlocks.removeUnreachableNodes();
+                        stmtGraphBlocks.removeDeletedNodes();
+                        CFGGraphBasicBlock cleanedStmtGraphBlocks  = new CFGGraphBasicBlock(stmtGraphBlocks.optimizeJumpsAndLabels());
+                        DominatorBlockDataflow domBlock = new DominatorBlockDataflow(cleanedStmtGraphBlocks);
+                        domBlock.convertToSSA();
+                        funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),cleanedStmtGraphBlocks);
+                        domBlocks.put(new Pair<>(map.getKey(),map.getValue().functionSig),domBlock);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+                            new DeadCodeEliminationSSA(funcStatements).workList();
+                        }
+                    }
+                    if (opts.isSet(OptimizationType.CONSTPROP)) {
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+//                            writeOutputDot(filename,func.part1(),"preConst",funcStatements.CFGtoDOT());
+                            new ConstantPropSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+                            new ConstantPropSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+                            new ConstantPropSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+//                            writeOutputDot(filename,func.part1(),"postConst",funcStatements.CFGtoDOT());
+                        }
+                    }
 
-//                    ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
-//                    if (opts.isSet(OptimizationType.LICM)){
-//                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
-//                    }
-//                    if (opts.isSet(OptimizationType.COPYPROP)) {
-//                        ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
-////                        IRs.put("postCopy", ir);
-//                    }
-//                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-//                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
-////                        IRs.put("postDead", ir);
-//                    }
-//                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-//                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
-////                        IRs.put("postDead", ir);
-//                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        for (Pair<String, Type> func : funcToSSA.keySet()) {
+                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+                            new DeadCodeEliminationSSA(funcStatements).workList();
+                            funcStatements.removeUnreachableNodes();
+                        }
+                    }
+
+                    HashMap<String,IRFuncDecl> cfgIR = new HashMap<>();
+                    for (Map.Entry<Pair<String,Type>,CFGGraphBasicBlock > kv : funcToSSA.entrySet()){
+//                        writeOutputDot(filename,kv.getKey().part1(),"pressa",kv.getValue().CFGtoDOT());
+                        DominatorBlockDataflow.unSSA(kv.getValue(),domBlocks.get(kv.getKey()).retArgsReverseMapping);
+//                        writeOutputDot(filename,kv.getKey().part1(),"postssa",kv.getValue().CFGtoDOT());
+                        ArrayList<IRStmt> stmtss =  kv.getValue().getBackIR();
+                        IRFuncDecl optFunc = new IRFuncDecl(kv.getKey().part1(), new IRSeq(stmtss));
+                        optFunc.functionSig = kv.getKey().part2();
+                        cfgIR.put(kv.getKey().part1(),optFunc);
+                    }
+
+                    ir = new IRCompUnit(((IRCompUnit) ir).name(),cfgIR,new ArrayList<>(),((IRCompUnit) ir).dataMap());
+                    if (opts.isSet(OptimizationType.LICM)){
+                        ir = new LoopOptsVisitorNoSSA().optimizeLoops((IRCompUnit) ir);
+                    }
+                    if (opts.isSet(OptimizationType.COPYPROP)) {
+                        ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postCopy", ir);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
+                    }
+                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+//                        IRs.put("postDead", ir);
+                    }
 
                     IRs.put("final", ir);
                     return ir;
