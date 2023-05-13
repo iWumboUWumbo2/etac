@@ -2,6 +2,7 @@ package aar226_akc55_ayc62_ahl88.newast.definitions;
 
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
+import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.declarations.Decl;
@@ -14,13 +15,32 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class RecordDef extends Definition {
-    Id recordName;
+    public Id recordName;
     ArrayList<AnnotatedTypeDecl> recordTypes;
 
     public RecordDef(Id recordName, ArrayList<AnnotatedTypeDecl> recordTypes, int l, int c){
         super(l, c);
         this.recordName = recordName;
         this.recordTypes = recordTypes;
+    }
+
+
+    public void zeroPass(SymbolTable<Type> table, HashSet<String> currentFile) {
+        // Check if fields have the same names or same as record name.
+
+        Type recordType = new Type(recordName.toString(), recordTypes, getLine(), getColumn(), true);
+        if (table.contains(recordName)) {
+            Type rhs = table.lookup(recordName);
+            if (rhs.getType() != Type.TypeCheckingType.RECORD) {
+                throw new SemanticError(getLine(), getColumn(), "Another declaration in table that isn't record");
+            }
+            if (!recordType.isSameRecord(rhs)) {
+                throw new SemanticError(getLine(), getColumn(), "Duplicate record not exact same");
+            }
+        } else {
+            table.add(recordName, recordType);
+            table.allRecordTypes.put(recordName.toString(), recordType);
+        }
     }
 
     public Type typeCheck(SymbolTable<Type> table) {
@@ -39,10 +59,6 @@ public class RecordDef extends Definition {
             if (recordName.toString().equals(atd.identifier.toString())) {
                 throw new SemanticError(getLine(), getColumn(), "field same name as record");
             }
-            if (table.contains(atd.identifier)) {
-                throw new SemanticError(getLine(), getColumn(), "field already present");
-            }
-            table.add(atd.identifier, atd.type);
         }
         table.currentParentFunction = old;
         table.exitScope();

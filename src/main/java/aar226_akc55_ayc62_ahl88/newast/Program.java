@@ -94,6 +94,7 @@ public class Program extends AstNode {
         for (String id : flattened.keySet()){
             Type t = flattened.get(id);
             if (t.isRecord()) {
+                checkRecordInTable(table, t.recordName, t.getLine(), t.getColumn());
                 for (String field : t.recordFieldToIndex.keySet()) {
                     int index = t.recordFieldToIndex.get(field);
                     Type fieldType = t.recordFieldTypes.get(index);
@@ -140,8 +141,6 @@ public class Program extends AstNode {
             }
         }
 
-        // TODO: everything in ri has to be in rh
-
         // first pass to add all Interfaces and Definitions
         HashMap<Id,Type> globTypes = new HashMap<>();
         ArrayList<String> visitedInterfaces = new ArrayList<>();
@@ -155,6 +154,12 @@ public class Program extends AstNode {
         checkRecordTypes(table);
 
         HashSet<String> currentFileIds  = new HashSet<>();
+
+        // ZERO PASS
+        for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
+            if ((d instanceof RecordDef rd)) rd.zeroPass(table,currentFileIds);
+        }
+
         // FIRST PASS
         for (Definition d: definitions){         // table should be updated to hold all global decls and functions and interfaces
             d.firstPass(table,currentFileIds);

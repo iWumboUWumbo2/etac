@@ -90,7 +90,6 @@ public class Method_Interface extends AstNode {
 
         HashSet<String> prev = new HashSet<>();
 
-        //TODO: what do we do for records?
         for (AnnotatedTypeDecl atd: decls){
             if (atd.identifier.toString().equals(id.toString())){ // decl name and function name
                 throw new SemanticError(atd.getLine(), atd.getColumn(), "function and parameter have same name");

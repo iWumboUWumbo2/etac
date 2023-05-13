@@ -250,7 +250,7 @@ public class Type implements Printer {
         ArrayList<Type> table_t_fields = table_t.recordFieldTypes;
         HashMap<String, Integer> table_t_map = table_t.recordFieldToIndex;
         if (table_t_map == null || table_t_fields == null ||
-                table_t_map.size() == 0 || table_t_map.size() == 0) {
+                table_t_map.size() == 0 || table_t_fields.size() == 0) {
             return true;
         }
 
