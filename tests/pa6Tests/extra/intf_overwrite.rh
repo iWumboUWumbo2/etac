@@ -1,7 +1,0 @@
-use multi_intf
-
-record Circle{
-    p1: Point
-    p2: Point
-    p3: Point
-}

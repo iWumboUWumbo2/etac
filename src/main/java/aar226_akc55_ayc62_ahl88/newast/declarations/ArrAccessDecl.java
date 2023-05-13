@@ -90,7 +90,7 @@ public class ArrAccessDecl extends Decl{
     public Type typeCheck(SymbolTable<Type> table) {
         Type identifierType = table.lookup(identifier);
         functionSig = identifierType;
-        System.out.println(identifierType.getType());
+//        System.out.println(identifierType.getType());
         if (identifierType.getType() != Type.TypeCheckingType.FUNC) {
             if (!identifierType.isArray()) {
                 throw new SemanticError(getLine(), getColumn(), "variable is not an array");

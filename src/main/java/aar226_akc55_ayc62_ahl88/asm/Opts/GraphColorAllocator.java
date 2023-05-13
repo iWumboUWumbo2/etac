@@ -73,7 +73,7 @@ public class GraphColorAllocator {
     HashMap<ASMAbstractReg,Long> regToCost;
     HashSet<ASMAbstractReg> insertedNodes;
 
-    long INF = 100000;
+    int INF = 10000000;
     /**
      * Graph Coloring Allocator. We don't insert extra defs and uses one time runthrough
      * @param g
@@ -124,6 +124,9 @@ public class GraphColorAllocator {
     }
 
    public void initTemps(){
+//        for (String reg : validColors){
+//            degree.put(new ASMRegisterExpr(reg),INF);
+//        }
         HashSet<ASMAbstractReg> temps = new HashSet<>();
         for (BasicBlockASMCFG b : progBlock.getNodes()) {
             for (CFGNode<ASMInstruction> instr : b.getBody()) {
@@ -136,7 +139,7 @@ public class GraphColorAllocator {
             adjList.put(reg,new HashSet<>());
             degree.put(reg,0);
             if (insertedNodes.contains(reg)){
-                regToCost.put(reg,INF);
+                regToCost.put(reg, (long) INF);
             }else {
                 regToCost.put(reg, 0L);
             }
