@@ -81,8 +81,8 @@ public class ArrayValueLiteral extends Expr {
         if (arrCheck.isArray()) {
             long dim_num = arrCheck.dimensions.getDim()+1;
             Dimension dim = new Dimension(dim_num, getLine(), getColumn());
-            return new Type(arrCheck.getType(), dim);
 
+            return correctType(arrCheck, dim, s);
         }
         // if t1 not array, return dim 1 array
         else {
@@ -92,7 +92,7 @@ public class ArrayValueLiteral extends Expr {
             }else if (arrCheck.getType() == Type.TypeCheckingType.BOOL){
                 return new Type(Type.TypeCheckingType.BOOLARRAY,dim);
             }else if (arrCheck.getType() == Type.TypeCheckingType.RECORD){
-                return new Type(Type.TypeCheckingType.RECORDARRAY,dim);
+                return correctType(arrCheck, dim, s);
             }else if (arrCheck.getType() == Type.TypeCheckingType.UNKNOWN){
                 return new Type(Type.TypeCheckingType.UNKNOWNARRAY,dim);
             }else if (arrCheck.getType() == Type.TypeCheckingType.NULL){
@@ -102,6 +102,22 @@ public class ArrayValueLiteral extends Expr {
             }
         }
 
+    }
+
+    /**
+     * @param t original type
+     * @param d new dimensions
+     * @param table typechecking table
+     * @return new type with dimension d
+     */
+    public Type correctType(Type t, Dimension d, SymbolTable<Type> table) {
+        Type temp;
+        Type recordType = table.lookup(new Id(t.recordName, getColumn(), getLine()));
+        temp = new Type(recordType.recordName, recordType.recordFieldTypes, t.getColumn(), t.getLine());
+        temp.recordFieldToIndex = recordType.recordFieldToIndex;
+        temp.dimensions = d;
+        temp.setType(Type.TypeCheckingType.RECORDARRAY);
+        return temp;
     }
 
     @Override
