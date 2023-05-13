@@ -1,0 +1,76 @@
+Last login: Sat May 13 15:50:42 on ttys002
+(base) AndrewCheng@dhcp-vl2041-8802 ~ % docker run -it -v /Users/AndrewCheng/Desktop/etac:/home/student/shared charlessherk/cs4120-vm
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+2023-05-13 19:55:44 URL:http://www.cs.cornell.edu/courses/cs4120/2023sp/project/eth.tar.gz [2815095/2815095] -> "eth.tar.gz" [1]
+2023-05-13 19:55:45 URL:http://www.cs.cornell.edu/courses/cs4120/2023sp/project/runtime.zip [10442008/10442008] -> "runtime.zip" [1]
+gcc -g -Wall -O2 -m64 -fno-stack-protector -fno-omit-frame-pointer -fno-pie -no-pie -c -o demangle/demangle.o demangle/demangle.c
+gcc -fno-pie -no-pie -o etafilt demangle/demangle.o
+gcc -g -Wall -O2 -m64 -fno-stack-protector -fno-omit-frame-pointer -Incurses-6.3/include -Igc-7.6.4/include -fno-pie -no-pie -c -o libeta/libeta.o libeta/libeta.c
+gcc -g -Wall -O2 -m64 -fno-stack-protector -fno-omit-frame-pointer -Incurses-6.3/include -Igc-7.6.4/include -fno-pie -no-pie -c -o libeta/curses.o libeta/curses.c
+rm -rf libeta.a gc_tmp nc_tmp
+mkdir gc_tmp; cd gc_tmp; ar -x ../gc-7.6.4/.libs/libgc.a
+mkdir nc_tmp; cd nc_tmp; ar -x ../ncurses-6.3/lib/libncurses.a
+ar rcs libeta.a libeta/libeta.o gc_tmp/*.o nc_tmp/*.o libeta/curses.o
+rm -rf gc_tmp nc_tmp
+gcc -masm=intel -O0 -fno-stack-protector -fno-asynchronous-unwind-tables -fno-pie -no-pie -I./libeta -o examples/arr.s -S examples/arr.c
+perl -ni -e 'if (!/InlineAsm/) { print $_ }' examples/arr.s
+./linketa.sh examples/arr.s -o examples/arr
+gcc -E examples/arr.s -o examples/arr.sx
+gcc -masm=intel -O0 -fno-stack-protector -fno-asynchronous-unwind-tables -fno-pie -no-pie -I./libeta -o examples/fact.s -S examples/fact.c
+perl -ni -e 'if (!/InlineAsm/) { print $_ }' examples/fact.s
+./linketa.sh examples/fact.s -o examples/fact
+gcc -E examples/fact.s -o examples/fact.sx
+make: *** No rule to make target '../runtime/libxi/*.h', needed by 'libxi.deps'.  Stop.
+
+student ~$ ls
+QtXi  bin  eth	jflex  jflex-1.6.1  runtime  shared
+
+student ~$ cd runtime/
+
+student ~/runtime$ ls
+Makefile    deps      gc-7.6.4	libQtRho.a  libeta.deps  ncurses-6.3
+README.txt  etafilt   include	libeta	    linketa.sh	 platform-flags.sh
+demangle    examples  libQtRho	libeta.a    linkqt.sh	 update
+
+student ~/runtime$ export TERMINFO=/lib/terminfo
+
+student ~/runtime$ cd examples/
+
+student ~/runtime/examples$ ls
+arr    arr.eta	curses	    defs.h  fact.c    fact.s
+arr.c  arr.s	curses.eta  fact    fact.eta  qt
+
+student ~/runtime/examples$ cd curses
+
+student ~/runtime/examples/curses$ nano snake.rh
+
+student ~/runtime/examples/curses$
+
+student ~/runtime/examples/curses$ nano snake.rh
+
+student ~/runtime/examples/curses$ vim snake.rh
+
+
+        head: Point = snake.body[snake.head]
+
+        if food.x == head.x & food.y == head.y {
+            food.x, food.y = prng() % width, prng() % height
+            putCharAt('x', food.x, food.y)
+            grow_snake(snake)
+        } else {
+            putCharAt('x', food.x, food.y)
+            move_snake(snake)
+        }
+
+        if check_dead(snake)
+            alive = false
+
+        refreshWindow()
+
+        while timestampDifference(getTimestamp(), time) < 100 {}
+        time = getTimestamp()
+    }
+
+    destroyCurses()

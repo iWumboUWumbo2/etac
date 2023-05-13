@@ -1,0 +1,24 @@
+use io
+use conv
+
+chainedExpressions() {
+    a:int = 10;
+    b:int = 15;
+    c:int = 0;
+    i:int = 0;
+
+    while (i < a & a > 0 | i > b & b < 10) {
+        j:int = 0;
+        while ((j < b & b > 0) | (j > a & a < 10)) {
+            c = c + i * j;
+            j = j + 1;
+        }
+        i = i + 1;
+    }
+
+    println(unparseInt(c))
+}
+
+main(args:int[][]) {
+    chainedExpressions();
+}

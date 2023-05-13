@@ -1,0 +1,15 @@
+use io
+use conv
+main(args:int[][]) {
+    a:int = 10;
+    b:int = 5;
+    c:int
+
+    if (a > b) {
+        c = a + b;
+    } else {
+        c = a - b;
+    }
+
+    println(unparseInt(c))
+}
