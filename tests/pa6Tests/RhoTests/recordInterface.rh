@@ -3,3 +3,7 @@ use recordInterface
 record R1 {a, b, c : int}
 record R2 { x : int }
 record R3 { y : R4 }
+
+main(args : int[][]) {
+
+}

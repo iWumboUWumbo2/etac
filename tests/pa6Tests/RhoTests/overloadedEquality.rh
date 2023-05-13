@@ -1,0 +1,19 @@
+use io
+use conv
+
+record Point {
+    x,y,z: int
+}
+
+main(args:int[][]) {
+    y : Point = Point(1, 2, 3);
+    x : Point = y;
+
+    if(x == y) {
+        println("YAYYY")
+    } else {
+        println("NOOOOO")
+    }
+
+    //a : OrderMatters = OrderMatters(true, 3) // this should fail typecheck
+}
