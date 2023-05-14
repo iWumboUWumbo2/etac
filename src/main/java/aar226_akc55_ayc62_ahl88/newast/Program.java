@@ -149,6 +149,12 @@ public class Program extends AstNode {
         }
 
         // Then go through Methods again to type check only their blocks
+        HashMap<String,Type> flat = table.flatten();
+        for (String key : flat.keySet()){
+            if (flat.get(key).isRecord){
+                table.allRecordTypes.put(key,flat.get(key));
+            }
+        }
         table.exitScope();
         nodeType = new Type(Type.TypeCheckingType.UNIT);
         return nodeType;

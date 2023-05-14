@@ -3,8 +3,16 @@ use conv
 use io
 
 main(args: int[][]){
-    s : Square
-    s, p2: Point = Square(Point(1,2),1), Point(3,4)
+    //
+    s:Square, p2: Point = Square(Point(1,2),1), Point(3,4)
+    {
+        a:Square = Square(Point(1,2),1);
+        a.sideLength = 4;
+    }
+    {
+        a:Point = Point(1,2);
+        a.x = 10;
+    }
 
     if(s.sideLength != 1){
         print("NOOO")
