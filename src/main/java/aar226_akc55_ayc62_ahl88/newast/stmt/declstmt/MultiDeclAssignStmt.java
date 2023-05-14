@@ -17,10 +17,19 @@ import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 import java.util.ArrayList;
 
+/**
+ * Class for multiple decl assignments
+ */
 public class MultiDeclAssignStmt extends Stmt {
     private ArrayList<Decl> decls;
     private ArrayList<Expr> expressions;
 
+    /**
+     * @param d
+     * @param e
+     * @param l
+     * @param c
+     */
     public MultiDeclAssignStmt(ArrayList<Decl> d, ArrayList<Expr> e,int l, int c) {
         super(l,c);
 
@@ -59,9 +68,6 @@ public class MultiDeclAssignStmt extends Stmt {
         } else {
             decls = d;
         }
-
-
-
     }
 
     public String toString(){

@@ -9,8 +9,15 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPri
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
+/**
+ * Class for break.
+ */
 public class Break extends Stmt {
 
+    /**
+     * @param l
+     * @param c
+     */
     public Break(int l, int c) {
         super(l, c);
     }

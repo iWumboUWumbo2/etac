@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Class for the program.
+ */
 public class Program extends AstNode {
     private ArrayList<Use> useList;
     private ArrayList<Definition> definitions;

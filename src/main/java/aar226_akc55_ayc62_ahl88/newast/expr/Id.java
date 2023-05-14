@@ -30,7 +30,6 @@ public class Id extends Expr {
     public Type typeCheck(SymbolTable<Type> table) {
         nodeType = table.lookup(this);
         return nodeType;
-
     }
 
     public void prettyPrint(CodeWriterSExpPrinter p) {
