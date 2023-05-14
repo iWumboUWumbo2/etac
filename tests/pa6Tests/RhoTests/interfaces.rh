@@ -1,0 +1,15 @@
+use interface
+use conv
+use io
+
+main(args: int[][]){
+    s : Square
+    s, p2: Point = Square(Point(1,2),1), Point(3,4)
+
+    if(s.sideLength != 1){
+        print("NOOO")
+    }
+    else{
+        print("YAYY")
+    }
+}

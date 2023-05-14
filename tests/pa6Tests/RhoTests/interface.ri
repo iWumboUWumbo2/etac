@@ -1,0 +1,9 @@
+record Square{
+    topLeftCorner: Point
+    sideLength: int
+}
+
+record Point{
+    x: int
+    y: int
+}
