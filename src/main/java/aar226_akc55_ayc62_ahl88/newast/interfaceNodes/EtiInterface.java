@@ -60,8 +60,6 @@ public class EtiInterface extends AstNode {
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
         methodSymbols.enterScope();
 
-        // TODO: for ri file, typecheck all uses and use modules
-        // TODO: everything declared in the interface must be defined in the module.
         for (Use u:useList) {
             if (!visitedInterfaces.contains(u.id.toString())) {
                 Type useType = u.typeCheck(methodSymbols, zhenFileName, res, visitedInterfaces);
