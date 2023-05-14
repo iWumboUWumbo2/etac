@@ -107,7 +107,7 @@ public class Program extends AstNode {
             ArrayList<String> visitedInterfaces = new ArrayList<>();
             for (Use u: useList){
                 if (!visitedInterfaces.contains(u.id.toString())) {
-                    u.zeroPass(table, zhenFile, new HashMap<>(), visitedInterfaces);
+                    u.zeroPass(table, zhenFile, new HashMap<>(), visitedInterfaces, false);
                 }
             }
         }
@@ -118,7 +118,7 @@ public class Program extends AstNode {
         ArrayList<String> visitedInterfaces = new ArrayList<>();
         for (Use u: useList){
             if (!visitedInterfaces.contains(u.id.toString())) {
-                Type useType = u.typeCheck(table,zhenFile, globTypes, visitedInterfaces);
+                Type useType = u.typeCheck(table,zhenFile, globTypes, visitedInterfaces, false);
                 if (useType.getType() != Type.TypeCheckingType.UNIT){
                     throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
                 }

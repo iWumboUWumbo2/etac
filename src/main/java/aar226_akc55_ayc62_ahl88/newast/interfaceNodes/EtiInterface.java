@@ -71,7 +71,7 @@ public class EtiInterface extends AstNode {
 
         for (Use u:useList) {
             if (!visitedInterfaces.contains(u.id.toString())) {
-                u.zeroPass(methodSymbols, zhenFileName, res, visitedInterfaces);
+                u.zeroPass(methodSymbols, zhenFileName, res, visitedInterfaces, false);
             }
         }
 
@@ -110,7 +110,7 @@ public class EtiInterface extends AstNode {
 
         for (Use u:useList) {
             if (!visitedInterfaces.contains(u.id.toString())) {
-                Type useType = u.typeCheck(table, zhenFileName, res, visitedInterfaces);
+                Type useType = u.typeCheck(table, zhenFileName, res, visitedInterfaces, false);
                 if (useType.getType() != Type.TypeCheckingType.UNIT) {
                     throw new SemanticError(u.getLine(), u.getColumn(), "use somehow not unit");
                 }
