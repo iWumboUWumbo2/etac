@@ -17,8 +17,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.unop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.intuop.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.booluop.*;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
-
-
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import java.util.ArrayList;
 
@@ -41,54 +39,53 @@ terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES, HI_MULT,
   OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
   COLON, COMMA, SEMICOLON, UNDERSCORE, UMINUS,MAX_NUM, BREAK, NULL, RECORD, PERIOD;
 
-nonterminal Program                 program;
-nonterminal ArrayList<Use>          importUseStar;
-nonterminal Use                     use_component;
-nonterminal ArrayList<Definition>   definitionStar;
-nonterminal Definition              definition;
-nonterminal Method                  method;
-nonterminal ArrayList<AnnotatedTypeDecl>         emptyBracketDecl_star;
-nonterminal ArrayList<AnnotatedTypeDecl>         emptyBracketDecl_plus;
-nonterminal AnnotatedTypeDecl       emptyBracketDecl;
-nonterminal ArrayList<Type>         emptyBracketType_plus;
-nonterminal Type                    emptyBracketType;
-nonterminal Dimension               emptyDimension_star;
-nonterminal Definition              globalDecl;
-nonterminal Definition              newGlob;
-nonterminal Expr                    value;
-nonterminal Expr                    expr;
-nonterminal Block                   block;
-nonterminal ArrayList<Expr>         exprList;
-nonterminal Stmt                    stmt;
-nonterminal ArrayList<Stmt>         statement_star;
-nonterminal Stmt                    declaration_assign_stmt;
-nonterminal Stmt                    multi_declaration_assign_stmt;
-nonterminal ArrayList<Expr>         right_side;
-nonterminal Return                  return;
-nonterminal ArrayList<Decl>         type_list;
-nonterminal ArrayList<Expr>         fullBracketPlus;
-nonterminal ArrAccessDecl           fullBracketType;
-nonterminal ArrayList<Expr>         valueList;
-nonterminal ArrAccessDecl           fullBracketAss;
-nonterminal ArrayList<AnnotatedTypeDecl> glob_type_list;
+nonterminal Program                         program;
+nonterminal ArrayList<Use>                  importUseStar;
+nonterminal Use                             use_component;
+nonterminal ArrayList<Definition>           definitionStar;
+nonterminal Definition                      definition;
+nonterminal Method                          method;
+nonterminal ArrayList<AnnotatedTypeDecl>    emptyBracketDecl_star;
+nonterminal ArrayList<AnnotatedTypeDecl>    emptyBracketDecl_plus;
+nonterminal AnnotatedTypeDecl               emptyBracketDecl;
+nonterminal ArrayList<Type>                 emptyBracketType_plus;
+nonterminal Type                            emptyBracketType;
+nonterminal Dimension                       emptyDimension_star;
+nonterminal Definition                      globalDecl;
+nonterminal Definition                      newGlob;
+nonterminal Expr                            value;
+nonterminal Expr                            expr;
+nonterminal Block                           block;
+nonterminal ArrayList<Expr>                 exprList;
+nonterminal Stmt                            stmt;
+nonterminal ArrayList<Stmt>                 statement_star;
+nonterminal Stmt                            declaration_assign_stmt;
+nonterminal Stmt                            multi_declaration_assign_stmt;
+nonterminal ArrayList<Expr>                 right_side;
+nonterminal Return                          return;
+nonterminal ArrayList<Decl>                 type_list;
+nonterminal ArrayList<Expr>                 fullBracketPlus;
+nonterminal ArrAccessDecl                   fullBracketType;
+nonterminal ArrayList<Expr>                 valueList;
+nonterminal ArrAccessDecl                   fullBracketAss;
+nonterminal ArrayList<AnnotatedTypeDecl>    glob_type_list;
 //Rho
-nonterminal Dimension              rhoEmptyDimension_star;
-nonterminal Type                   rhoEmptyBracketType;
-nonterminal ArrayList<Type>        rhoEmptyBracketType_plus;
-nonterminal AnnotatedTypeDecl      rhoEmptyBracketDecl;
-nonterminal ArrayList<AnnotatedTypeDecl>        rhoEmptyBracketDecl_plus;
-nonterminal ArrayList<Id>           identifier_plus;
-nonterminal ArrayList<AnnotatedTypeDecl>         rhoMultiDecl;
-nonterminal ArrayList<AnnotatedTypeDecl>         fieldDecl;
-nonterminal RecordDef                  record;
-nonterminal ArrayList<AnnotatedTypeDecl> fieldDeclPlus;
-nonterminal ArrayList<AnnotatedTypeDecl> multi_declaration_stmt;
-nonterminal ArrayList<Decl> recordaccessdeclarray;
-nonterminal RecordAccessDecl recordaccessdecl;
+nonterminal Dimension                       rhoEmptyDimension_star;
+nonterminal Type                            rhoEmptyBracketType;
+nonterminal ArrayList<Type>                 rhoEmptyBracketType_plus;
+nonterminal AnnotatedTypeDecl               rhoEmptyBracketDecl;
+nonterminal ArrayList<AnnotatedTypeDecl>    rhoEmptyBracketDecl_plus;
+nonterminal ArrayList<Id>                   identifier_plus;
+nonterminal ArrayList<AnnotatedTypeDecl>    rhoMultiDecl;
+nonterminal ArrayList<AnnotatedTypeDecl>    fieldDecl;
+nonterminal RecordDef                       record;
+nonterminal ArrayList<AnnotatedTypeDecl>    fieldDeclPlus;
+nonterminal ArrayList<AnnotatedTypeDecl>    multi_declaration_stmt;
+nonterminal ArrayList<Decl>                 recordaccessdeclarray;
+nonterminal RecordAccessDecl                recordaccessdecl;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
-
 // function call
 precedence left OR;
 precedence left AND;
@@ -104,41 +101,41 @@ precedence left PERIOD;
 start with program;
 
 program ::=
-    importUseStar:ius definitionStar:dl {: RESULT = new Program(ius, dl,1,1);:}
-;
+    importUseStar:ius definitionStar:dl {: RESULT = new Program(ius, dl,1,1); :}
+    ;
 
 importUseStar ::=
     importUseStar:ius use_component:u {: ius.add(u); RESULT = ius; :}
     | {: RESULT = new ArrayList<Use>(); :}
-;
+    ;
 
 use_component::=
-      USE IDENTIFIER:i           {: RESULT = new Use(i, ileft, iright); :}
+    USE IDENTIFIER:i {: RESULT = new Use(i, ileft, iright); :}
     | USE IDENTIFIER:i SEMICOLON {: RESULT = new Use(i, ileft, iright); :}
-;
+    ;
 
 definitionStar ::=
     definitionStar:ds definition:d {:ds.add(d); RESULT = ds; :}
     | {: RESULT = new ArrayList<Definition>(); :}
-;
+    ;
 
 definition ::=
     method:m {: RESULT = m; :}
     | globalDecl:gd {: RESULT = gd; :}
     | record:r {: RESULT = r; :}
-;
+    ;
 
 method ::= // Id b
     IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN COLON emptyBracketType_plus:ts block:b {:
         RESULT = new Method(i,ds,ts,b,ileft,iright); :}
     | IDENTIFIER:i OPEN_PAREN emptyBracketDecl_star:ds CLOSE_PAREN block:b {: // Block b
         RESULT = new Method(i,ds,new ArrayList<Type>(),b,ileft,iright); // NONE :}
-;
+    ;
 
 emptyBracketDecl_star ::=
     emptyBracketDecl_plus:declstar {: RESULT = declstar; :}
     | {: RESULT = new ArrayList<AnnotatedTypeDecl>(); :}
-;
+    ;
 
 emptyBracketDecl_plus ::=
     emptyBracketDecl_plus:ts COMMA emptyBracketDecl:d {: ts.add(d); RESULT = ts; :}
@@ -149,20 +146,18 @@ emptyBracketDecl_plus ::=
     ;
 
 emptyBracketDecl ::=
-    IDENTIFIER:i COLON emptyBracketType:t {:
-        RESULT = new AnnotatedTypeDecl(new Id(i,ileft,iright),t,ileft,iright); :}
-;
+    IDENTIFIER:i COLON emptyBracketType:t {: RESULT = new AnnotatedTypeDecl(new Id(i,ileft,iright),t,ileft,iright); :}
+    ;
 
 fullBracketType::=
     IDENTIFIER: i fullBracketPlus:e {:
         Id a = new Id(i,ileft,iright);
-        RESULT = new ArrAccessDecl(a,e, ileft,iright);
-    :}
+        RESULT = new ArrAccessDecl(a,e, ileft,iright); :}
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN fullBracketPlus:e {:
         RESULT = new ArrAccessDecl(new Id(id,idleft,idright),new ArrayList<Expr>(),e, idleft, idright); :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN fullBracketPlus:indi {:
         RESULT = new ArrAccessDecl(new Id(id,idleft,idright), e,indi, idleft, idright); :}
-;
+    ;
 
 fullBracketPlus ::=
     fullBracketPlus:ts OPEN_BRACKET expr:e CLOSE_BRACKET {:
@@ -172,11 +167,11 @@ fullBracketPlus ::=
         ArrayList<Expr> exprList = new ArrayList<Expr>();
         exprList.add(e);
         RESULT = exprList; :}
-;
+    ;
 
 globalDecl ::=
     newGlob:ng {: RESULT = ng; :}
-;
+    ;
 
 newGlob ::=
     emptyBracketDecl:ed {:
@@ -191,16 +186,16 @@ newGlob ::=
         RESULT  = new Globdecl(ed, v, edleft, edright);
     :}
     | newGlob:gd SEMICOLON {:
-        RESULT = gd;:}
+        RESULT = gd; :}
     | glob_type_list:tl GETS valueList:v {:
-        RESULT = new MultiGlobalDecl(tl,v,tlleft,tlright);:}
+        RESULT = new MultiGlobalDecl(tl,v,tlleft,tlright); :}
     | identifier_plus:ip COLON emptyBracketType:t {:       // x, y : int
         ArrayList<AnnotatedTypeDecl> declList = new ArrayList<AnnotatedTypeDecl>();
         for(int j = 0; j < ip.size(); j++) {
             declList.add(new AnnotatedTypeDecl(ip.get(j), t, ipleft, ipright));
         }
         RESULT = new MultiGlobalDecl(declList, new ArrayList<Expr>(), ipleft, ipright); :}
-;
+    ;
 
 glob_type_list ::=
     emptyBracketDecl:ed1 COMMA emptyBracketDecl:ed2 {:
@@ -211,15 +206,15 @@ glob_type_list ::=
     |glob_type_list:tl COMMA emptyBracketDecl:ed {:
          tl.add(ed);
          RESULT = tl; :}
-;
+    ;
 
 value ::=
     INTEGER_LITERAL:i  {: RESULT = new IntLiteral(i,ileft,iright); :}
-    | MINUS MAX_NUM:m {:RESULT = new IntLiteral(Long.MIN_VALUE,mleft,mright);:}
+    | MINUS MAX_NUM:m {:RESULT = new IntLiteral(Long.MIN_VALUE,mleft,mright); :}
     | CHARACTER_LITERAL:c {: RESULT = new IntLiteral(c,cleft,cright); :}// Create as INT cause Chars are ints
     | MINUS INTEGER_LITERAL:i  {: RESULT = new IntLiteral(-i,ileft,iright); :} %prec UMINUS
     | BOOL_LITERAL:b    {: RESULT = new BoolLiteral(b,bleft,bright); :}
-;
+    ;
 
 valueList ::=
     value:x {:
@@ -228,7 +223,7 @@ valueList ::=
         RESULT = temp;
         :}
     | valueList:ave COMMA value:x {: ave.add(x); RESULT = ave; :}
-;
+    ;
 
 emptyBracketType_plus ::=
     emptyBracketType_plus:ts COMMA emptyBracketType:t {: ts.add(t); RESULT = ts; :}
@@ -236,45 +231,45 @@ emptyBracketType_plus ::=
         ArrayList<Type> typeList = new ArrayList<Type>();
         typeList.add(t);
         RESULT = typeList; :}
-;
+    ;
 
 emptyBracketType ::=
     INT  emptyDimension_star:d {:RESULT = new Type(true,d,dleft,dright); :}
     | BOOL emptyDimension_star:d {:RESULT = new Type(false,d,dleft,dright); :}
     | IDENTIFIER:i emptyDimension_star:d {:RESULT = new Type(i, d, ileft,iright); :}
-;
+    ;
 
 emptyDimension_star ::=
     emptyDimension_star:ds OPEN_BRACKET CLOSE_BRACKET {:
     ds.increment();
     ds.foundEmpty = true;
     ds.indices.add(null);
-    RESULT = ds;:}
+    RESULT = ds; :}
     |emptyDimension_star:ds OPEN_BRACKET INTEGER_LITERAL:i CLOSE_BRACKET {:
         if (ds.foundEmpty) throw new SyntaxError(ileft,iright,"Filled index after empty");
         ds.allEmpty = false;
         IntLiteral iL = new IntLiteral(i,ileft,iright);
         ds.indices.add(iL);
         ds.increment(); // [][2]
-        RESULT = ds;:}
+        RESULT = ds; :}
     |emptyDimension_star:ds OPEN_BRACKET IDENTIFIER:i CLOSE_BRACKET {:
         if (ds.foundEmpty) throw new SyntaxError(ileft,iright ,"Filled index after empty");
         ds.allEmpty = false;
         ds.indices.add(new Id(i,ileft,iright));
         ds.increment(); // [][2]
-        RESULT = ds;:}
+        RESULT = ds; :}
     |emptyDimension_star:ds OPEN_BRACKET expr:e CLOSE_BRACKET {:
         if (ds.foundEmpty) throw new SyntaxError(eleft,eright,"Filled index after empty");
         ds.allEmpty = false;
         ds.indices.add(e);
         ds.increment(); // [][2]
-        RESULT = ds;:}
+        RESULT = ds; :}
     | {:RESULT = new Dimension(-1,-1); :} // Maybe check future
-;
+    ;
 
 expr ::=
     // ignore Paren
-    OPEN_PAREN expr:e1 CLOSE_PAREN {:RESULT = e1;:}
+    OPEN_PAREN expr:e1 CLOSE_PAREN {:RESULT = e1; :}
 
     //BINOP
     |  expr:e1 TIMES     expr:e2  {: RESULT = new TimesBinop(e1, e2, e1left, e1right); :}
@@ -294,11 +289,11 @@ expr ::=
 
     // UNOP
     |  NOT   expr:e1              {: RESULT = new NotUnop(e1, e1left, e1right); :}
-    |  MINUS expr:e1              {: RESULT = new IntegerNegExpr (e1, e1left, e1right);:} %prec UMINUS // IF ITS INT CONVER TO NEG
+    |  MINUS expr:e1              {: RESULT = new IntegerNegExpr (e1, e1left, e1right); :} %prec UMINUS // IF ITS INT CONVER TO NEG
 
     // LITS
     | INTEGER_LITERAL:i           {: RESULT = new IntLiteral(i,ileft,iright); :}
-    | MINUS MAX_NUM:m             {: RESULT = new IntLiteral(Long.MIN_VALUE,mleft,mright);:}
+    | MINUS MAX_NUM:m             {: RESULT = new IntLiteral(Long.MIN_VALUE,mleft,mright); :}
     | CHARACTER_LITERAL:c         {: RESULT = new IntLiteral(c, cleft, cright); :}// Create as INT cause Chars are ints
     | BOOL_LITERAL:b              {: RESULT = new BoolLiteral(b, bleft, bright); :}
     | STRING_LITERAL:s            {: RESULT = new ArrayValueLiteral(s, sleft, sright); :}
@@ -310,8 +305,8 @@ expr ::=
     | NULL:n {: RESULT = new Null(nleft, nright); :}
 
     // ARRAY LITERALS
-    | OPEN_BRACE:ob CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Expr>(), obleft, obright);:}
-    | OPEN_BRACE:ob exprList:x CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, obleft, obright);:}
+    | OPEN_BRACE:ob CLOSE_BRACE {:RESULT = new ArrayValueLiteral(new ArrayList<Expr>(), obleft, obright); :}
+    | OPEN_BRACE:ob exprList:x CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, obleft, obright); :}
     | OPEN_BRACE:ob exprList:x COMMA CLOSE_BRACE {:RESULT = new ArrayValueLiteral(x, obleft, obright); :}
 
     // Functions
@@ -322,7 +317,7 @@ expr ::=
 
     // Records
     | expr:e PERIOD IDENTIFIER:id {: RESULT = new RecordAcessBinop(e, new Id(id, idleft, idright), eleft, eright); :}
-;
+    ;
 
 exprList ::=
     expr:x {:
@@ -331,27 +326,27 @@ exprList ::=
             RESULT = temp;
         :}
     |  exprList:ave COMMA expr:x {: ave.add(x); RESULT = ave; :}
-;
+    ;
 
 stmt ::=
     declaration_assign_stmt:das {:RESULT = das; :}
-    | multi_declaration_assign_stmt:mdas {:RESULT = mdas;:}
-    | WHILE expr:e stmt:s {:RESULT = new While(e,s,eleft,eright);:}
-    | IF expr:e stmt:s {:RESULT = new IfOnly(e,s,eleft,eright);:}
-    | IF expr:e stmt:s1 ELSE stmt:s2 {:RESULT = new IfElse(e,s1,s2,eleft,eright);:}
+    | multi_declaration_assign_stmt:mdas {:RESULT = mdas; :}
+    | WHILE expr:e stmt:s {:RESULT = new While(e,s,eleft,eright); :}
+    | IF expr:e stmt:s {:RESULT = new IfOnly(e,s,eleft,eright); :}
+    | IF expr:e stmt:s1 ELSE stmt:s2 {:RESULT = new IfElse(e,s1,s2,eleft,eright); :}
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN {: RESULT = new ProcedureCall(new Id(id,idleft,idright),new ArrayList<Expr>(),idleft,idright); :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN {: RESULT = new ProcedureCall(new Id(id,idleft,idright), e, idleft,idright); :}
     | block:b {: RESULT = b; :}
     | BREAK:b {: RESULT = new Break(bleft, bright); :}
-;
+    ;
 
 multi_declaration_assign_stmt ::= type_list:tl right_side:rs {: RESULT = new MultiDeclAssignStmt(tl,rs,tlleft,tlright); :}
-;
+    ;
 
 right_side ::=
-    GETS exprList:el {:RESULT = el;:}
-    | {:RESULT = new ArrayList<Expr>();:}
-;
+    GETS exprList:el {:RESULT = el; :}
+    | {:RESULT = new ArrayList<Expr>(); :}
+    ;
 
 multi_declaration_stmt ::=
     // x, y, z : int
@@ -361,13 +356,13 @@ multi_declaration_stmt ::=
             declList.add(new AnnotatedTypeDecl(ip.get(j), t, ipleft, ipright));
         }
     RESULT = declList; :}
-;
+    ;
 
 fullBracketAss ::=
     IDENTIFIER:id fullBracketPlus:fbp {: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), fbp,idleft,idright ); :}
     | IDENTIFIER:id OPEN_PAREN CLOSE_PAREN fullBracketPlus:e{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright),new ArrayList<Expr>(),e, idleft, idright); :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN fullBracketPlus:indi{: RESULT = new ArrAccessDecl(new Id(id,idleft,idright), e,indi, idleft, idright); :}
-;
+    ;
 
 recordaccessdeclarray ::=
     recordaccessdeclarray:rad PERIOD IDENTIFIER:i {:
@@ -380,18 +375,14 @@ recordaccessdeclarray ::=
         RESULT = rad; :}
     | IDENTIFIER:id OPEN_PAREN exprList:e CLOSE_PAREN PERIOD fullBracketAss:fb {:
         //Point(1,2).x[2]
-        //TODO: dont think it should be fullbracketass? i.e. x.y(2,3)[1] should not be allowed
-        // Should just be the first line of fullBracketAss?
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(new NoTypeDecl(new Id(id,idleft,idright),e,idleft,idright,false));
         rad.add(fb);
         RESULT = rad; :}
     | recordaccessdeclarray:rad PERIOD fullBracketAss:fb {:
-        //TODO same issue
         rad.add(fb);
         RESULT = rad; :}
     | IDENTIFIER:i PERIOD fullBracketAss:fb {:
-        //TODO same issue
         ArrayList<Decl> rad = new ArrayList<Decl>();
         rad.add(new NoTypeDecl(new Id(i,ileft,iright),ileft,iright,false));
         rad.add(fb);
@@ -411,14 +402,11 @@ recordaccessdeclarray ::=
         rad.add(fb);
         rad.add(fb1);
         RESULT = rad; :}
-;
+    ;
 
-recordaccessdecl ::= recordaccessdeclarray:rad
-    {: RESULT = new RecordAccessDecl(rad, radleft, radright);
-    :}
-;
-
-
+recordaccessdecl ::=
+    recordaccessdeclarray:rad {: RESULT = new RecordAccessDecl(rad, radleft, radright); :}
+    ;
 
 // x:int, y, b:bool, z
 type_list ::=
@@ -563,49 +551,46 @@ type_list ::=
    | type_list:tl COMMA recordaccessdecl:rd {:
        tl.add(rd);
        RESULT = tl; :}
-;
+    ;
 
 declaration_assign_stmt ::=
     emptyBracketDecl:d GETS:g expr:e {: // ANNOTATED
-    if (!d.type.dimensions.allEmpty) {
-        throw new SyntaxError(gleft, gright,"array with init len no Val");
-    }
-    RESULT = new DeclAssignStmt(d,e,gleft,gright);
-    :}
-    | emptyBracketDecl:d {:RESULT = new DeclNoAssignStmt(d,dleft,dright);:}
+        if (!d.type.dimensions.allEmpty) {
+            throw new SyntaxError(gleft, gright,"array with init len no Val");
+        }
+        RESULT = new DeclAssignStmt(d,e,gleft,gright); :}
+    | emptyBracketDecl:d {:RESULT = new DeclNoAssignStmt(d,dleft,dright); :}
     | IDENTIFIER:id GETS:g expr:e {:
         NoTypeDecl tempDec = new NoTypeDecl(new Id(id,idleft,idright),idleft,idright,false);
-        RESULT = new DeclAssignStmt(tempDec,e,gleft,gright);:}
+        RESULT = new DeclAssignStmt(tempDec,e,gleft,gright); :}
     | UNDERSCORE:u GETS:g expr:e {:
         UnderScore tempUnder = new UnderScore(uleft,uright);
-        RESULT = new DeclAssignStmt(tempUnder,e,gleft,gright);:}
+        RESULT = new DeclAssignStmt(tempUnder,e,gleft,gright); :}
     | fullBracketType:d GETS expr:e {:
-    RESULT = new DeclAssignStmt(d,e,dleft,dright);
-    :}
+        RESULT = new DeclAssignStmt(d,e,dleft,dright); :}
     | recordaccessdecl:rd GETS expr:e {:
-    RESULT = new DeclAssignStmt(rd, e, rdleft, rdright);
-    :}
-;
+        RESULT = new DeclAssignStmt(rd, e, rdleft, rdright); :}
+    ;
 
 block ::=
-    OPEN_BRACE:ob statement_star:ss CLOSE_BRACE {:RESULT = new Block(ss,obleft,obright);:}
-    |OPEN_BRACE:ob statement_star:ss SEMICOLON CLOSE_BRACE {:RESULT = new Block(ss,obleft,obright);:}
-    |OPEN_BRACE:ob statement_star:ss SEMICOLON return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
-    |OPEN_BRACE:ob statement_star:ss return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
-    |OPEN_BRACE:ob statement_star:ss return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
-    |OPEN_BRACE:ob statement_star:ss SEMICOLON return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright);:}
-;
+    OPEN_BRACE:ob statement_star:ss CLOSE_BRACE {:RESULT = new Block(ss,obleft,obright); :}
+    |OPEN_BRACE:ob statement_star:ss SEMICOLON CLOSE_BRACE {:RESULT = new Block(ss,obleft,obright); :}
+    |OPEN_BRACE:ob statement_star:ss SEMICOLON return:r CLOSE_BRACE{: ss.add(r); RESULT = new Block(ss,obleft,obright); :}
+    |OPEN_BRACE:ob statement_star:ss return:r SEMICOLON CLOSE_BRACE{: ss.add(r); RESULT = new Block(ss,obleft,obright); :}
+    |OPEN_BRACE:ob statement_star:ss return:r CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright); :}
+    |OPEN_BRACE:ob statement_star:ss SEMICOLON return:r SEMICOLON CLOSE_BRACE{:ss.add(r); RESULT = new Block(ss,obleft,obright); :}
+    ;
 
 statement_star ::=
-    statement_star:ss stmt:s {: ss.add(s); RESULT = ss;:}
-    |statement_star:ss SEMICOLON stmt:s {: ss.add(s); RESULT = ss;:}
-    | {:RESULT = new ArrayList<Stmt>();:}
-;
+    statement_star:ss stmt:s {: ss.add(s); RESULT = ss; :}
+    |statement_star:ss SEMICOLON stmt:s {: ss.add(s); RESULT = ss; :}
+    | {:RESULT = new ArrayList<Stmt>(); :}
+    ;
 
 return ::=
-    RETURN:r exprList:el {:RESULT = new Return(el,rleft,rright);:}
-    | RETURN:r {:RESULT = new Return(new ArrayList<Expr>(),rleft,rright);:}
-;
+    RETURN:r exprList:el {:RESULT = new Return(el,rleft,rright); :}
+    | RETURN:r {:RESULT = new Return(new ArrayList<Expr>(),rleft,rright); :}
+    ;
 
 //Rho stuff-----------------------------------------
 rhoEmptyDimension_star ::=
@@ -613,27 +598,27 @@ rhoEmptyDimension_star ::=
         ds.increment();
         ds.foundEmpty = true;
         ds.indices.add(null);
-        RESULT = ds;:}
+        RESULT = ds; :}
     | {:RESULT = new Dimension(-1,-1); :}
-; // Maybe check future
+    ;
 
 rhoEmptyBracketType ::=
     INT  rhoEmptyDimension_star:d {:RESULT = new Type(true,d,dleft,dright); :}
     | BOOL rhoEmptyDimension_star:d {:RESULT = new Type(false,d,dleft,dright); :}
     | IDENTIFIER:i rhoEmptyDimension_star:d {: RESULT = new Type(i, d, ileft, iright); :}
-;
+    ;
 
 rhoEmptyBracketDecl ::=
     IDENTIFIER:i COLON rhoEmptyBracketType:t {: RESULT = new AnnotatedTypeDecl(new Id(i,ileft,iright),t,ileft,iright); :}
-;
+    ;
 
 rhoEmptyBracketDecl_plus ::=
     rhoEmptyBracketDecl_plus:ts COMMA rhoEmptyBracketDecl:d {: ts.add(d); RESULT = ts; :}
-    |rhoEmptyBracketDecl:d {:ArrayList<AnnotatedTypeDecl> temp = new ArrayList<AnnotatedTypeDecl>();
-      temp.add(d);
-      RESULT = temp;
-      :}
-;
+    |rhoEmptyBracketDecl:d {:
+        ArrayList<AnnotatedTypeDecl> temp = new ArrayList<AnnotatedTypeDecl>();
+        temp.add(d);
+        RESULT = temp; :}
+    ;
 
 identifier_plus ::=
     identifier_plus:ip COMMA IDENTIFIER:i {: ip.add(new Id(i, ileft, iright)); RESULT = ip; :}
@@ -642,7 +627,7 @@ identifier_plus ::=
         idList.add(new Id(i1, i1left, i1right));
         idList.add(new Id(i2, i2left, i2right));
         RESULT = idList; :}
-;
+    ;
 
 // x, y : int
 rhoMultiDecl ::=
@@ -652,7 +637,7 @@ rhoMultiDecl ::=
             declList.add(new AnnotatedTypeDecl(ip.get(j), e, ipleft, ipright));
         }
         RESULT = declList; :}
-;
+    ;
 
 // x, y : int
 // x : int, y : int
@@ -661,13 +646,13 @@ fieldDecl ::=
     | rhoMultiDecl:m SEMICOLON {: RESULT = m; :}
     | rhoEmptyBracketDecl_plus:e {: RESULT = e; :}
     | rhoEmptyBracketDecl_plus:e SEMICOLON {: RESULT = e; :}
-;
+    ;
 
 fieldDeclPlus ::=
     fieldDeclPlus:ss fieldDecl:s {: ss.addAll(s); RESULT = ss; :}
     |fieldDecl:s {: RESULT = s; :}
-;
+    ;
 
 record ::=
     RECORD IDENTIFIER:i OPEN_BRACE fieldDeclPlus:s CLOSE_BRACE {:RESULT = new RecordDef(new Id(i, ileft, iright), s, ileft, iright); :}
-;
+    ;
