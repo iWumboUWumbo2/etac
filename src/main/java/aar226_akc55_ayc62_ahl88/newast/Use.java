@@ -58,7 +58,12 @@ public class Use extends AstNode{
 
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
         String filename = Paths.get(libpathDir, id.toString() + ".ri").toString();
+        try (FileReader fileReader = new FileReader(filename)) {
 
+        } catch (Exception e) {
+            // try again with eti
+            filename = Paths.get(libpathDir, id.toString() + ".eti").toString();
+        }
         try (FileReader fileReader = new FileReader(filename)) {
             lr_parser pi = new RiParser(new RhoLex(fileReader));
             eI = (EtiInterface) pi.parse().value;
@@ -133,7 +138,13 @@ public class Use extends AstNode{
         boolean isRho = Main.isRho;
 
         String filename = Paths.get(libpathDir, id.toString() + (isRho ? ".ri" : ".eti")).toString();
+        try (FileReader fileReader = new FileReader(filename)) {
 
+
+        }catch (Exception e) {
+            isRho = false;
+            filename = Paths.get(libpathDir, id.toString() + ".eti").toString();
+        }
         try (FileReader fileReader = new FileReader(filename)) {
 
             if (eI == null) {
@@ -171,8 +182,10 @@ public class Use extends AstNode{
             }
 
         } catch (Error e) {
+//            System.out.println(e.getMessage());
             throw new SemanticError(getLine() , getColumn(),"Faulty interface file " + filename + " " + e.getMessage());
         } catch (Exception e) {
+//            e.printStackTrace();
             //this would get thrown the file existed but was parsed as
             // a program file for some reason
             throw new SemanticError(getLine(),getColumn(),"Could not find interface " + filename);
