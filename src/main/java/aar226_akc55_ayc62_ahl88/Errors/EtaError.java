@@ -1,5 +1,8 @@
 package aar226_akc55_ayc62_ahl88.Errors;
 
+/**
+ * Class for Eta errors.
+ */
 public class EtaError extends Error {
     private int line;
     private int col;
@@ -22,11 +25,20 @@ public class EtaError extends Error {
         return errorType;
     }
 
+    /**
+     * @param filename
+     */
     public void printError(String filename) {
         System.out.printf("%s error beginning at %s:%d:%d: %s\n",
                 getErrorType(), filename, getLine(), getCol(), getErrorString());
     }
 
+    /**
+     * @param type
+     * @param line
+     * @param col
+     * @param m
+     */
     public EtaError(EtaErrorTypes type, int line, int col, String m) {
         super(String.format("%d:%d error:%s", line, col, m));
 
