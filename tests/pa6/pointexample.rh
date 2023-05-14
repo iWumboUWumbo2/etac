@@ -15,7 +15,7 @@ coords(p: Point): int, int {
 }
 
 add(p1: Point, p2: Point): Point {
-    return Point(p1.x + p2.x, p1.y + p2.y) 
+    return Point(p1.x + p2.x, p1.y + p2.y)
 }
 
 equals(p1: Point, p2: Point): bool {
@@ -26,7 +26,7 @@ clone(p: Point): Point {
     return Point(p.x, p.y)
 }
 
-pointToString(p: Point): int[] { 
+pointToString(p: Point): int[] {
     x: int, y: int = coords(p)
     str:int[] = "Point at x = " + unparseInt(x) + " and y = " + unparseInt(y)
     return str

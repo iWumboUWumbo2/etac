@@ -1,0 +1,27 @@
+use io
+use conv
+
+record Point {
+    x : int
+    y : int
+}
+record PointArr {
+    x : Point[];
+}
+
+func():PointArr{
+    a:Point = Point(50,10);
+
+    b:Point = Point(10,100);
+
+    return PointArr({a,b});
+}
+main(args : int[][]) {
+    pointArr:PointArr = PointArr({});
+    //a:Point = Point(1,2)
+    a:Point,pointArr.x = Point(1,2), {Point(1,2)}
+
+    println(unparseInt(a.x));
+
+
+}

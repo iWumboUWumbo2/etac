@@ -24,7 +24,7 @@ public class RecordAcessBinop extends BinopExpr{
 
     //todo fix null
     @Override
-    public Type typeCheck(SymbolTable s){
+    public Type typeCheck(SymbolTable<Type> s){
         Expr e1 = getLeftExpr();
         Expr e2 = getRightExpr();
         Type t1 = e1.typeCheck(s);

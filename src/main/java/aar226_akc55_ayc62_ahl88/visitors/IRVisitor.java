@@ -977,9 +977,17 @@ public class IRVisitor implements Visitor<IRNode>{
                 tempNames.add(tempName);
             }
         }
+        for (int i = 0; i< node.getDecls().size();i++){
+            Decl d = node.getDecls().get(i);
+            System.out.println(d);
+            System.out.println(d instanceof RecordAccessDecl);
+        }
         for (int i = 0 ;i< node.getDecls().size();i++){ // need to check if global VAR
             String curTemp = tempNames.get(i);
             Decl d = node.getDecls().get(i);
+            System.out.println(node.getDecls());
+            System.out.println(d);
+            System.out.println(d instanceof RecordAccessDecl);
             if (d instanceof AnnotatedTypeDecl atd){
                 if (atd.type.isArray()){
                     if (atd.type.dimensions.allEmpty){ // random init is fine
@@ -1008,7 +1016,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 }else if (atd.type.isBasic()){
                     order.add(new IRMove(new IRTemp(atd.identifier.toString()),new IRTemp(curTemp)));
                 }else if (atd.type.isRecord()){
-                    return new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp));
+                    order.add(new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp)));
                 }
 
                 else {
@@ -1035,7 +1043,11 @@ public class IRVisitor implements Visitor<IRNode>{
                 order.add(new IRMove(d.identifier.accept(this),new IRTemp(curTemp))); // might need to check for Globals
             }else if (d instanceof UnderScore){
                 order.add(new IRExp(new IRTemp(curTemp)));
-            }else {
+            }else if (d instanceof RecordAccessDecl rad){
+                System.out.println("IM HERE");
+                throw new InternalCompilerError("NO DECL RAD");
+            }
+            else {
                 throw new InternalCompilerError("NOT A DECL?");
             }
         }
