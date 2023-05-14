@@ -1,0 +1,41 @@
+use io
+use conv
+x : int;
+
+compute():int,int,int{
+	return add1(),add2(),add3()
+}
+
+add1():int{
+	x = x + 1
+	return x
+}
+
+add2():int{
+    _ = add1()
+	x = x + 1
+	return x
+}
+
+add3():int{
+	_ = add2()
+	x = x + 1
+	return x
+}
+
+main(args: int[][]) {
+    x = 0;
+	a : int, b : int, c : int = compute()
+	println(unparseInt(a))
+    println(unparseInt(fact(c)));
+	println(unparseInt(b))
+	println(unparseInt(fact(b)));
+	println(unparseInt(c))
+}
+
+fact(n:int):int{
+    if (n <=1){
+        return 1;
+    }
+    return n * fact(n-1);
+}

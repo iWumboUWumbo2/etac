@@ -27,6 +27,7 @@ import static aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisito
 
 public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbstractReg>> {
 
+    static String outOfBounds = "_eta_out_of_bounds";
     static ArrayList<String> calleSaved = new ArrayList<>(List.of("rbp", "rsp", "rbx", "r12", "r13", "r14", "r15"));
 
     public LiveVariableAnalysisASM(CFGGraphBasicBlockASM g,boolean mainCalled) {
@@ -188,15 +189,28 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
 
             // caller saved rax, rcx, rdx, rsi, rdi, and r8–r11
             case CALL -> {
-                defSet.add(new ASMRegisterExpr("rax"));
-                defSet.add(new ASMRegisterExpr("rdx"));
-                defSet.add(new ASMRegisterExpr("rcx"));
-                defSet.add(new ASMRegisterExpr("rdi"));
-                defSet.add(new ASMRegisterExpr("rsi"));
-                defSet.add(new ASMRegisterExpr("r8"));
-                defSet.add(new ASMRegisterExpr("r9"));
-                defSet.add(new ASMRegisterExpr("r10"));
-                defSet.add(new ASMRegisterExpr("r11"));
+                ASMCall call = (ASMCall) instr;
+                if (!(call.getLeft() instanceof ASMNameExpr name &&
+                        name.toString().equals(outOfBounds))){
+                    defSet.add(new ASMRegisterExpr("rax"));
+                    defSet.add(new ASMRegisterExpr("rdx"));
+                    defSet.add(new ASMRegisterExpr("rcx"));
+                    defSet.add(new ASMRegisterExpr("rdi"));
+                    defSet.add(new ASMRegisterExpr("rsi"));
+                    defSet.add(new ASMRegisterExpr("r8"));
+                    defSet.add(new ASMRegisterExpr("r9"));
+                    defSet.add(new ASMRegisterExpr("r10"));
+                    defSet.add(new ASMRegisterExpr("r11"));
+                }
+//                defSet.add(new ASMRegisterExpr("rax"));
+//                defSet.add(new ASMRegisterExpr("rdx"));
+//                defSet.add(new ASMRegisterExpr("rcx"));
+//                defSet.add(new ASMRegisterExpr("rdi"));
+//                defSet.add(new ASMRegisterExpr("rsi"));
+//                defSet.add(new ASMRegisterExpr("r8"));
+//                defSet.add(new ASMRegisterExpr("r9"));
+//                defSet.add(new ASMRegisterExpr("r10"));
+//                defSet.add(new ASMRegisterExpr("r11"));
             }
             case LABEL, COMMENT,CMP,RET -> {
             }

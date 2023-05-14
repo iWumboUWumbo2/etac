@@ -1080,7 +1080,7 @@ public class IRVisitor implements Visitor<IRNode>{
             }else if (d instanceof UnderScore){
                 order.add(new IRExp(new IRTemp(curTemp)));
             }else if (d instanceof RecordAccessDecl rad){
-                throw new InternalCompilerError("NO DECL RAD");
+                order.add(recordAccessDeclStmt(rad,new IRTemp(curTemp)));
             }
             else {
                 throw new InternalCompilerError("NOT A DECL?");

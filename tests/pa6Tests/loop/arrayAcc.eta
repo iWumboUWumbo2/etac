@@ -1,0 +1,21 @@
+use io
+use conv
+
+main(args:int[][]) {
+
+    a:int[50];
+    b:int[50];
+    c:int[50];
+    i:int = 0;
+    while (i < length(a)){
+        b[i] = i;
+        c[i] = i;
+        i = i + 1;
+    }
+    i = 0;
+    while (i < length(a)){
+        a[i] = b[i] + c[i];
+        i = i + 1;
+    }
+
+}
