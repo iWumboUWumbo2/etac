@@ -1,0 +1,15 @@
+use io
+use conv
+
+main(args:int[][]) {
+    a : int = 97979
+    println(unparseInt(19824 * 20354)); //403497696
+    println(unparseInt(a * 20354)); //1994264566
+    println(unparseInt(19824 * a)); //1942335696
+    println(unparseInt(19824 * 14383)); //285128592
+    println(unparseInt(19824 * 2)); //39648
+    println(unparseInt(19824 * 1)); //19824
+    println(unparseInt(19824 * 0)); //0
+    println(unparseInt(4096 * 29744)); //0
+    println(unparseInt(a * 2)); //195958
+}

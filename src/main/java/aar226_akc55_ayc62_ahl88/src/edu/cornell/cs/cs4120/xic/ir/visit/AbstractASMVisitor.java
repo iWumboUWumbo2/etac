@@ -1187,10 +1187,11 @@ public class AbstractASMVisitor {
     private ArrayList<ASMInstruction> multiplyOptimization (ASMTempExpr destTemp, IRConst constant, ASMAbstractReg reg) {
         //Multiply optimization, if right is const
         ArrayList<ASMInstruction> instrs = new ArrayList<>();
-
-        instrs.add(new ASMMov(new ASMRegisterExpr("rdx"), reg));
-        instrs.add(new ASMMov(new ASMRegisterExpr("rax"), new ASMRegisterExpr("rdx")));
-        instrs.add(new ASMXor(new ASMRegisterExpr("rdx"), new ASMRegisterExpr("rdx")));
+        String fakeRdx = nxtTemp();
+        String fakeRax = nxtTemp();
+        instrs.add(new ASMMov(new ASMRegisterExpr(fakeRdx), reg));
+        instrs.add(new ASMMov(new ASMRegisterExpr(fakeRax), new ASMRegisterExpr(fakeRdx)));
+        instrs.add(new ASMXor(new ASMRegisterExpr(fakeRdx), new ASMRegisterExpr(fakeRdx)));
         String binaryString = Long.toBinaryString(constant.value());
         int i = binaryString.length() -1;
         int zeroCounter = 0;
@@ -1203,15 +1204,15 @@ public class AbstractASMVisitor {
                         break;
                     }
                 }
-                instrs.add(new ASMShl(new ASMRegisterExpr("rax"), new ASMConstExpr(zeroCounter)));
+                instrs.add(new ASMShl(new ASMRegisterExpr(fakeRax), new ASMConstExpr(zeroCounter)));
                 i -= zeroCounter;
             } else {
-                instrs.add(new ASMAdd(new ASMRegisterExpr("rdx"), new ASMRegisterExpr("rax")));
-                instrs.add(new ASMAdd(new ASMRegisterExpr("rax"), new ASMRegisterExpr("rax")));
+                instrs.add(new ASMAdd(new ASMRegisterExpr(fakeRdx), new ASMRegisterExpr(fakeRax)));
+                instrs.add(new ASMAdd(new ASMRegisterExpr(fakeRax), new ASMRegisterExpr(fakeRax)));
                 i--;
             }
         }
-        instrs.add(new ASMMov(destTemp, new ASMRegisterExpr("rdx")));
+        instrs.add(new ASMMov(destTemp, new ASMRegisterExpr(fakeRdx)));
         return instrs;
     }
     private ASMAbstractReg munchBinop(IRBinOp binop) {
@@ -1222,36 +1223,63 @@ public class AbstractASMVisitor {
         ASMAbstractReg l1 = munchIRExpr(binop.left());
         ASMAbstractReg l2 = munchIRExpr(binop.right());
 
-        if (binop.left() instanceof IRConst cLeft && binop.opType() == IRBinOp.OpType.MUL && isPowerOfTwo(cLeft.value())){
-            int power = 0;
-            long number = cLeft.value();
-            while (number > 1){
-                power++;
-                number = number/2;
-            }
-            if (binop.right().getBestCost() + 2 < curBestCost){
+        if (binop.left() instanceof IRConst cLeft && binop.opType() == IRBinOp.OpType.MUL && cLeft.value() >= 0){
+
+            ArrayList<ASMInstruction> mul = multiplyOptimization(destTemp, cLeft, l1);
+            if (binop.right().getBestCost() + mul.size() / 8 < curBestCost){
+                System.out.println("USING MUL");
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.right().getBestInstructions());
-                caseInstructions.add(new ASMMov(destTemp,binop.right().getAbstractReg()));
-                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
+                caseInstructions.addAll(mul);
+//                caseInstructions.add(new ASMMov(destTemp,binop.right().getAbstractReg()));
+//                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
                 resultingInstructions = caseInstructions;
                 curBestCost = binop.right().getBestCost() + 2;
             }
         }
-        if (binop.right() instanceof IRConst cRight && binop.opType() == IRBinOp.OpType.MUL && isPowerOfTwo(cRight.value())){
-            int power = 0;
-            long number = cRight.value();
-            while (number > 1){
-                power++;
-                number = number/2;
-            }
-            if (binop.right().getBestCost() + 2 < curBestCost){
+
+        if (binop.right() instanceof IRConst cRight && binop.opType() == IRBinOp.OpType.MUL && cRight.value() >= 0){
+            ArrayList<ASMInstruction> mul = multiplyOptimization(destTemp, cRight, l1);
+
+            if (binop.left().getBestCost() + mul.size() / 8 < curBestCost){
+                System.out.println("USING MUL");
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.left().getBestInstructions());
-                caseInstructions.add(new ASMMov(destTemp,binop.left().getAbstractReg()));
-                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
+                caseInstructions.addAll(mul);
+//                caseInstructions.add(new ASMMov(destTemp,binop.right().getAbstractReg()));
+//                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
                 resultingInstructions = caseInstructions;
-                curBestCost = binop.right().getBestCost() + 2;
+                curBestCost = binop.left().getBestCost() + 2;
             }
         }
+//        if (binop.left() instanceof IRConst cLeft && binop.opType() == IRBinOp.OpType.MUL && isPowerOfTwo(cLeft.value())){
+//            int power = 0;
+//            long number = cLeft.value();
+//            while (number > 1){
+//                power++;
+//                number = number/2;
+//            }
+//            if (binop.right().getBestCost() + 2 < curBestCost){
+//                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.right().getBestInstructions());
+//                caseInstructions.add(new ASMMov(destTemp,binop.right().getAbstractReg()));
+//                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
+//                resultingInstructions = caseInstructions;
+//                curBestCost = binop.right().getBestCost() + 2;
+//            }
+//        }
+//        if (binop.right() instanceof IRConst cRight && binop.opType() == IRBinOp.OpType.MUL && isPowerOfTwo(cRight.value())){
+//            int power = 0;
+//            long number = cRight.value();
+//            while (number > 1){
+//                power++;
+//                number = number/2;
+//            }
+//            if (binop.left().getBestCost() + 2 < curBestCost){
+//                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.left().getBestInstructions());
+//                caseInstructions.add(new ASMMov(destTemp,binop.left().getAbstractReg()));
+//                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
+//                resultingInstructions = caseInstructions;
+//                curBestCost = binop.left().getBestCost() + 2;
+//            }
+//        }
 
 //                    mov     rdx, rdi
 //                    shr     rdx, 63
@@ -1388,9 +1416,9 @@ public class AbstractASMVisitor {
 //                        curBestInstructions.add(new ASMIMul(destTemp, l2));
 //                    }
                     if (binop.left().getBestCost() +
-                            binop.right().getBestCost() + 2 < curBestCost) {
+                            binop.right().getBestCost() + 20 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
-                                binop.right().getBestCost() + 2;
+                                binop.right().getBestCost() + 20;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMIMul(destTemp, l2));
                         resultingInstructions = curBestInstructions;
@@ -1398,9 +1426,9 @@ public class AbstractASMVisitor {
                     break;
                 case DIV: // rax/div, store result in rax and remainder in rdx
                     if (binop.left().getBestCost() +
-                            binop.right().getBestCost() + 3 < curBestCost) {
+                            binop.right().getBestCost() + 20 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
-                                binop.right().getBestCost() + 3;
+                                binop.right().getBestCost() + 20;
 //                        curBestInstructions.add(new ASMXor(new ASMRegisterExpr("rdx"),new ASMRegisterExpr("rdx")));
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                         curBestInstructions.add(new ASMCQTO());
@@ -1421,9 +1449,9 @@ public class AbstractASMVisitor {
                     break;
                 case HMUL: // TODO: fix this
                     if (binop.left().getBestCost() +
-                            binop.right().getBestCost() + 3 < curBestCost) {
+                            binop.right().getBestCost() + 20 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
-                                binop.right().getBestCost() + 3;
+                                binop.right().getBestCost() + 20;
 
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                         curBestInstructions.add(new ASMIMul(l2));
