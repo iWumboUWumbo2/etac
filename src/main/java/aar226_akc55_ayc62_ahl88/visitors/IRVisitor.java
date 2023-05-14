@@ -38,13 +38,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static aar226_akc55_ayc62_ahl88.Main.opts;
-
 /**
  * Class for intermediate representation visiting.
  */
 public class IRVisitor implements Visitor<IRNode>{
-
     private static final IRConst NULLEXPR = new IRConst(0);
     private static final int WORD_BYTES = 8;
     public static final String OUT_OF_BOUNDS = "_eta_out_of_bounds";
@@ -56,7 +53,6 @@ public class IRVisitor implements Visitor<IRNode>{
     private boolean constantFold;
     private ArrayList<IRData> string_consts;
     private String lastWhileExit;
-
     public HashMap<String, Type> allRecordTypes;
 
     /**

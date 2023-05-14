@@ -1,6 +1,5 @@
 package aar226_akc55_ayc62_ahl88.visitors;
 
-
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Use;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
@@ -202,9 +201,4 @@ public class TypeCheckerVisitor implements Visitor<Void>{
     public Void visit(Program node) {
         return null;
     }
-
-//    @Override
-//    public Void visit(Type node) {
-//        return null;
-//    }
 }
