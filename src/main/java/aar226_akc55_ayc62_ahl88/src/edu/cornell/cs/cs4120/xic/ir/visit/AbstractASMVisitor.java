@@ -1279,6 +1279,31 @@ public class AbstractASMVisitor {
                 curBestCost = binop.right().getBestCost() + 2;
             }
         }
+
+//                    mov     rdx, rdi
+//                    shr     rdx, 63
+//                    lea     rax, [rdi+rdx]
+//                    and     eax, 1
+//                    sub     rax, rdx
+        //original
+        if (binop.opType() == IRBinOp.OpType.MOD &&  binop.right() instanceof IRConst cons && cons.value() == 2){
+            if (binop.left().getBestCost() + 1 < curBestCost){
+//                System.out.println("doing better Mod");
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.left().getBestInstructions());
+                String extraRdx = nxtTemp();
+                caseInstructions.add(new ASMMov(new ASMTempExpr(extraRdx),binop.left().getAbstractReg()));
+                caseInstructions.add(new ASMShr(new ASMTempExpr(extraRdx),new ASMConstExpr(63)));
+                caseInstructions.add(new ASMLEA(destTemp,new ASMMemExpr(
+                        new ASMBinOpAddExpr(binop.left().getAbstractReg(),
+                                new ASMTempExpr(extraRdx)))));
+                caseInstructions.add(new ASMAnd(destTemp,new ASMConstExpr(1)));
+                caseInstructions.add(new ASMSub(destTemp,new ASMTempExpr(extraRdx)));
+                resultingInstructions = caseInstructions;
+                curBestCost = binop.left().getBestCost() + 1;
+            }
+        }
+
+
         if (false) {
 
         } else {
