@@ -1,0 +1,16 @@
+use io
+use conv
+
+main(args:int[][]) {
+     a:int= 10;
+     b:int= 5;
+     c:int= 0;
+
+    if (a > 0) {
+        c = (a + b) * (a - b);
+    } else {
+        c = (a * b) / (a + b);
+    }
+
+    println(unparseInt(c))
+}
