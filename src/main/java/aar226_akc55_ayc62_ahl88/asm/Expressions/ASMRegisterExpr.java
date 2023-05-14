@@ -1,7 +1,14 @@
 package aar226_akc55_ayc62_ahl88.asm.Expressions;
 
+/**
+ * Class for register expr
+ */
 public class ASMRegisterExpr extends ASMAbstractReg{
     private String registerName;
+
+    /**
+     * @param name
+     */
     public ASMRegisterExpr (String name) {
         this.registerName = name;
     }

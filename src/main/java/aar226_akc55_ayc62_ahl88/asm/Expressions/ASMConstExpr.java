@@ -1,8 +1,15 @@
 package aar226_akc55_ayc62_ahl88.asm.Expressions;
 
+/**
+ * Class for constants.
+ */
 public class ASMConstExpr extends ASMExpr {
 
     private long value;
+
+    /**
+     * @param val Constant's value
+     */
     public ASMConstExpr(long val) {
         value = val;
     }

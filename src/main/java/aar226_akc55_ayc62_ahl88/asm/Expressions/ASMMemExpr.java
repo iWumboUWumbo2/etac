@@ -2,8 +2,15 @@ package aar226_akc55_ayc62_ahl88.asm.Expressions;
 
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 
+/**
+ * Class for mem expr.
+ */
 public class ASMMemExpr extends ASMExpr{
     public ASMExpr mem;
+
+    /**
+     * @param mem Mem expr
+     */
     public ASMMemExpr(ASMExpr mem) {
         if (mem instanceof ASMMemExpr){
             throw new InternalCompilerError("memory operand inside of memory");
@@ -17,11 +24,7 @@ public class ASMMemExpr extends ASMExpr{
 
     @Override
     public String toString() {
-//        if (mem == null) {
-//            throw new InternalCompilerError("mem should not be null");
-//        }
         if (mem instanceof  ASMNameExpr name){
-//            System.out.println("naming");
             return "QWORD PTR " + name + "[rip] ";
         }
         return "QWORD PTR [ " + mem +" ]";

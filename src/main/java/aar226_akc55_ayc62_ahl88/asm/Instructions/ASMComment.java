@@ -2,14 +2,19 @@ package aar226_akc55_ayc62_ahl88.asm.Instructions;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
+/**
+ * Class for comments
+ */
 public class ASMComment extends ASMInstruction{
-
     private String comment;
     private String functionName;
+
+    /**
+     * @param comment
+     * @param funcName
+     */
     public ASMComment(String comment,String funcName) {
         super(ASMOpCodes.COMMENT);
         this.comment = comment;

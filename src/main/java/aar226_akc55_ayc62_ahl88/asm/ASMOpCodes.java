@@ -1,5 +1,8 @@
 package aar226_akc55_ayc62_ahl88.asm;
 
+/**
+ * Contains all ASM opcodes.
+ */
 public enum ASMOpCodes{
         // 0 arg
         RET, // when you finish executing function do ret.
@@ -39,7 +42,6 @@ public enum ASMOpCodes{
         ADD,
         SUB,
         IMUL, // Can be 3 args
-
         AND, //bitwise and
         OR, //bitwise or
         XOR, //bitwise xor

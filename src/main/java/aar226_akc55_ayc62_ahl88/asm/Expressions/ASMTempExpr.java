@@ -1,9 +1,15 @@
 package aar226_akc55_ayc62_ahl88.asm.Expressions;
 
-
+/**
+ * Class for temporary expr
+ */
 public class ASMTempExpr extends ASMAbstractReg{
 
     private String name;
+
+    /**
+     * @param tempLabel Label
+     */
     public ASMTempExpr(String tempLabel){
         name = tempLabel;
     }

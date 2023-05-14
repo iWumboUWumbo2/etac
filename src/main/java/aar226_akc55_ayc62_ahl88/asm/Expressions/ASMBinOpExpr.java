@@ -2,9 +2,17 @@ package aar226_akc55_ayc62_ahl88.asm.Expressions;
 
 import java.util.Objects;
 
+/**
+ * Abstract class for binop operator
+ */
 public abstract class ASMBinOpExpr extends ASMExpr{
     private ASMExpr left;
     private ASMExpr right;
+
+    /**
+     * @param arg1 Left expr
+     * @param arg2 Right expr
+     */
     ASMBinOpExpr(ASMExpr arg1, ASMExpr arg2){
         left = arg1;
         right = arg2;

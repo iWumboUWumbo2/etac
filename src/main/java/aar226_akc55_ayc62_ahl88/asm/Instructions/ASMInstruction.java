@@ -1,17 +1,18 @@
 package aar226_akc55_ayc62_ahl88.asm.Instructions;
 
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
-import aar226_akc55_ayc62_ahl88.asm.Expressions.*;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
+/**
+ * Abstract class for all instructions.
+ */
 public abstract class ASMInstruction {
     private ASMOpCodes opCode;
 
-
+    /**
+     * @param op Opcode
+     */
     public ASMInstruction(ASMOpCodes op){
         opCode = op;
     }

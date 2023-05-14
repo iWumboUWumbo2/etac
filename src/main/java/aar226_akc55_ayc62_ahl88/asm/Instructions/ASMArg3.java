@@ -3,15 +3,22 @@ package aar226_akc55_ayc62_ahl88.asm.Instructions;
 import aar226_akc55_ayc62_ahl88.asm.Expressions.ASMExpr;
 import aar226_akc55_ayc62_ahl88.asm.ASMOpCodes;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 
+/**
+ * Class for 3 argument instructions
+ */
 public class ASMArg3 extends ASMInstruction {
     private ASMExpr a1;
     private ASMExpr a2;
     private ASMExpr a3;
+
+    /**
+     * @param op Opcode
+     * @param arg1
+     * @param arg2
+     * @param arg3
+     */
     public ASMArg3(ASMOpCodes op, ASMExpr arg1, ASMExpr arg2, ASMExpr arg3){
         super(op);
         a1 = arg1;

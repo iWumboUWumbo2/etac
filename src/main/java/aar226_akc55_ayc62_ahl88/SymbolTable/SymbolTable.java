@@ -2,7 +2,6 @@ package aar226_akc55_ayc62_ahl88.SymbolTable;
 
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
-
 import java.util.*;
 
 public class SymbolTable<T> {
@@ -24,7 +23,6 @@ public class SymbolTable<T> {
 
     /**
      * Looks up an identifier within our scope
-     *
      * @param id The identifier
      * @return The type of the identifier, if it exists.
      * @throws Error if the identifier is not found
@@ -41,9 +39,9 @@ public class SymbolTable<T> {
     }
 
     /**
-     * Does the symboltable contain the identifer
+     * Checks if the symboltable contains the identifer
      * @param id The identifier.
-     * @return true if the identifier exist. False Otherwise
+     * @return True if the identifier exist. False Otherwise
      */
     public boolean contains(Id id){
         ArrayList<HashMap<String, T>> rev = new ArrayList<>(scopes);
@@ -57,9 +55,9 @@ public class SymbolTable<T> {
     }
 
     /**
-     * Does the symboltable contain the identifer
+     * Checks if the symboltable contains the identifer
      * @param id The identifier.
-     * @return true if the identifier exist. False Otherwise
+     * @return True if the identifier exist. False Otherwise
      */
     public boolean contains(String id){
         ArrayList<HashMap<String, T>> rev = new ArrayList<>(scopes);
@@ -72,6 +70,10 @@ public class SymbolTable<T> {
         return false;
     }
 
+    /**
+     * Replaces an id's type for the entire symboltable.
+     * @param id Identifier
+     */
     public void replace(Id id, T t) {
         for (HashMap<String, T> scope: scopes){
             if (scope.containsKey(id.toString())) {
@@ -97,7 +99,7 @@ public class SymbolTable<T> {
     }
 
     /**
-     * we enter a new scope
+     * We enter a new scope
      */
     public void enterScope(){
         scopes.add(new HashMap<>());

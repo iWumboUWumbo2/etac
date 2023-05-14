@@ -2,20 +2,26 @@ package aar226_akc55_ayc62_ahl88.asm;
 
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * Class for CompUnit
+ */
 public class ASMCompUnit {
-
     HashSet<ASMData> globals;
     HashMap<String, ArrayList<ASMInstruction>> functionToInstructionList;
     HashMap<String, HashSet<String>> functionToTempsMapping;
-
     HashMap<String, Pair<Integer,Integer>> allFunctionsSigs;
 
+    /**
+     * @param globals Global variables
+     * @param functions Function definitions
+     * @param functionToTemps Map function to temporary
+     * @param funcs Map function to signature
+     */
     public ASMCompUnit(HashSet<ASMData> globals, HashMap<String, ArrayList<ASMInstruction>> functions,
     HashMap<String, HashSet<String>> functionToTemps, HashMap<String, Pair<Integer,Integer>> funcs){
         this.globals = globals;

@@ -10,19 +10,20 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
- * Class For Declarations that do have a type
+ * Class for declarations that do have a type
  * Annotation
  * Ex: a:int, bob:bool[], doom:int[4][3][2]
  */
 public class AnnotatedTypeDecl extends Decl{
+
+    public Type type;
+
     /**
      * @param i Identifier
      * @param t Type of Identifier
      * @param l line Number
      * @param c Column Number
      */
-
-    public Type type;
     public AnnotatedTypeDecl(Id i, Type t, int l, int c) {
         super(i, l, c);
         type = t;
