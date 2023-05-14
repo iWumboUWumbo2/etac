@@ -20,11 +20,9 @@ import java.util.HashSet;
 public class Globdecl extends Definition {
     private AnnotatedTypeDecl decl;
     private Expr value;
-
     public AnnotatedTypeDecl getDecl() {
         return decl;
     }
-
     public Expr getValue() {
         return value;
     }
@@ -44,28 +42,11 @@ public class Globdecl extends Definition {
         value = v;
     }
 
-    public String toString(){
-        String build = "";
-        if (value != null){
-//            System.out.println("IM HERE");
-            build +=  "( " + decl.toString() + " " +value.toString() +  " )";
-        }else{
-            build +=  "( " + decl.toString() +  " )";
-        }
-        return build;
-    }
-    @Override
-    public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startList();
-        p.printAtom(":global");
-        decl.identifier.prettyPrint(p);
-        decl.type.prettyPrint(p);
-        if (value != null){
-            value.prettyPrint(p);
-        }
-        p.endList();
-    }
-
+    /**
+     * @param table Symbol table
+     * @param currentFile Current file
+     * @return Type of decl
+     */
     @Override
     public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
         if (table.contains(decl.identifier)){
@@ -99,5 +80,27 @@ public class Globdecl extends Definition {
     @Override
     public IRNode accept(IRVisitor visitor) {
         return visitor.visit(this);
+    }
+
+    public String toString(){
+        String build = "";
+        if (value != null){
+            build +=  "( " + decl.toString() + " " +value.toString() +  " )";
+        }else{
+            build +=  "( " + decl.toString() +  " )";
+        }
+        return build;
+    }
+
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+        p.startList();
+        p.printAtom(":global");
+        decl.identifier.prettyPrint(p);
+        decl.type.prettyPrint(p);
+        if (value != null){
+            value.prettyPrint(p);
+        }
+        p.endList();
     }
 }

@@ -68,13 +68,10 @@ public class AbstractASMVisitor {
 
     final boolean debug = false;
     private int tempCnt = 0;
-
     private final HashMap<String, Pair<Integer,Integer>> functionsNameToSig = new HashMap<>();
-
     private String nxtTemp() {
         return String.format("_ASMReg_t%d", (tempCnt++));
     }
-
     public ArrayList<ASMInstruction> visit(IRData node){
         throw new InternalCompilerError("not visiting IRDATA");
     }
@@ -137,7 +134,6 @@ public class AbstractASMVisitor {
                 instructions.add(new ASMJumpAlways(new ASMNameExpr(node.trueLabel())));
             }
         } else if (condition instanceof IRTemp c) {
-//            functionToTemps.get(curFunction).add(c.name());
             ASMTempExpr tempName = new ASMTempExpr(c.name());
             instructions.add(new ASMTest(tempName,tempName));
             instructions.add(new ASMJumpNotEqual(new ASMNameExpr(node.trueLabel())));
@@ -167,15 +163,11 @@ public class AbstractASMVisitor {
 
         for (IRFuncDecl func : node.functions().values()) {
             String curFunction = func.name();
-//            functionToTemps.put(func.name(),new HashSet<>());
             ArrayList<ASMInstruction> functionInstructions = visit(func);
             ArrayList<ASMInstruction> fixedBigConsts = fixConsts(functionInstructions);
-//            functionToTempsMapping.put(curFunction,functionToTemps.get(curFunction));
             ArrayList<ASMInstruction> makeUnAbstractINstr = fixInstrsAbstract(fixedBigConsts);
-//            System.out.println("after abstract");
             functionToInstructionList.put(curFunction,makeUnAbstractINstr);
         }
-
         return new ASMCompUnit(globals,functionToInstructionList,functionToTempsMapping,functionsNameToSig);
     }
 
@@ -480,7 +472,6 @@ public class AbstractASMVisitor {
                 }else{
                     left = arg3.getA1();
                 }
-//                System.out.println("added mul: " + instr);
                 res.add(new ASMArg3(arg3.getOpCode(),left,mid,right));
             }else{
                 res.add(instr);
@@ -489,11 +480,9 @@ public class AbstractASMVisitor {
         return res;
     }
     private boolean isConstTooBig(IRConst cons){
-
         return !(cons.value() <= Integer.MAX_VALUE && cons.value() >= Integer.MIN_VALUE);
     }
     private boolean isIMMTooBig(ASMConstExpr cons){
-
         return !(cons.getValue() <= Integer.MAX_VALUE && cons.getValue() >= Integer.MIN_VALUE);
     }
     public ArrayList<ASMInstruction> visit (IRConst x) {
@@ -602,13 +591,11 @@ public class AbstractASMVisitor {
         // TEMP BINOP
         } else if (dest instanceof IRTemp t && source instanceof IRBinOp b) {
             tileTempBinop(t, b, instructions);
-
         // MEM TEMP
         } else if (dest instanceof IRMem m && source instanceof IRTemp t) {
             tileMemTemp(m, t, instructions);
         // MEM MEM
         } else if (dest instanceof IRMem m1 && source instanceof IRMem m2) {
-//            System.out.println("tiling: " + node);
             tileMemMem(m1, m2, instructions);
         // MEM CONST
         } else if (dest instanceof IRMem m && source instanceof IRConst x) {
@@ -621,12 +608,6 @@ public class AbstractASMVisitor {
             System.out.println(node);
             throw new InternalCompilerError("TODO Other moves");
         }
-//        System.out.println("before IRSTMT: ");
-//        System.out.println(node);
-//        System.out.println("After IRSTMT: ");
-//        for (ASMInstruction instrs: instructions){
-//            System.out.println(instrs);
-//        }
         return instructions;
     }
 
@@ -850,7 +831,6 @@ public class AbstractASMVisitor {
         ASMMemExpr leftSideMem = (ASMMemExpr)  movMemToDest.getRight();
 
         if ((m1.getBestCost() -1) + 1 +m2.getBestCost() < curBestCost){
-//            System.out.println("doing better");
             ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(m2.getBestInstructions());
             caseInstructions.addAll(copyLeftMemInstrs);
             caseInstructions.add(new ASMMov(leftSideMem,m2.getAbstractReg()));
@@ -861,9 +841,7 @@ public class AbstractASMVisitor {
         if (false){ // other patterns;
 
         }else { // catch all case do right mem then left mem
-//            System.out.println("worst case");
             if (m2.expr().getBestCost() + m1.expr().getBestCost() + 1 < curBestCost){
-//                System.out.println("chose default");
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(); // instructions for Mem
                 caseInstructions.addAll(m2.expr().getBestInstructions());
                 caseInstructions.addAll(m1.expr().getBestInstructions());
@@ -871,8 +849,6 @@ public class AbstractASMVisitor {
                 caseInstructions.add(new ASMMov(extraReg,new ASMMemExpr(m2.expr().getAbstractReg())));
                 caseInstructions.add(new ASMMov(new ASMMemExpr(m1.expr().getAbstractReg()),extraReg )); // move the temp mem into ASMMOV
                 curBestInstructions = caseInstructions;
-//                System.out.println(m2.expr().getBestInstructions());
-//                System.out.println(m1.expr().getBestInstructions());
                 curBestCost = m2.expr().getBestCost() + m1.expr().getBestCost() +  1;
             }
         }
@@ -942,11 +918,9 @@ public class AbstractASMVisitor {
         return curBestCost;
     }
 
-
     private ASMAbstractReg munchIRExpr(IRExpr e) {
         IRNode_c top = (IRNode_c) e;
         if (top.visited){
-//            System.out.println("visited");
             return top.tempName;
         }
         if (e instanceof IRBinOp binop) {
@@ -997,7 +971,7 @@ public class AbstractASMVisitor {
             IRExpr right = memBinop.right();
 
             if (left instanceof IRConst c) {
-//                && right instanceof IRTemp rTemp
+                //&& right instanceof IRTemp rTemp
                 ASMAbstractReg rightReg = right.getAbstractReg();
                 ArrayList<ASMInstruction> bestRightInstructions = right.getBestInstructions();
                 if (1 + right.getBestCost() < curBestCost) {
@@ -1013,7 +987,7 @@ public class AbstractASMVisitor {
                     curBestCost = 1 + right.getBestCost();
                 }
             } else if (right instanceof IRConst cLeft ) {
-//                && left instanceof IRTemp tleft
+                //&& left instanceof IRTemp tleft
                 ASMAbstractReg leftReg = left.getAbstractReg();
                 ArrayList<ASMInstruction> bestLeftInstructions = left.getBestInstructions();
                 if (1 + left.getBestCost() < curBestCost) {

@@ -4,7 +4,6 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.newast.declarations.AnnotatedTypeDecl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,34 +30,28 @@ public class Type implements Printer {
         NULL,
         NULLARRAY
     }
-    /**
-     * @return Return line number for element
-     */
-    public int getLine(){return line;}
-
-    /**
-     * @return Return starting column number for element
-     */
-    public int getColumn(){return col;}
     int line;
     int col;
     public Dimension dimensions;
     private boolean isInt;
-
     private TypeCheckingType tct;
-
     public ArrayList<Type> inputTypes, outputTypes;
     public ArrayList<Type> multiTypes;
 
     public ArrayList<Type> recordFieldTypes;
 
     public String recordName;
-
     public Type arrayType;
-
     public boolean isRecord;
-
     public HashMap<String, Integer> recordFieldToIndex;
+    /**
+     * @return Return starting column number for element
+     */
+    public int getColumn(){return col;}
+    /**
+     * @return Return line number for element
+     */
+    public int getLine(){return line;}
 
     /**
      * @param t type
@@ -67,7 +60,6 @@ public class Type implements Printer {
      * @param c column number
      */
     public Type (boolean t,Dimension d,int l, int c) {
-//        super(l,c);
         line = l;
         col = c;
         isInt = t;
@@ -78,12 +70,9 @@ public class Type implements Printer {
         else {
             tct = (isInt) ? TypeCheckingType.INTARRAY : TypeCheckingType.BOOLARRAY;
         }
-//        inputTypes = new ArrayList<>();
-//        outputTypes = new ArrayList<>();
     }
 
     public Type (String record,Dimension d,int l, int c) {
-//        super(l,c);
         line = l;
         col = c;
         isInt = false;
@@ -95,9 +84,6 @@ public class Type implements Printer {
         } else {
             tct = TypeCheckingType.RECORDARRAY;
         }
-
-//        inputTypes = new ArrayList<>();
-//        outputTypes = new ArrayList<>();
     }
 
     public ArrayList<Type> getInputTypes(ArrayList<AnnotatedTypeDecl> recordTypes){
@@ -108,7 +94,6 @@ public class Type implements Printer {
         return inputTypes;
     }
     public Type (String record, ArrayList<AnnotatedTypeDecl> types, int l, int c, boolean forRecord) {
-//        super(l,c);
         line = l;
         col = c;
         isInt = false;
@@ -123,7 +108,6 @@ public class Type implements Printer {
     }
 
     public Type (String record, ArrayList<Type> types, int l, int c) {
-//        super(l,c);
         line = l;
         col = c;
         isInt = false;
@@ -133,7 +117,6 @@ public class Type implements Printer {
     }
 
     public Type(ArrayList<Type> multiTypes) {
-//        super(-1, -1);
         line = -1;
         col = -1;
         this.multiTypes = multiTypes;
@@ -141,13 +124,9 @@ public class Type implements Printer {
     }
 
     public Type(TypeCheckingType tct) {
-//        super(-1, -1);
         line = -1;
         col = -1;
         this.tct = tct;
-//        dimensions = new Dimension(0, getLine(), getColumn());
-//        inputTypes = new ArrayList<>();
-//        outputTypes = new ArrayList<>();
     }
     public Type(ArrayList<Type> inTy, ArrayList<Type> outTy){
         line = -1;
@@ -172,23 +151,18 @@ public class Type implements Printer {
     }
 
     public boolean isNullArray() { return getType() == TypeCheckingType.NULLARRAY; }
-
-
     public boolean isNullable() {
         return isArray() || getType() == TypeCheckingType.RECORD;
     }
-
     public boolean isRecord() {
         return getType() == TypeCheckingType.RECORD;
     }
     public boolean isRecordArray() {
         return getType() == TypeCheckingType.RECORDARRAY;
     }
-
     public boolean isFunc() {
         return getType() == TypeCheckingType.FUNC;
     }
-
     public boolean isIntArray() {
         return getType() == TypeCheckingType.INTARRAY;
     }
@@ -232,7 +206,6 @@ public class Type implements Printer {
         if (rhsOut.size() != outputTypes.size()){
             return false;
         }
-//        System.out.println("go through Out");
         for (int i = 0; i< rhsOut.size();i++){
             if (!outputTypes.get(i).sameType(rhsOut.get(i))){
                 return false;
@@ -292,27 +265,6 @@ public class Type implements Printer {
             return dimensions.equalsDimension(rhs.dimensions);
         }
     }
-//    public boolean sameBasic(Type rhs){
-//        if (!(isBasic() && rhs.isBasic())){
-//            throw new SemanticError(getLine(), getColumn(), "we shouldn't be in same basic checker");
-//        }
-//        TypeCheckingType lhsType = getType();
-//        TypeCheckingType rhsType = rhs.getType();
-//
-//        if (lhsType == TypeCheckingType.UNKNOWN || rhsType == TypeCheckingType.UNKNOWN){
-//            return true;
-//        }
-//        else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.INT){
-//            return true;
-//        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
-//            return true;
-//        }else if (lhsType == TypeCheckingType.INT && rhsType == TypeCheckingType.BOOL){
-//            return false;
-//        }else if (lhsType == TypeCheckingType.BOOL && rhsType == TypeCheckingType.BOOL){
-//            return false;
-//        }
-//        throw new SemanticError(getLine(), getColumn(), "somehow we missed a case in same basic");
-//    }
 
     public boolean isUnknown() {
         return this.getType() == Type.TypeCheckingType.UNKNOWN;
@@ -324,10 +276,8 @@ public class Type implements Printer {
     public Type getGreaterDim(Type t1, Type t2) {
         if ((t1.dimensions != null) && (t2.dimensions != null)
                 && (t1.dimensions.getDim() > t2.dimensions.getDim())) {
-//                System.out.println("here");
             return t1;
         } else {
-//            System.out.println("greaterdimt2:" + t2.dimensions.getDim());
             return t2;
         }
     }
@@ -357,16 +307,12 @@ public class Type implements Printer {
             // CASE 4: both unknown
         } else if ((isUnknown() || isUnknownArray()) &&
                 (t.isUnknown() || t.isUnknownArray())) {
-//            System.out.println("this");
-//            System.out.println(dimensions.getDim());
-//            System.out.println("t");
-//            System.out.println(t.dimensions.getDim());
             return getGreaterDim(this, t);
         }
         // CASE 5: this unknown or null and the other is not
         else if (isUnknown() || isUnknownArray() || isNull()|| isNullArray()) {
             return t;
-            // CASE 6: this
+        // CASE 6: this
         } else {
             return this;
         }
@@ -442,12 +388,11 @@ public class Type implements Printer {
 
         return true;
     }
+
     public TypeCheckingType getType() {return tct;}
 
     public void setType(TypeCheckingType type) { tct = type; }
 
-
-    //todo
     public String toString(){
         String builder = tct.toString();
         switch (this.tct){
@@ -493,6 +438,5 @@ public class Type implements Printer {
             }
             p.endList();
         }
-
     }
 }

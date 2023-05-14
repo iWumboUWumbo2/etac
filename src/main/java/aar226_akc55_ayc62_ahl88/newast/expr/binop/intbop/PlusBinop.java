@@ -7,7 +7,6 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
 import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
@@ -24,7 +23,11 @@ public class PlusBinop extends BinopExpr {
         super(BinopEnum.PLUS, in1, in2, l, c);
     }
 
-
+    /**
+     * @param t1 Left type
+     * @param t2 Right type
+     * @return True if same type else false
+     */
     private boolean typeListEquals(Type t1, Type t2) {
         if (t1.getType() == Type.TypeCheckingType.INT ||
                 t1.getType() == Type.TypeCheckingType.BOOL) {
@@ -38,8 +41,10 @@ public class PlusBinop extends BinopExpr {
         }
     }
 
-
-    // can add Arrays too
+    /**
+     * @param s Symbol Table
+     * @return Type
+     */
     @Override
     public Type typeCheck(SymbolTable s){
         Expr e1 = getLeftExpr();
@@ -55,8 +60,6 @@ public class PlusBinop extends BinopExpr {
         }
 
         Type greaterType = t1.greaterType(t2);
-//        System.out.println(greaterType.getType());
-//        System.out.println(greaterType.dimensions.getDim());
         if (greaterType.getType() == Type.TypeCheckingType.INT) {
             nodeType = new Type(Type.TypeCheckingType.INT);
             return nodeType;

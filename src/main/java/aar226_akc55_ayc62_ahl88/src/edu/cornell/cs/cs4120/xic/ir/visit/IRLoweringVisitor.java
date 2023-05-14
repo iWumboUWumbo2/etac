@@ -1,11 +1,9 @@
 package aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit;
 
-
 import aar226_akc55_ayc62_ahl88.Main;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
-
 import java.util.*;
 
 // Need to think about what to add
@@ -17,7 +15,6 @@ class BasicBlock {
     public ArrayList<Integer> successors;
     public ArrayList<IRStmt> statements;
     public ArrayList<String> destLabels;
-
     public ArrayList<String> originLabels;
 
 
@@ -84,20 +81,16 @@ public class IRLoweringVisitor extends IRVisitor {
     }
 
     private boolean hasNoUnmarkedPredecessors(BasicBlock block,ArrayList<BasicBlock> blocks) {
-
         boolean noUnmarkedPredecessor = true;
         for (int i : block.predecessors) {
             if (!blocks.get(i).marked){
                 noUnmarkedPredecessor = false;
             }
         }
-
-
         return noUnmarkedPredecessor;
     }
     private void dfs(BasicBlock b, ArrayList<BasicBlock> res, ArrayList<BasicBlock> unorderedBlocks){
         b.marked = true;
-//        System.out.println("START");
         boolean[] visit = new boolean[unorderedBlocks.size()];
         Stack<Integer> stack = new Stack<>();
         stack.add(b.ind);
@@ -120,6 +113,7 @@ public class IRLoweringVisitor extends IRVisitor {
             }
         }
     }
+
     private boolean allMarked(ArrayList<BasicBlock> blocks){
         for (BasicBlock b: blocks){
             if (!b.marked){
@@ -128,6 +122,7 @@ public class IRLoweringVisitor extends IRVisitor {
         }
         return true;
     }
+
     private BasicBlock chooseBlock(ArrayList<BasicBlock> blocks){
         boolean allMarked = true;
         BasicBlock curBlock = null;
@@ -147,6 +142,7 @@ public class IRLoweringVisitor extends IRVisitor {
         }
         throw new InternalCompilerError("Should only choose block when not all marked");
     }
+
     private ArrayList<BasicBlock> goodReordering(ArrayList<BasicBlock> unorderedBlocks){
         ArrayList<BasicBlock> result = new ArrayList<>();
         while (!allMarked(unorderedBlocks)) {
@@ -259,7 +255,6 @@ public class IRLoweringVisitor extends IRVisitor {
     }
     // Lower each statment then flatten all sequences
     private IRNode canon(IRSeq node) {
-//        System.out.println(node);
         ArrayList<IRStmt> flatten = new ArrayList<>();
         for (IRStmt stmt: node.stmts()){
             if (stmt instanceof IRSeq seq){
@@ -303,7 +298,6 @@ public class IRLoweringVisitor extends IRVisitor {
     private IRNode canon(IRMove node) {
         IRExpr target = node.target();
         IRExpr source = node.source();
-//
         if (target instanceof IRMem mem){
             return moveCommute(node) ? moveNaive(mem,source) : moveGeneral(mem,source);
         }
@@ -336,7 +330,7 @@ public class IRLoweringVisitor extends IRVisitor {
         }
         return node;
     }
-    // to do
+
     private boolean moveCommute(IRMove node){
         if (node.target() instanceof IRMem mem && mem.expr() instanceof IRName){
             return true;
@@ -474,7 +468,6 @@ public class IRLoweringVisitor extends IRVisitor {
                         }else{
                             newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
                         }
-//                        newCond = new IRBinOp(IRBinOp.OpType.XOR,new IRConst(1),cjmp.cond());
                         IRCJump newCJump = new IRCJump(newCond, flabel,null);
                         labelToNumber.put(tlabel, labelToNumber.get(tlabel)-1);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
@@ -483,7 +476,6 @@ public class IRLoweringVisitor extends IRVisitor {
                         labelToNumber.put(flabel, labelToNumber.get(flabel)-1);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
                     }else{
-//                        System.out.println("yikes somehow need double jump again idk?");
                         IRCJump newCJump = new IRCJump(cjmp.cond(), tlabel,null);
                         curblk.statements.set(curblk.statements.size()-1,newCJump);
                         curblk.statements.add(new IRJump(new IRName(flabel)));
@@ -500,7 +492,6 @@ public class IRLoweringVisitor extends IRVisitor {
             for (HashMap.Entry<String, Long> entry : labelToNumber.entrySet()) {
                 Long value = entry.getValue();
                 assert value >= 0L: "Labels can't become negative";
-                // ...
             }
             int del = 0;
             for (BasicBlock b: orderedBlocks){
@@ -533,7 +524,6 @@ public class IRLoweringVisitor extends IRVisitor {
             throw new InternalCompilerError("METHOD BODY NOT SEQ");
         }
     }
-
 
     // Lift Statement that is it
     private IRNode canon(IRExp node) {

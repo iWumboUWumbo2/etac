@@ -6,7 +6,6 @@ import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
@@ -17,6 +16,15 @@ public class IfElse extends Stmt {
     private Expr guard;
     private Stmt ifState;
     private Stmt elseState;
+    public Expr getGuard() {
+        return guard;
+    }
+    public Stmt getIfState() {
+        return ifState;
+    }
+    public Stmt getElseState() {
+        return elseState;
+    }
 
     /**
      * @param e Expression
@@ -32,16 +40,10 @@ public class IfElse extends Stmt {
         elseState = elseS;
     }
 
-    public Expr getGuard() {
-        return guard;
-    }
-    public Stmt getIfState() {
-        return ifState;
-    }
-    public Stmt getElseState() {
-        return elseState;
-    }
-
+    /**
+     * @param table Symbol table
+     * @return Type
+     */
     @Override
     public Type typeCheck(SymbolTable table) {
 
@@ -50,21 +52,11 @@ public class IfElse extends Stmt {
             throw new SemanticError(guard.getLine() ,guard.getColumn() ,"guard is not bool");
         }
         table.enterScope();
-//        System.out.println("IF CONTEXT: \n");
         Type trueClause = ifState.typeCheck(table);
-//        if (!(ifState instanceof Block)) {
-//            table.printContext();
-//        }
-//        System.out.println("\nEND IF CONTEXT. \n");
         table.exitScope();
 
         table.enterScope();
-//        System.out.println("ELSE CONTEXT: \n");
         Type falseClause = elseState.typeCheck(table);
-//        if (!(elseState instanceof Block)) {
-//            table.printContext();
-//        }
-//        System.out.println("\nEND ELSE CONTEXT. \n");
         table.exitScope();
 
         if (!isRType(trueClause) || !isRType(falseClause)) {
