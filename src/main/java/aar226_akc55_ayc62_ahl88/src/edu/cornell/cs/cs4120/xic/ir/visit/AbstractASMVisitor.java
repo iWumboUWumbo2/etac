@@ -1206,6 +1206,7 @@ public class AbstractASMVisitor {
                 }
                 instrs.add(new ASMShl(new ASMTempExpr(fakeRax), new ASMConstExpr(zeroCounter)));
                 i -= zeroCounter;
+                zeroCounter = 0;
             } else {
                 instrs.add(new ASMAdd(new ASMTempExpr(fakeRdx), new ASMTempExpr(fakeRax)));
                 instrs.add(new ASMAdd(new ASMTempExpr(fakeRax), new ASMTempExpr(fakeRax)));
@@ -1415,9 +1416,10 @@ public class AbstractASMVisitor {
 //                        curBestInstructions.add(new ASMIMul(destTemp, l2));
 //                    }
                     if (binop.left().getBestCost() +
-                            binop.right().getBestCost() + 20 < curBestCost) {
+                            binop.right().getBestCost() + 5 < curBestCost) {
+                        System.out.println("doing basic");
                         curBestCost = binop.left().getBestCost() +
-                                binop.right().getBestCost() + 20;
+                                binop.right().getBestCost() + 5;
                         curBestInstructions.add(new ASMMov(destTemp, l1));
                         curBestInstructions.add(new ASMIMul(destTemp, l2));
                         resultingInstructions = curBestInstructions;
@@ -1448,9 +1450,9 @@ public class AbstractASMVisitor {
                     break;
                 case HMUL:
                     if (binop.left().getBestCost() +
-                            binop.right().getBestCost() + 20 < curBestCost) {
+                            binop.right().getBestCost() + 5 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
-                                binop.right().getBestCost() + 20;
+                                binop.right().getBestCost() + 5;
 
                         curBestInstructions.add(new ASMMov(new ASMRegisterExpr("rax"), l1));
                         curBestInstructions.add(new ASMIMul(l2));

@@ -64,6 +64,14 @@ public class EtiInterface extends AstNode {
         p.endList();
     }
 
+
+    public void addRecords(SymbolTable<Type> sym){
+        for (Method_Interface mI: methods_inter){
+            if (mI.isRecord) {
+                
+            }
+        }
+    }
     public void zeroPass(String zhenFileName, HashMap<Id,Type> res, ArrayList<String> visitedInterfaces) {
         HashSet<String> methodName= new HashSet<>();
         SymbolTable<Type> methodSymbols = new SymbolTable<Type>();
