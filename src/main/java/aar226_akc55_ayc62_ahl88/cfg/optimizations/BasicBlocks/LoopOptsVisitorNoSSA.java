@@ -41,7 +41,7 @@ public class LoopOptsVisitorNoSSA {
 //            System.out.println("doing licm");
             LoopOpts loopOpts = new LoopOpts(graph, funcName);
             loopOpts.hoistPotentialNodes();
-            newFunc = new IRFuncDecl(func.name(), new IRSeq(graph.getBackIR()));
+            newFunc = new IRFuncDecl(func.name(), new IRSeq(graph.optimizeJumpsAndLabels()));
             newFunc.functionSig = func.functionSig;
         }else{
             newFunc = func;

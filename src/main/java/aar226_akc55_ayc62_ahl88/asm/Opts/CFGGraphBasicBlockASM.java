@@ -25,7 +25,7 @@ import static aar226_akc55_ayc62_ahl88.visitors.IRVisitor.OUT_OF_BOUNDS;
  * Contains the construction , destruction and printing of the CFG
  */
 public class CFGGraphBasicBlockASM {
-    public static ASMCall outOfBounds = new ASMCall(new ASMNameExpr(OUT_OF_BOUNDS),0,0);
+    public static ASMNameExpr outOfBounds = new ASMNameExpr(OUT_OF_BOUNDS);
     private ArrayList<BasicBlockASMCFG> nodes;
     private HashMap<String, Integer> labelMap;
     private HashMap<Integer, BasicBlockASMCFG> indToBasicBlock;
@@ -111,15 +111,42 @@ public class CFGGraphBasicBlockASM {
             ASMInstruction lastStmtCurBlock = cfgnode.body.get(cfgnode.getBody().size()-1).getStmt();
             if (i != 0
                     && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof ASMRet)
-                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof ASMJumpAlways)
-                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()).equals(outOfBounds))){
-                cfgnode.addPredecessor(nodes.get(i-1));
+                    && !((nodes.get(i-1).body.get(nodes.get(i-1).body.size()-1).getStmt()) instanceof ASMJumpAlways)){
+                BasicBlockASMCFG prevBlock = nodes.get(i-1);
+                boolean hasOutOfBounds = false;
+                for (int j = 0; j< prevBlock.body.size();j++){
+                    CFGNode<ASMInstruction> instr = prevBlock.body.get(j);
+                    if (instr.getStmt() instanceof ASMCall call
+                            && call.getLeft() instanceof ASMNameExpr name
+                            && name.equals(outOfBounds)){
+                        hasOutOfBounds = true;
+                        break;
+                    }
+                }
+                if (!hasOutOfBounds) {
+                    cfgnode.addPredecessor(nodes.get(i - 1));
+                }
             }
             if (i != nodes.size()-1
                     && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof ASMRet)
-                    && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof ASMJumpAlways)
-                    && !((cfgnode.body.get(cfgnode.body.size()-1).getStmt()).equals(outOfBounds))){
-                cfgnode.setFallThroughChild(nodes.get(i+1));
+                    && !(cfgnode.body.get(cfgnode.body.size()-1).getStmt() instanceof ASMJumpAlways)){
+                boolean hasOutOfBounds = false;
+                for (int j = 0; j< cfgnode.body.size();j++){
+                    CFGNode<ASMInstruction> instr = cfgnode.body.get(j);
+                    if (instr.getStmt() instanceof ASMCall call
+                            && call.getLeft() instanceof ASMNameExpr name
+                            && name.equals(outOfBounds)){
+                        hasOutOfBounds = true;
+                        break;
+                    }
+                }
+                if (!hasOutOfBounds) {
+                    cfgnode.setFallThroughChild(nodes.get(i + 1));
+                }
+            }
+            if (i != nodes.size()-1 && ((cfgnode.body.get(cfgnode.body.size()-1).getStmt()) instanceof ASMCall call
+                    && call.getLeft() instanceof ASMNameExpr name && name.equals(outOfBounds))){
+                System.out.println("didn't add child im out of bounds OUTOFBOUNDS");
             }
             String asmName;
             if (lastStmtCurBlock instanceof ASMJumpAlways jmp){

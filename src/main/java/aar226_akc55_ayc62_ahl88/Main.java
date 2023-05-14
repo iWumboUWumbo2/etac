@@ -8,6 +8,7 @@ import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMInstruction;
 import aar226_akc55_ayc62_ahl88.asm.Instructions.ASMLabel;
 import aar226_akc55_ayc62_ahl88.asm.Opts.CFGGraphBasicBlockASM;
 import aar226_akc55_ayc62_ahl88.asm.Opts.GraphColorAllocator;
+import aar226_akc55_ayc62_ahl88.asm.Opts.LiveVariableAnalysisASM;
 import aar226_akc55_ayc62_ahl88.asm.visit.RegisterAllocationTrivialVisitor;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks.*;
@@ -310,7 +311,7 @@ public class Main {
             try {
                 if (filename.endsWith(".eta") || filename.endsWith(".rh")) {
                     Program result = (Program) p.parse().value;
-                    SymbolTable s = new SymbolTable<>();
+                    SymbolTable<Type> s = new SymbolTable<>();
                     result.typeCheck(s, zhenFilename);
                     IRNode ir = result.accept(new IRVisitor("CompUnit", s));
 
@@ -325,17 +326,15 @@ public class Main {
                         ir = ir.accept(fv);
 //                        IRs.put("inline",ir);
                     }
-                    if (opts.isSet(OptimizationType.COPYPROP)) {
-                        ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
+                    for (int i = 0; i< 4;i++) {
+                        if (opts.isSet(OptimizationType.COPYPROP)) {
+                            ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postCopy", ir);
-                    }
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+                        }
+                        if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                            ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postDead", ir);
-                    }
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
-//                        IRs.put("postDead", ir);
+                        }
                     }
                     HashMap<Pair<String,Type>,DominatorBlockDataflow> domBlocks = new HashMap<>();
                     HashMap<Pair<String,Type>,CFGGraphBasicBlock > funcToSSA = new HashMap<>();
@@ -349,31 +348,33 @@ public class Main {
                         funcToSSA.put(new Pair<>(map.getKey(),map.getValue().functionSig),cleanedStmtGraphBlocks);
                         domBlocks.put(new Pair<>(map.getKey(),map.getValue().functionSig),domBlock);
                     }
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-                            new DeadCodeEliminationSSA(funcStatements).workList();
+                    for (int i = 0; i< 3;i++) {
+                        if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                            for (Pair<String, Type> func : funcToSSA.keySet()) {
+                                CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+                                new DeadCodeEliminationSSA(funcStatements).workList();
+                            }
                         }
-                    }
-                    if (opts.isSet(OptimizationType.CONSTPROP)) {
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+                        if (opts.isSet(OptimizationType.CONSTPROP)) {
+                            for (Pair<String, Type> func : funcToSSA.keySet()) {
+                                CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
 //                            writeOutputDot(filename,func.part1(),"preConst",funcStatements.CFGtoDOT());
-                            new ConstantPropSSA(funcStatements).workList();
-                            funcStatements.removeUnreachableNodes();
-                            new ConstantPropSSA(funcStatements).workList();
-                            funcStatements.removeUnreachableNodes();
-                            new ConstantPropSSA(funcStatements).workList();
-                            funcStatements.removeUnreachableNodes();
+                                new ConstantPropSSA(funcStatements).workList();
+                                funcStatements.removeUnreachableNodes();
+                                new ConstantPropSSA(funcStatements).workList();
+                                funcStatements.removeUnreachableNodes();
+                                new ConstantPropSSA(funcStatements).workList();
+                                funcStatements.removeUnreachableNodes();
 //                            writeOutputDot(filename,func.part1(),"postConst",funcStatements.CFGtoDOT());
+                            }
                         }
-                    }
 
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        for (Pair<String, Type> func : funcToSSA.keySet()) {
-                            CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
-                            new DeadCodeEliminationSSA(funcStatements).workList();
-                            funcStatements.removeUnreachableNodes();
+                        if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                            for (Pair<String, Type> func : funcToSSA.keySet()) {
+                                CFGGraphBasicBlock funcStatements = funcToSSA.get(func);
+                                new DeadCodeEliminationSSA(funcStatements).workList();
+                                funcStatements.removeUnreachableNodes();
+                            }
                         }
                     }
 
@@ -396,16 +397,15 @@ public class Main {
                         ir = new CopyPropNoSSA().eliminateCode((IRCompUnit) ir);
 //                        IRs.put("postCopy", ir);
                     }
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
-//                        IRs.put("postDead", ir);
-                    }
-                    if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
-                        ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
-//                        IRs.put("postDead", ir);
+                    for (int i = 0; i< 4;i++){
+                        if (opts.isSet(OptimizationType.DEAD_CODE_ELIMINATION)) {
+                            ir = new DeadCodeElimNoSSA().eliminateCode((IRCompUnit) ir);
+    //                        IRs.put("postDead", ir);
+                        }
                     }
 
                     IRs.put("final", ir);
+
                     return ir;
                 } else if (filename.endsWith(".eti") || filename.endsWith(".ri")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
