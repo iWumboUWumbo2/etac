@@ -977,17 +977,9 @@ public class IRVisitor implements Visitor<IRNode>{
                 tempNames.add(tempName);
             }
         }
-        for (int i = 0; i< node.getDecls().size();i++){
-            Decl d = node.getDecls().get(i);
-            System.out.println(d);
-            System.out.println(d instanceof RecordAccessDecl);
-        }
         for (int i = 0 ;i< node.getDecls().size();i++){ // need to check if global VAR
             String curTemp = tempNames.get(i);
             Decl d = node.getDecls().get(i);
-            System.out.println(node.getDecls());
-            System.out.println(d);
-            System.out.println(d instanceof RecordAccessDecl);
             if (d instanceof AnnotatedTypeDecl atd){
                 if (atd.type.isArray()){
                     if (atd.type.dimensions.allEmpty){ // random init is fine
@@ -1044,7 +1036,6 @@ public class IRVisitor implements Visitor<IRNode>{
             }else if (d instanceof UnderScore){
                 order.add(new IRExp(new IRTemp(curTemp)));
             }else if (d instanceof RecordAccessDecl rad){
-                System.out.println("IM HERE");
                 throw new InternalCompilerError("NO DECL RAD");
             }
             else {

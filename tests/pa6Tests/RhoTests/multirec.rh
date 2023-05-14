@@ -18,10 +18,13 @@ func():PointArr{
 }
 main(args : int[][]) {
     pointArr:PointArr = PointArr({});
-    //a:Point = Point(1,2)
-    a:Point,pointArr.x = Point(1,2), {Point(1,2)}
+    a:Point,b:Point = Point(1,2), Point(3,4);
+    //a:Point,pointArr.x = Point(1,2), {Point(1,2)}
 
     println(unparseInt(a.x));
+    println(unparseInt(a.y));
+    println(unparseInt(b.x));
+    println(unparseInt(b.y));
 
 
 }
