@@ -27,7 +27,6 @@ public class AnnotatedTypeDecl extends Decl{
     public AnnotatedTypeDecl(Id i, Type t, int l, int c) {
         super(i, l, c);
         type = t;
-
     }
 
     @Override
@@ -35,9 +34,7 @@ public class AnnotatedTypeDecl extends Decl{
         if (table.contains(identifier)) {
             throw new SemanticError(getLine(), getColumn(), "variable has already been seen");
         }
-//        System.out.println("here1");
         type.dimensions.typeCheck(table); // get side effects
-//        System.out.println("here2");
 
         if (type.isRecord()) {
             Type recordType = table.lookup(new Id(type.recordName, getLine(),getColumn()));

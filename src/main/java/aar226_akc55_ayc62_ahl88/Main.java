@@ -84,10 +84,8 @@ public class Main {
         String pathname = path.toString();
         int length = (isRho) ? pathname.length() - 3 : pathname.length() - 4;
         pathname = pathname.substring(0, length) + suffix + "." + extension;
-//        System.out.println(pathname);
         Path parentPath = path.getParent();
         String dirname = (parentPath == null) ? "" : parentPath.toString();
-//        System.out.println(dirname);
         // Create directory
         File dir = new File(dirname);
         dir.mkdirs();

@@ -605,7 +605,6 @@ public class AbstractASMVisitor {
             tileMemBinop(m, b, instructions);
         }
         else {
-            System.out.println(node);
             throw new InternalCompilerError("TODO Other moves");
         }
         return instructions;
@@ -1262,7 +1261,6 @@ public class AbstractASMVisitor {
         //original
         if (binop.opType() == IRBinOp.OpType.MOD &&  binop.right() instanceof IRConst cons && cons.value() == 2){
             if (binop.left().getBestCost() + 1 < curBestCost){
-//                System.out.println("doing better Mod");
                 ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.left().getBestInstructions());
                 String extraRdx = nxtTemp();
                 caseInstructions.add(new ASMMov(new ASMTempExpr(extraRdx),binop.left().getAbstractReg()));
@@ -1641,12 +1639,8 @@ public class AbstractASMVisitor {
                  ASMAbstractReg tmp = munchIRExpr(e);
                  returnInstructions.addAll(e.getBestInstructions());
                  tempNames.add(tmp.toString());
-//                 System.out.println("in return tile");
-                 // need to translate
-//                 throw new InternalCompilerError("return has an element that isn't a temp");
              }
         }
-//        functionToTemps.get(curFunction).addAll(tempNames);
         // looping in reverse so rax can be used temporarily until the end
         for (int i = 1; i <= returnSize; i++) {
             // move expression to Return Location

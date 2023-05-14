@@ -6,11 +6,9 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 import java.util.ArrayList;
-
 
 /**
  * Class For Declarations that don't have a type
@@ -23,20 +21,47 @@ public class NoTypeDecl extends Decl{
     public ArrayList<Expr> args;
     private Type functionSig;
     public boolean isField;
+
     /**
      * @param i Identifier Input
      * @param l Line Number
      * @param c Column Number
+     * @param field If it is a record field
      */
     public NoTypeDecl(Id i, int l, int c, boolean field) {
         super(i,l, c);
         this.isField = field;
     }
 
+    /**
+     * @param i Function name
+     * @param args List of arguments
+     * @param l Line number
+     * @param c Column number
+     * @param field If it is a record field
+     */
     public NoTypeDecl(Id i, ArrayList<Expr> args, int l, int c, boolean field) {
         super (i, l, c);
         this.args = args;
         this.isField = field;
+    }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        nodeType = table.lookup(identifier);
+        if (args != null && args.size() > 0) {
+            functionSig = table.lookup(identifier);
+        }
+        return nodeType;
+    }
+
+    public Type getFunctionSig(){
+        return functionSig;
+    }
+
+    @Override
+    public IRExpr accept(IRVisitor visitor) {
+        return visitor.visit(this);
     }
 
     @Override
@@ -49,28 +74,5 @@ public class NoTypeDecl extends Decl{
         } else {
             identifier.prettyPrint(p);
         }
-    }
-
-    //todo typecheck?
-    @Override
-    public Type typeCheck(SymbolTable<Type> table) {
-        nodeType = table.lookup(identifier);
-//        System.out.println("CHECKING IF FUNC");
-        if (args != null && args.size() > 0) {
-            functionSig = table.lookup(identifier);
-
-
-        }
-//        System.out.println(nodeType.getType());
-        return nodeType;
-    }
-
-    public Type getFunctionSig(){
-        return functionSig;
-    }
-
-    @Override
-    public IRExpr accept(IRVisitor visitor) {
-        return visitor.visit(this);
     }
 }

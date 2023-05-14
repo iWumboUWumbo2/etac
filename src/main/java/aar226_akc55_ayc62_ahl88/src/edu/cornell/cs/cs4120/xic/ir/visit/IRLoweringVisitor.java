@@ -705,7 +705,6 @@ public class IRLoweringVisitor extends IRVisitor {
             }
             e2 = ires2.expr();
         }
-//        System.out.println(new IRSeq(stmts));
         return new IRESeq(new IRSeq(stmts),
                 new IRBinOp(node.opType(),new IRTemp(t1),e2));
     }
