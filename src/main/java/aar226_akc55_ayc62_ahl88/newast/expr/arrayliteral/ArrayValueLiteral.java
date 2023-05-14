@@ -81,8 +81,10 @@ public class ArrayValueLiteral extends Expr {
         if (arrCheck.isArray()) {
             long dim_num = arrCheck.dimensions.getDim()+1;
             Dimension dim = new Dimension(dim_num, getLine(), getColumn());
-
-            return correctType(arrCheck, dim, s);
+            if (arrCheck.isRecord() || arrCheck.isRecordArray()) {
+                return correctType(arrCheck, dim, s);
+            }
+            return new Type(arrCheck.getType(),dim);
         }
         // if t1 not array, return dim 1 array
         else {
