@@ -9,27 +9,12 @@ import java.util.Objects;
 public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
     final private int FALLTHROUGH = 0;
     final private int JUMP = 1;
-
     public boolean isDeleted;
-
-//    private int index;
-//
-//    public int getIndex() {
-//        return index;
-//    }
-//
-//    public void setIndex(int index) {
-//        this.index = index;
-//    }
-
     T stmt;
-
     public void setStmt(T stmt) {
         this.stmt = stmt;
     }
-
     private ArrayList<CFGNode<T>> children;
-
     private ArrayList<CFGNode<T>> predecessors;
 
     public CFGNode(T stmt) {
@@ -38,15 +23,11 @@ public class CFGNode<T> { // T is IRSTMT U is SET IRTEMPS
         this.children = new ArrayList<>(2);
         this.children.add(null);
         this.children.add(null);
-
         this.stmt = stmt;
-
     }
-
 
     public void addPredecessor(CFGNode<T> pred) {
         if (predecessors.contains(pred)) {
-//            System.out.println("predecessor already again");
             return;
         }
         predecessors.add(pred);

@@ -1,0 +1,13 @@
+use io
+use conv
+
+main(args:int[][]) {
+
+    a:int = 5;
+
+    if (a % 2 == 1){
+        println("here");
+    }else{
+        println("bad");
+    }
+}

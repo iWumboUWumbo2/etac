@@ -61,21 +61,6 @@ public class Dimension extends AstNode{
 
     public boolean equalsDimension(Dimension d) {
         return this.getDim() == d.getDim();
-//        if (this.allEmpty != d.allEmpty) return false;
-//        if (this.dim != d.dim) return false;
-//        if ((this.indices != null) && (d.indices != null)) {
-//            if (this.indices.size() != d.indices.size()) return false;
-//            for (int i = 0; i < this.indices.size(); i++) {
-//                if (this.indices.get(i) != d.indices.get(i)) {
-//                    return false;
-//                }
-//            }
-//        }
-//        else {
-//            return false;
-//        }
-//
-//        return true;
     }
 
     @Override
@@ -83,7 +68,6 @@ public class Dimension extends AstNode{
      * Pretty Print
      */
     public void prettyPrint(CodeWriterSExpPrinter p) {
-//        System.out.println("We should not be in Dimension Pretty Print");
         ArrayList<Expr> rev = new ArrayList<>(indices);
         Collections.reverse(rev);
         p.startList();

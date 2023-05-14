@@ -18,9 +18,14 @@ public class ArrayAccessExpr extends Expr {
 
     // Type Check that it is an Actual Array
     Expr orgArray;
-
     // Read This Left to Right
     ArrayList<Expr> indicies;
+    public Expr getOrgArray() {
+        return orgArray;
+    }
+    public ArrayList<Expr> getIndicies() {
+        return indicies;
+    }
 
     /**
      * @param argArray Expression prior to array indexing
@@ -44,8 +49,6 @@ public class ArrayAccessExpr extends Expr {
 
         // check if indices are all ints
         typeCheckIndices(s);
-//        System.out.println("DIMENSION:");
-//        System.out.println(e.dimensions.getDim());
 
         // allow array accesses to unknown
         if (e.getType() == Type.TypeCheckingType.UNKNOWN) {
@@ -59,7 +62,6 @@ public class ArrayAccessExpr extends Expr {
         } else {
             long return_dim = e.dimensions.getDim() - indicies.size();
             Dimension new_dim = new Dimension(return_dim, getLine(), getColumn());
-//            System.out.println("RETURN DIM: " + return_dim);
             // throw error if length of access indices > arg dimension
             if (return_dim < 0) {
                 // allow infinite access to unknown array
@@ -72,7 +74,6 @@ public class ArrayAccessExpr extends Expr {
                 nodeType = correctType(e, new_dim, s);
                 return nodeType;
             }
-
         }
     }
 
@@ -120,13 +121,7 @@ public class ArrayAccessExpr extends Expr {
             p.endList();
         }
     }
-    public Expr getOrgArray() {
-        return orgArray;
-    }
 
-    public ArrayList<Expr> getIndicies() {
-        return indicies;
-    }
     @Override
     public IRExpr accept(IRVisitor visitor) {
         return visitor.visit(this);

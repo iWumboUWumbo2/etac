@@ -16,7 +16,9 @@ import java.util.ArrayList;
  */
 public class Block extends Stmt {
     private ArrayList<Stmt> statementList;
-
+    public ArrayList<Stmt> getStatementList(){
+        return statementList;
+    }
 
     /**
      * @param inStmtList statement list inside our block
@@ -26,12 +28,6 @@ public class Block extends Stmt {
     public Block(ArrayList<Stmt> inStmtList, int l, int c){
         super(l,c);
         statementList = inStmtList;
-    }
-
-    public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startUnifiedList();
-        statementList.forEach(e -> e.prettyPrint(p));
-        p.endList();
     }
 
     @Override
@@ -47,8 +43,6 @@ public class Block extends Stmt {
             Stmt curStmt = statementList.get(i);
             if (curStmt instanceof ProcedureCall){
                 ProcedureCall temp = (ProcedureCall) curStmt;
-//                System.out.println("In Procedure");
-//                System.out.println(temp.identifier);
             }
             Type stmtType = curStmt.typeCheck(table);
             if (stmtType.getType() != Type.TypeCheckingType.UNIT) {
@@ -59,29 +53,26 @@ public class Block extends Stmt {
         Stmt lastStmt = statementList.get(statementList.size()-1);
         Type lastType = lastStmt.typeCheck(table);
 
-//        System.out.println("BLOCK CONTEXT: \n");
-//        table.printContext();
-//        System.out.println("\nEND BLOCK CONTEXT. \n");
-
         table.exitScope(); // exiting Block
         nodeType = new Type(
                 lastType.getType() == Type.TypeCheckingType.UNIT
                         ? Type.TypeCheckingType.UNIT
                         : Type.TypeCheckingType.VOID
         );
-
-        return nodeType;
-
         // unit if no return
         // void if return
+        return nodeType;
     }
 
-    public ArrayList<Stmt> getStatementList(){
-        return statementList;
-    }
     @Override
     public IRStmt accept(IRVisitor visitor) {
         return visitor.visit(this);
+    }
+
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+        p.startUnifiedList();
+        statementList.forEach(e -> e.prettyPrint(p));
+        p.endList();
     }
 }
 

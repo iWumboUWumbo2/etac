@@ -27,14 +27,7 @@ public class IfOnly extends Stmt {
         guard = e;
         ifState = ifS;
     }
-    @Override
-    public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startList();
-        p.printAtom("if");
-        guard.prettyPrint(p);
-        ifState.prettyPrint(p);
-        p.endList();
-    }
+
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
 
@@ -44,12 +37,7 @@ public class IfOnly extends Stmt {
         }
 
         table.enterScope();
-//        System.out.println("IF CONTEXT: \n");
         Type cond1 = ifState.typeCheck(table);
-//        if (!(ifState instanceof Block)) {
-//            table.printContext();
-//        }
-//        System.out.println("\nEND IF CONTEXT. \n");
         table.exitScope();
 
         if (!isRType(cond1)){
@@ -62,5 +50,14 @@ public class IfOnly extends Stmt {
     @Override
     public IRStmt accept(IRVisitor visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+        p.startList();
+        p.printAtom("if");
+        guard.prettyPrint(p);
+        ifState.prettyPrint(p);
+        p.endList();
     }
 }

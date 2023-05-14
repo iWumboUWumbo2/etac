@@ -3,12 +3,9 @@ package aar226_akc55_ayc62_ahl88.newast.expr;
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
-import aar226_akc55_ayc62_ahl88.newast.expr.arrayliteral.ArrayValueLiteral;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
-
 import java.util.ArrayList;
 
 /**
@@ -41,13 +38,10 @@ public class FunctionCallExpr extends Expr {
         super (l, c);
         id = i;
         args = inArgs;
-//        System.out.println(i);
     }
 
     @Override
     public Type typeCheck(SymbolTable<Type> table) {
-//        System.out.println("In Function");
-//        System.out.println(id.toString());
         Type functionType = table.lookup(id);
         functionSig = functionType;
 
@@ -72,7 +66,6 @@ public class FunctionCallExpr extends Expr {
 
         // Type check function call
         if (functionType.getType() != Type.TypeCheckingType.FUNC) {
-//            System.out.println(functionType.getType());
             throw new SemanticError(id.getLine(), id.getColumn(), "identifier isn't function");
         }
         if (functionType.outputTypes.size() == 0) {

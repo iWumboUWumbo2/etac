@@ -1,0 +1,31 @@
+
+use io
+use conv
+
+
+main(args: int[][]) {
+
+
+    a:int = 123947;
+
+    b:int = a / 4;
+
+    c:int = a / 8;
+
+    d:int = a/16;
+    println(unparseInt(a));
+    println(unparseInt(b));
+    println(unparseInt(c));
+    println(unparseInt(d));
+
+    e:int = a * 16;
+
+    f:int = a * 64;
+
+    g:int = a * 128;
+    println(unparseInt(e));
+    println(unparseInt(f));
+    println(unparseInt(g));
+
+
+}

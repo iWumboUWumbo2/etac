@@ -16,6 +16,7 @@ import java.util.HashSet;
  * Class for record definitions.
  */
 public class RecordDef extends Definition {
+
     public Id recordName;
     ArrayList<AnnotatedTypeDecl> recordTypes;
 
@@ -52,13 +53,6 @@ public class RecordDef extends Definition {
             table.add(recordName, recordType);
             table.allRecordTypes.put(recordName.toString(), recordType);
         }
-    }
-
-    public Type typeCheck(SymbolTable<Type> table) {
-        return nodeType;
-    }
-    public IRNode accept(IRVisitor visitor) {
-        return null;
     }
 
     /**
@@ -109,6 +103,13 @@ public class RecordDef extends Definition {
         return nodeType;
     }
 
+    public Type typeCheck(SymbolTable<Type> table) {
+        return nodeType;
+    }
+    public IRNode accept(IRVisitor visitor) {
+        return null;
+    }
+
     /**
      * @return
      * Gets types of all fields in order
@@ -125,11 +126,9 @@ public class RecordDef extends Definition {
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startUnifiedList();
         recordName.prettyPrint(p);
-
         p.startList();
         for (Decl d : recordTypes) d.prettyPrint(p);
         p.endList();
-
         p.endList();
     }
 }

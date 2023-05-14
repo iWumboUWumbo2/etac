@@ -19,11 +19,17 @@ public class ArrayValueLiteral extends Expr {
     private String raw;
     private String escape;
     private ArrayList<Expr> values;
+    public ArrayList<Expr> getValues() {
+        return values;
+    }
+    public String getRaw() {
+        return raw;
+    }
 
     /**
-     * @param s
-     * @param l
-     * @param c
+     * @param s Raw string
+     * @param l Line number
+     * @param c Column number
      */
     public ArrayValueLiteral(String s, int l, int c) {
         super(l, c);
@@ -37,18 +43,14 @@ public class ArrayValueLiteral extends Expr {
     }
 
     /**
-     * @param e
-     * @param l
-     * @param c
+     * @param e List of expressions
+     * @param l Line number
+     * @param c Column number
      */
     public ArrayValueLiteral(ArrayList<Expr> e, int l, int c) {
         super(l,c);
         values = e;
         raw = null;
-    }
-
-    public ArrayList<Expr> getValues() {
-        return values;
     }
 
     /**
@@ -77,26 +79,8 @@ public class ArrayValueLiteral extends Expr {
             if (!arrCheck.sameType(eType)) {
                 throw new SemanticError(e.getLine(), e.getColumn(), "array element type mismatch");
             }
-//            if ((t1.getType() == Type.TypeCheckingType.UNKNOWNARRAY ||
-//                    t1.getType() == Type.TypeCheckingType.NULL ||
-//                    t1.getType() == Type.TypeCheckingType.NULLARRAY) &&
-//                    (eType.getType() == Type.TypeCheckingType.BOOLARRAY ||
-//                            eType.getType() == Type.TypeCheckingType.INTARRAY ||
-//                            eType.getType() == Type.TypeCheckingType.RECORDARRAY)){
-//                arrCheck = eType;
-//            }
-//            System.out.println("before greater type");
-//            System.out.println("arrchecktype: " + arrCheck.getType());
-//            if (arrCheck.isArray()) System.out.println("dim: " + arrCheck.dimensions.getDim());
-//            System.out.println("etype: " + eType.getType());
-//            if (eType.isArray()) System.out.println("etype dim: " + eType.dimensions.getDim());
             arrCheck = arrCheck.greaterType(eType);
-//            System.out.println("after greater type");
-//            System.out.println("arrchecktype: " + arrCheck.getType());
-//            if (arrCheck.isArray()) System.out.println("dim: " + arrCheck.dimensions.getDim());
         }
-
-
 
         // if t1 is array, then return multidimensional array lit
         if (arrCheck.isArray()) {
@@ -124,7 +108,6 @@ public class ArrayValueLiteral extends Expr {
                 throw new SemanticError(getLine(), getColumn(), "Not a basic type");
             }
         }
-
     }
 
     /**
@@ -145,7 +128,6 @@ public class ArrayValueLiteral extends Expr {
 
     @Override
     public Type typeCheck(SymbolTable s) throws Error{
-//        System.out.println("w hat si going on");
         if (values.size() == 0) {
             nodeType = typeCheckUnknown(s);
             return nodeType;
@@ -153,7 +135,6 @@ public class ArrayValueLiteral extends Expr {
             nodeType = typeCheckArray(s);
             return nodeType;
         }
-
     }
 
     public String toString(){
@@ -171,9 +152,6 @@ public class ArrayValueLiteral extends Expr {
         }else{
             p.printAtom("\"" +raw+ "\"");
         }
-    }
-    public String getRaw() {
-        return raw;
     }
 
     @Override

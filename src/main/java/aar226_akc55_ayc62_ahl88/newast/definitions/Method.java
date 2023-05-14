@@ -23,34 +23,32 @@ public class Method extends Definition {
     private ArrayList<Type> types;
     private Block block;
     private Type functionSig;
-
     public Type getFunctionSig() {
         return functionSig;
     }
-
     public Id getId() {
         return id;
     }
-
     public ArrayList<AnnotatedTypeDecl> getDecls() {
         return decls;
     }
-
     public ArrayList<Type> getTypes() {
         return types;
     }
-
     public Block getBlock() {
         return block;
     }
+    public ArrayList<Type> getOutputtypes(){
+        return types;
+    }
 
     /**
-     * @param s
-     * @param d
-     * @param t
-     * @param b
-     * @param l
-     * @param c
+     * @param s Method name
+     * @param d Args
+     * @param t Return type
+     * @param b Statements
+     * @param l line number
+     * @param c column number
      */
     public Method(String s, ArrayList<AnnotatedTypeDecl> d, ArrayList<Type> t, Block b, int l, int c){
         super(l,c);
@@ -68,65 +66,6 @@ public class Method extends Definition {
         decls = d;
         types = t;
         block = b;
-    }
-
-    public String toString(){
-        String build = "";
-        build +=  "( " + id.toString() + " " + decls.toString() + " " + types.toString() +  " )";
-        return build;
-    }
-
-    @Override
-    public void prettyPrint(CodeWriterSExpPrinter p) {
-        p.startUnifiedList();
-        id.prettyPrint(p);
-
-        p.startList();
-        for (Decl d : decls) d.prettyPrint(p);
-        p.endList();
-
-        p.startList();
-        for (Type t : types) t.prettyPrint(p);
-        p.endList();
-
-        if (block != null) {
-            block.prettyPrint(p);
-        }
-        p.endList();
-    }
-
-    @Override
-    public Type typeCheck(SymbolTable<Type> table) {
-//        System.out.println("in method");
-        table.enterScope();
-        Id old = table.currentParentFunction;
-        table.currentParentFunction = id;
-        for (AnnotatedTypeDecl atd: decls){
-            if (id.toString().equals(atd.identifier.toString())){
-                throw new SemanticError(getLine(),getColumn(),"parameter same name as method");
-            }
-            if (table.contains(atd.identifier)){
-                throw new SemanticError(getLine(),getColumn(),"parameter already present");
-            }
-            table.add(atd.identifier,atd.type);
-        }
-        Type blockType = block.typeCheck(table);
-        table.currentParentFunction = old;
-        table.exitScope();
-
-//        System.out.println(getOutputtypes().size());
-
-        // if is function, check if return void
-        if (getOutputtypes().size() != 0) {
-            if (blockType.getType() != Type.TypeCheckingType.VOID)
-                throw new SemanticError(
-                    block.getLine(),
-                    block.getColumn(),
-                    "no return type detected"
-                );
-        }
-        nodeType = new Type(Type.TypeCheckingType.UNIT);
-        return nodeType;
     }
 
     /**
@@ -185,6 +124,41 @@ public class Method extends Definition {
         table.addVisitedDef(this.id);
         return nodeType;
     }
+
+    @Override
+    public Type typeCheck(SymbolTable<Type> table) {
+        table.enterScope();
+        Id old = table.currentParentFunction;
+        table.currentParentFunction = id;
+        for (AnnotatedTypeDecl atd: decls){
+            if (id.toString().equals(atd.identifier.toString())){
+                throw new SemanticError(getLine(),getColumn(),"parameter same name as method");
+            }
+            if (table.contains(atd.identifier)){
+                throw new SemanticError(getLine(),getColumn(),"parameter already present");
+            }
+            table.add(atd.identifier,atd.type);
+        }
+        Type blockType = block.typeCheck(table);
+        table.currentParentFunction = old;
+        table.exitScope();
+
+        // if is function, check if return void
+        if (getOutputtypes().size() != 0) {
+            if (blockType.getType() != Type.TypeCheckingType.VOID)
+                throw new SemanticError(
+                        block.getLine(),
+                        block.getColumn(),
+                        "no return type detected"
+                );
+        }
+        nodeType = new Type(Type.TypeCheckingType.UNIT);
+        return nodeType;
+    }
+
+    /**
+     * @return Types of all arguments
+     */
     public ArrayList<Type> getInputTypes(){
         ArrayList<Type> inputTypes = new ArrayList<>();
         for (AnnotatedTypeDecl atd: decls){
@@ -193,12 +167,33 @@ public class Method extends Definition {
         return inputTypes;
     }
 
-    public ArrayList<Type> getOutputtypes(){
-        return types;
-    }
-
     @Override
     public IRFuncDecl accept(IRVisitor visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+        p.startUnifiedList();
+        id.prettyPrint(p);
+
+        p.startList();
+        for (Decl d : decls) d.prettyPrint(p);
+        p.endList();
+
+        p.startList();
+        for (Type t : types) t.prettyPrint(p);
+        p.endList();
+
+        if (block != null) {
+            block.prettyPrint(p);
+        }
+        p.endList();
+    }
+
+    public String toString(){
+        String build = "";
+        build +=  "( " + id.toString() + " " + decls.toString() + " " + types.toString() +  " )";
+        return build;
     }
 }

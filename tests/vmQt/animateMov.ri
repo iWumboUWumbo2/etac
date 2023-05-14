@@ -1,2 +1,3 @@
+record 
 paintEvent(self: QWidget, pe: QPaintEvent)
 timeout(self: TimerListener, timer: QTimer)

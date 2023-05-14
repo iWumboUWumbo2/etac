@@ -129,7 +129,7 @@ public class GraphColorAllocator {
             for (CFGNode<ASMInstruction> instr : b.getBody()) {
                 ASMInstruction unwrapped = instr.getStmt();
                 temps.addAll(defsInASM(unwrapped));
-                temps.addAll(usesInASM(unwrapped));
+                temps.addAll(usesInASMFunc(unwrapped, funcName,mainCalled));
             }
         }
         for (ASMAbstractReg reg : temps){
@@ -251,7 +251,7 @@ public class GraphColorAllocator {
             Set<ASMAbstractReg> live = LVA.getOutMapping().get(b);
             for (int i = b.getBody().size() - 1; i >= 0; i--) {
                 ASMInstruction instr = b.getBody().get(i).getStmt();
-                Set<ASMAbstractReg> uses =  usesInASM(instr);
+                Set<ASMAbstractReg> uses =  usesInASMFunc(instr,funcName,mainCalled);
                 Set<ASMAbstractReg> defs = defsInASM(instr);
                 if (instr instanceof ASMMov mov
                         && mov.getLeft() instanceof ASMAbstractReg
@@ -584,7 +584,7 @@ public class GraphColorAllocator {
             ArrayList<CFGNode<ASMInstruction>> nxtBody = new ArrayList<>();
             for (CFGNode<ASMInstruction> node : block.getBody()){
                 ASMInstruction instr = node.getStmt();
-                Set<ASMAbstractReg> used = usesInASM(instr);
+                Set<ASMAbstractReg> used = usesInASMFunc(instr,funcName,mainCalled);
                 Set<ASMAbstractReg> def = defsInASM(instr);
                 HashSet<ASMAbstractReg> spilledDef = intersect(def, spilledNodes);
                 HashSet<ASMAbstractReg> spilledUse = intersect(used, spilledNodes);

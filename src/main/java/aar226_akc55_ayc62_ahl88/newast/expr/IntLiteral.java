@@ -4,13 +4,13 @@ import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import org.apache.commons.text.*;
 /**
  * Class for Integer Literal
  */
 public class IntLiteral extends Expr{
+
     public long number;
     private String rawChar;
 
@@ -35,7 +35,6 @@ public class IntLiteral extends Expr{
         super(l, c);
         rawChar = inputChar;
         String escapeForm  = StringEscapeUtils.unescapeJava(inputChar);
-//        System.out.println(escapeForm.length());
         if (escapeForm.length() > 1) { // hex representation
             int first = inputChar.indexOf("{");
             int last = inputChar.lastIndexOf("}");

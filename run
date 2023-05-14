@@ -2,11 +2,11 @@
 
 ETAFILE=$(readlink -f "$1")
 ASMFILE="${ETAFILE%%.*}.s"
-PROGNAME=$(basename ${ETAFILE} .eta)
+PROGNAME=${ETAFILE%%.*}
 
-pushd ${HOME}/shared >> /dev/null
-./etac ${ETAFILE} -libpath tests/curses/ $@
-pushd ${HOME}/runtime >> /dev/null
-./linketa.sh -o ${PROGNAME} ${ASMFILE}
-./${PROGNAME}
+pushd ${HOME}/shared >> /dev/null &&
+./etac ${ETAFILE} -libpath tests/include/ $@ &&
+pushd ${HOME}/runtime >> /dev/null &&
+./linketa.sh -o ${PROGNAME} ${ASMFILE} &&
+./${PROGNAME} &&
 popd >> /dev/null

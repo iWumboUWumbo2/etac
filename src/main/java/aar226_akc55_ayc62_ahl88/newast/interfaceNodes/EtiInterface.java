@@ -93,7 +93,7 @@ public class EtiInterface extends AstNode {
      * @param res
      * @param useInterfaceMethods
      * @param visitedInterfaces
-     * @return
+     * @return Hashmap mapping Id to Type
      */
     public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res, ArrayList<Id> useInterfaceMethods,
                                       ArrayList<String> visitedInterfaces, SymbolTable<Type> table) {

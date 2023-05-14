@@ -1,0 +1,42 @@
+_Ifib_ii:
+    enter 0, 0
+    mov _ARG1, rdi
+    mov _ASMReg_t0, 0
+    cmp _ARG1, _ASMReg_t0
+    jne l1
+    mov _ASMReg_t1, 1
+    mov rax, _ASMReg_t1
+    leave 
+    ret 
+l1:
+    mov _ASMReg_t2, 1
+    cmp _ARG1, _ASMReg_t2
+    jne l3
+    mov _ASMReg_t3, 1
+    mov rax, _ASMReg_t3
+    leave 
+    ret 
+l3:
+    mov _ASMReg_t5, 1
+    mov _ASMReg_t4, _ARG1
+    sub _ASMReg_t4, _ASMReg_t5
+    mov tl5_1, _ASMReg_t4
+    # Add Padding
+    mov rdi, tl5_1
+    call _Ifib_ii
+    mov _RV1, rax
+    # Undo Padding
+    mov tl7_1, _RV1
+    mov _ASMReg_t7, 2
+    mov _ASMReg_t6, _ARG1
+    sub _ASMReg_t6, _ASMReg_t7
+    mov tl6_1, _ASMReg_t6
+    # Add Padding
+    mov rdi, tl6_1
+    call _Ifib_ii
+    mov _RV1, rax
+    # Undo Padding
+    lea tl8_1, QWORD PTR [ tl7_1 + _RV1 ]
+    mov rax, tl8_1
+    leave 
+    ret 
