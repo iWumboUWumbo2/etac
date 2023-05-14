@@ -162,7 +162,7 @@ public class Use extends AstNode{
                 checkRecordTypes(table, null, entry); // check record types are all in scope from zero pass
             }
 
-            firstPass.putAll(eI.firstPass(zhenFilename, firstPass, useInterfaceMethods, visitedInterfaces, table)); // TODO
+            firstPass.putAll(eI.firstPass(zhenFilename, firstPass, useInterfaceMethods, visitedInterfaces, table));
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 checkRecordTypes(table, entry, null); // check record types are all in scope
                 if (table.contains(entry.getKey())) {

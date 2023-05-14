@@ -37,16 +37,7 @@ public class Length extends Expr {
         Type t1;
         String message;
         t1 = arg.typeCheck(table);
-//        try {
-//            // might throw error if expr is Id and lookup fails
-//            t1 = arg.typeCheck(table);
-//        }
-//        catch (Error e) {
-//            message = Integer.toString(getLine())
-//                    + ":" + Integer.toString(getColumn())
-//                    + "  TypeError: unbound variable name";
-//            throw new Error(message);
-//        }
+
         if (t1.isArray()) {
             nodeType = new Type(Type.TypeCheckingType.INT);
             return nodeType;

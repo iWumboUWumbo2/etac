@@ -140,8 +140,6 @@ public class Program extends AstNode {
         if (Main.isRho) {
             table.isNecessaryVisited();
         }
-//        table.printContext();
-//        table.printContext();
 
         // SECOND PASS
         for (Definition d: definitions){

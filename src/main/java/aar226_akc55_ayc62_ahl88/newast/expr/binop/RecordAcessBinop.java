@@ -27,7 +27,6 @@ public class RecordAcessBinop extends BinopExpr{
         super(BinopEnum.PERIOD, in1, in2, l, c);
     }
 
-    //todo fix null
     @Override
     public Type typeCheck(SymbolTable<Type> s){
         Expr e1 = getLeftExpr();

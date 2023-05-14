@@ -102,12 +102,6 @@ public class EtiInterface extends AstNode {
 
         methodSymbols.enterScope();
 
-//        for (Use u:useList) {
-//            if (!visitedInterfaces.contains(u.id.toString())) {
-//                u.zeroPass(methodSymbols, zhenFileName, res, visitedInterfaces);
-//            }
-//        }
-
         for (Use u:useList) {
             if (!visitedInterfaces.contains(u.id.toString())) {
                 Type useType = u.typeCheck(table, zhenFileName, res, visitedInterfaces, false);
@@ -129,10 +123,7 @@ public class EtiInterface extends AstNode {
                             "interface function already defined in different interface");
                 }
                 Type funcTypeInTable;
-//                if (mI.isRecord) {
-//                    String recordName = mI.recordType.recordName;
-//                    funcTypeInTable = new Type(recordName, mI.fields, getLine(), getColumn(), true);
-//                } else {
+
                 ArrayList<Type> inTypes = mI.getInputTypes();
                 ArrayList<Type> outTypes = mI.getOutputtypes();
                 funcTypeInTable = new Type(inTypes, outTypes);

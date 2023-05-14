@@ -38,8 +38,6 @@ public class IRBinOp extends IRExpr_c {
         LEQ,
         GEQ,
         UGE,
-//        //todo fix this
-//        PERIOD
         ;
 
         @Override
