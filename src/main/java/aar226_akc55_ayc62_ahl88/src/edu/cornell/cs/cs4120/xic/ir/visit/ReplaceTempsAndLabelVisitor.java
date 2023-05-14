@@ -97,7 +97,7 @@ public class ReplaceTempsAndLabelVisitor extends IRVisitor{
 
     private IRNode replaceTemp(IRFuncDecl irfunc) {
 
-        return irfunc; // TODO
+        return irfunc;
     }
 
     private IRNode replaceTemp(IRExp irexp) {

@@ -108,7 +108,6 @@ public class LiveVariableAnalysisASM extends BackwardBlockASMDataflow<Set<ASMAbs
                 if (arg1.getLeft() instanceof ASMAbstractReg temp){
                     defSet.add(temp);
                 }
-                // TODO RSP????
             }
             // SETCC r/m8
             // REG "AL" -> "RAX" Might change AL since RAX used too much

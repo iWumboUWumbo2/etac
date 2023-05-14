@@ -68,38 +68,6 @@ public class Return extends Stmt{
             }
         }
 
-//        for (Expr e : returnArgList) {
-//            Type res = e.typeCheck(table);
-//            if (res.getType() == Type.TypeCheckingType.FUNC) {
-//                returnResult.addAll(res.outputTypes);
-//            }
-//            else {
-//                returnResult.add(res);
-//            }
-//        }
-
-//        if (returnArgList.size() == 1) {
-//            Type res = returnArgList.get(0).typeCheck(table);
-//            if (res.getType() == Type.TypeCheckingType.FUNC) {
-//                returnResult.addAll(res.outputTypes);
-//            }
-//        }
-//
-//        for (Expr e : returnArgList) {
-//            Type res = e.typeCheck(table);
-//            if (res.getType() == Type.TypeCheckingType.FUNC) {
-//                throw new Error();
-//            }
-//            else {
-//                returnResult.add(res);
-//            }
-//        }
-
-//        if (returnResult.size() != functionOutputs.size()) {
-//            throw new Error(getLine() + ":" + getColumn() +
-//                    " Semantic error:  Number of resulting outputs doesn't equal function");
-//        }
-
         for (int i = 0; i < returnResult.size(); i++) {
             Type funcOut = functionOutputs.get(i);
             Type resOut = returnResult.get(i);

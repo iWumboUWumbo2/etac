@@ -289,9 +289,9 @@ public class Main {
 
                     table.enterScope();
 
-                    riUse.zeroPass(table, zhenFilename, new HashMap<>(), visitedZeroInterfaces);
+                    riUse.zeroPass(table, zhenFilename, new HashMap<>(), visitedZeroInterfaces, true);
                     ArrayList<String> visitedFirstInterfaces = new ArrayList<>();
-                    Type useType = riUse.typeCheck(table, zhenFilename, new HashMap<>(), visitedFirstInterfaces); // Just to throw EtaErrors
+                    Type useType = riUse.typeCheck(table, filename, new HashMap<>(), visitedFirstInterfaces, true); // Just to throw EtaErrors
 
                     table.exitScope();
                     if (useType.getType() != Type.TypeCheckingType.UNIT){
@@ -437,9 +437,9 @@ public class Main {
 
                     table.enterScope();
 
-                    riUse.zeroPass(table, zhenFilename, new HashMap<>(), visitedZeroInterfaces);
+                    riUse.zeroPass(table, zhenFilename, new HashMap<>(), visitedZeroInterfaces, true);
                     ArrayList<String> visitedFirstInterfaces = new ArrayList<>();
-                    Type useType = riUse.typeCheck(table, zhenFilename, new HashMap<>(), visitedFirstInterfaces); // Just to throw EtaErrors
+                    Type useType = riUse.typeCheck(table, zhenFilename, new HashMap<>(), visitedFirstInterfaces, true); // Just to throw EtaErrors
 
                     table.exitScope();
                     if (useType.getType() != Type.TypeCheckingType.UNIT){

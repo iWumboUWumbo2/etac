@@ -54,10 +54,12 @@ public class Use extends AstNode{
     add record to context
     */
     public void zeroPass(SymbolTable<Type> table, String zhenFilename, HashMap<Id,Type> zeroPass,
-                          ArrayList<String> visitedInterfaces) {
+                          ArrayList<String> visitedInterfaces, boolean useOriginalName) {
 
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
-        String filename = Paths.get(libpathDir, id.toString() + ".ri").toString();
+        String filename = (useOriginalName) ? zhenFilename
+                : Paths.get(libpathDir, id.toString() + (".ri")).toString();
+
         try (FileReader fileReader = new FileReader(filename)) {
 
         } catch (Exception e) {
@@ -133,11 +135,12 @@ public class Use extends AstNode{
         }
 
     public Type typeCheck(SymbolTable<Type> table, String zhenFilename, HashMap<Id,Type> firstPass,
-                          ArrayList<String> visitedInterfaces) {
+                          ArrayList<String> visitedInterfaces, boolean useOriginalName) {
         String libpathDir = aar226_akc55_ayc62_ahl88.Main.libpathDirectory;
         boolean isRho = Main.isRho;
 
-        String filename = Paths.get(libpathDir, id.toString() + (isRho ? ".ri" : ".eti")).toString();
+        String filename = (useOriginalName) ? zhenFilename
+                : Paths.get(libpathDir, id.toString() + (isRho ? ".ri" : ".eti")).toString();
         try (FileReader fileReader = new FileReader(filename)) {
 
 
@@ -159,7 +162,7 @@ public class Use extends AstNode{
                 checkRecordTypes(table, null, entry); // check record types are all in scope from zero pass
             }
 
-            firstPass.putAll(eI.firstPass(zhenFilename, firstPass, useInterfaceMethods, visitedInterfaces, table)); // TODO
+            firstPass.putAll(eI.firstPass(zhenFilename, firstPass, useInterfaceMethods, visitedInterfaces, table));
             for (HashMap.Entry<Id,Type> entry : firstPass.entrySet()){
                 checkRecordTypes(table, entry, null); // check record types are all in scope
                 if (table.contains(entry.getKey())) {

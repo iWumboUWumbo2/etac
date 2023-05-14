@@ -1216,7 +1216,6 @@ public class AbstractASMVisitor {
         return instrs;
     }
     private ASMAbstractReg munchBinop(IRBinOp binop) {
-        // TODO: LATER ADD TEMP/CONST, TEMP/TEMP, CONST/TEMP, ELSE MUCH
         long curBestCost = Long.MAX_VALUE;
         ASMTempExpr destTemp = new ASMTempExpr(nxtTemp());
         ArrayList<ASMInstruction> resultingInstructions = new ArrayList<>();
@@ -1447,7 +1446,7 @@ public class AbstractASMVisitor {
                         resultingInstructions = curBestInstructions;
                     }
                     break;
-                case HMUL: // TODO: fix this
+                case HMUL:
                     if (binop.left().getBestCost() +
                             binop.right().getBestCost() + 20 < curBestCost) {
                         curBestCost = binop.left().getBestCost() +
@@ -1874,8 +1873,6 @@ public class AbstractASMVisitor {
             case LEQ -> ASMOpCodes.SETLE;
             case GEQ -> ASMOpCodes.SETGE;
             case UGE -> ASMOpCodes.SETAE;
-//            // TODO: 4/30/2023  fix pls
-//            case PERIOD -> ASMOpCodes.SETAE;
         };
     }
 
