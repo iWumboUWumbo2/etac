@@ -1,5 +1,5 @@
 use curses
-// use timer
+use timer
 
 seed: int = 1
 
