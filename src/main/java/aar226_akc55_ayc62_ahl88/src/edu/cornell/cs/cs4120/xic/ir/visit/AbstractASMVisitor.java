@@ -1303,6 +1303,88 @@ public class AbstractASMVisitor {
             }
         }
 
+        /*
+        n / 2 =
+        mov     RAX, RDI
+        shr     RAX, 63
+        add     RAX, RDI
+        sar     RAX
+         */
+
+        /*
+        n / 16 =
+        mov     RAX, RDI
+        sar     RAX, 63
+        shr     RAX, 60
+        add     RAX, RDI
+        sar     RAX, 4
+         */
+
+        if (binop.opType() == IRBinOp.OpType.DIV && binop.right() instanceof IRConst cons && isPowerOfTwo(cons.value())) {
+            if (binop.left().getBestCost() + 1 < curBestCost) {
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.left().getBestInstructions());
+                ASMAbstractReg rdi = binop.left().getAbstractReg();
+
+                if (cons.value() == 2) {
+                    caseInstructions.add(new ASMMov(destTemp, rdi));
+                    caseInstructions.add(new ASMShr(destTemp, new ASMConstExpr(63)));
+                    caseInstructions.add(new ASMAdd(destTemp, rdi));
+                    caseInstructions.add(new ASMSar(destTemp));
+                }
+                else {
+                    long log2 = (long) (Math.log(cons.value()) / Math.log(2));
+                    caseInstructions.add(new ASMMov(destTemp, rdi));
+                    caseInstructions.add(new ASMSar(destTemp, new ASMConstExpr(63)));
+                    caseInstructions.add(new ASMShr(destTemp, new ASMConstExpr(64 - log2)));
+                    caseInstructions.add(new ASMAdd(destTemp, rdi));
+                    caseInstructions.add(new ASMSar(destTemp, new ASMConstExpr(log2)));
+                }
+
+                resultingInstructions = caseInstructions;
+                curBestCost = binop.left().getBestCost() + 1;
+            }
+        }
+
+        /*
+        n * 1024 =
+        mov     rax, rdi
+        sal     rax, 10
+         */
+        /*
+        n*4
+        lea     rax, [0+rdi*4]
+         */
+
+        if (binop.opType() == IRBinOp.OpType.MUL && binop.right() instanceof IRConst cons && isPowerOfTwo(cons.value())) {
+            if (binop.left().getBestCost() + 1 < curBestCost) {
+                ArrayList<ASMInstruction> caseInstructions = new ArrayList<>(binop.left().getBestInstructions());
+
+                if (!isValidScale(cons.value())) {
+                    long log2 = (long) (Math.log(cons.value()) / Math.log(2));
+                    ASMAbstractReg rdi = binop.left().getAbstractReg();
+                    caseInstructions.add(new ASMMov(destTemp, rdi));
+                    caseInstructions.add(new ASMShl(destTemp, new ASMConstExpr(log2)));
+                }
+                else {
+                    caseInstructions.add(
+                            new ASMLEA(destTemp,
+                            new ASMMemExpr(
+                                    new ASMBinOpAddExpr(
+                                            new ASMConstExpr(0),
+                                            new ASMBinOpMultExpr(
+                                                    binop.left().getAbstractReg(),
+                                                    new ASMConstExpr(cons.value()))
+                                    )
+                            )
+                            ));
+                }
+
+
+                resultingInstructions = caseInstructions;
+                curBestCost = binop.left().getBestCost() + 1;
+            }
+        }
+
 
         if (false) {
 
