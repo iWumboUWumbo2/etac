@@ -1,6 +1,5 @@
 // A simple bouncing ball demo.
 use qt;
-use animate;
 
 // Dimension of the arena, and radius of the object.
 DIM:int = 256;

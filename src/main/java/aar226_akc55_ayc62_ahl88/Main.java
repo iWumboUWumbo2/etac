@@ -491,20 +491,9 @@ public class Main {
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
             boolean mainCalled = FunctionInliningVisitor.isMainCalled((IRCompUnit) ir);
-//            for (Map.Entry<String, ArrayList<ASMInstruction>> kv: comp.getFunctionToInstructionList().entrySet()){
-//                StringWriter out = new StringWriter();
-//                ArrayList<ASMInstruction> abstractInstrs = kv.getValue();
-//                for (ASMInstruction instr : abstractInstrs){
-//                    if (!(instr instanceof ASMLabel)){
-//                        out.write(INDENT_SFILE + instr + '\n');
-//                    }else{
-//                        out.write(instr+"\n");
-//                    }
-//                }
-//                out.close();
-//            }
 
             if (opts.isSet(OptimizationType.REGALLOC)) {
+//                System.out.println(mainCalled);
                 boolean failed = false;
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
