@@ -1008,7 +1008,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 }else if (atd.type.isBasic()){
                     order.add(new IRMove(new IRTemp(atd.identifier.toString()),new IRTemp(curTemp)));
                 }else if (atd.type.isRecord()){
-                    return new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp));
+                    order.add(new IRMove(new IRTemp(atd.identifier.toString()), new IRTemp(curTemp)));
                 }
 
                 else {
@@ -1035,7 +1035,10 @@ public class IRVisitor implements Visitor<IRNode>{
                 order.add(new IRMove(d.identifier.accept(this),new IRTemp(curTemp))); // might need to check for Globals
             }else if (d instanceof UnderScore){
                 order.add(new IRExp(new IRTemp(curTemp)));
-            }else {
+            }else if (d instanceof RecordAccessDecl rad){
+                throw new InternalCompilerError("NO DECL RAD");
+            }
+            else {
                 throw new InternalCompilerError("NOT A DECL?");
             }
         }
