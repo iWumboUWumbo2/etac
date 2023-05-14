@@ -3,7 +3,7 @@ use conv;
 
 main(args:int[][]) {
     n: int     = 500; // # of runs.
-    LIMIT: int = 90000;
+    LIMIT: int = 270000;
     flags: bool[LIMIT + 1];
 
     c: int = 0;
