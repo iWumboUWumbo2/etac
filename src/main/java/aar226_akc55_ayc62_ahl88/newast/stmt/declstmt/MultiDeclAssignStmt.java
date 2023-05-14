@@ -11,7 +11,6 @@ import aar226_akc55_ayc62_ahl88.newast.declarations.UnderScore;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
@@ -91,21 +90,18 @@ public class MultiDeclAssignStmt extends Stmt {
         ArrayList<Type> declarationTypes = new ArrayList<>();
         ArrayList<Type> exprTypes = new ArrayList<>();
 
-        // unpack deez nuts
         for (Decl d: decls){
             Type curDeclType = d.typeCheck(table);
             declarationTypes.add(curDeclType);
         }
 
         if (expressions.size() == 0) {
-
             for (int i = 0; i < decls.size(); i ++) {
                 Decl decl_i = decls.get(i);
                 if ((decl_i instanceof AnnotatedTypeDecl)) {
                     table.add(decl_i.identifier, declarationTypes.get(i)); // add the identifier and the type only if new type
                 }
             }
-
             nodeType = new Type(Type.TypeCheckingType.UNIT);
             return nodeType;
         }
@@ -135,8 +131,6 @@ public class MultiDeclAssignStmt extends Stmt {
             Type decT = declarationTypes.get(i);
             Type exprT = exprTypes.get(i);
             if (!decT.sameType(exprT)){
-//                System.out.println(decT.getType());
-//                System.out.println(exprT.getType());
                 throw new SemanticError(decls.get(i).getLine() ,decls.get(i).getColumn() ,"Variable Type doesn't match Expr Type");
             }
         }

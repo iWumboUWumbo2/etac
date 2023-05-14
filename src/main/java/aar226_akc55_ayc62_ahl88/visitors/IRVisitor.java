@@ -59,6 +59,11 @@ public class IRVisitor implements Visitor<IRNode>{
     private String lastWhileExit;
 
     public HashMap<String, Type> allRecordTypes;
+
+    /**
+     * @param name Compunit
+     * @param s Symbol Table
+     */
     public IRVisitor(String name, SymbolTable<Type> s) {
         labelCnt = 0;
         tempCnt = 0;
@@ -79,10 +84,19 @@ public class IRVisitor implements Visitor<IRNode>{
     }
 
     // Rho -------------------------------------------------
+
+    /**
+     * @param node Record definition
+     * @return IR statement
+     */
     public IRStmt visit(RecordDef node) {
-        // I don't think we have to do anything here.
         throw  new InternalCompilerError("NO RECORD DEF");
     }
+
+    /**
+     * @param node Record access binop
+     * @return IR statement
+     */
     public IRExpr visit(RecordAcessBinop node) {
         Expr eLeft = node.getLeftExpr();
         IRExpr irLeft = eLeft.accept(this);
@@ -111,10 +125,18 @@ public class IRVisitor implements Visitor<IRNode>{
         return sol;
     }
 
+    /**
+     * @param node Break
+     * @return IR statement
+     */
     public IRStmt visit(Break node) {
         return new IRSeq(new IRJump(new IRName(this.lastWhileExit)));
     }
 
+    /**
+     * @param node Int out binop
+     * @return IR expression
+     */
     @Override
     public IRExpr visit(IntOutBinop node) {
 //        DIVIDE, HIGHMULT, MINUS, MODULO, TIMES
@@ -174,6 +196,11 @@ public class IRVisitor implements Visitor<IRNode>{
         return new IRBinOp(op, ire1, ire2);
     }
 
+    /**
+     * @param ire1 Left IR expression
+     * @param ire2 Right IR expression
+     * @return IR expression
+     */
     private IRExpr plusArrays(IRExpr ire1, IRExpr ire2){
         String size1 = nxtTemp();
         String size2 = nxtTemp();
@@ -285,11 +312,14 @@ public class IRVisitor implements Visitor<IRNode>{
                 load_element2,inc_counter2,go_back_to_head2,afterLoop2);
         /* END LOOP 2 */
 
-
         IRSeq final_seq = new IRSeq(top_level_Order,loopComponent1, loopComponent2);
         return new IRESeq(final_seq, new IRTemp(head_pointer));
     }
 
+    /**
+     * @param node PlusBinop
+     * @return IR expression
+     */
     @Override
     public IRExpr visit(PlusBinop node) {
 
@@ -323,6 +353,11 @@ public class IRVisitor implements Visitor<IRNode>{
             return new IRBinOp(IRBinOp.OpType.ADD, ire1, ire2);
         }
     }
+
+    /**
+     * @param node Integer Comparison Binop
+     * @return IR expression
+     */
     @Override
     public IRNode visit(IntegerComparisonBinop node) {
 //        < , <= , > , >=
@@ -348,6 +383,10 @@ public class IRVisitor implements Visitor<IRNode>{
         return new IRBinOp(op, ire1, ire2);
     }
 
+    /**
+     * @param node Equivalence Binop
+     * @return IR expression
+     */
     @Override
     public IRExpr visit(EquivalenceBinop node) {
         Expr e1 = node.getLeftExpr();
@@ -366,10 +405,13 @@ public class IRVisitor implements Visitor<IRNode>{
                 default -> throw new Error("NOT EQUIVALENCE COMPARISON BINOP");
             };
         }
-//        System.out.println(new IRBinOp(op, ire1, ire2));
         return new IRBinOp(op, ire1, ire2);
     }
 
+    /**
+     * @param node Equivalence Binop
+     * @return IR expression
+     */
     @Override
     public IRExpr visit(LogicalBinop node) {
         String l1 = nxtLabel();
