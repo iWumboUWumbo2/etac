@@ -1,8 +1,7 @@
-
 package aar226_akc55_ayc62_ahl88;
 
-
-import aar226_akc55_ayc62_ahl88.Errors.LexicalError;import java_cup.runtime.*;
+import aar226_akc55_ayc62_ahl88.Errors.LexicalError;
+import java_cup.runtime.*;
 import org.apache.commons.text.*;
 
 %%
@@ -113,9 +112,7 @@ Comment = "//"{InputCharacter}*({LineTerminator}?)
           }
       }
 
-//    "false"       { return symbol(sym.FALSE); }
-//    "true"        { return symbol(sym.TRUE); }
-      {Boolean}     { return symbol(sym.BOOL_LITERAL, Boolean.parseBoolean(yytext())); }
+    {Boolean}     { return symbol(sym.BOOL_LITERAL, Boolean.parseBoolean(yytext())); }
 
     // keywords
     "use"     { return symbol(sym.USE); }
