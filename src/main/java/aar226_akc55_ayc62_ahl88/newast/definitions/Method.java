@@ -146,10 +146,24 @@ public class Method extends Definition {
             if (table.contains(atd.identifier)){
                 throw new SemanticError(getLine(),getColumn(),"parameter already present");
             }
+            if (atd.type.isRecord || atd.type.isRecordArray()) {
+                if (!table.contains(atd.type.recordName)) {
+                    throw new SemanticError(getLine(), getColumn(), "undefined record type");
+                }
+            }
             table.add(atd.identifier,atd.type);
         }
         table.currentParentFunction = old;
         table.exitScope();
+
+        for (Type t : types) {
+            if (t.isRecord || t.isRecordArray()) {
+                if (!table.contains(t.recordName)) {
+                    throw new SemanticError(getLine(), getColumn(), "undefined record type");
+                }
+            }
+        }
+
         Type methodType = new Type(getInputTypes(),getOutputtypes());
         functionSig = methodType;
         if (currentFile.contains(id.toString())){

@@ -122,6 +122,12 @@ public class Method_Interface extends AstNode {
             prev.add(atd.identifier.toString());
 //            inputTypes.add(curDeclType);
         }
+        for (Type t : types) {
+            if ((t.isRecordArray() || t.isRecord()) && !methods.contains(t.recordName)) {
+                System.out.println("method interface func return: " + t.recordName);
+                throw new SemanticError(t.getLine(), t.getColumn(),"record return type not in scope");
+            }
+        }
         // to do
         return new Type(Type.TypeCheckingType.UNIT);
     }
