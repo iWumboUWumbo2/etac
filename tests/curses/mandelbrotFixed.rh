@@ -1,0 +1,305 @@
+// Rho Graphical Mandelbrot Set Explorer
+// Spring 2001. Revised 2011 for OO Rho, 2022 for Rho.
+// Originally by Aleksey Kliger, Sunny Gleason, Michael Clarkson.
+
+use io
+use conv
+use assert
+use sqrt
+use curses
+
+
+WIDTH:int = 100
+HEIGHT:int = 40
+USE_CURSES:bool = false
+WINSIZE, WINSIZE2:int
+MAXITER:int = 2000
+maxiter:int=100
+HISTLEN:int = 101
+GROW_ITER_PERCENT:int = 1
+SCALEROOT:int = 4096 // square root of the fixed-point scaling factor
+scale:int
+final_size:int = 200000
+buffer:int = 0
+done:bool = false
+
+RAMPSIZE:int = 8
+RAMPS:int = 12
+
+size, zoom:int
+x_offset, y_offset:int
+x_final, y_final:int
+
+colors: int[]
+
+
+// if done, plots[buffer] is where completed frame is for redraws. If !done,
+// calculations are done in plots[buffer] and the last completed frame is in
+// plots[1-buffer]
+
+// workaround for bugs in depth 2 initialization.
+mkMatrix(sx: int, sy: int): int[][] {
+    arr: int[sx][sy]
+    i: int = 0
+    j: int = 0
+    while i < sx {
+        while j < sy {
+            arr[i][j] = 0
+            j = j + 1
+        }
+        i = i + 1
+    }
+    return arr
+}
+
+setupGlobals(plots: int[][][]) {
+    if (USE_CURSES) {
+        initCurses()
+        w:int, h:int =  getWindowSize()
+        WIDTH = w; HEIGHT = h
+        putString("Window size is " + unparseInt(w) + " by " + unparseInt(h))
+    }
+
+    WINSIZE2 = WIDTH * HEIGHT
+    WINSIZE = sqrt(WINSIZE2)
+    scale = SCALEROOT*SCALEROOT
+    size = 4*scale // initial size is 6x6
+    colors = "$@B%8&WM#*oahkbdpqwmZQOLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!l;:,\"^`\'."
+    zoom = size/WINSIZE
+    final_size = 200000
+    buffer = 0
+    done = false
+    i:int = 0
+    while (i < 2) {
+        // buf: int[][] = mkMatrix(WIDTH+1, HEIGHT+1) // use if depth-2 initialization is buggy
+        buf: int[WIDTH+1][HEIGHT+1]
+        plots[i] = buf
+        i = i + 1
+    }
+}
+
+main(args:int[][]) {
+	plots: int[2][][]
+	histogram: int[HISTLEN]
+
+    setupGlobals(plots)
+    choice:int = 0
+    if (length(args) >= 2) {
+        c:int, _ = parseInt(args[1])
+        choice = c
+    }
+    if (choice == 8) {
+		// "Another Mini-Mandelbrot"
+        x_offset = -2670932
+        y_offset = 17309052
+        final_size = 200000
+    } else if (choice == 1) {
+		// "Seahorse valley"
+        x_offset = -12560912
+        y_offset = 1677722
+        final_size = 20000
+    } else if (choice == 2) {
+		// Quad Spiral Valley
+        x_offset = 4563275
+        y_offset = 8073700
+        final_size = WINSIZE*2
+    } else if (choice == 3) {
+		// "Scepter Valley"
+        x_offset = -22960316
+        y_offset = 83888
+        final_size = 10000
+    } else if (choice == 4) {
+		// "Mini-Mandelbrot"
+        x_offset = -29490000
+        y_offset = 0
+        final_size = 400000
+    } else if (choice == 5) {
+		// "Triple Spiral Valley"
+        x_offset = -1476396
+        y_offset = 10978300
+        final_size = 20000
+    } else if (choice == 7) {
+		// another spot in Seahorse Valley
+        x_offset = -11884460
+        y_offset = 5703649
+        final_size = WINSIZE*2
+    } else {
+        x_offset = 0; y_offset = 0; final_size = size
+    }
+
+    x_offset = x_offset - size/2
+    y_offset = y_offset - size/2
+    x_final = x_offset + size
+    y_final = y_offset + size
+
+	// set up UI
+
+    reset_histogram(histogram)
+    c:Calculator = createCalculator()
+    while (size > final_size) {
+        calc(c, plots)
+        updateDisplay(0, 0, WIDTH, HEIGHT, plots)
+        size = size / 2
+        zoom = zoom / 2
+        x_offset = x_offset + size/2
+        y_offset = y_offset + size/2
+        x_final = x_offset + size
+        y_final = y_offset + size
+        c.curx = x_offset; c.cury = y_offset
+    }
+}
+
+update_maxiter(histogram: int[]) {
+    i: int = maxiter - 5
+    count: int = 0
+    while (i < maxiter) {
+        count = count + histogram[i]
+        i = i + 1
+    }
+    if ((10000*count)/WINSIZE/WINSIZE > GROW_ITER_PERCENT) {
+        maxiter = (maxiter*3)/2
+        if (maxiter > MAXITER) maxiter = MAXITER
+        print("maxiter = ")
+        print(unparseInt(maxiter))
+        print("\n")
+    }
+}
+
+reset_histogram(histogram: int[]) {
+    i: int = 0
+    while (i <= maxiter) {
+        histogram[i] = 0;
+        i = i + 1
+    }
+}
+
+print_histogram(histogram: int[]) {
+    i: int = 0
+    while (i <= maxiter) {
+        if (histogram[i] != 0) {
+            print(unparseInt(i))
+            print(":")
+            print(unparseInt(histogram[i]))
+            print(" ")
+            i = i + 1
+        }
+    }
+    print("\n")
+}
+
+record Calculator {
+    curx,cury:int
+}
+
+createCalculator():Calculator {
+    return Calculator(x_offset, y_offset)
+}
+
+timeout(c: Calculator, plots: int[][][], histogram: int[]) {
+    work_unit:int = 2000 // how many pixels to compute per UI check
+    if (done) {return}
+    while (!done & work_unit>0) {
+        calc(c, plots)
+        work_unit = work_unit - 1
+    }
+
+    if (!done) { return }
+    updateDisplay(0, 0, WIDTH, HEIGHT, plots)
+    //print_histogram()
+    size = size/2
+    print("current size = ")
+    print(unparseInt(size))
+    print("\n")
+    if (size <= final_size) { stop(); return }
+    zoom = zoom/2
+    x_offset = x_offset + size/2
+    y_offset = y_offset + size/2
+    x_final = x_offset + size
+    y_final = y_offset + size
+    c.curx = x_offset; c.cury = y_offset
+    update_maxiter(histogram)
+    reset_histogram(histogram)
+    done = false
+    buffer = 1 - buffer
+}
+
+stop() { }
+
+updateDisplay(x:int, y:int, w:int, h: int, plots: int[][][]) {
+    // println("Updating display " + unparseInt(w) + "," + unparseInt(h))
+    if (USE_CURSES) {
+        clearWindow()
+        moveCursor(0,0)
+    }
+    j:int = y
+    output:int[1]
+    plot:int[][] = plots[buffer]
+    empty:int[] = {}
+    while (j < y + h) {
+        moveCursor(0, j)
+        i:int = x
+        while (i < x + w) {
+            n: int = plot[i][j]
+            output[0] = assign_color(n)
+            print(output)
+            i = i + 1
+        }
+        if (!USE_CURSES) println(empty)
+        j = j + 1
+    }
+
+}
+
+calc(c: Calculator, plots: int[][][]) {
+    plot: int[][] = plots[buffer]
+    i: int = 0
+    j: int = 0
+    while (i < WIDTH) {
+        if (j < HEIGHT) {
+            plot[i][j] = mandelbrot(c.curx, c.cury)
+            c.cury = c.cury + zoom
+            j = j + 1
+        } else {
+            c.curx = c.curx + zoom
+            c.cury = y_offset
+            j = 0
+            i = i + 1
+        }
+    }
+    done = true
+}
+
+// Return the character that is used to represent pixels that take
+// "iterations" iterations to escape.
+assign_color(iterations: int): int {
+    return colors[iterations % length(colors)]
+}
+
+// Return number of iterations before the point c = x + y*i escapes
+// via repeated application of function f(z) = z^2 + c.
+// Returns maxiter if it doesn't escape in maxiter iterations.
+mandelbrot(x:int, y:int):int {
+    a:int = 0
+    b:int = 0
+    a_2:int = 0
+    b_2:int = 0
+    hpos:int = 0
+
+    i:int = 0
+    // escapes if |z| > 4
+    while ((a_2 + b_2 < 4*SCALEROOT*SCALEROOT) & (i < maxiter)) {
+        // Note: (a+bi)^2 = (a^2-b^2) + (2*a*b)i
+        ah:int = a/SCALEROOT
+        al:int = a%SCALEROOT
+        bh:int = b/SCALEROOT
+        bl:int = b%SCALEROOT
+        a_2 = ah*ah + 2*(ah*al)/SCALEROOT
+        b_2 = bh*bh + 2*(bh*bl)/SCALEROOT
+        a = x + a_2 - b_2
+        b = y + 2*ah*bh + 2*(ah*bl)/SCALEROOT + 2*(bh*al)/SCALEROOT
+
+        i = i + 1
+    }
+//	histogram[i] = histogram[i] + 1
+    return i
+}
