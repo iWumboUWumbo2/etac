@@ -3,16 +3,16 @@ use conv
 
 main(args : int[][]) {
     i:int = 0;
-    println(unparseInt(foo(5,1)))
+    println(unparseInt(foo(fact(3),fact(1),fact(4),fact(4))))
 }
 
-foo(a:int,b:int):int{
+foo(a:int,b:int,c:int,d:int):int{
     res:int  = 5;
     i:int = 0;
-    while (i < 223412110){
+    while (i < 623412110){
         x:int = a * b;
-        y:int = x * 20;
-        z:int = y * 123;
+        y:int = x * d;
+        z:int = y * c;
         g:int = z/40;
         res = res + g;
         i = i+1;
@@ -20,9 +20,10 @@ foo(a:int,b:int):int{
     return res;
 }
 
- //       if (i % 2 == 0){
- //           res = res + 1;
-  //      }
-  //      if (i + 2 < 10){
-  //          res = res + 5;
-  //      }
+fact(n:int):int{
+    if (n <= 1){
+        return 1;
+    }
+    return n * fact(n-1);
+}
+

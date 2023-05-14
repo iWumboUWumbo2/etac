@@ -528,31 +528,22 @@ public class Main {
             boolean mainCalled = FunctionInliningVisitor.isMainCalled((IRCompUnit) ir);
 
             if (opts.isSet(OptimizationType.REGALLOC)) {
-                boolean failed = false;
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
                     asmBasicblocks.removeUnreachableNodes();
                     GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),false,filename,mainCalled);
                     getColors.MainFunc();
                     if (getColors.failed){
-                        failed = true;
-                        break;
+//                        System.out.println("failed with extra");
+                        CFGGraphBasicBlockASM secondTryBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
+                        secondTryBasicblocks.removeUnreachableNodes();
+                        GraphColorAllocator getColorsTry2 = new GraphColorAllocator(secondTryBasicblocks, comp, kv.getKey(),true,filename,mainCalled);
+                        getColorsTry2.MainFunc();
+                        postAlloc.addAll(getColorsTry2.replaceTempReserve());
                     }else {
+//                        System.out.println("made with extra");
                         postAlloc.addAll(getColors.replaceTempReserve());
                     }
-                }
-                if (failed){
-                    System.out.println("failed with extra");
-                    postAlloc = new ArrayList<>();
-                    for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
-                        CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
-                        asmBasicblocks.removeUnreachableNodes();
-                        GraphColorAllocator getColors = new GraphColorAllocator(asmBasicblocks, comp, kv.getKey(),true,filename,mainCalled);
-                        getColors.MainFunc();
-                        postAlloc.addAll(getColors.replaceTempReserve());
-                    }
-                }else{
-                    System.out.println("made it with extra");
                 }
             }else{
                 postAlloc = new RegisterAllocationTrivialVisitor().visit(comp);
