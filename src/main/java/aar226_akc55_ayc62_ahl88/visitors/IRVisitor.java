@@ -41,7 +41,9 @@ import java.util.List;
 
 import static aar226_akc55_ayc62_ahl88.Main.opts;
 
-
+/**
+ * Class for intermediate representation visiting.
+ */
 public class IRVisitor implements Visitor<IRNode>{
 
     private static final IRConst NULLEXPR = new IRConst(0);
