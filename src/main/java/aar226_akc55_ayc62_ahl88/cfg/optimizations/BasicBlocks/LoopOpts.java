@@ -15,17 +15,13 @@ import java.util.*;
 public class LoopOpts {
 
     private static class LoopWrapper{
-
         public boolean hasStores;
         public  ArrayList<IRNode> stores;
         public BasicBlockCFG preheader;
         public BasicBlockCFG header;
-
         public ArrayList<BasicBlockCFG> loopBody;
-
         public HashSet<BasicBlockCFG> exitBlocks;
         public HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTempsInLoop;
-
         public HashSet<IRTemp> loopInvariantDefs;
         public HashMap<IRTemp,CFGNode<IRStmt>> defToNode;
         public ArrayList<CFGNode<IRStmt>> allNodes;
@@ -56,6 +52,7 @@ public class LoopOpts {
             }
             return res;
         }
+
         @Override
         public String toString() {
             return "LoopWrapper{" +
@@ -65,28 +62,26 @@ public class LoopOpts {
         }
     }
     public CFGGraphBasicBlock graph;
-
     public DominatorBlockDataflow dom;
-
-
     public ReachingDefinitionsBlock reach;
     public ArrayList<Pair<BasicBlockCFG,BasicBlockCFG>> backEdges;
-
     public ArrayList<LoopWrapper> all_loops;
     public HashMap<BasicBlockCFG,LoopWrapper> headerToLoop;
     public LiveVariableAnalysisBlocks lva;
-
     private long labelCnt;
     private long tempCnt;
     private String func;
-
     private String nxtLabel() {
         return String.format("_loop_" +func +  "%d", (labelCnt++));
     }
-
     private String nxtTemp() {
         return String.format("_loopt" + func + "%d", (tempCnt++));
     }
+
+    /**
+     * @param g CFG basic block
+     * @param funcName Function name
+     */
     public LoopOpts(CFGGraphBasicBlock g,String funcName){
         func = funcName;
         labelCnt = 0;
@@ -156,7 +151,6 @@ public class LoopOpts {
         all_loops.addAll(headerToLoop.values());
     }
 
-
     private boolean isSubset(LoopWrapper loop1, LoopWrapper loop2){
         ArrayList<BasicBlockCFG> loop1Blocks = loop1.getAllBlocksInLoop();
 
@@ -169,6 +163,7 @@ public class LoopOpts {
         }
         return true;
     }
+
     private void reorderAllLoops(){
         HashMap<LoopWrapper,HashSet<LoopWrapper>> parentToChildLoops = new HashMap<>();
         for (int i =0; i< all_loops.size();i++){
@@ -214,21 +209,17 @@ public class LoopOpts {
             throw new InternalCompilerError("loops missing");
         }
         all_loops = reordered;
-
-
-
     }
+
     private void findExitNodes(){
         for (LoopWrapper loop : all_loops){
             HashSet<BasicBlockCFG> nodesInGraph = new HashSet<>(loop.getAllBlocksInLoop());
             for (BasicBlockCFG block : loop.getAllBlocksInLoop()){
-
                 for (BasicBlockCFG child : block.getChildren()){
                     if (child != null && !nodesInGraph.contains(child)){
                         loop.exitBlocks.add(block);
                     }
                 }
-
             }
         }
     }
@@ -277,7 +268,6 @@ public class LoopOpts {
      * @param inst
      * @return
      */
-
     private boolean isLengthInVar(IRMem inst, LoopWrapper loop){
 
         HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTemps =  loop.definedTempsInLoop;
@@ -308,10 +298,9 @@ public class LoopOpts {
                 return true;
             }
         }
-
-
         return false;
     }
+
     /**
      * Checks if Instruction is Invariant
      * @param inst
@@ -409,9 +398,6 @@ public class LoopOpts {
         }
         for (BasicBlockCFG exitBlocks : loop.exitBlocks){
             if (!dom.getOutMapping().get(exitBlocks).contains(blockThatHoldsLI) && !isLength){
-//                System.out.println("exit block not dominated: " + inst);
-//                System.out.println("my block: " + blockThatHoldsLI);
-//                System.out.println("bad block: " + exitBlocks);
                 return false;
             }
         }
@@ -464,7 +450,6 @@ public class LoopOpts {
                 }
             }
         }
-//        System.out.println("this is res:" + res);
         return res;
     }
 
@@ -480,15 +465,10 @@ public class LoopOpts {
             reach.worklist();
             reach.getSingleMapping(temps);
             loop.potentialLoopInvariantInstrs = potentialInvariantNodes(loop);
-//            System.out.println(loop.potentialLoopInvariantInstrs);
-//            System.out.println(loop.definedTempsInLoop);
             HashMap<IRTemp,Set<CFGNode<IRStmt>>> definedTemps =  new HashMap<>(loop.definedTempsInLoop);
             ArrayList<CFGNode<IRStmt>> validLI = new ArrayList<>();
             validLI = new ArrayList<>(loop.potentialLoopInvariantInstrs);
 
-//            if (validLI.size() != 0){
-//                System.out.println("hoisted " + validLI);
-//            }
             ArrayList<BasicBlockCFG> loopBlocks = loop.getAllBlocksInLoop();
             for (int i = 0; i< loopBlocks.size();i++){
                 BasicBlockCFG block = loopBlocks.get(i);
@@ -558,5 +538,4 @@ public class LoopOpts {
             graph.getNodes().add(indexOfHead,preheader);
         }
     }
-
 }

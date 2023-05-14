@@ -267,7 +267,6 @@ public class CFGGraphBasicBlockASM {
         }
         for (BasicBlockASMCFG node : nodes) {
             if (!visited.contains(node)) { // remove this node
-//                System.out.println("block Removed");
                 for (BasicBlockASMCFG child : node.getChildren()) {
                     if (child != null) {
                         cleanChild(child,node);

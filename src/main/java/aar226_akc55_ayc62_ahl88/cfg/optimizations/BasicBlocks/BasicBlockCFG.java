@@ -69,7 +69,6 @@ public class BasicBlockCFG {
     }
     public void addPredecessor(BasicBlockCFG pred) {
         if (predecessors.contains(pred)) {
-//            System.out.println("predecessor already again");
             return;
         }
         predecessors.add(pred);

@@ -10,16 +10,11 @@ import java.util.*;
 public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
     private int tempCnt;
     private int labelCnt;
-
     private int extraJmp;
-
     private String currentFunction;
-
     private HashMap<String,ArrayList<IRStmt>> inLinedFunctions;
-
     private HashMap<String,HashSet<String>> functionToTemps;
     private HashMap<String,HashSet<String>> functionToLabels;
-
     private String nxtTemp(String funcName) {
         return String.format(funcName + "_tp%d_fi_", (tempCnt++));
     }
@@ -76,8 +71,6 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
                 }
             }
         }
-//        System.out.println("order: " + order);
-//        System.out.println("adjList: " + adjList);
         return order;
     }
 
@@ -105,7 +98,6 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
     public IRCompUnit visit(IRCompUnit node) {
         allowedInline = topoSort(node);
         ArrayList<String> functionVisitOrder = new ArrayList<>(allowedInline);
-//        System.out.println("allowed inline: " + allowedInline);
 
         for (String func: node.functions().keySet()) {
             if (!functionVisitOrder.contains(func)) {
@@ -114,9 +106,7 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
         }
         // Get Temps used
         HashMap<String,IRFuncDecl> newIrFunc = new HashMap<>();
-//        System.out.println(functionVisitOrder);
         for (String funcToVisit: functionVisitOrder) {
-//            System.out.println("functionName: " + funcToVisit);
             IRFuncDecl func = node.getFunction(funcToVisit);
             IRFuncDecl externalUse  = firstPass(func); // Generates the Inlined Version for other people to use
             IRFuncDecl inLinedFunc = func.accept(this);
@@ -188,7 +178,6 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
         return node;
     }
 
-
     /**
      *
      * @param node
@@ -228,9 +217,9 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
         }
         newBody.add(new IRLabel(endLabel));
         inLinedFunctions.put(node.name(),newBody);
-//        System.out.println("inLined: " +node.name() + " " + newBody);
         return new IRFuncDecl(node.name(),new IRSeq(newBody));
     }
+
     @Override
     public IRFuncDecl visit(IRFuncDecl node) {
 
@@ -268,9 +257,6 @@ public class FunctionInliningVisitor implements IROPTVisitor<IRNode> {
             String mangled = nxtLabel(funcName) + label;
             labelMapping.put(label,mangled);
         }
-//        System.out.println("inlining: " + funcName);
-//        System.out.println("temp mapping: " + tempMapping);
-//        System.out.println("label Mapping: " + labelMapping);
         ReplaceTempsAndLabelVisitor replacementVisitor = new ReplaceTempsAndLabelVisitor(new IRNodeFactory_c(),tempMapping,labelMapping,funcName);
         ArrayList<IRStmt> result = new ArrayList<>();
         for (IRStmt stmt: irStmts) {

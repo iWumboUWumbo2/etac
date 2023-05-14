@@ -1,24 +1,17 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
-import aar226_akc55_ayc62_ahl88.cfg.HashSetInf;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
-import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRCallStmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRMove;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRTemp;
-import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ReachingDefinitionsBlock extends ForwardBlockDataflow<Set<CFGNode<IRStmt>>> {
-
-
     public HashMap<CFGNode<IRStmt>,Set<CFGNode<IRStmt>>> singleNodeInMapping;
     public HashMap<CFGNode<IRStmt>,Set<CFGNode<IRStmt>>> singleNodeOutMapping;
     public ReachingDefinitionsBlock(CFGGraphBasicBlock g,final HashMap<IRTemp, HashSet<CFGNode<IRStmt>>> tempToAllDefs) {
@@ -32,7 +25,6 @@ public class ReachingDefinitionsBlock extends ForwardBlockDataflow<Set<CFGNode<I
                     Set<CFGNode<IRStmt>> outN = new HashSet<>(inN);
                     outN.removeAll(kill);
                     outN.addAll(gen);
-//                    System.out.println("block: " + n + "\n outN: " + outN);
                     return outN;
                 },
                 (l1, l2) -> {
@@ -139,7 +131,6 @@ public class ReachingDefinitionsBlock extends ForwardBlockDataflow<Set<CFGNode<I
             }
         }
     }
-
 
     public static boolean canWeRunReaching(CFGGraphBasicBlock graph){
         for (BasicBlockCFG block : graph.getNodes()){

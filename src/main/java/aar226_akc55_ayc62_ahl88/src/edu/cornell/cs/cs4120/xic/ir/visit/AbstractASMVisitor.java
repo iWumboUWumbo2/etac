@@ -1679,13 +1679,11 @@ public class AbstractASMVisitor {
             if (e instanceof IRTemp t){
                 tempNames.add(t.name());
             }else{
-//                System.out.println("call is not a temp? " + e);
 //                String nxtName = nxtTemp();
 //                tempNames.add(nxtName);
                 ASMAbstractReg tmp = munchIRExpr(e);
                 instructions.addAll(e.getBestInstructions());
                 tempNames.add(tmp.toString());
-//                System.out.println("in call tile");
                 // need to translate
 //                throw new InternalCompilerError("return has an element that isn't a temp");
             }

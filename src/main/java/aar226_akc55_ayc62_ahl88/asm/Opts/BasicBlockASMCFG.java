@@ -11,18 +11,48 @@ import java.util.Set;
 public class BasicBlockASMCFG {
     final private int FALLTHROUGH = 0;
     final private int JUMP = 1;
-
     public boolean start;
     public String function;
     HashSet<String> originLabels;
-
     HashSet<String> destLabels;
     ArrayList<CFGNode<ASMInstruction>> body;
-
     private ArrayList<BasicBlockASMCFG> children;
-
     private ArrayList<BasicBlockASMCFG> predecessors;
+    public ArrayList<CFGNode<ASMInstruction>> getBody() { return body; }
+    public BasicBlockASMCFG getFallThroughChild() {
+        return children.get(FALLTHROUGH);
+    }
+    public void setFallThroughChild(BasicBlockASMCFG fallThroughChild) {
+        this.children.set(FALLTHROUGH, fallThroughChild) ;
+    }
+    public BasicBlockASMCFG getJumpChild() {
+        return children.get(JUMP);
+    }
+    public void setJumpChild(BasicBlockASMCFG jumpChild) {
+        children.set(JUMP, jumpChild);
+    }
+    public ArrayList<BasicBlockASMCFG> getChildren() {
+        return children;
+    }
+    public ArrayList<BasicBlockASMCFG> getPredecessors() {
+        return predecessors;
+    }
+    public void removePredecessor(BasicBlockASMCFG pred) {
+        predecessors.remove(pred);
+    }
+    public void addPredecessor(BasicBlockASMCFG pred) {
+        if (predecessors.contains(pred)) {
+            return;
+        }
+        predecessors.add(pred);
+    }
+    private Set<ASMTempExpr> singleStmtUse(ASMInstruction stmt) {
+        return new HashSet<>();
+    }
 
+    /**
+     * @param funcName Function name
+     */
     public BasicBlockASMCFG(String funcName){
         function = funcName;
         start = false;
@@ -34,39 +64,7 @@ public class BasicBlockASMCFG {
         this.children.add(null);
         this.body = new ArrayList<>();
     }
-    public ArrayList<CFGNode<ASMInstruction>> getBody() { return body; }
 
-    public BasicBlockASMCFG getFallThroughChild() {
-        return children.get(FALLTHROUGH);
-    }
-
-    public void setFallThroughChild(BasicBlockASMCFG fallThroughChild) {
-        this.children.set(FALLTHROUGH, fallThroughChild) ;
-    }
-    public BasicBlockASMCFG getJumpChild() {
-        return children.get(JUMP);
-    }
-
-    public void setJumpChild(BasicBlockASMCFG jumpChild) {
-        children.set(JUMP, jumpChild);
-    }
-    public ArrayList<BasicBlockASMCFG> getChildren() {
-        return children;
-    }
-
-    public ArrayList<BasicBlockASMCFG> getPredecessors() {
-        return predecessors;
-    }
-    public void removePredecessor(BasicBlockASMCFG pred) {
-        predecessors.remove(pred);
-    }
-    public void addPredecessor(BasicBlockASMCFG pred) {
-        if (predecessors.contains(pred)) {
-//            System.out.println("predecessor already again");
-            return;
-        }
-        predecessors.add(pred);
-    }
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -77,9 +75,5 @@ public class BasicBlockASMCFG {
             builder.append(escape).append('\n');
         }
         return builder.toString();
-    }
-
-    private Set<ASMTempExpr> singleStmtUse(ASMInstruction stmt) {
-        return new HashSet<>();
     }
 }

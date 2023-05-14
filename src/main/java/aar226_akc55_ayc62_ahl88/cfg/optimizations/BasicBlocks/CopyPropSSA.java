@@ -3,11 +3,9 @@ package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempWithConstAndFold;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
-
 import java.util.*;
 
 public class CopyPropSSA {
@@ -59,8 +57,6 @@ public class CopyPropSSA {
                 HashMap<String,String> pairMap = new HashMap<>();
                 pairMap.put(tdest.name(), valueToProp.name());
                 s.isDeleted = true;
-//                System.out.println(temp);
-//                System.out.println(s.getStmt());
                 for (CFGNode<IRStmt> nodeT : uses.get(tdest)) {
                     if (!nodeT.isDeleted) {
                         // replace
@@ -72,9 +68,9 @@ public class CopyPropSSA {
                 }
             }
         }
-
         graph.removeDeletedNodes();
     }
+
     private Pair<Boolean, IRTemp> isPhiTemp(IRPhi phi){
         if (phi.getArgs().size() == 0) {
             throw new InternalCompilerError("phi shouldn't be zero");
@@ -92,7 +88,4 @@ public class CopyPropSSA {
 
         return new Pair<>(true, temp);
     }
-
-
-
 }

@@ -66,10 +66,6 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
             HashSetInf<CFGNode<IRStmt>> oldOut = outMapping.get(node);
             HashSetInf<CFGNode<IRStmt>> newOut = applyTransfer(node);
 
-//            System.out.println("working on: " + node.toString().replaceAll("\n",""));
-//            System.out.println("oldOut: " + oldOut);
-//            System.out.println("newOut: " + newOut);
-
             if (!oldOut.equals(newOut)) {
                 for (CFGNode<IRStmt> succ : node.getChildren()) {
                     if (succ != null && !set.contains(succ)) {
@@ -187,14 +183,13 @@ public class DominatorAnalysis extends ForwardIRDataflow<HashSetInf<CFGNode<IRSt
                         if (!tempsY.contains(a)){
                             queue.add(y);
                         }
-
                     }
                 }
             }
         }
         variables = new HashSet<>(defsites.keySet());
-
     }
+
     public void renamingVariables(){
         HashMap<IRTemp, Integer> count = new HashMap<>();
         HashMap<IRTemp,Stack<Integer>> stacks = new HashMap<>();

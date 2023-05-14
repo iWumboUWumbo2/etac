@@ -491,7 +491,6 @@ public class Main {
             boolean mainCalled = FunctionInliningVisitor.isMainCalled((IRCompUnit) ir);
 
             if (opts.isSet(OptimizationType.REGALLOC)) {
-//                System.out.println(mainCalled);
                 boolean failed = false;
                 for (Map.Entry<String, ArrayList<ASMInstruction>> kv : comp.getFunctionToInstructionList().entrySet()) {
                     CFGGraphBasicBlockASM asmBasicblocks = new CFGGraphBasicBlockASM(kv.getValue(),kv.getKey());
@@ -778,11 +777,7 @@ public class Main {
                         for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
                             String funcName = map.getValue().name();
                             CFGGraphBasicBlock stmtGraph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) map.getValue().body()).stmts());
-
-//                            System.out.println(stmtGraph.CFGtoDOT());
                             writeOutputDot(filename, funcName, phase, stmtGraph.CFGtoDOT());
-
-//                            break;
                         }
                     }
                 }
@@ -830,9 +825,8 @@ public class Main {
                     asmGenFile(filename, true);
                 }
             }
-
-//            System.out.println(opts);
         }
+
         catch (ParseException parseException) {
             formatter.printHelp("etac [options] <source files>", options);
             System.out.println("Unexpected exception: " + parseException.getMessage());

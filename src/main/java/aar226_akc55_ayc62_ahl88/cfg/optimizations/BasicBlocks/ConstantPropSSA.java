@@ -1,18 +1,14 @@
 package aar226_akc55_ayc62_ahl88.cfg.optimizations.BasicBlocks;
 
-import aar226_akc55_ayc62_ahl88.cfg.CFGGraph;
 import aar226_akc55_ayc62_ahl88.cfg.CFGNode;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempWithConstAndFold;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.Pair;
-
 import java.util.*;
 
 public class ConstantPropSSA {
-
-
     CFGGraphBasicBlock graph;
 
     // ASSUME SSA
@@ -59,8 +55,6 @@ public class ConstantPropSSA {
                 IRConst valueToProp = new IRConst(cons.value());
                 Pair<IRTemp,IRConst> pairMap = new Pair<>(temp,valueToProp);
                 s.isDeleted = true;
-//                System.out.println(temp);
-//                System.out.println(s.getStmt());
                 for (CFGNode<IRStmt> nodeT : uses.get(temp)) {
                     if (!nodeT.isDeleted) {
                         // replace
@@ -95,7 +89,6 @@ public class ConstantPropSSA {
                 return new Pair<>(false,0L);
             }
         }
-//        System.out.println("phi is constant: " + phi);
         return new Pair<>(true,val);
     }
 }

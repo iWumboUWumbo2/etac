@@ -38,7 +38,6 @@ public class LoopOptsVisitorNoSSA {
         CFGGraphBasicBlock graph = new CFGGraphBasicBlock((ArrayList<IRStmt>) ((IRSeq) func.body()).stmts());
         IRFuncDecl newFunc;
         if (canWeRunReaching(graph) && opts.isSet(OptimizationType.LICM)) {
-//            System.out.println("doing licm");
             LoopOpts loopOpts = new LoopOpts(graph, funcName);
             loopOpts.hoistPotentialNodes();
             newFunc = new IRFuncDecl(func.name(), new IRSeq(graph.optimizeJumpsAndLabels()));

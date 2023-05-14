@@ -152,10 +152,6 @@ public class GraphColorAllocator {
         }
    }
     public void MainFunc(){
-//        if (attempt == 3){
-//            System.out.println("failed");
-//            return;
-//        }
         initTemps();
         LVA = new LiveVariableAnalysisASM(progBlock,mainCalled);
         LVA.workList();
@@ -206,7 +202,6 @@ public class GraphColorAllocator {
                 throw new InternalCompilerError("degree violated");
             }
         }
-//        System.out.println("degree fine");
     }
 
     private void simplifyWorkInvar(){
@@ -216,7 +211,6 @@ public class GraphColorAllocator {
                 throw new InternalCompilerError("simplify violated");
             }
         }
-//        System.out.println("simplify fine");
     }
 
     private void freezeInvar(){
@@ -226,7 +220,6 @@ public class GraphColorAllocator {
                 throw new InternalCompilerError("freeze violated");
             }
         }
-//        System.out.println("freeze fine");
     }
 
     private void spillInvar(){
@@ -236,15 +229,14 @@ public class GraphColorAllocator {
                 throw new InternalCompilerError("spill violated");
             }
         }
-//        System.out.println("spill fine");
     }
+
     boolean allEmpty() {
         return simplifyWorklist.isEmpty() &&
                 worklistMoves.isEmpty() &&
                 freezeWorklist.isEmpty() &&
                 spillWorklist.isEmpty();
     }
-  
 
     public void Build(){
         for (BasicBlockASMCFG b : progBlock.getNodes()){

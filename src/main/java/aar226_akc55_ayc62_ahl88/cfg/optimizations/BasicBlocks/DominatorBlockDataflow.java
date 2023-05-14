@@ -6,21 +6,19 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.visit.ReplaceTempsWithTemps;
 import aar226_akc55_ayc62_ahl88.src.polyglot.util.InternalCompilerError;
-
 import java.util.*;
 
 public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<BasicBlockCFG>> {
-
     HashMap<BasicBlockCFG,HashSet<BasicBlockCFG>> dominatorTree;
-
     HashMap<BasicBlockCFG,BasicBlockCFG> immediateDominator;
-
     HashMap<BasicBlockCFG,HashSet<BasicBlockCFG>> dominanceFrontier;
-
     HashSet<IRTemp> variables;
     HashMap<BasicBlockCFG, HashMap<IRTemp,IRPhi>> phiPlacedNodes;
-
     public HashMap<String,String> retArgsReverseMapping;
+
+    /**
+     * @param graph CFG Basic Block
+     */
     public DominatorBlockDataflow(CFGGraphBasicBlock graph) {
         super(graph,
                 (n,inN)->{
@@ -180,10 +178,8 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
 //        }
         for (IRTemp a: defsites.keySet()){
             Queue<BasicBlockCFG> queue = new ArrayDeque<>(defsites.get(a));
-//            System.out.println("starting: " + a);
             while (!queue.isEmpty()){
                 BasicBlockCFG node = queue.poll();
-//                System.out.println("curBlock: " + node);
                 for (BasicBlockCFG y : dominanceFrontier.get(node)){
                     if (!phiPlacedNodes.get(y).containsKey(a)){
                         ArrayList<IRExpr> nums = new ArrayList<>();
@@ -198,18 +194,16 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                         }else{
                             y.body.add(0,new CFGNode<>(phi));
                         }
-//                        System.out.println("inserted phi"+ a +"at: " + y);
                         if (!Aorg.get(y).contains(a)){
                             queue.add(y);
-//                            System.out.println("added to queue: " + y);
                         }
                     }
                 }
             }
         }
         variables = new HashSet<>(defsites.keySet());
-
     }
+
     public void renamingVariables(){
         HashMap<IRTemp, Integer> count = new HashMap<>();
         HashMap<IRTemp,Stack<Integer>> stacks = new HashMap<>();
@@ -340,9 +334,6 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
                 CFGNode<IRStmt> node = block.getBody().get(z);
                 IRStmt stmt = node.getStmt();
                 if (stmt instanceof IRPhi phi){
-//                    System.out.println(phi.getArgs().size());
-//                    System.out.println(phi.toString().replaceAll("\n",""));
-//                    System.out.println(block.getPredecessors().size());
                     for (int i = 0; i< block.getPredecessors().size();i++){
                         BasicBlockCFG pred = block.getPredecessors().get(i);
                         IRExpr use = phi.getArgs().get(i);
@@ -364,7 +355,6 @@ public class DominatorBlockDataflow extends ForwardBlockDataflow<HashSetInf<Basi
             }
             block.body = nxtBody;
         }
-//        System.out.println(mapping);
         for (BasicBlockCFG block: graph.getNodes()){
             for (CFGNode<IRStmt> stmt : block.getBody()){
                 IRStmt replaced = (IRStmt) new ReplaceTempsWithTemps(new IRNodeFactory_c(),mapping).visit(stmt.getStmt());
