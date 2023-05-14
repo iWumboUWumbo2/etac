@@ -5,13 +5,15 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import java.util.*;
 
 public class SymbolTable<T> {
-
     private ArrayList<HashMap<String, T>> scopes;
     public Id currentParentFunction;
     public boolean parentLoop;
     public HashMap<String, T> allRecordTypes;
     public ArrayList<Id> necessaryDefs;
     public ArrayList<Id> visitedDefs;
+    public Id getCurrentFunction() {
+        return currentParentFunction;
+    }
 
     public SymbolTable() {
         this.scopes = new ArrayList<>();
@@ -112,10 +114,9 @@ public class SymbolTable<T> {
         scopes.remove(scopes.size() - 1);
     }
 
-    public Id getCurrentFunction() {
-        return currentParentFunction;
-    }
-
+    /**
+     * @return Flattened symboltable
+     */
     public HashMap<String, T> flatten() {
         HashMap<String, T> flattened = new HashMap<String, T>();
         for (HashMap<String, T> map: scopes){

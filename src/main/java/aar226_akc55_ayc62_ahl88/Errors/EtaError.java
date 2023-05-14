@@ -26,7 +26,7 @@ public class EtaError extends Error {
     }
 
     /**
-     * @param filename
+     * @param filename Filename
      */
     public void printError(String filename) {
         System.out.printf("%s error beginning at %s:%d:%d: %s\n",
@@ -34,10 +34,10 @@ public class EtaError extends Error {
     }
 
     /**
-     * @param type
-     * @param line
-     * @param col
-     * @param m
+     * @param type Error type
+     * @param line Line number
+     * @param col Column number
+     * @param m Message
      */
     public EtaError(EtaErrorTypes type, int line, int col, String m) {
         super(String.format("%d:%d error:%s", line, col, m));
