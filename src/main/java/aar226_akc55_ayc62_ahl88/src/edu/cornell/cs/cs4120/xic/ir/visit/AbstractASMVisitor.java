@@ -1189,9 +1189,9 @@ public class AbstractASMVisitor {
         ArrayList<ASMInstruction> instrs = new ArrayList<>();
         String fakeRdx = nxtTemp();
         String fakeRax = nxtTemp();
-        instrs.add(new ASMMov(new ASMRegisterExpr(fakeRdx), reg));
-        instrs.add(new ASMMov(new ASMRegisterExpr(fakeRax), new ASMRegisterExpr(fakeRdx)));
-        instrs.add(new ASMXor(new ASMRegisterExpr(fakeRdx), new ASMRegisterExpr(fakeRdx)));
+        instrs.add(new ASMMov(new ASMTempExpr(fakeRdx), reg));
+        instrs.add(new ASMMov(new ASMTempExpr(fakeRax), new ASMTempExpr(fakeRdx)));
+        instrs.add(new ASMXor(new ASMTempExpr(fakeRdx), new ASMTempExpr(fakeRdx)));
         String binaryString = Long.toBinaryString(constant.value());
         int i = binaryString.length() -1;
         int zeroCounter = 0;
@@ -1204,15 +1204,15 @@ public class AbstractASMVisitor {
                         break;
                     }
                 }
-                instrs.add(new ASMShl(new ASMRegisterExpr(fakeRax), new ASMConstExpr(zeroCounter)));
+                instrs.add(new ASMShl(new ASMTempExpr(fakeRax), new ASMConstExpr(zeroCounter)));
                 i -= zeroCounter;
             } else {
-                instrs.add(new ASMAdd(new ASMRegisterExpr(fakeRdx), new ASMRegisterExpr(fakeRax)));
-                instrs.add(new ASMAdd(new ASMRegisterExpr(fakeRax), new ASMRegisterExpr(fakeRax)));
+                instrs.add(new ASMAdd(new ASMTempExpr(fakeRdx), new ASMTempExpr(fakeRax)));
+                instrs.add(new ASMAdd(new ASMTempExpr(fakeRax), new ASMTempExpr(fakeRax)));
                 i--;
             }
         }
-        instrs.add(new ASMMov(destTemp, new ASMRegisterExpr(fakeRdx)));
+        instrs.add(new ASMMov(destTemp, new ASMTempExpr(fakeRdx)));
         return instrs;
     }
     private ASMAbstractReg munchBinop(IRBinOp binop) {
@@ -1232,7 +1232,7 @@ public class AbstractASMVisitor {
 //                caseInstructions.add(new ASMMov(destTemp,binop.right().getAbstractReg()));
 //                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
                 resultingInstructions = caseInstructions;
-                curBestCost = binop.right().getBestCost() + 2;
+                curBestCost = binop.right().getBestCost() + mul.size() / 8;
             }
         }
 
@@ -1246,7 +1246,7 @@ public class AbstractASMVisitor {
 //                caseInstructions.add(new ASMMov(destTemp,binop.right().getAbstractReg()));
 //                caseInstructions.add(new ASMShl(destTemp,new ASMConstExpr(power)));
                 resultingInstructions = caseInstructions;
-                curBestCost = binop.left().getBestCost() + 2;
+                curBestCost = binop.left().getBestCost() + mul.size() / 8;
             }
         }
 //        if (binop.left() instanceof IRConst cLeft && binop.opType() == IRBinOp.OpType.MUL && isPowerOfTwo(cLeft.value())){
