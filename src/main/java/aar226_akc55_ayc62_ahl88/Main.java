@@ -1,6 +1,7 @@
 package aar226_akc55_ayc62_ahl88;
 
 import aar226_akc55_ayc62_ahl88.Errors.EtaError;
+import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.asm.ASMCompUnit;
 import aar226_akc55_ayc62_ahl88.asm.ASMData;
@@ -19,6 +20,8 @@ import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.DeadCodeElimNoSSA;
 import aar226_akc55_ayc62_ahl88.cfg.optimizations.ir.LiveVariableAnalysis;
 import aar226_akc55_ayc62_ahl88.newast.Program;
 import aar226_akc55_ayc62_ahl88.newast.Type;
+import aar226_akc55_ayc62_ahl88.newast.Use;
+import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
@@ -271,14 +274,29 @@ public class Main {
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                 } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
-                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>()); // Just to throw EtaErrors
+                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new SymbolTable<>()); // Just to throw EtaErrors
                 } else if (filename.endsWith(".rh")) {
                     Program result = (Program) p.parse().value;
                     result.typeCheck(new SymbolTable<>(), zhenFilename);
                 } else if (filename.endsWith(".ri")) {
-                    System.out.println();
-                    EtiInterface result = (EtiInterface) p.parse().value;
-                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>()); // Just to throw EtaErrors
+
+                    String fileNameString = Paths.get(zhenFilename).getFileName().toString();
+                    fileNameString = fileNameString.substring(0, fileNameString.length() - 3);
+
+                    Use riUse = new Use(fileNameString, 0, 0);
+                    SymbolTable<Type> table = new SymbolTable<>();
+                    ArrayList<String> visitedZeroInterfaces = new ArrayList<>();
+
+                    table.enterScope();
+
+                    riUse.zeroPass(table, zhenFilename, new HashMap<>(), visitedZeroInterfaces);
+                    ArrayList<String> visitedFirstInterfaces = new ArrayList<>();
+                    Type useType = riUse.typeCheck(table, zhenFilename, new HashMap<>(), visitedFirstInterfaces); // Just to throw EtaErrors
+
+                    table.exitScope();
+                    if (useType.getType() != Type.TypeCheckingType.UNIT){
+                        throw new SemanticError(riUse.getLine(), riUse.getColumn(), "use somehow not unit");
+                    }
                 }
 
                 if (shouldWrite) {
@@ -405,9 +423,28 @@ public class Main {
                     IRs.put("final", ir);
 
                     return ir;
-                } else if (filename.endsWith(".eti") || filename.endsWith(".ri")) {
+                } else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
-                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>()); // Just to throw EtaErrors
+                    result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new SymbolTable<>()); // Just to throw EtaErrors
+
+                } else if (filename.endsWith(".ri")) {
+                    String fileNameString = Paths.get(zhenFilename).getFileName().toString();
+                    fileNameString = fileNameString.substring(0, fileNameString.length() - 3);
+
+                    Use riUse = new Use(fileNameString, 0, 0);
+                    SymbolTable<Type> table = new SymbolTable<>();
+                    ArrayList<String> visitedZeroInterfaces = new ArrayList<>();
+
+                    table.enterScope();
+
+                    riUse.zeroPass(table, zhenFilename, new HashMap<>(), visitedZeroInterfaces);
+                    ArrayList<String> visitedFirstInterfaces = new ArrayList<>();
+                    Type useType = riUse.typeCheck(table, zhenFilename, new HashMap<>(), visitedFirstInterfaces); // Just to throw EtaErrors
+
+                    table.exitScope();
+                    if (useType.getType() != Type.TypeCheckingType.UNIT){
+                        throw new SemanticError(riUse.getLine(), riUse.getColumn(), "use somehow not unit");
+                    }
                 }
                 else {
                     System.out.println("Why are we here");

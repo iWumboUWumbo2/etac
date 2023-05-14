@@ -69,6 +69,11 @@ public class RecordDef extends Definition {
             if (recordName.toString().equals(atd.identifier.toString())) {
                 throw new SemanticError(getLine(), getColumn(), "field same name as record");
             }
+            if (atd.type.isRecord || atd.type.isRecordArray()) {
+                if (!table.contains(atd.type.recordName)) {
+                    throw new SemanticError(getLine(), getColumn(), "undefined record type");
+                }
+            }
         }
         table.currentParentFunction = old;
         table.exitScope();

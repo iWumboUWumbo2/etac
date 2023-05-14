@@ -73,6 +73,11 @@ public class MultiGlobalDecl extends Definition{
             if (currentFile.contains(atd.identifier.toString())){
                 throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
             }
+            if (atd.type.isRecord || atd.type.isRecordArray()) {
+                if (!table.contains(atd.type.recordName)) {
+                    throw new SemanticError(getLine(), getColumn(), "undefined record type");
+                }
+            }
             currentFile.add(atd.identifier.toString());
             table.add(atd.identifier,curDeclType);
         }

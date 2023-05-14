@@ -55,6 +55,11 @@ public class Globdecl extends Definition {
         if (currentFile.contains(decl.identifier.toString())){
             throw new SemanticError(getLine(), getColumn(), "Current File has same identifier");
         }
+        if (decl.type.isRecord || decl.type.isRecordArray()) {
+            if (!table.contains(decl.type.recordName)) {
+                throw new SemanticError(getLine(), getColumn(), "undefined record type");
+            }
+        }
         Type declType = decl.type;
         if (value != null) {
             Type valueType = value.typeCheck(table);
