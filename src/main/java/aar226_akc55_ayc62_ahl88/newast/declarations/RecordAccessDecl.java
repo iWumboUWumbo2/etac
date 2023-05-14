@@ -6,42 +6,35 @@ import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.BinopEnum;
-import aar226_akc55_ayc62_ahl88.newast.expr.binop.RecordAcessBinop;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
-
-import javax.lang.model.type.NoType;
 import java.util.ArrayList;
 
+/**
+ * Class for record access decls.
+ * i.e. p.x = 5
+ */
 public class RecordAccessDecl extends Decl {
-
     public ArrayList<Decl> decls;
 
     public ArrayList<Type> types;
 
+    /**
+     * @param decls
+     * @param l
+     * @param c
+     */
     public RecordAccessDecl(ArrayList<Decl> decls, int l, int c) {
         super(decls.get(0).identifier, l,c);
         this.decls = decls;
     }
-    @Override
-    public void prettyPrint(CodeWriterSExpPrinter p) {
-        int size = decls.size();
-        for (int i = 0; i < size; i++) {
-            p.startList();
-            p.printAtom(".");
-        }
-        decls.get(0).prettyPrint(p);
 
-        for (int i = 1; i < size; i++) {
-            decls.get(i).prettyPrint(p);
-            p.endList();
-        }
-        p.endList();
-
-    }
-
+    /**
+     * @param indices
+     * @param maxDim
+     * @param table
+     */
     private void checkIndices(ArrayList<Expr> indices, long maxDim, SymbolTable<Type> table) {
         for (Expr e : indices) {
             Type exprType = e.typeCheck(table);
@@ -118,5 +111,22 @@ public class RecordAccessDecl extends Decl {
     @Override
     public IRNode accept(IRVisitor visitor) {
         return null;
+    }
+
+    @Override
+    public void prettyPrint(CodeWriterSExpPrinter p) {
+        int size = decls.size();
+        for (int i = 0; i < size; i++) {
+            p.startList();
+            p.printAtom(".");
+        }
+        decls.get(0).prettyPrint(p);
+
+        for (int i = 1; i < size; i++) {
+            decls.get(i).prettyPrint(p);
+            p.endList();
+        }
+        p.endList();
+
     }
 }

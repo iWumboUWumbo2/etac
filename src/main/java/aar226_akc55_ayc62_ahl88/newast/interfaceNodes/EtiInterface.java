@@ -4,22 +4,26 @@ import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.Errors.SyntaxError;
 import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.AstNode;
-import aar226_akc55_ayc62_ahl88.newast.Dimension;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.newast.Use;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * Class for .eti files
+ */
 public class EtiInterface extends AstNode {
     private ArrayList<Method_Interface> methods_inter;
     private ArrayList<Use> useList;
 
+    /**
+     * @param mi
+     * @param l
+     * @param c
+     */
     public EtiInterface(ArrayList<Method_Interface> mi,int l, int c) {
         super(l,c);
         this.methods_inter = mi;
@@ -29,6 +33,12 @@ public class EtiInterface extends AstNode {
         }
     }
 
+    /**
+     * @param useList
+     * @param mi
+     * @param l
+     * @param c
+     */
     public EtiInterface(ArrayList<Use> useList, ArrayList<Method_Interface> mi,int l, int c) {
         super(l,c);
         this.methods_inter = mi;
@@ -54,6 +64,13 @@ public class EtiInterface extends AstNode {
         p.endList();
     }
 
+    /**
+     * @param zhenFileName
+     * @param res
+     * @param useInterfaceMethods
+     * @param visitedInterfaces
+     * @return
+     */
     public HashMap<Id,Type> firstPass(String zhenFileName, HashMap<Id,Type> res, ArrayList<Id> useInterfaceMethods,
                                       ArrayList<String> visitedInterfaces) {
         HashSet<String> methodName= new HashSet<>();

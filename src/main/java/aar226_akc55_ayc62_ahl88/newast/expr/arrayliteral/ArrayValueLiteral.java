@@ -7,21 +7,24 @@ import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.Errors.SemanticError;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayList;
 
+/**
+ * Class for array value literal
+ */
 public class ArrayValueLiteral extends Expr {
     private String raw;
     private String escape;
     private ArrayList<Expr> values;
 
-    public ArrayList<Expr> getValues() {
-        return values;
-    }
-
+    /**
+     * @param s
+     * @param l
+     * @param c
+     */
     public ArrayValueLiteral(String s, int l, int c) {
         super(l, c);
         values = new ArrayList<>();
@@ -33,19 +36,37 @@ public class ArrayValueLiteral extends Expr {
         }
     }
 
+    /**
+     * @param e
+     * @param l
+     * @param c
+     */
     public ArrayValueLiteral(ArrayList<Expr> e, int l, int c) {
         super(l,c);
         values = e;
         raw = null;
     }
 
+    public ArrayList<Expr> getValues() {
+        return values;
+    }
+
+    /**
+     * @param s Symbol table
+     * @return Uknown type
+     * @throws Error
+     */
     private Type typeCheckUnknown(SymbolTable s) throws Error {
         return new Type(Type.TypeCheckingType.UNKNOWNARRAY,
                 new Dimension(1, getLine(), getColumn())); // unknown dimension
     }
 
-
-    // guarantess values has length > 0
+    /**
+     * @param s Symbol table
+     * @return Type
+     * @throws Error
+     * Guarantees values has length > 0
+     */
     private Type typeCheckArray(SymbolTable s) throws Error {
         Type t1 = values.get(0).typeCheck(s);
 

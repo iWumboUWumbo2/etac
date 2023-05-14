@@ -6,19 +6,18 @@ import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.newast.interfaceNodes.EtiInterface;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java_cup.runtime.lr_parser;
-
-import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Class for use statements.
+ */
 public class Use extends AstNode{
     public final Id id;
 

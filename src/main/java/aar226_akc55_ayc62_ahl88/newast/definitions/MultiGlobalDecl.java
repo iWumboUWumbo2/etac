@@ -9,14 +9,22 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Class for multiple global decls.
+ */
 public class MultiGlobalDecl extends Definition{
     private ArrayList<AnnotatedTypeDecl> decls;
     private ArrayList<Expr> expressions;
 
+    /**
+     * @param d
+     * @param e
+     * @param left
+     * @param right
+     */
     public MultiGlobalDecl (ArrayList<AnnotatedTypeDecl > d, ArrayList<Expr> e, int left, int right) {
         super(left,right);
         decls = d;
@@ -46,6 +54,12 @@ public class MultiGlobalDecl extends Definition{
     public ArrayList<Expr> getExpressions() {
         return expressions;
     }
+
+    /**
+     * @param table
+     * @param currentFile
+     * @return Type
+     */
     @Override
     public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
         if ((decls.size() != expressions.size()) && (expressions.size() != 0)) {

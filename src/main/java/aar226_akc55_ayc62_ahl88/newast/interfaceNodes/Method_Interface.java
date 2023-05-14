@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * Class for method interfaces.
+ */
 public class Method_Interface extends AstNode {
     private Id id;
     private ArrayList<AnnotatedTypeDecl> decls;
@@ -23,6 +26,13 @@ public class Method_Interface extends AstNode {
 
     public ArrayList<AnnotatedTypeDecl> fields;
 
+    /**
+     * @param s
+     * @param d
+     * @param t
+     * @param l
+     * @param c
+     */
     public Method_Interface(String s, ArrayList<AnnotatedTypeDecl> d, ArrayList<Type> t,int l, int c){
         super(l,c);
         for (AnnotatedTypeDecl cur: d){
@@ -42,6 +52,12 @@ public class Method_Interface extends AstNode {
         recordType = null;
     }
 
+    /**
+     * @param s
+     * @param fieldInputs
+     * @param l
+     * @param c
+     */
     public Method_Interface(String s, ArrayList<AnnotatedTypeDecl> fieldInputs, int l, int c) {
         super(l, c);
         isRecord = true;
@@ -86,6 +102,11 @@ public class Method_Interface extends AstNode {
         }
     }
 
+    /**
+     * @param resultingGlobals
+     * @param methods
+     * @return
+     */
     public Type typeCheck(HashMap<Id, Type> resultingGlobals, SymbolTable<Type> methods) {
 
         HashSet<String> prev = new HashSet<>();

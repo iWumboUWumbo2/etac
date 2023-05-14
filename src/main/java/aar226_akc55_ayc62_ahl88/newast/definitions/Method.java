@@ -10,12 +10,13 @@ import aar226_akc55_ayc62_ahl88.newast.declarations.Decl;
 import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Block;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
-import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Class for method definitions.
+ */
 public class Method extends Definition {
     private Id id;
     private ArrayList<AnnotatedTypeDecl> decls;
@@ -43,6 +44,14 @@ public class Method extends Definition {
         return block;
     }
 
+    /**
+     * @param s
+     * @param d
+     * @param t
+     * @param b
+     * @param l
+     * @param c
+     */
     public Method(String s, ArrayList<AnnotatedTypeDecl> d, ArrayList<Type> t, Block b, int l, int c){
         super(l,c);
         for (AnnotatedTypeDecl cur: d){
@@ -120,6 +129,11 @@ public class Method extends Definition {
         return nodeType;
     }
 
+    /**
+     * @param table
+     * @param currentFile
+     * @return Type
+     */
     @Override
     public Type firstPass(SymbolTable<Type> table, HashSet<String> currentFile) {
         table.enterScope();

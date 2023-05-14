@@ -9,8 +9,15 @@ import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
+/**
+ * Class for null value.
+ */
 public class Null extends Expr {
 
+    /**
+     * @param l
+     * @param c
+     */
     public Null(int l, int c) {
         super(l, c);
     }

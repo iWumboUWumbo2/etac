@@ -9,9 +9,14 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Id;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
+/**
+ * Class for record access expressions.
+ * i.e. p.x
+ */
 public class RecordAcessBinop extends BinopExpr{
 
     public String rightId;
+
     /**
      * @param in1 left Expression
      * @param in2 right Expression
