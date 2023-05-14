@@ -1,0 +1,19 @@
+_Imain_paai:
+    enter 0, 0
+    # Add Padding
+    mov _ASMReg_t9, 2
+    mov rdi, _ASMReg_t9
+    call _Ifib_ii
+    mov _RV1, rax
+    # Undo Padding
+    # Add Padding
+    mov rdi, _RV1
+    call _IunparseInt_aii
+    mov _RV1, rax
+    # Undo Padding
+    # Add Padding
+    mov rdi, _RV1
+    call _Iprintln_pai
+    # Undo Padding
+    leave 
+    ret 

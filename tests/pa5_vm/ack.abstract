@@ -1,0 +1,54 @@
+_IAck_iii:
+    enter 0, 0
+    mov _ARG1, rdi
+    mov _ARG2, rsi
+    mov m_1, _ARG1
+    mov _ASMReg_t41, 0
+    cmp _ARG1, _ASMReg_t41
+    jne l4
+    lea tl14_1, QWORD PTR [ _ARG2 + 1 ]
+    mov rax, tl14_1
+    leave 
+    ret 
+l4:
+    mov _ASMReg_t44, 0
+    cmp _ARG2, _ASMReg_t44
+    jne l1
+    mov _ASMReg_t46, 1
+    mov _ASMReg_t45, _ARG1
+    sub _ASMReg_t45, _ASMReg_t46
+    mov tl15_1, _ASMReg_t45
+    # Add Padding
+    mov _ASMReg_t47, 1
+    mov rsi, _ASMReg_t47
+    mov rdi, tl15_1
+    call _IAck_iii
+    mov _RV1, rax
+    # Undo Padding
+    mov rax, _RV1
+    leave 
+    ret 
+l1:
+    mov _ASMReg_t49, 1
+    mov _ASMReg_t48, _ARG1
+    sub _ASMReg_t48, _ASMReg_t49
+    mov tl20_1, _ASMReg_t48
+    mov _ASMReg_t51, 1
+    mov _ASMReg_t50, _ARG2
+    sub _ASMReg_t50, _ASMReg_t51
+    mov tl19_1, _ASMReg_t50
+    # Add Padding
+    mov rsi, tl19_1
+    mov rdi, m_1
+    call _IAck_iii
+    mov _RV1, rax
+    # Undo Padding
+    # Add Padding
+    mov rsi, _RV1
+    mov rdi, tl20_1
+    call _IAck_iii
+    mov _RV1, rax
+    # Undo Padding
+    mov rax, _RV1
+    leave 
+    ret 
