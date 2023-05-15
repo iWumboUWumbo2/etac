@@ -423,7 +423,8 @@ public class Main {
                     IRs.put("final", ir);
 
                     return ir;
-                } else if (filename.endsWith(".eti")) {
+                }
+                else if (filename.endsWith(".eti")) {
                     EtiInterface result = (EtiInterface) p.parse().value;
                     result.firstPass(zhenFilename, new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new SymbolTable<>()); // Just to throw EtaErrors
 
@@ -523,6 +524,7 @@ public class Main {
         try {
             // DO SHIT
             IRNode ir = irbuild(zhenFilename);
+
             ASMCompUnit comp = new AbstractASMVisitor().visit((IRCompUnit) ir);
             ArrayList<ASMInstruction> postAlloc = new ArrayList<>();
             boolean mainCalled = FunctionInliningVisitor.isMainCalled((IRCompUnit) ir);
@@ -554,6 +556,11 @@ public class Main {
             out.write(INDENT_SFILE+".intel_syntax noprefix\n");
             out.write(INDENT_SFILE+".text\n");
             out.write(INDENT_SFILE+".globl  _Imain_paai\n");
+            for (Map.Entry<String, IRFuncDecl> map : ((IRCompUnit) ir).functions().entrySet()) {
+                if (map.getKey().contains("Q")) {
+                    out.write(INDENT_SFILE+".globl  " + map.getKey() + "\n");
+                }
+            }
             out.write(INDENT_SFILE+".type	_Imain_paai, @function\n");
             for (ASMInstruction instr: postAlloc){
                 if (!(instr instanceof ASMLabel)){
