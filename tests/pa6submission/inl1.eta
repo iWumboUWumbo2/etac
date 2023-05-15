@@ -5,15 +5,15 @@ multiply(a:int, b:int) : int{
     return a * b;
 }
 
-add_multiply (a:int, b:int, c:int) {
-    return multiply(a + b, c);: int
+add_multiply (a:int, b:int, c:int) : int {
+    return multiply(a + b, c);
 }
 
-int main() {
-    int x = 2, y = 3, z = 4;
-    int result = add_multiply(x, y, z);
+main(args:int[][]) {
+    x : int = 2
+    y : int = 3
+    z : int = 4;
+    result : int = add_multiply(x, y, z);
 
-    printf("Result: %d\n", result);
-
-    return 0;
+    println(unparseInt(result));
 }

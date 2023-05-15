@@ -1,0 +1,18 @@
+use io
+use conv
+
+main(args:int[][]) {
+
+     arr:int[] = {1, 2, 3, 4, 5};
+     size : int = 5
+     i : int = 0;
+
+     while (i < size) {
+          element:int = arr[i];
+          element_inc:int = element + 5;
+          arr[i] = element_inc;
+
+          println(unparseInt(arr[i]))
+          i = i + 1
+      }
+}
