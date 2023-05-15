@@ -1,5 +1,6 @@
 use io
 use conv
+g':int = 5;
 //Makes sure people didn't have lost swap or lost copy problem
 main(args:int[][]){
 
@@ -46,4 +47,5 @@ main(args:int[][]){
     z = y + 10;
     println(unparseInt(z));
     println(unparseInt(y));
+    println(unparseInt(g'));
 }

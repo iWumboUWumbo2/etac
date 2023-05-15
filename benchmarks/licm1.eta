@@ -1,7 +1,7 @@
 
 use io
 use conv;
-
+g':int = 5;
 main(args:int[][]){
     a:int = 5;
     c:int = 1;
@@ -23,4 +23,5 @@ main(args:int[][]){
         i = i + 1;
     }
     println(unparseInt(res));
+        println(unparseInt(g'));
 }

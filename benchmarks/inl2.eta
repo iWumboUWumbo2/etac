@@ -1,6 +1,6 @@
 use io
 use conv
-
+g':int = 5;
 main(args: int[][]) {
   i:int  = 0;
   res:int = 0;
@@ -10,7 +10,7 @@ main(args: int[][]) {
       res = res - foo(i-1);
   }
   println(unparseInt(res));
-
+    println(unparseInt(g'));
 
 }
 foo(n:int):int{

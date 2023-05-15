@@ -1,9 +1,10 @@
 use io
 use conv
-
+g':int = 5;
 main(args : int[][]) {
     i:int = 0;
     println(unparseInt(foo(fact(3),fact(1),fact(4),fact(4))))
+    println(unparseInt(g'));
 }
 
 foo(a:int,b:int,c:int,d:int):int{

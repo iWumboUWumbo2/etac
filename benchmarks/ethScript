@@ -4,32 +4,49 @@ etac ("Test --help") "--help" {
 
 }
 
- etac ("Test --irgen") "-libpath $(testpath) --irgen" {
-
-     licm2.eta;
-
- }
-
- etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
-
-     licm2.eta;
-
- }
 etac ("Test -target linux") "-libpath $(testpath) -target linux" {
 
+    constprop.eta;
+    constprop2.eta;
+    constprop3.eta;
+    copyprop.eta;
+    copyprop2.eta;
+    copyprop3.eta;
+    dce1.eta;
+    dce2.eta;
+    dce3.eta;
+    inl1.eta;
+    inl2.eta;
+    inl3.eta;
+    licm1.eta;
     licm2.eta;
     licm3.eta;
+    reg1.eta;
+    reg2.eta;
+    reg3.eta;
 
 }
 
 etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
 
+constprop.eta;
+    constprop2.eta;
+    constprop3.eta;
+    copyprop.eta;
+    copyprop2.eta;
+    copyprop3.eta;
+    dce1.eta;
+    dce2.eta;
+    dce3.eta;
+    inl1.eta;
+    inl2.eta;
+    inl3.eta;
+    licm1.eta;
     licm2.eta;
     licm3.eta;
+    reg1.eta;
+    reg2.eta;
+    reg3.eta;
 
 }
 
-etac ("Test -target linux [-Olicm]") "-libpath $(testpath) -target linux -Oreg" {
-    licm2.eta;
-    licm3.eta;
-}

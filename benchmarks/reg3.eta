@@ -1,5 +1,7 @@
 use io
 use conv
+
+g':int = 5;
 f():int[]{
     return "Hello World"
 }
@@ -20,4 +22,5 @@ main(args:int[][]){
     }
 
     println(g());
+    println(unparseInt(g'));
 }

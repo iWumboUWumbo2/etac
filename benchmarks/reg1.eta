@@ -4,7 +4,7 @@ use conv
 
 
 sum:int = 0;
-
+g':int = 5;
 start:bool = false;
 main(args:int[][]){
     if (!start){
@@ -22,4 +22,5 @@ main(args:int[][]){
     sum = sum + x;
     println(unparseInt(x))
     println(unparseInt(sum))
+    println(unparseInt(g'));
 }

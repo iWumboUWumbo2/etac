@@ -1,6 +1,6 @@
 use io
 use conv
-
+g':int = 5;
 main(args:int[][]) {
     a:int = 10;
     b:int = 5;
@@ -29,4 +29,5 @@ main(args:int[][]) {
     }
 
     println(unparseInt(c))
+    println(unparseInt(g'));
 }

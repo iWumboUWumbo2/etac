@@ -1,6 +1,6 @@
 use io
 use conv
-
+g':int = 5;
 add(a : int, b : int) : int {
     return a + b;
 }
@@ -50,5 +50,5 @@ main(args:int[][]) {
         i = i + 1;
     }
     println(unparseInt(result))
-
+    println(unparseInt(g'));
 }

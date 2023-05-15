@@ -5,7 +5,7 @@
 
 use io
 use conv
-
+g':int = 5;
 main(args:int[][]) {
 	dim : int = 1024
 	data:int[dim*dim]
@@ -55,4 +55,5 @@ main(args:int[][]) {
 		i = i+1
 	}
 	println(unparseInt(sum))
+    println(unparseInt(g'));
 }

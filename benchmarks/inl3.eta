@@ -1,7 +1,7 @@
 use conv
 use io
 
-
+g':int = 5;
 fact(n:int):int{
     if (n <=1){
         return 1;
@@ -45,12 +45,15 @@ main(args: int[][]) {
     z:int = good(123);
 
     a:int = good(58);
-
+    gg:bool = isEven(10);
+    if (gg == true){
+        println("gg even");
+    }
     println(unparseInt(x));
     println(unparseInt(y));
     println(unparseInt(z));
     println(unparseInt(a));
-
+    println(unparseInt(g'));
     i:int = 0;
     res:int = 0;
     while (i < 100000000){

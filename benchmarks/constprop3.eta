@@ -1,7 +1,7 @@
 use io
 use conv
 
-
+g':int = 5;
 main(args:int[][]) {
     x:int = 80000000
     y:int = 200000000
@@ -27,6 +27,7 @@ main(args:int[][]) {
     }
 
     println("Done");
+    println(unparseInt(g'));
 }
 
 fact(n:int):int{
