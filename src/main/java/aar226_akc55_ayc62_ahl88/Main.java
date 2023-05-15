@@ -333,9 +333,9 @@ public class Main {
 
 
                     ir = new IRLoweringVisitor(new IRNodeFactory_c()).visit(ir);
-                    if (opts.allClear()){
-                        return ir;
-                    }
+//                    if (opts.allClear()){
+//                        return ir;
+//                    }
                     IRs.put("initial", ir);
                     if (opts.isSet(OptimizationType.INLINING)) {
                         FunctionInliningVisitor fv = new FunctionInliningVisitor();

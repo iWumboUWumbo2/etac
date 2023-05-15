@@ -5,6 +5,7 @@ import aar226_akc55_ayc62_ahl88.SymbolTable.SymbolTable;
 import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
+import aar226_akc55_ayc62_ahl88.visitors.ContainsBreakVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 import java.util.ArrayList;
 
@@ -107,7 +108,10 @@ public class FunctionCallExpr extends Expr {
         args.forEach(e -> e.prettyPrint(p));
         p.endList();
     }
-
+    @Override
+    public Boolean accept(ContainsBreakVisitor v) {
+        return v.visit(this);
+    }
     @Override
     public IRExpr accept(IRVisitor visitor) {
         return visitor.visit(this);

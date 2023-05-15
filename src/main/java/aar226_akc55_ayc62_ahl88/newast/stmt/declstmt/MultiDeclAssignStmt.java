@@ -12,6 +12,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.stmt.Stmt;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import aar226_akc55_ayc62_ahl88.visitors.ContainsBreakVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 import java.util.ArrayList;
@@ -156,5 +157,9 @@ public class MultiDeclAssignStmt extends Stmt {
 
     public ArrayList<Expr> getExpressions() {
         return expressions;
+    }
+    @Override
+    public Boolean accept(ContainsBreakVisitor v) {
+        return v.visit(this);
     }
 }

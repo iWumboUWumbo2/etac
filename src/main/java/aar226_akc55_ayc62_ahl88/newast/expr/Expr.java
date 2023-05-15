@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.ContainsBreakVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
@@ -22,6 +23,7 @@ public abstract class Expr extends AstNode {
     public abstract void prettyPrint(CodeWriterSExpPrinter p);
 
     public abstract Type typeCheck(SymbolTable<Type> table);
+    public abstract Boolean accept(ContainsBreakVisitor v);
 
     public abstract IRExpr accept(IRVisitor visitor);
 }

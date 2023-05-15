@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.newast.Type;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.ContainsBreakVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
@@ -45,7 +46,10 @@ public class Length extends Expr {
             throw new SemanticError(getLine(), getColumn(), "Invalid length arg type");
         }
     }
-
+    @Override
+    public Boolean accept(ContainsBreakVisitor v) {
+        return v.visit(this);
+    }
     public Expr getArg() {
         return arg;
     }

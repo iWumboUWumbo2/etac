@@ -8,6 +8,7 @@ import aar226_akc55_ayc62_ahl88.newast.declarations.*;
 import aar226_akc55_ayc62_ahl88.newast.expr.*;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import aar226_akc55_ayc62_ahl88.visitors.ContainsBreakVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
@@ -54,7 +55,10 @@ public class DeclAssignStmt extends Stmt{
     public IRStmt accept(IRVisitor visitor) {
         return visitor.visit(this);
     }
-
+    @Override
+    public Boolean accept(ContainsBreakVisitor v) {
+        return v.visit(this);
+    }
     @Override
     public void prettyPrint(CodeWriterSExpPrinter p) {
         p.startList();

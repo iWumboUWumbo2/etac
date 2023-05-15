@@ -6,6 +6,7 @@ import aar226_akc55_ayc62_ahl88.newast.expr.Expr;
 import aar226_akc55_ayc62_ahl88.newast.expr.unop.UnopEnum;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRExpr;
 import aar226_akc55_ayc62_ahl88.src.edu.cornell.cs.cs4120.xic.ir.IRNode;
+import aar226_akc55_ayc62_ahl88.visitors.ContainsBreakVisitor;
 import aar226_akc55_ayc62_ahl88.visitors.IRVisitor;
 
 /**
@@ -26,7 +27,10 @@ public class IntegerNegExpr extends IntUnop {
         nodeType = super.typeCheck(s);
         return nodeType;
     }
-
+    @Override
+    public Boolean accept(ContainsBreakVisitor v) {
+        return v.visit(this);
+    }
     @Override
     public IRExpr accept(IRVisitor visitor) {
         return visitor.visit(this);
