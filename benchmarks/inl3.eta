@@ -8,7 +8,23 @@ fact(n:int):int{
     }
     return n * fact(n-1);
 }
+isEven(n:int):bool{
+    if (n <= 0){
+        return true;
+    }
+    return isOdd(n-1);
+}
 
+isOdd(n:int):bool{
+    if (n == 0){
+        return false;
+    }
+    if (n == 1){
+
+        return true;
+    }
+    return isEven(n-1);
+}
 good(n:int):int{
     i:int = 0;
     x:int = 0;

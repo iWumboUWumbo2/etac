@@ -1,31 +1,25 @@
+
 use io
 use conv
 
-main(args : int[][]) {
-    i:int = 0;
-    println(unparseInt(foo(fact(3),fact(1),fact(4),fact(4))))
-}
 
-foo(a:int,b:int,c:int,d:int):int{
-    res:int  = 5;
-    i:int = 0;
-    while (i < 92300000){
-        x:int = a * b;
-        y:int = x * d;
-        z:int = y * c;
-        gg:int = x *>> z;
-        ggg:int = x/ z;
-        g:int = z/40;
-        res = res + g;
-        i = i+1;
+sum:int = 0;
+
+start:bool = false;
+main(args:int[][]){
+    if (!start){
+        args = {{100}}
+        start = true;
     }
-    return res;
-}
-
-fact(n:int):int{
-    if (n <= 1){
-        return 1;
+    if (args[0][0] == 0){
+       sum = 1;
+       return;
     }
-    return n * fact(n-1);
+    x:int = sum;
+    println(unparseInt(args[0][0]))
+    args[0][0] = args[0][0] - 1;
+    main(args)
+    sum = sum + x;
+    println(unparseInt(x))
+    println(unparseInt(sum))
 }
-
