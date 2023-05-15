@@ -2,16 +2,21 @@ use io
 use conv
 
 main(args: int[][]) {
-  println(unparseInt(func(112341) + func(212341)))
-  println(unparseInt(func(34312) - func(2123412)))
-  println(unparseInt(func(42314) * func(2123412)))
-  println(unparseInt(func(512341) *>> func(25123)))
-  println(unparseInt(func(64122) / func(21234)))
-  println(unparseInt(func(741234) % func(21234)))
+  i:int  = 0;
+  res:int = 0;
+  while (i < 130000000){
+      i = i +1;
+      res = res + foo(i);
+      res = res - foo(i-1);
+  }
+  println(unparseInt(res));
+
+
+}
+foo(n:int):int{
+    return inc(n);
 }
 
-func(x: int): int {
-  print("func() called: ")
-  println(unparseInt(x))
-  return x;
+inc(n:int):int{
+    return n + 1;
 }
