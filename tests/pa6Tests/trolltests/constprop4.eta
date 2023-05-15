@@ -1,0 +1,22 @@
+use io
+use conv
+
+
+main(args:int[][]) {
+    x:int = 100000000
+    y:int = 500000000
+    a:int = x + 10;
+    b:int = y * 2;
+    c:int = a + b;
+    d:int = c / 3;
+    e:int = 0;
+
+    foo:int = 40029;
+    boo:int = 1234;
+    while (d > 0) {
+        e = e + foo/boo;
+        d = d - 1;
+    }
+
+    println(unparseInt(e))
+}
