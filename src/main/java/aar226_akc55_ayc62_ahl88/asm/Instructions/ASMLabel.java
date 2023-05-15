@@ -15,7 +15,7 @@ public class ASMLabel extends ASMInstruction {
      */
     public ASMLabel(String label) {
         super(ASMOpCodes.LABEL);
-        this.label = label;
+        this.label = label.replaceAll("'", "__prime__");
     }
 
     public String getLabel() {

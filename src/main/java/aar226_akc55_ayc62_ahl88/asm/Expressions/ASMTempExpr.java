@@ -11,7 +11,7 @@ public class ASMTempExpr extends ASMAbstractReg{
      * @param tempLabel Label
      */
     public ASMTempExpr(String tempLabel){
-        name = tempLabel;
+        name = tempLabel.replaceAll("'", "__prime__");
     }
 
     public String getName() {

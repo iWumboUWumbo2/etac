@@ -10,7 +10,7 @@ use mandelbrot
 
 WINSIZE:int = 256
 MAXITER:int = 2000
-HISTLEN:int = MAXITER+1
+HISTLEN:int
 maxiter:int = 100
 GROW_ITER_PERCENT:int = 1
 SCALEROOT:int = 4096 // square root of the fixed-point scaling factor
@@ -26,11 +26,11 @@ size, zoom:int
 x_offset, y_offset:int
 x_final, y_final:int
 
-histogram: int[HISTLEN]
-colors: Color[HISTLEN]
-colors_init: bool[HISTLEN]
+histogram: int[]
+colors: Color[]
+colors_init: bool[]
 
-plots: int[2][][]
+plots: int[][][]
 
 // if done, plots[buffer] is where completed frame is for redraws. If !done,
 // calculations are done in plots[buffer] and the last completed frame is in
@@ -58,12 +58,19 @@ mkMatrix(d: int): int[][] {
 }
 
 setupGlobals() {
+    HISTLEN = MAXITER+1
     scale = SCALEROOT*SCALEROOT
     size = 6*scale // initial size is 6x6
     zoom = size/WINSIZE
     final_size = 200000
     buffer = 0
     done = false
+
+    histogram_: int[HISTLEN]; histogram = histogram_
+    colors_: Color[HISTLEN]; colors = colors_
+    colors_init_: bool[HISTLEN]; colors_init = colors_init_
+    plots_: int[2][][]; plots = plots_
+
     i:int = 0
     while (i < 2) {
         buf: int[][] = mkMatrix(WINSIZE+1)

@@ -10,7 +10,7 @@ public class ASMNameExpr extends ASMAbstractReg {
      * @param name
      */
     public ASMNameExpr(String name) {
-        this.name = name;
+        this.name = name.replaceAll("'", "__prime__");
     }
 
     @Override
