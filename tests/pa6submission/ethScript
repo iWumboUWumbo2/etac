@@ -1,0 +1,35 @@
+#build
+
+etac ("Test --help") "--help" {
+
+}
+
+ etac ("Test --irgen") "-libpath $(testpath) --irgen" {
+
+     licm2.eta;
+
+ }
+
+ etac ("Test --irgen -O") "-libpath $(testpath) --irgen -O" {
+
+     licm2.eta;
+
+ }
+etac ("Test -target linux") "-libpath $(testpath) -target linux" {
+
+    licm2.eta;
+    licm3.eta;
+
+}
+
+etac ("Test -target linux -O") "-libpath $(testpath) -target linux -O" {
+
+    licm2.eta;
+    licm3.eta;
+
+}
+
+etac ("Test -target linux [-Olicm]") "-libpath $(testpath) -target linux -Oreg" {
+    licm2.eta;
+    licm3.eta;
+}

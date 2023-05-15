@@ -1,0 +1,19 @@
+use io
+use conv
+
+multiply(a:int, b:int) : int{
+    return a * b;
+}
+
+add_multiply (a:int, b:int, c:int) {
+    return multiply(a + b, c);: int
+}
+
+int main() {
+    int x = 2, y = 3, z = 4;
+    int result = add_multiply(x, y, z);
+
+    printf("Result: %d\n", result);
+
+    return 0;
+}
