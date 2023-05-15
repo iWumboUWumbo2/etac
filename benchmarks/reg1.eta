@@ -9,10 +9,12 @@ main(args : int[][]) {
 foo(a:int,b:int,c:int,d:int):int{
     res:int  = 5;
     i:int = 0;
-    while (i < 323412110){
+    while (i < 92300000){
         x:int = a * b;
         y:int = x * d;
         z:int = y * c;
+        gg:int = x *>> z;
+        ggg:int = x/ z;
         g:int = z/40;
         res = res + g;
         i = i+1;

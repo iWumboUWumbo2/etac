@@ -3,8 +3,8 @@ use conv
 
 
 main(args:int[][]) {
-    x:int = 4000000000
-    y:int = 5000000000
+    x:int = 80000000
+    y:int = 200000000
 
     a:int = x + 10;
     b:int = y * 2;
@@ -14,15 +14,24 @@ main(args:int[][]) {
     if (d >= 10 & d <= 20) {
         while (d > 0) {
             //println(unparseInt(d))
+            _ = fact(3);
             d = d - 1;
         }
     } else {
         i:int = 0;
         while (i < d) {
             //println(unparseInt(i))
+            _ = fact(3);
             i = i+1;
         }
     }
 
     println("Done");
+}
+
+fact(n:int):int{
+    if (n <=1){
+        return 1;
+    }
+    return n * fact(n-1);
 }

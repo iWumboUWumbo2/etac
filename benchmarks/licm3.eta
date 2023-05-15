@@ -11,8 +11,9 @@ main(args:int[][]) {
     d:int = 4;
     sum:int = 0;
 
-    while(i<10000000) {
-        while(j<100) {
+    while(i<1000000) {
+        j = 0;
+        while(j<500) {
             k = a * b + c * d;
             sum = sum + k
             j = j + 1

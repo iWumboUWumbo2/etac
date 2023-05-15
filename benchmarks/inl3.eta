@@ -1,44 +1,52 @@
 use conv
 use io
 
-add (a : int, b : int) : int {
-    return a + b;
-}
 
-multiply (a : int, b : int) : int {
-    return a * b;
-}
-
-subtract (a : int, b : int) : int {
-    return a - b;
-}
-
-perform_operations (x : int, y : int, z : int) : int {
-    result : int;
-
-    result = add(x, y);
-    result = multiply(result, z);
-    result = subtract(result, x);
-    result = add(result, y);
-    result = multiply(result, z);
-    result = subtract(result, x);
-
-    return result;
-}
-
-main(args: int[][]) {
-    x : int = 1
-    y : int = 2
-    z : int = 3
-
-    i : int = 0
-    result : int
-    while (i < 100000000) {
-        result = perform_operations(x, y, z);
-        i = i + 1
+fact(n:int):int{
+    if (n <=1){
+        return 1;
     }
+    return n * fact(n-1);
+}
+
+good(n:int):int{
+    i:int = 0;
+    x:int = 0;
+    while (i < n){
+        x = x + 5;
+        i = i + 1;
+    }
+    return x;
+}
+main(args: int[][]) {
 
 
-    println(unparseInt(result));
 
+    x:int = fact(10);
+
+    y:int = good(10);
+
+    z:int = good(123);
+
+    a:int = good(58);
+
+    println(unparseInt(x));
+    println(unparseInt(y));
+    println(unparseInt(z));
+    println(unparseInt(a));
+
+    i:int = 0;
+    res:int = 0;
+    while (i < 100000000){
+        i = i + 1;
+        res = res + foo() * boo();
+        res = res - boo()/foo();
+    }
+}
+
+foo():int{
+    return 1;
+}
+boo():int{
+    return 2;
 }

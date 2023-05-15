@@ -2,18 +2,18 @@ use io
 use conv
 
 main(args:int[][]) {
-    a:int = 10;
-    b:int = 5;
+    a:int[150000000];
+    b:int = 5123;
+    con:int = 12398
     i:int = 0;
     j:int = 0;
     c:int = 0;
-
-    while (i < a) {
-        j = 0;
-        while (j < b) {
-            c = c + i * j;
-            j = j + 1;
-        }
+    cons2:int = 1293847;
+    mul:int = 63514954;
+    cons3:int = 60000;
+    while (i < length(a)) {
+        c = c + b * con;
+        c = c - mul/con -1;
         i = i + 1;
     }
 

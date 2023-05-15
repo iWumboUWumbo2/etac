@@ -1,16 +1,60 @@
 use io
 use conv
 
-main(args:int[][]) {
-     a:int= 10;
-     b:int= 5;
-     c:int= 0;
+add(a : int, b : int) : int {
+    return a + b;
+}
 
-    if (a > 0) {
-        c = (a + b) * (a - b);
-    } else {
-        c = (a * b) / (a + b);
+multiply(a: int, b : int) : int{
+    return a * b;
+}
+
+long_dependency_chain(x : int, y : int, z : int) : int{
+    result : int = 1
+    a : int = result * y
+    b : int = result * z
+    c : int = result * x
+    d : int = result * y
+    e : int = result * z
+    f : int = result * x
+    result = a + b + c + d + e + f
+
+
+    return result;
+}
+
+main(args:int[][]) {
+    x : int = 2
+    y : int = 3
+    z : int = 4;
+
+    result : int = 1
+    a : int = result + y
+    b : int = result + z
+    c : int = result + x
+    d : int = result + y
+    e : int = result + z
+    f : int = result + x
+    result = a + b + c + d + e + f
+
+    arr:int[150000000]
+    println(unparseInt(result))
+    i:int = 0;
+    while ( i< length(arr)){
+        e = f;
+        d = e;
+        c = d;
+        b = c;
+        a = b;
+        arr[i] = a;
+        i = i + 1;
+    }
+    i = 0;
+    while (i < length(arr)){
+        result = result + arr[i];
+        i = i + 1;
     }
 
-    println(unparseInt(c))
+    println(unparseInt(result))
+
 }

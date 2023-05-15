@@ -1,0 +1,23 @@
+use io
+use conv
+f():int[]{
+    return "Hello World"
+}
+
+g():int[]{
+    return "deadBeef";
+}
+main(args:int[][]){
+    f()[2] = 'a'
+    f()[1] = 'n'
+    println(f())
+
+    g()[3] = 'z';
+    g()[4] = 'b';
+    i:int = 0;
+    while (i < 723049182){
+        i = i +1;
+    }
+
+    println(g());
+}

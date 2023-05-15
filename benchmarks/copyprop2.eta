@@ -37,6 +37,18 @@ main(args:int[][]) {
     f : int = result + x
     result = a + b + c + d + e + f
 
+    arr:int[220000000]
+    println(unparseInt(result))
+    i:int = 0;
+    while ( i< length(arr)){
+        e = f;
+        d = e;
+        c = d;
+        b = c;
+        a = b;
+        result = result + a;
+        i = i + 1;
+    }
     println(unparseInt(result))
 
 }

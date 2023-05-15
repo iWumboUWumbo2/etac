@@ -2,26 +2,22 @@ use io
 use conv
 
 multiply(a:int, b:int) : int{
-    return a * b;
+    return a + b;
 }
 
-add_multiply (a:int, b:int, c:int):int {
-    return multiply(a + b, c);
-}
-
-int main() {
+main(args:int[][]) {
     x:int = 2
     y:int = 3
     z:int = 4;
-    result:int = add_multiply(x, y, z);
+
+    result:int = 0;
 
     i:int = 0;
-    while (i < 10000000){
-        result = result + add_multiply(x,y,z);
+    while (i < 350000000){
+        result = result + multiply(x,y);
         i = i + 1;
     }
 
-    printf("Result: %d\n", result);
+    println(unparseInt(result));
 
-    return 0;
 }
