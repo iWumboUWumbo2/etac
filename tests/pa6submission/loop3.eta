@@ -2,20 +2,26 @@ use io
 use conv
 
 main(args:int[][]) {
-    a:int = 10;
-    b:int = 5;
-    i:int = 0;
-    j:int = 0;
-    c:int = 0;
 
-    while (i < a) {
-        j = 0;
-        while (j < b) {
-            c = c + i * j;
-            j = j + 1;
-        }
+    i:int = 0;
+    while ( i < 3000){
+        _ = foo();
+        _ = boo();
+        _ = iden(i);
         i = i + 1;
     }
+}
+foo():int{
+    i:int = 0;
+    while ( i < 12000000){
+        i = i + 1;
+    }
+    return i-12000000;
+}
 
-    println(unparseInt(c))
+boo():int{
+    return 2;
+}
+iden(n:int):int{
+    return n;
 }
