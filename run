@@ -2,7 +2,7 @@
 
 ETAFILE=$(readlink -f "$1")
 ASMFILE="${ETAFILE%%.*}.s"
-PROGNAME=${ETAFILE%%.*}
+PROGNAME=$(basename ${ETAFILE} .eta)
 
 pushd ${HOME}/shared >> /dev/null &&
 ./etac ${ETAFILE} -libpath tests/include/ $@ &&

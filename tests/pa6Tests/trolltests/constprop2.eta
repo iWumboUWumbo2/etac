@@ -1,0 +1,24 @@
+use io
+use conv
+
+
+main(args:int[][]) {
+    x:int = 40000000
+    y:int = 50000000
+    a:int = x + 10;
+    b:int = y * 2;
+    c:int = a + b;
+    d:int = c / 3;
+    e:int = 0;
+
+    while (d > 0) {
+        if (d >= 10 & d <= 20) {
+            e = e + d * 5;
+        } else {
+            e = e - d;
+        }
+        d = d - 1;
+    }
+
+    println(unparseInt(e))
+}
