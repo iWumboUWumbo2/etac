@@ -38,6 +38,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static aar226_akc55_ayc62_ahl88.Main.opts;
+import static aar226_akc55_ayc62_ahl88.cfg.optimizations.OptimizationType.LICM;
+
 /**
  * Class for intermediate representation visiting.
  */
@@ -65,7 +68,7 @@ public class IRVisitor implements Visitor<IRNode>{
         stringCnt = 1;
         compUnitName = name;
         string_consts = new ArrayList<>();
-        constantFold = Main.opts.isSet(OptimizationType.CONSTANT_FOLDING);
+        constantFold = opts.isSet(OptimizationType.CONSTANT_FOLDING);
         allRecordTypes = s.allRecordTypes;
     }
     private String nxtLabel() {
@@ -740,7 +743,7 @@ public class IRVisitor implements Visitor<IRNode>{
             }
         }
         Boolean containsBreak = new ContainsBreakVisitor().visit(node);
-        if (jumpCount > 1 || containsBreak) {
+        if (jumpCount > 1 || containsBreak || !opts.isSet(LICM)) {
             String lh = nxtLabel();
             String l1 = nxtLabel();
             String le = nxtLabel();
