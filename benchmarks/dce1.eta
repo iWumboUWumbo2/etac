@@ -1,34 +1,11 @@
 use io
 use conv
 g':int = 5;
-add(a : int, b : int) : int {
-    return a + b;
-}
-
-multiply(a: int, b : int) : int{
-    return a * b;
-}
-
-long_dependency_chain(x : int, y : int, z : int) : int{
-    result : int = 1
-    a : int = result * y
-    b : int = result * z
-    c : int = result * x
-    d : int = result * y
-    e : int = result * z
-    f : int = result * x
-    result = a + b + c + d + e + f
-
-
-    return result;
-}
 
 main(args:int[][]) {
     x : int = 2
     y : int = 3
     z : int = 4;
-
-
     dud:int = 5;
     i:int = 0;
     while (i < 152387108){
@@ -37,7 +14,5 @@ main(args:int[][]) {
         i = i + 1;
     }
     x = 5;
-
-    println(unparseInt(x));
-    println(unparseInt(g'));
+    println(unparseInt(x));println(unparseInt(g'));
 }

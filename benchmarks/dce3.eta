@@ -1,14 +1,7 @@
-use io
-use conv
-g':int = 5;
+use io;use conv;g':int = 5;
 main(args:int[][]) {
-    a:int = 10;
-    b:int = 5;
-    c:int = 0;
-
-    i:int = 0;
-    while (i < a) {
-        j:int = 0;
+    a:int = 10;b:int = 5;c:int = 0;i:int = 0;
+    while (i < a) {j:int = 0;
         while (j < b) {
             if (i % 2 == 0) {
                 if (j % 2 == 0) {
@@ -24,10 +17,4 @@ main(args:int[][]) {
                 }
             }
             j = j + 1;
-        }
-        i = i + 1;
-    }
-
-    println(unparseInt(c))
-    println(unparseInt(g'));
-}
+        }i = i + 1;}println(unparseInt(c));println(unparseInt(g'));}

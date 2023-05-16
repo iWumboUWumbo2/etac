@@ -1,3 +1,148 @@
+commit d1a8e1dff595ffec69ed2335b80dddf1e65758a5
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Mon May 15 19:59:50 2023 -0400
+
+    janked in Qt override lol
+
+commit 5eea8ca4118b460cd7ee3e95a10329a086c34215
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon May 15 19:50:29 2023 -0400
+
+    removed inline removal
+
+commit 1c7b61b791d6d82a8cc601d868bf4294cb6d8ac2
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon May 15 19:49:08 2023 -0400
+
+    added eth for benchmark tests
+
+commit 5fe6be6e8f2f7feed149a95a69abd61299f63474
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Mon May 15 19:25:23 2023 -0400
+
+    fixed i' -> i__prime__ cause ' not allowed in asm
+
+commit 32ebd79ba04d9a86c81a7ee8b866c9034885de90
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon May 15 17:15:11 2023 -0400
+
+    changed reg1 test
+
+commit 1c4ffea55746b0f89695bdb5b93c5b938e2c8726
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon May 15 15:03:03 2023 -0400
+
+    finished all tests
+
+commit 4b24bce6fd4f69d3fb943828e2b37bd619dc7eb3
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon May 15 13:57:00 2023 -0400
+
+    inl3
+
+commit af9fc10e48f728763bca141f913a622101e03b8e
+Merge: 3741382 b3d5cb5
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon May 15 13:44:00 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit b3d5cb5aeb94a8414305eea3bbde0667410d91d4
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon May 15 13:38:41 2023 -0400
+
+    added inl2
+
+commit 37413821e2215ecba859425906b8db3b6a399d73
+Merge: e5454e1 8da17cc
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon May 15 13:37:35 2023 -0400
+
+    Merge remote-tracking branch 'origin/main'
+    
+    # Conflicts:
+    #       benchmarks/copyprop3.eta
+    #       benchmarks/copyprop3.irsol.nml
+    #       benchmarks/copyprop3.ssol.nml
+    #       benchmarks/inl1.irsol.nml
+    #       benchmarks/inl1.ssol.nml
+    #       tests/pa6submission/inl1.eta
+
+commit e5454e191ecbe9aa41b89a24219bc16d5fc3aac7
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon May 15 13:35:24 2023 -0400
+
+    more tests
+
+commit 8da17cc17c26edd1195cc083a0fb7b1b7f02cdaf
+Author: Andrew <akc55@cornell.edu>
+Date:   Mon May 15 13:32:31 2023 -0400
+
+    moved to benchmarks folder
+
+commit b672aff993b6629175dc2d16087dfac5b4aba378
+Merge: e07d8ef 16a24a1
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon May 15 12:25:51 2023 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:aar226/etac
+
+commit e07d8ef06596bd14db07c652a7a74321feaf1835
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon May 15 12:25:46 2023 -0400
+
+    copy prop
+
+commit 16a24a1be210da66649600c761c24cf1d9d1828b
+Merge: af51865 59f6e8c
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Mon May 15 11:13:26 2023 -0400
+
+    Merge remote-tracking branch 'origin/main'
+
+commit af51865093403ac1e0d51d369f075af963b3ae9d
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Mon May 15 11:13:20 2023 -0400
+
+    chip 8 most interesting prog wip
+
+commit 59f6e8c47d30250bbc20f8daf660c4f90a202e0b
+Author: Angela Cui <ayc62@cornell.edu>
+Date:   Mon May 15 10:55:53 2023 -0400
+
+    tests
+
+commit 2f421904df7f319580ecb4a1d6ae9fc85a4ec178
+Merge: 6483f78 e140629
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Mon May 15 01:05:29 2023 -0400
+
+    Merge remote-tracking branch 'origin/main'
+
+commit 6483f78f8704352458589779e76eef76ad33ab40
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Mon May 15 01:05:23 2023 -0400
+
+    Added const prop tests to troll tests along w/ solns.
+
+commit e140629d5ac1145418f0a1747f4f07b364e115ba
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun May 14 23:43:07 2023 -0400
+
+    added cp
+
+commit 42e7cb925b930c975f3299a860936a61d2861232
+Author: Arun Raman <aar226@cornell.edu>
+Date:   Sun May 14 22:24:15 2023 -0400
+
+    Added const prop tests to troll tests along w/ solns.
+
+commit e047275581fb1ff0c1686508bce2e7c5b218042e
+Author: Andrew <akc55@cornell.edu>
+Date:   Sun May 14 21:46:09 2023 -0400
+
+    only turn on do until for opts
+
 commit fcb04814306afe7cb92bbdd39b16152bce7c8669
 Author: Andrew <akc55@cornell.edu>
 Date:   Sun May 14 20:50:16 2023 -0400

@@ -1,51 +1,19 @@
-use io
-use conv
-g':int = 5;
+use io;use conv ;g':int = 5;
 //Makes sure people didn't have lost swap or lost copy problem
 main(args:int[][]){
-
-    i:int = 0;
-    a:int = 1;
-    b:int = 2;
+    i:int = 0;a:int = 1;b:int = 2;
     while (i < 4){
-        x:int  = a; // x = 1, x = 2
-        a = b; // a = 2, a = 1
-        b = x; // b = 1, b = 2
-        i = i + 1;  // i = 1, i = 2
+        x:int  = a; a = b; b = x; i = i + 1;
     }
-    println(unparseInt(a));
-    println(unparseInt(b));
+    println(unparseInt(a)); println(unparseInt(b));
 
-    i = 0;
-    a = 1;
-    b = 2;
+    i = 0;a = 1;b = 2;
     while (i < 3){
-        x:int  = a; // x = 1, x = 2
-        a = b; // a = 2, a = 1
-        b = x; // b = 1, b = 2
-        i = i + 1;  // i = 1, i = 2
+        x:int  = a;a = b; b = x;i = i + 1;
     }
-    println(unparseInt(a));
-    println(unparseInt(b));
-
-    i = 1;
-
-    y:int
-    while (i < 350000000){
-        y = i;
-        i = i + 1;  // i = 1, i = 2
-    }
-    z:int = y + 5;
-    println(unparseInt(z));
-    println(unparseInt(y));
-
-    i = 1;
-    while (i < 349999999){
-        y = i;
-        i = i + 1;  // i = 1, i = 2
-    }
-    z = y + 10;
-    println(unparseInt(z));
-    println(unparseInt(y));
-    println(unparseInt(g'));
+    println(unparseInt(a)); println(unparseInt(b));
+    i = 1;y:int;while (i < 350000000){y = i;i = i + 1;}
+    z:int = y + 5;println(unparseInt(z));println(unparseInt(y));i = 1;
+    while (i < 349999999){y = i;i = i + 1;}z = y + 10;
+    println(unparseInt(z));println(unparseInt(y));println(unparseInt(g'));
 }

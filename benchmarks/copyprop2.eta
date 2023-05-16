@@ -1,51 +1,15 @@
-use io
-use conv
-g':int = 5;
-add(a : int, b : int) : int {
-    return a + b;
-}
-
-multiply(a: int, b : int) : int{
-    return a * b;
-}
-
-long_dependency_chain(x : int, y : int, z : int) : int{
-    result : int = 1
-    a : int = result * y
-    b : int = result * z
-    c : int = result * x
-    d : int = result * y
-    e : int = result * z
-    f : int = result * x
-    result = a + b + c + d + e + f
-
-
-    return result;
-}
-
+use io; use conv;g':int = 5;
 main(args:int[][]) {
-    x : int = 2
-    y : int = 3
-    z : int = 4;
-
-    result : int = 1
-    a : int = result + y
-    b : int = result + z
-    c : int = result + x
-    d : int = result + y
-    e : int = result + z
-    f : int = result + x
+    x : int = 2;y : int = 3;z : int = 4;result : int = 1
+    a : int = result + y; b : int = result + z
+    c : int = result + x;d : int = result + y
+    e : int = result + z;f : int = result + x
     result = a + b + c + d + e + f
-
     arr:int[220000000]
     println(unparseInt(result))
     i:int = 0;
     while ( i< length(arr)){
-        e = f;
-        d = e;
-        c = d;
-        b = c;
-        a = b;
+        e = f;d = e;c = d;b = c;a = b;
         result = result + a;
         i = i + 1;
     }

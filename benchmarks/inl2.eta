@@ -1,6 +1,4 @@
-use io
-use conv
-g':int = 5;
+use io;use conv;g':int = 5;
 main(args: int[][]) {
   i:int  = 0;
   res:int = 0;
@@ -16,7 +14,6 @@ main(args: int[][]) {
 foo(n:int):int{
     return inc(n);
 }
-
 inc(n:int):int{
     return n + 1;
 }

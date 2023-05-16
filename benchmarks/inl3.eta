@@ -1,71 +1,20 @@
-use conv
-use io
-
-g':int = 5;
+use conv;use io;g':int = 5;
 fact(n:int):int{
     if (n <=1){
         return 1;
     }
-    return n * fact(n-1);
-}
-isEven(n:int):bool{
-    if (n <= 0){
-        return true;
-    }
-    return isOdd(n-1);
-}
-
+    return n * fact(n-1);}
+isEven(n:int):bool{if (n <= 0){return true;}return isOdd(n-1);}
 isOdd(n:int):bool{
-    if (n == 0){
-        return false;
-    }
-    if (n == 1){
-
-        return true;
-    }
-    return isEven(n-1);
-}
-good(n:int):int{
-    i:int = 0;
-    x:int = 0;
-    while (i < n){
-        x = x + 5;
-        i = i + 1;
-    }
-    return x;
-}
+    if (n == 0){return false;}if (n == 1){return true;}
+    return isEven(n-1);}
+good(n:int):int{i:int = 0;x:int = 0;while (i < n){x = x + 5;i = i + 1;}return x;}
 main(args: int[][]) {
-
-
-
-    x:int = fact(10);
-
-    y:int = good(10);
-
-    z:int = good(123);
-
-    a:int = good(58);
-    gg:bool = isEven(10);
-    if (gg == true){
-        println("gg even");
-    }
-    println(unparseInt(x));
-    println(unparseInt(y));
-    println(unparseInt(z));
-    println(unparseInt(a));
-    println(unparseInt(g'));
-    i:int = 0;
-    res:int = 0;
-    while (i < 100000000){
-        i = i + 1;
-        res = res + foo() * boo();
-        res = res - boo()/foo();
-    }
-}
-
-foo():int{
-    return 1;
-}
-boo():int{
-    return 2;
-}
+    x:int = fact(10);y:int = good(10);z:int = good(123);a:int = good(58);
+    gg:bool = isEven(10);if (gg == true){println("gg even");}
+    println(unparseInt(x));println(unparseInt(y));
+    println(unparseInt(z));println(unparseInt(a));println(unparseInt(g'));
+    i:int = 0;res:int = 0;
+    while (i < 100000000){i = i + 1;res = res + foo() * boo();
+        res = res - boo()/foo();}}
+foo():int{return 1;} boo():int{return 2;}

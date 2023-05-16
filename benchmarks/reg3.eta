@@ -2,17 +2,10 @@ use io
 use conv
 
 g':int = 5;
-f():int[]{
-    return "Hello World"
-}
-
-g():int[]{
-    return "deadBeef";
-}
+f():int[]{return "Hello World"}
+g():int[]{return "deadBeef";}
 main(args:int[][]){
-    f()[2] = 'a'
-    f()[1] = 'n'
-    println(f())
+    f()[2] = 'a';f()[1] = 'n';println(f())
 
     g()[3] = 'z';
     g()[4] = 'b';
@@ -20,7 +13,6 @@ main(args:int[][]){
     while (i < 723049182){
         i = i +1;
     }
-
     println(g());
     println(unparseInt(g'));
 }

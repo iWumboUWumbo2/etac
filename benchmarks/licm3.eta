@@ -2,15 +2,9 @@ use conv
 use io
 g':int = 5;
 main(args:int[][]) {
-    i:int = 0
-    j:int = 0
-    k:int = 0;
-    a:int = 1
-    b:int = 2
-    c:int = 3
-    d:int = 4;
-    sum:int = 0;
-
+    i:int = 0j:int = 0k:int = 0;
+    a:int = 1b:int = 2
+    c:int = 3d:int = 4;sum:int = 0;
     while(i<1000000) {
         j = 0;
         while(j<500) {
@@ -18,13 +12,8 @@ main(args:int[][]) {
             sum = sum + k
             j = j + 1
         }
-        a = a + 1;
-        b = b + 1;
-        c = c + 1;
-        d = d + 1;
-        i = i + 1;
+        a = a + 1;b = b + 1;c = c + 1;
+        d = d + 1;i = i + 1;
     }
-
-    println(unparseInt(sum))
-    println(unparseInt(g'));
+    println(unparseInt(sum))println(unparseInt(g'));
 }

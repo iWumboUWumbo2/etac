@@ -9,15 +9,10 @@ main(args:int[][]) {
     x:int = 2
     y:int = 3
     z:int = 4;
-
     result:int = 0;
-
     i:int = 0;
     while (i < 350000000){
         result = result + multiply(x,y);
         i = i + 1;
-    }
-
-    println(unparseInt(result));
-    println(unparseInt(g'));
+    }println(unparseInt(result));println(unparseInt(g'));
 }

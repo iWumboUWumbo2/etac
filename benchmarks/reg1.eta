@@ -1,16 +1,6 @@
-
-use io
-use conv
-
-
-sum:int = 0;
-g':int = 5;
-start:bool = false;
+use io;use conv;sum:int = 0;g':int = 5;start:bool = false;
 main(args:int[][]){
-    if (!start){
-        args = {{100}}
-        start = true;
-    }
+    if (!start){args = {{100}};start = true;}
     if (args[0][0] == 0){
        sum = 1;
        return;
