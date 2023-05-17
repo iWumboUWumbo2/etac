@@ -9,9 +9,9 @@ main(args:int[][]){
     x:int,y:int,z:int = singleMulti(111);println(unparseInt(x));println(unparseInt(y));println(unparseInt(z));
     aa:int,bb:int = multiSingle(222,333,444,555,666,777,888,999,1000,1100);
     println(unparseInt(aa));println(unparseInt(bb));
-    it:int = 0;res:int = 0;
-    while (it < 500000000){it = it + singleSingle(1) + singleSingle(1);it = it + fact(1);}
-    println(unparseInt(it));println(unparseInt(res));
+    it:int = 0; res:int = 0;by:int = 0; while (res < 500000000){
+    it = it + singleSingle(1) + singleSingle(1);it = it + fact(1);res = res  + fact(1);}
+    println(unparseInt(it));println(unparseInt(res));println(unparseInt(by));
 }
 fact(n:int):int{if ( n <= 1){ return 1;}return n * fact(n-1);}singleSingle(n1:int):int{return n1;}
 singleMulti(n1:int):int,int,int{return n1,n1,n1;}singleZero(n1:int){println(unparseInt(n1));}
