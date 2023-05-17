@@ -742,8 +742,7 @@ public class IRVisitor implements Visitor<IRNode>{
                 jumpCount++;
             }
         }
-        Boolean containsBreak = new ContainsBreakVisitor().visit(node);
-        if (jumpCount > 1 || containsBreak || !opts.isSet(LICM)) {
+        if (!opts.isSet(LICM) || jumpCount > 1 || (new ContainsBreakVisitor().visit(node))) {
             String lh = nxtLabel();
             String l1 = nxtLabel();
             String le = nxtLabel();
