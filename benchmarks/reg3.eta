@@ -1,18 +1,19 @@
-use io
-use conv
-
-g':int = 5;
-f():int[]{return "Hello World"}
-g():int[]{return "deadBeef";}
+use io;use conv;g':int = 5; bad():int[]{return "Hello World"} dead():int[]{return "deadBeef";}
 main(args:int[][]){
-    f()[2] = 'a';f()[1] = 'n';println(f())
-
-    g()[3] = 'z';
-    g()[4] = 'b';
-    i:int = 0;
-    while (i < 723049182){
-        i = i +1;
-    }
-    println(g());
-    println(unparseInt(g'));
+    bad()[2] = 'a'; bad()[1] = 'n';println(bad());dead()[3] = 'z'; dead()[4] = 'b'; i:int = 0;
+    println(dead());println(unparseInt(g'));
+    a:int,b:int,c:int,d:int,e:int,f:int = multiMulti(100,200,300,400,500,600);
+    println(unparseInt(a));println(unparseInt(b));println(unparseInt(c));
+    println(unparseInt(d));println(unparseInt(e));println(unparseInt(f));
+    singleZero(123);n1:int = 4;g:int = singleSingle(700);println(unparseInt(g));
+    x:int,y:int,z:int = singleMulti(111);println(unparseInt(x));println(unparseInt(y));println(unparseInt(z));
+    aa:int,bb:int = multiSingle(222,333,444,555,666,777,888,999,1000,1100);
+    println(unparseInt(aa));println(unparseInt(bb));
+    it:int = 0;res:int = 0;
+    while (it < 500000000){it = it + singleSingle(1) + singleSingle(1);it = it + fact(1);}
+    println(unparseInt(it));println(unparseInt(res));
 }
+fact(n:int):int{if ( n <= 1){ return 1;}return n * fact(n-1);}singleSingle(n1:int):int{return n1;}
+singleMulti(n1:int):int,int,int{return n1,n1,n1;}singleZero(n1:int){println(unparseInt(n1));}
+multiSingle(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int,n7:int,n8:int,n9:int,n10:int):int,int{return n10,n6;}
+multiMulti(n1:int,n2:int,n3:int,n4:int,n5:int,n6:int):int,int,int,int,int,int{return n1,n2,n3,n4,n5,n6;}
